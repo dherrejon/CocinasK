@@ -1,0 +1,156 @@
+.encabezadoTitulo
+{
+    background: #262626;
+    color: white;
+    text-align: center;
+}
+
+.perfilEncabezado /*Texto en el encabezado que indica el perfil del usuario*/
+{
+    color: white !important;
+    background: rgba(250,97,21,1);
+    background: -moz-linear-gradient(top, rgba(250,97,21,1) 0%, rgba(238,132,21,1) 74%, rgba(232,153,21,1) 100%);
+    background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(250,97,21,1)), color-stop(74%, rgba(238,132,21,1)), color-stop(100%, rgba(232,153,21,1)));
+    background: -webkit-linear-gradient(top, rgba(250,97,21,1) 0%, rgba(238,132,21,1) 74%, rgba(232,153,21,1) 100%);
+    background: -o-linear-gradient(top, rgba(250,97,21,1) 0%, rgba(238,132,21,1) 74%, rgba(232,153,21,1) 100%);
+    background: -ms-linear-gradient(top, rgba(250,97,21,1) 0%, rgba(238,132,21,1) 74%, rgba(232,153,21,1) 100%);
+    background: linear-gradient(to bottom, rgba(250,97,21,1) 0%, rgba(238,132,21,1) 74%, rgba(232,153,21,1) 100%);
+}
+
+.textoPerfil /*Texto en el encabezado que indica el perfil del usuario*/
+{
+    font-size: 12pt;
+}
+
+.botonPerfil, .botonPerfil:disabled
+{
+    border: solid 2px white;
+    background: transparent;
+    color: white;
+    opacity: 1.0;
+}
+
+.botonPerfil:hover:disabled
+{
+    border: solid 2px white;
+    background:rgb(250, 97, 21);
+    color: white;
+    opacity: 1.0;
+    cursor: text;
+}
+
+.botonPerfil:hover
+{
+    border: solid 2px white;
+    background: white;
+    color: rgb(250, 97, 21);
+}
+
+.barraNavegacion
+{
+    background: rgba(255,255,255,1);
+
+    border-width:  5px 0px 5px 0px;
+    border-style: solid;
+    border-color: rgb(250, 97, 21);
+    color: #262626;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    border-radius: 0px;
+}
+
+.barraNavegacionBoton  /*Boton de hamburguesa de la barra de navegacion en xs*/
+{
+    background: rgb(250, 97, 21);
+}
+
+.barraNavegacionHamburguesa /*Color de las barras en el boton de hamburguesa*/
+{
+    background: white;
+}
+
+
+.barraNavegacion .navbar-nav > li > a /*Opciones principales de la barra de navegación*/
+{ 
+    background: transparent !important;
+    color: #262626;
+    font-size: 16pt;
+}
+
+.barraNavegacion .navbar-nav > li:hover > a /*en las opciones principales de la barra de navegación*/
+{ 
+    color: rgb(250, 97, 21);
+    cursor: pointer !important;
+    border-right: solid 2px rgb(250, 97, 21) !important;
+}
+
+.dropdownOpcion /*Opciones de los dropdown list*/
+{
+    color: white !important;
+    border-bottom: solid 1px white;
+    margin-left: 3px;
+    margin-right: 3px;
+}
+
+.dropdownOpcion:hover, .dropdownOpcion:focus, .dropdownOpcion:active  /*Hover en las opciones de las dropdown list*/
+{
+    background-color: white !important;
+    color: rgb(250, 97, 21) !important;
+    cursor: hand !important;
+}
+
+.barraNavegacionDropdown /*fondo de despliegue de los dropdown list */
+{
+    background: rgba(250,97,21,1);
+    background: -moz-linear-gradient(top, rgba(250,97,21,1) 0%, rgba(238,132,21,1) 74%, rgba(232,153,21,1) 100%);
+    background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(250,97,21,1)), color-stop(74%, rgba(238,132,21,1)), color-stop(100%, rgba(232,153,21,1)));
+    background: -webkit-linear-gradient(top, rgba(250,97,21,1) 0%, rgba(238,132,21,1) 74%, rgba(232,153,21,1) 100%);
+    background: -o-linear-gradient(top, rgba(250,97,21,1) 0%, rgba(238,132,21,1) 74%, rgba(232,153,21,1) 100%);
+    background: -ms-linear-gradient(top, rgba(250,97,21,1) 0%, rgba(238,132,21,1) 74%, rgba(232,153,21,1) 100%);
+    background: linear-gradient(to bottom, rgba(250,97,21,1) 0%, rgba(238,132,21,1) 74%, rgba(232,153,21,1) 100%);
+    
+    margin-top: -5px !important;
+    margin-bottom: 5px !important;
+}
+
+@media (max-width: 767px)
+{    
+    .barraNavegacion .navbar-nav > li > a /*Modificación de las opcines principales en la barra de navegación*/
+    {
+        border: solid 2px rgb(250, 97, 21);
+        margin-bottom:5px;
+    }
+    
+    .barraNavegacion .navbar-nav > li:hover > a /*Hover de las opciones principales en la barra de navegación*/
+    {
+        margin-bottom:3px;
+        background: rgb(250, 97, 21) !important;
+        color: white;
+    }
+    
+    .dropdownOpcion /*Opciones de las dropdown list*/
+    {
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+}
+
+.claseSeccion
+{
+    margin-top: 14px;
+    border-right: solid 2px #262626;
+}
+
+.claseLogoSM
+{
+    margin-left: -30px;
+    max-height: 76px !important;
+    max-width: 240 !important;
+}
+
+.claseLogoXS
+{
+    margin-left: -15px;
+    max-height: 50px !important;
+    max-width: 170 !important;
+}

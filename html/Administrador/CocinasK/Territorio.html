@@ -1,0 +1,374 @@
+<div ng-controller="TerritorioControlador as territorio" class="container-fluid" >
+
+    <br><br>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="tituloModulo">
+                <span>Territorios</span>
+            </div>
+        </div>
+    </div>
+    <br>
+    
+   <div class="row" ng-if="permisoUsuario.consultar">
+        <div class="col-md-11 col-xs-10">
+            <div class="table-responsive TablaUnidadNegocio">
+                <table class="table table-hover">
+                    <thead class="TituloTabla">
+                      <tr>
+                        <!--<th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('Colaborador')"><b>Responsable</b> <b ng-if="ordenarPor === 'Colaborador'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-Colaborador'" class="fa fa-arrow-down"></b></button></th>-->
+                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('Nombre')"><b>Nombre </b><b ng-if="ordenarPor === 'Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-Nombre'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('Margen')"><b>Margen </b><b ng-if="ordenarPor === 'Margen'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-Margen'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonFalso"><b>Detalles</b></button></th>
+                        <th><button class="btn botonFalso"><b>Editar</b></button></th>
+                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('ActivoN')"><b>Activo</b> <b ng-if="ordenarPor === 'ActivoN'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-ActivoN'" class="fa fa-arrow-down"></b></button></th>
+                      </tr>
+                    </thead>
+                    <tbody ng-repeat="territorio in territorio | filter:filtarTerrirotio | filter:buscar | orderBy:[ordenarPor, 'Nombre']">
+                      <tr>
+                        <td>{{territorio.Nombre}}</td>
+                        <td>{{territorio.Margen}}</td>
+                          
+                        <td>
+                            <a  class="BotonOperacion" href="" data-toggle="modal" data-target="#DetallesTerriotorio" ng-click="MostarDetalles(territorio)">
+                                <span class="fa fa-eye fa-2x"></span>
+                            </a>
+                        </td>
+
+                        <td>
+                            <a ng-if="permisoUsuario.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirTerritotioModal(territorio,'Editar')">
+                                <span class="fa fa-pencil fa-2x"></span>
+                            </a>
+                            
+                            <span ng-if="!permisoUsuario.editar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
+                        </td>
+
+                        <td>
+                            <div class="checkbox">
+                                <label>
+                                    <input ng-disabled="!permisoUsuario.activar" ng-model="territorio.Activo" type="checkbox" value="" ng-click="ConfirmarCambiarActivo(territorio)">
+                                    <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+                                </label>
+                            </div>
+                        </td>
+
+                      </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-xs-2 col-md-1">
+            <button ng-disabled="!permisoUsuario.agregar" class="btn btn-block botonOperacion fa fa-plus text-center" data-toggle="tooltip" data-placement="bottom" title="Agregar Territorio" ng-click="AbrirTerritotioModal(null,'Agregar')"></button>
+            
+            <br><br>
+            
+            <!-- Boton filtrar -->
+            <div class="dropdown">
+                
+                <button class="btn btn btn-block botonOperacion fa fa-filter text-center" data-toggle="dropdown" ></button>
+                    
+                <ul class="dropdown-menu dropdown-menu-right operacionPanel">
+                    
+                    <div  class="row ">
+                        <div class="col-xs-9">
+                            <li  class="dropdown-header tituloOpcionLateral">FILTRAR</li>
+                        </div>
+                        <div class="col-xs-3">
+                            <li> <button class="btn botonOperacion fa fa-ban" data-toggle="tooltip" data-placement="bottom" title="Limpiar filtro" ng-click="LimpiarFiltro()"></button></li>
+                        </div>
+                    </div>
+                    <li role="separator" class="divider"></li>
+
+                    <li style="width: 275px;">
+
+                        <form role="filtro">
+                            
+                            <button class="btn btn-block botonFiltro" ng-click="MostrarFiltros('activo')">Activo</button>
+                            
+                            <div class="row" ng-show="mostrarFiltro.activo">
+                                <div class="col-xs-12" >
+                                    <div class="opcionFiltro">
+                                        <div>
+                                            <label class="checkBoxActivoFiltro">
+                                                <input type="checkbox" class="badgebox" ng-model="filtro[0].activo"><span class="badge">&check;</span>
+                                                Territorios Activos
+                                            </label>
+                                            
+                                            <label class="checkBoxActivoFiltro">
+                                                <input type="checkbox" class="badgebox" ng-model="filtro[0].inactivo"><span class="badge">&check;</span>
+                                                Territorios No Activos
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            
+                            <button class="btn btn-block botonFiltro" ng-click="MostrarFiltros('margen')">Margen</button>
+                            
+                            <div class="row" ng-show="mostrarFiltro.margen">
+                                <div class="col-xs-12" >
+                                    <div class="opcionFiltro">
+                                        <div>
+                                            <label >
+                                                <input class="margenFiltro" type="number"  ng-model="filtro[1].margenMaximo">
+                                                Margen Máximo
+                                            </label>
+                                            
+                                            <label>
+                                                <input class="margenFiltro" type="number"  ng-model="filtro[1].margenMinimo">
+                                                Margen Mínimo
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                        </form>
+                    </li>
+                </ul>
+                
+            </div>
+            
+            <br>
+            <!-- Boton buscar -->
+            <div class="dropdown">
+                
+                <button class="btn btn btn-block botonOperacion fa fa-search text-center" data-toggle="dropdown" ></button>
+                    
+                <ul class="dropdown-menu dropdown-menu-right operacionPanel">
+
+                    <li style="width: 225px; height: 35px !important;">
+
+                        <form role="buscar" style="max-width: 200px; height: 25px !important;">
+                            <div class="input-group" >
+                              <input  type="text" class="form-control operacionPanelEntrada" placeholder="Buscar" style="margin-left: 5px; width: 175px;" ng-model="buscar">
+                              <span class="input-group-btn" style="width: 25px;">
+                                <button class="btn operacionPanelBoton" type="button">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                              </span>
+                            </div>
+                        </form>
+                    </li>
+                </ul>
+                
+            </div>
+            
+        </div>
+    </div>
+ 
+    <!----------------------------------- Modales --------------------------->
+    
+    <!--- Modal para Detalles del territorio --->
+    <div class="modal fade " id="DetallesTerriotorio"  >
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <!-- encabezado del modal -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center">Detalles del Territorio</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- cuerpo del modal -->
+                <div class="modal-body">
+                    <!-- Opciones de unidad de negocio -->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="pull-right">
+                                <button ng-disabled="!permisoUsuario.editar" class="btn botonOperacion" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" data-placement="bottom" title="Editar Territorio"  ng-click="AbrirTerritotioModal(nuevoTerritorio,'Editar')"><span class="fa fa-pencil fa-2x"></span></button>
+                                <button ng-disabled="!permisoUsuario.activar" ng-if="nuevoTerritorio.Activo" class="btn botonOperacion activo"  data-toggle="tooltip" data-placement="bottom" title="Desactivar" ng-click="CambiarActivo()"><span class="fa fa-power-off fa-2x"></span></button>
+                                <button ng-disabled="!permisoUsuario.activar" ng-if="!nuevoTerritorio.Activo" class="btn botonOperacion desactivo" data-toggle="tooltip" data-placement="bottom" title="Activar" ng-click="CambiarActivo()"><span class="fa fa-power-off fa-2x"></span></button>
+                            </div>
+                        </div>
+                    </div>
+                        
+                    <h4>Datos del Territorio</h4><br>
+                
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="subrayado">
+                            <label>Nombre</label><br>
+                            <span class="textoModal">{{nuevoTerritorio.Nombre}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="subrayado">
+                            <label>Margen</label><br>
+                            <span class="textoModal">{{nuevoTerritorio.Margen}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row" ng-if="plaza.length > 0">
+                        <div class="col-xs-12">
+                            <h4>Plazas</h4>
+                            <div class="table-responsive TablaModal">
+                                <table class="table table-hover">
+                                    <thead class="TituloTabla">
+                                      <tr>
+                                        <!--<th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('Colaborador')"><b>Responsable</b> <b ng-if="ordenarPor === 'Colaborador'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-Colaborador'" class="fa fa-arrow-down"></b></button></th>-->
+                                        <th><button class="btn botonOrdenar"><b>Estado </b></button></th>
+                                        <th><button class="btn botonOrdenar"><b>Municipio </b></button></th>
+                                        <th><button class="btn botonOrdenar"><b>Ciudad </b></button></th>
+                                        <th><button class="btn botonOrdenar"><b>Unidad de Negocio </b></button></th>
+                                      </tr>
+                                    </thead>
+                                    <tbody ng-repeat="plaza in plaza | orderBy:['Estado', 'Municipio', 'Ciudad', 'NombreUnidad']">
+                                      <tr>
+                                        <td>{{plaza.Estado}}</td>
+                                        <td>{{plaza.Municipio}}</td>
+                                        <td>{{plaza.Ciudad}}</td>
+                                        <td>{{plaza.NombreUnidad}}</td>
+                                      </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+     <!---- Modal para Agregar-editar territorio -->
+    <div class="modal fade" id="territorioModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static" >
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <!-- encabezado del modal -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarTerritotio()"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center" ng-if="operacion === 'Agregar'">Agregar Territorio</h3>
+                            <h3 class="text-center" ng-if="operacion === 'Editar'">Editar Territorio</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+                <br>
+
+                <form class="modal-body" name="territorioForma">
+                <!-- Datos -->
+                    <!-- Nombre -->
+                    <div class="row">
+                        <div class="col-sm-12">
+                             <div class="entrada2">
+                                <input ng-pattern="erNombreGeneral" type="text" required class="{{clase.nombre}} form-control" name="nombre" ng-model="nuevoTerritorio.Nombre"/>
+                                <label>Nombre</label>
+                            </div>
+                        </div>
+                    </div> 
+                    <br><br>
+                    
+                    
+                    <div class="row"> 
+                        <!---- Margen --->
+                        <div class="col-sm-6">
+                             <div class="entrada2">
+                                <input ng-pattern="erDecimal" type="text" required class="{{clase.margen}} form-control" name="margen" ng-model="nuevoTerritorio.Margen"/>
+                                <label>Margen</label>
+                            </div>
+                        </div>
+                        <br class="hidden-sm hidden-md hidden-lg">
+                        <!-- Activo -->
+                        <div class="col-sm-6">
+                             <label class="btn checkBoxActivo">Territorio Activo <input type="checkbox" class="badgebox" ng-model="nuevoTerritorio.Activo"><span class="badge">&check;</span></label>
+                         </div>
+                    </div>
+                    <br>
+                    <!-------- mensaje de error ---->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div ng-repeat="error in mensajeError track by $index">
+                                <span class="textoError">{{error}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!---- botones de operacion --->
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <button class="btn botonCancelar btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarTerritotio()">CANCELAR</button>
+                        </div>
+                        
+                        <div class="col-xs-6">
+                            <button focus class="btn botonAvanzar btn-block" ng-click="TerminarTerritorio(territorioForma.nombre.$invalid, territorioForma.margen.$invalid)">TERMINAR</button>
+                        </div>
+                    </div>
+                    <br> 
+                </form>
+            </div>
+            <br><br><br>
+        </div>
+    </div>
+    
+    <!-- Desactivar Modal -->
+    <div class="modal fade" id="modalActivoTerritorio" data-keyboard="false" data-backdrop="static">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                
+                <div class="modal-body">
+                    <br>
+                    <div class="panel panel-default modalMensaje">
+                        <br>
+                        <b>{{mensajeAdvertencia}}</b>
+                        <br><br>
+
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <button class="btn botonCancelar" data-dismiss="modal" aria-label="Close" ng-click="CancelarEstatusActivo()">No</button>
+                            </div>
+                            <div class="col-xs-6">
+                                <button class="btn botonAvanzar" data-dismiss="modal" aria-label="Close" ng-click="ConfirmarActualizarTerritorio()">Si</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div> 
+    
+    
+    <!-- Modal para mensajes -->
+    <div class="modal fade" id="mensajeTerritorio">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                
+                <div class="modal-body">
+                    <div class="panel panel-default modalMensaje">
+                        <br>
+                        <b>{{mensaje}}</b>
+
+                        <br><br>
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <button class="btn  botonAvanzar" data-dismiss="modal" aria-label="Close">Aceptar</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div> 
+</div>
+
+     

@@ -1,0 +1,130 @@
+.login  /* Clase para la página de inicion de sesión*/
+{
+    background: url('../img/login/fondo.jpg') no-repeat center fixed;
+    background-size: cover;
+}
+
+.logo   /* Imagen del logo*/
+{
+    background-color: rgba(255,255, 255, 0.4);
+}
+
+.panelLogin     /* Panel del inicio de sesión*/
+{
+    border: 3px solid  rgb(250, 97, 21);
+    border-radius: 3px;
+    background-color: rgba(255, 255, 255, 0.95);
+    color: rgb(36,36,36); 
+}
+
+
+
+.botonLogin
+{
+    background-color: white;
+    color: rgb(36,36,36);
+    border: 2px solid rgb(250, 97, 21);
+    border-radius: 3px;
+}
+
+.botonLogin:hover
+{
+    background: rgba(250,97,21,1);
+    background: -moz-linear-gradient(-45deg, rgba(250,97,21,1) 0%, rgba(238,132,21,1) 71%, rgba(232,153,21,1) 100%);
+    background: -webkit-gradient(left top, right bottom, color-stop(0%, rgba(250,97,21,1)), color-stop(71%, rgba(238,132,21,1)), color-stop(100%, rgba(232,153,21,1)));
+    background: -webkit-linear-gradient(-45deg, rgba(250,97,21,1) 0%, rgba(238,132,21,1) 71%, rgba(232,153,21,1) 100%);
+    background: -o-linear-gradient(-45deg, rgba(250,97,21,1) 0%, rgba(238,132,21,1) 71%, rgba(232,153,21,1) 100%);
+    background: -ms-linear-gradient(-45deg, rgba(250,97,21,1) 0%, rgba(238,132,21,1) 71%, rgba(232,153,21,1) 100%);
+    background: linear-gradient(135deg, rgba(250,97,21,1) 0%, rgba(238,132,21,1) 71%, rgba(232,153,21,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fa6115', endColorstr='#e89915', GradientType=1 );
+    color: white;
+}
+
+.textoError  /*texto que se despliega en la interfaz mostrando un error*/
+{
+    color: rgb(250, 97, 21);
+}
+
+/* Clase para las entradas de texto en el login */
+
+.entrada
+{
+    background-color: transparent;
+    color: #424242;
+    border-width: 0px 0px 3px 0px; 
+    border-style: solid;
+    border-color: #424242;
+    border-radius: 0px;
+    box-shadow: 0px 0px 0px rgba(0, 0, 0, 0);
+
+}
+
+.entrada:focus, .entradaError:focus
+{
+    color: #424242;
+    border-style: solid;
+    border-color:  rgb(250, 97, 21); 
+    box-shadow: 0px 0px 0px rgba(0, 0, 0, 0);
+}
+
+.entradaError
+{
+    background-color: transparent;
+    color: rgb(250, 97, 21);
+    border-width: 0px 0px 3px 0px; 
+    border-style: solid;
+    border-color: rgb(250, 97, 21);
+    border-radius: 0px;
+    box-shadow: 0px 0px 0px rgba(0, 0, 0, 0);
+
+}
+
+.entrada2
+{
+    position:relative;
+}
+
+.entrada2 label
+{
+    color: #424242;
+    font-size:16px;
+    font-weight:400;
+    letter-spacing:.5px;
+    position:absolute;
+    pointer-events:none;
+    left:0;top:2px;
+    -webkit-transition:.2s ease all;
+    transition:.2s ease all;
+}
+
+.entrada2 input[type=text],.entrada2 input[type=password],.entrada2 input[type=email]
+{
+    font-weight:400;
+    font-size:18px;
+    color:#1E2431;
+    width:100%;
+    box-shadow:none;
+    -webkit-transition:none;
+    transition:none;
+    
+}
+
+.entrada2 input[type=text]:focus~label,.entrada2 input[type=text]:valid~label,.entrada2 input[type=password]:focus~label,.entrada2 input[type=password]:valid~label, .entrada2 input[type=email]:focus~label,.entrada2 input[type=email]:valid~label
+{
+    top:-20px;
+    color: rgb(89, 89, 89);
+    opacity:1;
+    font-weight:400;
+    font-size:14px;
+    font-weight: bold;
+}
+
+.entrada2 input[type=text]:focus:not([readonly])~label,.entrada2 input[type=password]:focus:not([readonly])~label,.entrada2 input[type=email]:focus:not([readonly])~label
+{
+    color: rgb(250, 97, 21);
+    font-weight:400;
+    font-weight: bold;
+}
+
+
+

@@ -1,0 +1,548 @@
+<div ng-controller="PlazaControlador as plaza" class="container-fluid">
+
+    <br><br>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="tituloModulo">
+                <span>Plazas</span>
+            </div>
+        </div>
+    </div>
+    <br>
+   
+    <div class="row" ng-if="permisoUsuario.consultar">
+        <div class="col-md-11 col-xs-10">
+            <div class="table-responsive TablaUnidadNegocio">
+                <table class="table table-hover">
+                    <thead class="TituloTabla">
+                      <tr>
+                        <!--<th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('Colaborador')"><b>Responsable</b> <b ng-if="ordenarPor === 'Colaborador'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-Colaborador'" class="fa fa-arrow-down"></b></button></th>-->
+                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('Estado')"><b>Estado </b><b ng-if="ordenarPor === 'Estado'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-Estado'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('Municipio')"><b>Municipio </b><b ng-if="ordenarPor === 'Municipio'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-Municipio'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('Ciudad')"><b>Ciudad </b><b ng-if="ordenarPor === 'Ciudad'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-Ciudad'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('NombreTerritorio')"><b>Territorio </b><b ng-if="ordenarPor === 'NombreTerritorio'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-NombreTerritorio'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonFalso"><b>Detalles</b></button></th>
+                        <th><button class="btn botonFalso"><b>Editar</b></button></th>
+                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('ActivoN')"><b>Activo</b> <b ng-if="ordenarPor === 'ActivoN'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-ActivoN'" class="fa fa-arrow-down"></b></button></th>
+                      </tr>
+                    </thead>
+                    <tbody ng-repeat="plaza in plaza | filter:FiltrarPlaza | filter:buscar | orderBy:[ordenarPor, 'Estado', 'Municipio', 'Ciudad']">
+                      <tr>
+                        <td>{{plaza.Estado}}</td>
+                        <td>{{plaza.Municipio}}</td>
+                        <td>{{plaza.Ciudad}}</td>
+                        <td>{{plaza.NombreTerritorio}}</td>
+                          
+                        <td>
+                            <a  class="BotonOperacion" href="" data-toggle="modal" data-target="#DetallePlaza" ng-click="MostarDetalles(plaza)">
+                                <span class="fa fa-eye fa-2x"></span>
+                            </a>
+                        </td>
+
+                        <td>
+                            <a ng-if="permisoUsuario.editar"  class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirPlazaModal(plaza,'Editar')">
+                                <span class="fa fa-pencil fa-2x"></span>
+                            </a>
+                            <span ng-if="!permisoUsuario.editar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
+                        </td>
+
+                        <td>
+                            <div class="checkbox">
+                                <label>
+                                    <input ng-disabled="!permisoUsuario.activar"  ng-model="plaza.Activo" type="checkbox" value="" ng-click="ConfirmarCambiarActivo(plaza)">
+                                    <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+                                </label>
+                            </div>
+                        </td>
+
+                      </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-xs-2 col-md-1">
+            <button ng-disabled="!permisoUsuario.agregar" class="btn btn-block botonOperacion fa fa-plus text-center" data-toggle="tooltip" data-placement="bottom" title="Agregar Plaza" ng-click="AbrirPlazaModal(null,'Agregar')"></button>
+            
+            <br><br>
+            
+            <!-- Boton filtrar -->
+            <div class="dropdown">
+                
+                <button class="btn btn btn-block botonOperacion fa fa-filter text-center" data-toggle="dropdown" ></button>
+                    
+                <ul class="dropdown-menu dropdown-menu-right operacionPanel">
+                    
+                    <div  class="row ">
+                        <div class="col-xs-9"> 
+                            <li  class="dropdown-header tituloOpcionLateral">FILTRAR</li>
+                        </div>
+                        <div class="col-xs-3">
+                            <li> <button class="btn botonOperacion fa fa-ban" data-toggle="tooltip" data-placement="bottom" title="Limpiar filtro" ng-click="LimpiarFiltro()"></button></li>
+                        </div>
+                    </div>
+                    <li role="separator" class="divider"></li>
+
+                    <li style="width: 275px;">
+
+                        <form role="filtro">
+                            <!------ Estado ------>
+                            <button class="btn btn-block botonFiltro" ng-click="MostrarFiltros('estado')">Estado</button>
+                            
+                            <div class="row" ng-show="mostrarFiltro.estado">
+                                <div class="col-xs-12" >
+                                    <div class="opcionFiltro">
+                                        <div  ng-repeat="estado in plaza | orderBy:'Estado' | unique: 'Estado' track by $index">
+                                            <label class="checkBoxActivoFiltro">
+                                                <input type="checkbox" class="badgebox" ng-model="filtro.estado[$index]" ng-click="setFilter('estado', estado.Estado)"><span class="badge">&check;</span>
+                                                {{estado.Estado}}
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                        
+                            <!------ Territorio ------>
+                            <button class="btn btn-block botonFiltro" ng-click="MostrarFiltros('territorio')">Territorio</button>
+                            
+                            <div class="row" ng-show="mostrarFiltro.territorio">
+                                <div class="col-xs-12" >
+                                    <div class="opcionFiltro">
+                                        <div  ng-repeat="territorio in plaza | orderBy:'NombreTerritorio' | unique: 'NombreTerritorio' track by $index">
+                                            <label class="checkBoxActivoFiltro">
+                                                <input type="checkbox" class="badgebox" ng-model="filtro.territorio[$index]" ng-click="setFilter('territorio', territorio.NombreTerritorio)"><span class="badge">&check;</span>
+                                                {{territorio.NombreTerritorio}}
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            
+                            <!------ Unidad de Negocio ------>
+                            <button class="btn btn-block botonFiltro" ng-click="MostrarFiltros('unidad')">Unidad de Negocio</button>
+                            
+                            <div class="row" ng-show="mostrarFiltro.unidad">
+                                <div class="col-xs-12" >
+                                    <div class="opcionFiltro">
+                                        <div  ng-repeat="unidadNegocio in plaza | orderBy:'NombreUnidadNegocio' | unique: 'NombreUnidadNegocio' track by $index">
+                                            <label class="checkBoxActivoFiltro">
+                                                <input type="checkbox" class="badgebox" ng-model="filtro.unidad[$index]" ng-click="setFilter('unidad', unidadNegocio.NombreUnidadNegocio)"><span class="badge">&check;</span>
+                                                {{unidadNegocio.NombreUnidadNegocio}}
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            
+                            <!------ Activo ------>
+                            <button class="btn btn-block botonFiltro" ng-click="MostrarFiltros('activo')">Activo</button>
+                            
+                            <div class="row" ng-show="mostrarFiltro.activo">
+                                <div class="col-xs-12" >
+                                    <div class="opcionFiltro">
+                                        <div>
+                                            <label class="checkBoxActivoFiltro">
+                                                <input type="checkbox" class="badgebox" ng-model="filtro.activo.activo"><span class="badge">&check;</span>
+                                                Plazas Activos
+                                            </label>
+                                            
+                                            <label class="checkBoxActivoFiltro">
+                                                <input type="checkbox" class="badgebox" ng-model="filtro.activo.inactivo"><span class="badge">&check;</span>
+                                                Plazas No Activos
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            
+                        </form>
+                    </li>
+                </ul>
+                
+            </div>
+            
+            <br>
+            <!-- Boton buscar -->
+            <div class="dropdown">
+                
+                <button class="btn btn btn-block botonOperacion fa fa-search text-center" data-toggle="dropdown" ></button>
+                    
+                <ul class="dropdown-menu dropdown-menu-right operacionPanel">
+
+                    <li style="width: 225px; height: 35px !important;">
+
+                        <form role="buscar" style="max-width: 200px; height: 25px !important;">
+                            <div class="input-group" >
+                              <input  type="text" class="form-control operacionPanelEntrada" placeholder="Buscar" style="margin-left: 5px; width: 175px;" ng-model="buscar">
+                              <span class="input-group-btn" style="width: 25px;">
+                                <button class="btn operacionPanelBoton" type="button">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                              </span>
+                            </div>
+                        </form>
+                    </li>
+                </ul>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+    <!-------- Modals ---------------->
+    
+    <!--- Modal para Detalles de la plaza --->
+    <div class="modal fade " id="DetallePlaza"  >
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <!-- encabezado del modal -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center">Detalles de la Plaza</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- cuerpo del modal -->
+                <div class="modal-body">
+                    <!-- Opciones de unidad de negocio -->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="pull-right">
+                                <button ng-disabled="!permisoUsuario.editar" class="btn botonOperacion" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" data-placement="bottom" title="Editar Plaza"  ng-click="AbrirPlazaModal(nuevaPlaza,'Editar')"><span class="fa fa-pencil fa-2x"></span></button>
+                                <button ng-disabled="!permisoUsuario.activar" ng-if="nuevaPlaza.Activo" class="btn botonOperacion activo"  data-toggle="tooltip" data-placement="bottom" title="Desactivar" ng-click="CambiarActivoModal()"><span class="fa fa-power-off fa-2x"></span></button>
+                                <button ng-disabled="!permisoUsuario.activar" ng-if="!nuevaPlaza.Activo" class="btn botonOperacion desactivo" data-toggle="tooltip" data-placement="bottom" title="Activar" ng-click="CambiarActivoModal()"><span class="fa fa-power-off fa-2x"></span></button>
+                            </div>
+                        </div>
+                    </div>
+                        
+                    <h4>Datos de la Plaza</h4><br>
+                    <!-- Estado y municipio -->
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="subrayado">
+                            <label>Estado</label><br>
+                            <span class="textoModal">{{nuevaPlaza.Estado}}</span>
+                            </div>
+                        </div>
+                        <br class="hidden-sm hidden-md hidden-lg">
+                        <div class="col-sm-6">
+                            <div class="subrayado">
+                            <label>Municipio</label><br>
+                            <span class="textoModal">{{nuevaPlaza.Municipio}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!-- ciudad -->
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="subrayado">
+                            <label>Ciudad</label><br>
+                            <span class="textoModal">{{nuevaPlaza.Ciudad}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!-- territorio  -->
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="subrayado">
+                            <label>Territorio</label><br>
+                            <span class="textoModal">{{nuevaPlaza.NombreTerritorio}}</span>
+                            </div>
+                        </div>
+                        <br class="hidden-sm hidden-md hidden-lg">
+                        <div class="col-sm-6">
+                            <div class="subrayado">
+                            <label>Margen</label><br>
+                            <span class="textoModal">{{nuevaPlaza.Margen}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!--  unidad de negocio -->
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="subrayado">
+                            <label>Unidad de Negocios</label><br>
+                            <span class="textoModal">{{nuevaPlaza.NombreUnidadNegocio}}</span>
+                            </div>
+                        </div>
+                        <br class="hidden-sm hidden-md hidden-lg">
+                        <div class="col-sm-6">
+                            <div class="subrayado">
+                            <label>Tipo de Unidad</label><br>
+                            <span class="textoModal">{{nuevaPlaza.NombreTipoUnidadNegocio}}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!---- Modal para Agregar-editar plaza -->
+    <div class="modal fade" id="plazaModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static" >
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <!-- encabezado del modal -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarPlaza()"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center" ng-if="operacion === 'Agregar'">Agregar Plaza</h3>
+                            <h3 class="text-center" ng-if="operacion === 'Editar'">Editar Plaza</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+                <br>
+
+                <form class="modal-body" name="plazaForma">
+                <!-- Datos -->
+                    <!-- Estado y municipio -->                  
+                    <div class="row">
+                        <div class="col-xs-12 subtituloModal">
+                            <b>Datos de la plaza</b>
+                        </div>
+                    </div>
+                    <br><br>
+                    <div class="row">
+                        <!-- Estado -->
+                        <div class="col-sm-6 etiquetaDropdownList">
+                             <label>Estado</label>
+                             <div class="dropdown">
+
+                                <button class="dropdown-toggle  {{clase.estado}}" data-toggle="dropdown">
+                                    <span>{{nuevaPlaza.Estado}}</span>
+                                    <span class="caret"></span>
+                                </button>
+
+                                <ul class="dropdown-menu elemetosDropdownListModal">
+                                    <li ng-repeat="estado in estado | orderBy:'Estado'">
+                                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarEstado(estado.Estado)">
+                                            <span>{{estado.Estado}}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                            </div>
+                        </div>
+                        <br class="hidden-sm hidden-md hidden-lg">
+                        <!-- Municipo -->
+                        <div class="col-sm-6 etiquetaDropdownList">
+                             <label>Municpio</label>
+                             <div class="dropdown">
+
+                                <button ng-disabled="nuevaPlaza.Estado.length == 0" class="dropdown-toggle {{clase.municipio}}" data-toggle="dropdown">
+                                    <span>{{nuevaPlaza.Municipio}}</span>
+                                    <span class="caret"></span>
+                                </button>
+
+                                <ul class="dropdown-menu elemetosDropdownListModal">
+                                    <li ng-repeat="municipo in codigoPostal  | orderBy:'Municipio' | unique: 'Municipio'">
+                                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarMunicipio(municipo.Municipio)">
+                                            <span>{{municipo.Municipio}}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!-- ciudad -->                    
+                    <div class="row">
+                        <!-- Ciudad -->
+                        <div class="col-sm-6 etiquetaDropdownList">
+                             <label>Ciudad</label>
+                             <div class="dropdown">
+
+                                <button ng-disabled="nuevaPlaza.Municipio.length == 0" class="dropdown-toggle  {{clase.ciudad}}" data-toggle="dropdown">
+                                    <span>{{nuevaPlaza.Ciudad}}</span>
+                                    <span class="caret"></span>
+                                </button>
+
+                                <ul class="dropdown-menu elemetosDropdownListModal"><!-- -->
+                                    <li ng-repeat="ciudad in codigoPostal   | filter:{Municipio:nuevaPlaza.Municipio}:true | orderBy:'Ciudad' | unique: 'Ciudad'">
+                                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarCiudad(ciudad.Ciudad)">
+                                            <span>{{ciudad.Ciudad}} </span>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Territorio -->                    
+                    <div class="row">
+                        <div class="col-xs-12 subtituloModal">
+                            <b>¿A que territorio pertenece la plaza?</b>
+                        </div>
+                        <br> <br> <br>
+                        <div class="col-sm-6 etiquetaDropdownList">
+                             <label>Territorio</label>
+                             <div class="dropdown">
+
+                                <button class="dropdown-toggle  {{clase.territorio}}" data-toggle="dropdown">
+                                    <span><b>{{nuevaPlaza.NombreTerritorio}}</b> <span ng-if="nuevaPlaza.NombreTerritorio.length > 0">- Margen: </span>{{nuevaPlaza.Margen}}</span>
+                                    <span class="caret"></span>
+                                </button>
+
+                                <ul class="dropdown-menu elemetosDropdownListModal">
+                                    <li ng-repeat="territorio in territorio | orderBy:'Nombre'" ng-if="territorio.Activo">
+                                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarTerritorio(territorio)">
+                                            <span><b>{{territorio.Nombre}}</b> - Margen: {{territorio.Margen}}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!-- Tipo Unidad Negocio -->                    
+                    <div class="row">
+                        <div class="col-xs-12 subtituloModal">
+                            <b>¿Qué unidad de negocio atiende a la plaza?</b>
+                        </div>
+                        <br> <br><br>
+                        <!--tipo Unidad Negocio-->
+                        <div class="col-sm-6 etiquetaDropdownList">
+                             <label>Tipo de Unidad de Negocio</label>
+                             <div class="dropdown">
+
+                                <button class="dropdown-toggle  {{clase.tipoUnidad}}" data-toggle="dropdown">
+                                    <span>{{nuevaPlaza.NombreTipoUnidadNegocio}}</span>
+                                    <span class="caret"></span>
+                                </button>
+
+                                <ul class="dropdown-menu elemetosDropdownListModal">
+                                    <li ng-repeat="tipo in unidadNegocio | orderBy:'NombreTipoUnidadNegocio' | unique:'NombreTipoUnidadNegocio'">
+                                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarTipoUnidadNegocio(tipo.NombreTipoUnidadNegocio)">
+                                            <span>{{tipo.NombreTipoUnidadNegocio}}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <br class="hidden-sm hidden-md hidden-lg">
+                        <!--Unidad Negocio-->
+                        <div class="col-sm-6 etiquetaDropdownList">
+                             <label>Unidad de Negocio</label>
+                             <div class="dropdown">
+
+                                <button ng-disabled="nuevaPlaza.NombreTipoUnidadNegocio.length == 0"  class="dropdown-toggle  {{clase.unidad}}" data-toggle="dropdown">
+                                    <span>{{nuevaPlaza.NombreUnidadNegocio}}</span>
+                                    <span class="caret"></span>
+                                </button>
+
+                                <ul class="dropdown-menu elemetosDropdownListModal">
+                                     <li ng-repeat="unidad in unidadNegocio | orderBy:'Nombre' | filter:{NombreTipoUnidadNegocio:nuevaPlaza.NombreTipoUnidadNegocio}:true">
+                                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarUnidadNegocio(unidad.Nombre)">
+                                            <span>{{unidad.Nombre}}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                    <br>
+                    <!-------- mensaje de error ---->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div ng-repeat="error in mensajeError track by $index">
+                                <span class="textoError">{{error}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!---- botones de operacion --->
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <button class="btn botonCancelar btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarPlaza()">CANCELAR</button>
+                        </div>
+                        
+                        <div class="col-xs-6">
+                            <button focus class="btn botonAvanzar btn-block" ng-click="TerminarPlaza()">TERMINAR</button>
+                        </div>
+                    </div>
+                    <br> 
+                </form>
+            </div>
+            <br><br><br>
+        </div>
+    </div>
+    
+    <!-- Desactivar Modal -->
+    <div class="modal fade" id="modalActivoPlaza" data-keyboard="false" data-backdrop="static">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                
+                <div class="modal-body">
+                    <br>
+                    <div class="panel panel-default modalMensaje">
+                        <br>
+                        <b>{{mensajeAdvertencia}}</b>
+                        <br><br>
+
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <button class="btn botonCancelar" data-dismiss="modal" aria-label="Close" ng-click="CancelarCambioActivo()">No</button>
+                            </div>
+                            <div class="col-xs-6">
+                                <button class="btn botonAvanzar" data-dismiss="modal" aria-label="Close" ng-click="ConfirmarActualizarPlaza()">Si</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div> 
+    
+    
+    <!-- Modal para mensajes -->
+    <div class="modal fade" id="mensajePlaza">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                
+                <div class="modal-body">
+                    <div class="panel panel-default modalMensaje">
+                        <br>
+                        <b>{{mensaje}}</b>
+
+                        <br><br>
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <button class="btn  botonAvanzar" data-dismiss="modal" aria-label="Close">Aceptar</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div> 
+
+</div>
+
+     

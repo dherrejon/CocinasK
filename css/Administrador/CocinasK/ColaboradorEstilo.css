@@ -1,0 +1,51 @@
+.nuevoContacto
+{
+    background: rgba(232,153,21, 1);
+    
+}
+
+.nuevoContacto:hover
+{
+    background: rgb(232,153,21) !important;
+}
+
+.checkBoxActivoError
+{
+    color: #262626;
+    border: 2px solid rgb(250, 97, 21);
+    width: 100%;
+    display: block;
+    background: white;
+}
+
+.botonRelleno, .botonRelleno:active, .botonRelleno:focus
+{
+    background: #262626;;
+    border: 2px solid #262626;
+    color: white;
+}
+
+.botonRelleno:hover
+{
+    color: white !important;
+    opacity: 0.8;
+}
+
+.botonAgregarUsuario
+{
+    color: #262626;
+    border: solid 2px rgb(250, 97, 21);
+    background: white;
+}
+
+.botonAgregarUsuario:hover
+{
+    color: white;
+    border: solid 2px rgb(250, 97, 21);
+    background: rgb(250, 97, 21);
+}
+
+.botonAgregarUsuario:disabled
+{
+    opacity: 0.7;
+}

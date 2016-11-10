@@ -1,0 +1,561 @@
+<div ng-controller="UsuarioPerfilControlador as usuario" class="container" >
+
+    <br><br>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="tituloModulo">
+                <span>Perfil - {{usuarioPerfil.Nombre}} {{usuarioPerfil.PrimerApellido}} {{usuarioPerfil.SegundoApellido}}</span>
+            </div>
+        </div>
+    </div>
+    <br>
+    
+    <div class="row">
+        <div class="col-md-12" ng-if="permisoUsuario.consultar">
+            <div class="tab" role="tabpanel">
+                <!-- Pestañas -->
+                
+                <ul ng-if="anchoPantalla > 430" class="nav nav-tabs" role="tablist">
+                    <li   ng-repeat="tab in tabs" class="{{tab.clase}}"><a  href="" aria-controls="{{tab.area}}" role="tab" data-toggle="tab" ng-click="SeleccionarTab(tab, $index)"  ng-disabled="!tab.enable">{{tab.titulo}}</a></li>
+                </ul>
+                
+                <ul ng-if="anchoPantalla < 431" class="nav nav">
+                    <li  class="tabSm dropdown">
+
+                        <button  class="dropdown-toggle  btn bt-block dropDownTab" data-toggle="dropdown" >
+                            <span>{{titulo}}</span>
+                            <span class="caret"></span>
+                        </button>
+                        
+                        <ul class="dropdown-menu elemetosDropdownListModal">
+                            <li ng-repeat="tab in tabs"  class="dropdownOpcionModal">
+                                <a  href="" class="dropdownOpcionModal" aria-controls="{{tab.area}}" ng-click="SeleccionarTab(tab, $index)" ng-disabled="!tab.enable">
+                                    <span>{{tab.titulo}}</span>
+                                </a>
+                            </li>
+                        </ul>
+                        
+                    </li>
+                </ul>
+                
+                <!-- Contenido -->
+                <div class="tab-content">
+                    <!-- Datos -->
+                    <div role="tabpanel" class="tab-pane in active" id="Datos">
+                      
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="pull-right">
+                                    <!--  Editar -->
+                                    <button ng-disabled="!permisoUsuario.editar" class="btn botonOperacion"  data-toggle="tooltip" data-placement="bottom" title="Editar Usuario"  ng-click="AbrirEditarUsuario()">
+                                        <span class="fa fa-pencil fa-2x"></span>
+                                    </button>
+                                    <!--  Permisos -->
+                                    <button ng-disabled="!permisoUsuario.verPermisos" class="btn botonOperacion"  data-toggle="tooltip" data-placement="bottom" title="Ver Permisos del Usuario"  ng-click="VerPermisos()">
+                                        <span class="fa fa-unlock fa-2x"></span>
+                                    </button>
+                                     <!-- Contraseña -->
+                                    <button ng-disabled="!permisoUsuario.restaurarPassword" class="btn botonOperacion"  data-toggle="tooltip" data-placement="bottom" title="Reestablecer contraseña"  ng-click="ConfirmarCambiarPassword()">
+                                        <span class="fa fa-asterisk fa-2x"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h4>Datos del usuario</h4><br>
+                        <!-- Nombre-->
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="subrayado">
+                                <label>Nombre de Usuario</label><br>
+                                <span class="textoModal">{{usuarioPerfil.NombreUsuario}}</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                            <div style="margin-top: 25px">
+                                <label ng-disabled="!permisoUsuario.activar" class="btn checkBoxActivo">Usuario Activo<input ng-disabled="!permisoUsuario.activar" type="checkbox" class="badgebox" ng-model="usuarioPerfil.ActivoUsuario" ng-click="ConfirmarActualizarActivoUsuario()"><span class="badge">&check;</span></label>
+                            </div>
+                        </div>
+                            
+                        </div>
+                        <br>
+                        <!-- tipo y unidad de negocio -->
+                        <div class="row">
+                            <!--tipo Unidad de negocio-->
+                            <div class="col-sm-6">
+                                <div class="subrayado">
+                                <label>Tipo Unidad de Negocio</label><br>
+                                <span class="textoModal">{{usuarioPerfil.NombreTipoUnidadNegocio}}</span>
+                                </div>
+                            </div>
+                            <br class="hidden-sm hidden-md hidden-lg">
+                            <!-- Unidad de negocio -->
+                            <div class="col-sm-6">
+                                <div class="subrayado">
+                                <label>Unidad de Negocio</label><br>
+                                <span class="textoModal">{{usuarioPerfil.NombreUnidadNegocio}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row"> 
+                            <!-- Perfiles Activos -->
+                            <div class="col-xs-12">
+                                <label>Pefiles del usuario</label>
+                            </div>
+
+                            <div class="col-sm-4 col-xs-6" ng-repeat="perfil in perfilUsuario">
+                                 <button ng-disabled="true" class="btn checkBoxActivo margenPerfiles">{{perfil.Nombre}}<input type="checkbox" class="badgebox" ng-model="perfil.Activo"><span class="badge">&check;</span></button>
+                             </div>
+                        </div>
+                        <br>
+                        <div class="row" ng-if="usuarioContacto.length > 0">
+                            <div class="col-xs-12">
+                                <h4>Medios de Contacto</h4>
+                                <br>
+                                <div class="table-responsive TablaModal">
+                                    <table class="table table-hover">
+                                        <thead class="TituloTabla">
+                                          <tr>
+                                            <th><button class="btn botonOrdenar"><b>Medio de Contacto </b></button></th>
+                                            <th><button class="btn botonOrdenar"><b>Tipo de Medio </b></button></th>
+                                            <th><button class="btn botonOrdenar"><b>Contacto </b></button></th>
+                                          </tr>
+                                        </thead>
+                                        <tbody ng-repeat="contacto in usuarioContacto | orderBy:['-NombreMedioContacto','NombreTipoMedioContacto']">
+                                          <tr>
+                                            <td>{{contacto.NombreMedioContacto}}</td>
+                                            <td>{{contacto.NombreTipoMedioContacto}}</td>
+                                            <td ng-if="contacto.NombreMedioContacto == 'Teléfono'">{{contacto.Contacto | tel}}</td>
+                                            <td ng-if="contacto.NombreMedioContacto != 'Teléfono'">{{contacto.Contacto}}</td>
+                                          </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <h4>Dirección</h4>
+                        <br>
+                        <!-- Domicilio y colonia  -->
+                        <div class="row">
+                            <!--Domicilio-->
+                            <div class="col-sm-6">
+                                <div class="subrayado">
+                                <label>Domicilio</label><br>
+                                <span class="textoModal">{{usuarioPerfil.Domicilio}}</span>
+                                </div>
+                            </div>
+                            <br class="hidden-sm hidden-md hidden-lg">
+                            <!-- Colonia -->
+                            <div class="col-sm-6">
+                                <div class="subrayado">
+                                <label>Colonia</label><br>
+                                <span class="textoModal">{{usuarioPerfil.Colonia}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <!-- Domicilio y colonia  -->
+                        <div class="row">
+                            <!--Estado-->
+                            <div class="col-sm-6">
+                                <div class="subrayado">
+                                <label>Estado</label><br>
+                                <span class="textoModal">{{usuarioPerfil.Estado}}</span>
+                                </div>
+                            </div>
+                            <br class="hidden-sm hidden-md hidden-lg">
+                            <!-- Código Postal-->
+                            <div class="col-sm-6">
+                                <div class="subrayado">
+                                <label>Código Postal</label><br>
+                                <span class="textoModal">{{usuarioPerfil.Codigo}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <!-- Municipio y ciudad  -->
+                        <div class="row">
+                            <!--Municipio-->
+                            <div class="col-sm-6">
+                                <div class="subrayado">
+                                <label>Municipio</label><br>
+                                <span class="textoModal">{{usuarioPerfil.Municipio}}</span>
+                                </div>
+                            </div>
+                            <br class="hidden-sm hidden-md hidden-lg">
+                            <!-- Ciudad-->
+                            <div class="col-sm-6">
+                                <div class="subrayado">
+                                <label>Ciudad</label><br>
+                                <span class="textoModal">{{usuarioPerfil.Ciudad}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                    
+                    
+                    <!--- Citas -->
+                    <div role="tabpanel" class="tab-pane" id="Citas">
+                        <br>
+                        <div class="row">
+                            <div class="col-md-11 col-xs-10">
+                               citas
+                            </div>
+
+                        </div>
+                    </div>
+                    
+                    <!--- Bitacora -->
+                    <div role="tabpanel" class="tab-pane" id="Bitacora">
+                        <br>
+                        <div class="row">
+                            <div class="col-md-11 col-xs-10">
+                               Bitacora
+                            </div>
+
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <br><br>
+    
+    <!----------- Modales ----------->
+    <!-- Desactivar Modal -->
+    <div class="modal fade" id="modalActivoUsuario" data-keyboard="false" data-backdrop="static">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                
+                <div class="modal-body">
+                    <br>
+                    <div class="panel panel-default modalMensaje">
+                        <br>
+                        <b>{{mensajeAdvertencia}}</b>
+                        <br><br>
+
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <button class="btn botonCancelar" data-dismiss="modal" aria-label="Close" ng-click="CancelarCambioActivo()">No</button>
+                            </div>
+                            <div class="col-xs-6">
+                                <button class="btn botonAvanzar" data-dismiss="modal" aria-label="Close" ng-click="ConfirmarActualizarUsuario()">Si</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div> 
+    
+    <!---- Ediat Usuario -->
+    <div class="modal fade" id="usuarioPerfilModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static" >
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <!-- encabezado del modal -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarUsuario()"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center">Editar Usuario</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+                <br>
+
+                <form class="modal-body" name="usuarioForma">
+                    <div ng-show="usuarioTab == 'datosUsuario'">
+                    <!-- Datos -->
+                        <!-- colaborador -->
+                        <div class="row">
+                            <div class="col-xs-12 etiquetaDropdownList">
+                                <label>Colaborador</label>
+                                <span  disabled type="text" required class="entrada form-control">{{nuevoUsuario.Nombre}} {{nuevoUsuario.PrimerApellido}} {{nuevoUsuario.SegundoApellido}}</span>
+                            </div>
+                        </div> 
+                        <br>
+                        <!-- usuario y activo -->
+                        <div class="row">
+                             <!-- usuario -->
+                            <div class="col-sm-6">
+                                 <div class="entrada2">
+                                    <input ng-pattern="erNombreUsuario" type="text" required class="{{claseUsuario.usuario}} form-control" name="usuario" ng-model="nuevoUsuario.NombreUsuario"/>
+                                    <label>Nombre de Usuario</label>
+                                </div>
+                            </div>
+                        </div> 
+                        <br>
+                       <div class="row"> 
+                            <!-- Perfiles Activos -->
+                            <div class="col-xs-12">
+                                <label>Pefiles del usuario</label>
+                            </div>
+
+                            <div class="col-sm-4 col-xs-6" ng-repeat="perfil in perfilNuevoUsuario">
+                                 <label class="btn {{claseUsuario.perfil}} margenPerfiles">{{perfil.Nombre}}<input type="checkbox" class="badgebox" ng-model="perfil.Activo"><span class="badge">&check;</span></label>
+                                
+                             </div>
+                        </div>
+                        <br>
+                        <!-------- mensaje de error ---->
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div ng-repeat="error in mensajeError track by $index">
+                                    <span class="textoError">{{error}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <!---- botones de operacion --->
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <button class="btn botonCancelar btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarUsuario()">CANCELAR</button>
+                            </div>
+
+                            <div class="col-xs-6">
+                                <button focus class="btn botonAvanzar btn-block" ng-click="TerminarUsuario(usuarioForma.usuario.$invalid)">Siguiente &gt;&gt;</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                    <div ng-show="usuarioTab == 'permisosUsuario'">
+                        <!-- colaborador -->
+                        <div class="row">
+                            <div class="col-xs-12 etiquetaDropdownList">
+                                <label>Colaborador</label>
+                                <span  disabled type="text" required class="entrada form-control">{{nuevoUsuario.Nombre}} {{nuevoUsuario.PrimerApellido}} {{nuevoUsuario.SegundoApellido}}</span>
+                            </div>
+                        </div> 
+                        
+                        <h4>Permisos</h4>
+                        
+                        <div class="row">
+                            <!-- Nombre del responsable -->
+                            <div class="col-sm-6 col-sm-offset-6 ">                               
+                                <button class="btn botonRelleno btn-block" type="button" ng-click="MostrarCopiarPermisos()">{{mostarCopiarPermisos.texto}}</button>
+                            </div>
+                        </div>
+                        <br>
+                            
+                        <div class="row">
+                            <div class="col-sm-offset-6 col-sm-6" ng-show="mostarCopiarPermisos.mostrar">
+                                <input type="text" class="buscar input-md form-control" placeholder="Buscar" ng-model="buscarUsuario"/>
+                                <br>
+                                <div class="panel panel-default  tablaResponsable" >
+                                    <table class="table table-hover table-responsive">
+                                      <tbody  style="cursor: pointer">
+                                        <tr ng-repeat="usuario in colaborador | filter:buscarUsuario |  orderBy:['Nombre', 'PrimerApellido','SegundoApellido']" ng-if="usuario.UsuarioId !== null">
+                                          <td ng-click="SetPermisos(usuario)">{{usuario.PrimerApellido}} {{usuario.SegundoApellido}} {{usuario.Nombre}}</td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                            
+                        <div ng-repeat="perfil in perfilNuevoUsuario" ng-if="perfil.Activo">
+                                
+                            <div class="row">
+                                <div class="col-xs-8 col-sm-5 col-md-4">   
+                                    <button class="btn btn-block botonOperacion" type="button" ng-click="MostrarOcultarPermisos(perfil)"><b>{{perfil.Nombre}} {{perfil.texto}}</b></button>
+                                </div>
+                                
+                                <div class="col-xs-4 col-sm-7 col-md-8" ng-show="perfil.mostrar">   
+                                    <div class="btn-group  pull-right">
+                                      <button style="font-size:18px;" class="btn  botonOperacion fa fa-check" data-toggle="tooltip" data-placement="bottom" title="ActivarTodos" ng-click="ActivarPermisos(perfil.Nombre)"></button>
+                                      <button style="font-size:18px;" class="btn  botonCancelar fa fa-times" data-toggle="tooltip" data-placement="bottom" title="Desactivar Todos" ng-click="DesactivarPermisos(perfil.Nombre)"></button>
+                                    </div> 
+                                </div>
+                            </div>
+                            <br>
+                            
+                            <div class="row" ng-show="perfil.mostrar">
+                                <div class="col-xs-12" >
+                                    <div class="table-responsive TablaModal">
+                                        <table class="table table-hover">
+                                            <thead class="TituloTabla">
+                                              <tr>
+                                                <th><button class="btn botonOrdenar"><b>Módulo </b></button></th>
+                                                <th><button class="btn botonOrdenar"><b>Sección </b></button></th>
+                                                <th><button class="btn botonOrdenar"><b>Operación </b></button></th>
+                                                <th><button class="btn botonOrdenar"><b>Activar </b></button></th>
+                                              </tr>
+                                            </thead>
+                                            <tbody >
+                                              <tr ng-repeat="permiso in permiso | orderBy:['NombreModulo', 'Seccion','Operacion'] | filter:{NombrePerfil:perfil.Nombre}">
+                                                <td>{{permiso.NombreModulo}}</td>
+                                                <td>{{permiso.Seccion}}</td>
+                                                <td>{{permiso.Operacion}}</td>
+                                                
+                                                <td>
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            <input ng-model="permiso.Activo" type="checkbox" value="">
+                                                            <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+                                                        </label>
+                                                    </div>
+                                                </td>
+                                              </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> 
+                        <br>
+                        <!-------- mensaje de error ---->
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div ng-repeat="error in mensajeError track by $index">
+                                    <span class="textoError">{{error}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        
+                        <!---- botones de operacion --->
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <button class="btn botonCancelar btn-block"  ng-click="AnteriorPermisos()">&lt;&lt; Anterior</button>
+                            </div>
+
+                            <div class="col-xs-6">
+                                <button focus class="btn botonAvanzar btn-block" ng-click="TerminarPermisosUsuario()">Terminar</button>
+                            </div>
+                        </div>
+                        <br>
+                        
+                    </div>
+                </form>
+            </div>
+            <br><br><br>
+        </div>
+    </div>
+    
+    
+    <!-- Modal para mensajes -->
+    <div class="modal fade" id="mensajeUsuario">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                
+                <div class="modal-body">
+                    <div class="panel panel-default modalMensaje">
+                        <br>
+                        <b>{{mensaje}}</b>
+
+                        <br><br>
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <button class="btn  botonAvanzar" data-dismiss="modal" aria-label="Close">Aceptar</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div> 
+    
+    <!-- Desactivar Modal -->
+    <div class="modal fade" id="confirmarCambiarPassword" data-keyboard="false" data-backdrop="static">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                
+                <div class="modal-body">
+                    <br>
+                    <div class="panel panel-default modalMensaje">
+                        <br>
+                        <b>La contraseña del usuario se camnbiará por una nueva. ¿Estas seguro de continua?</b>
+                        <br><br>
+
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <button class="btn botonCancelar" data-dismiss="modal" aria-label="Close">No</button>
+                            </div>
+                            <div class="col-xs-6">
+                                <button class="btn botonAvanzar" data-dismiss="modal" aria-label="Close" ng-click="CambiarPassword()">Si</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    
+    <!---- Permiso de Modal -->
+    <div class="modal fade" id="PermisoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" >
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <!-- encabezado del modal -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarUsuario()"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center">Permisos del usuario</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+                <br>
+
+                <form class="modal-body" name="usuarioForma">
+
+                    <div ng-repeat="perfil in perfilUsuario" ng-if="perfil.Activo">
+
+                        <div class="row">
+                            <div class="col-xs-8 col-sm-5 col-md-4">   
+                                <h4>{{perfil.Nombre}}</h4>
+                            </div>
+                        </div>
+                        <br>
+
+                        <div class="row">
+                            <div class="col-xs-12" >
+                                <div class="table-responsive TablaModal">
+                                    <table class="table table-hover">
+                                        <thead class="TituloTabla">
+                                          <tr>
+                                            <th><button class="btn botonOrdenar"><b>Módulo </b></button></th>
+                                            <th><button class="btn botonOrdenar"><b>Sección </b></button></th>
+                                            <th><button class="btn botonOrdenar"><b>Operación </b></button></th>
+                                          </tr>
+                                        </thead>
+                                        <tbody >
+                                          <tr ng-repeat="permiso in permiso | orderBy:['NombreModulo', 'Seccion','Operacion'] | filter:{NombrePerfil:perfil.Nombre}" ng-if="permiso.Activo">
+                                            <td>{{permiso.NombreModulo}}</td>
+                                            <td>{{permiso.Seccion}}</td>
+                                            <td>{{permiso.Operacion}}</td>
+                                          </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+                    <br>                        
+                </form>
+            </div>
+            <br><br><br>
+        </div>
+    </div>
+
+
+</div>
+
+     

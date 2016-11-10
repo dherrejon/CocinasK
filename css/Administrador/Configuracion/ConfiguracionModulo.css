@@ -1,0 +1,129 @@
+.VistaTexto
+{
+    border: 2px solid #262626; 
+    padding:10px;
+    min-height: 42px;
+}
+
+.botonBorrarFormula
+{
+    border: 2px solid rgb(250, 97, 21);
+    color: rgb(250, 97, 21);
+    background: white;
+}
+
+.botonBorrarFormula:hover
+{
+    border: 2px solid rgb(250, 97, 21);
+    color: white;
+    background: rgb(250, 97, 21);
+}
+
+.tablaDropdowlist
+{
+    border: 1px solid #262626;
+    max-height: 120px;
+    overflow: scroll;
+}
+
+.panelOculto
+{
+    border: 2px solid #262626;
+    padding: 10px;
+    border-radius: 3px;
+    margin-top: 5px;
+}
+
+.cantidadPieza
+{
+    width: 50px;
+    height: 28px;
+    border-width: 2px 0px 2px 0px; 
+    border-style: solid;
+    border-color: #262626;
+    text-align: right;
+    padding-right: 5px;
+    outline: none !important;
+    box-shadow: none;
+}
+
+.cantidadPieza:disabled
+{
+    background: white;
+    color: #262626;
+}
+
+.cantidad
+{
+    display: inline-table;
+    vertical-align: middle;
+}
+
+.cantidadMenos
+{
+    background: white;
+    border-radius: 3px 0px 0px 3px;
+    border: 2px solid #262626;
+    color: #262626;
+    margin-top: -2px !important;
+}
+
+.cantidadMas
+{
+    background: white;
+    border-radius: 0px 3px 3px 0px;
+    border: 2px solid #262626;
+    color: #262626;
+    margin-top: -2px !important;
+}
+
+.cantidadMas:hover, .cantidadMenos:hover
+{
+    background: #262626;
+    color: white;
+}
+
+
+
+.botonPieza:hover
+{
+    background:  rgb(234, 234, 234);
+}
+
+.botonPieza 
+{
+    position: relative;
+    background: white;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.botonPieza:after 
+{
+    content: "";
+    background: #262626;
+    display: block;
+    position: absolute;
+    padding-top: 300%;
+    padding-left: 350%;
+    margin-left: -20px!important;
+    margin-top: -120%;
+    opacity: 0;
+    transition: all 0.8s
+}
+
+.botonPieza:active:after 
+{
+    padding: 0;
+    margin: 0;
+    opacity: 1;
+    transition: 0s
+}
+
+.piezaPorComponenteTabla
+{
+    max-height: 290px;
+    overflow: scroll;
+}

@@ -1,0 +1,59 @@
+.perfilTexto
+{
+    color: #262626;
+    font-size: 20pt;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+/*Boton del perfil de usuario*/
+
+.PerfilBoton
+{
+    letter-spacing: 0;
+    background: transparent;
+    font-size: 16pt;
+    border-top: 2px solid #262626;
+    border-bottom: 2px solid #262626;
+    border-radius: 0px;
+    color: #262626;
+}
+.PerfilBoton:hover
+{
+    text-transform: uppercase;
+    color: rgb(198,58,19);
+}
+
+.PerfilBoton:focus, .PerfilBoton:active
+{
+    outline: none !important;
+    box-shadow: none;
+}
+
+.PerfilBoton:before
+{
+    content: "";
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: scale( 0, 1);
+    transition: all 0.3s ease 0s;
+    border-top: 2px solid rgb(198,58,19);
+    border-bottom: 2px solid rgb(198,58,19);
+}
+
+.PerfilBoton:hover:before
+{
+    transform: scale(1);
+}
+
+@media only screen and (max-width: 767px) 
+{
+    .PerfilBoton
+    {  
+        margin-bottom: 15px; 
+    }
+}
