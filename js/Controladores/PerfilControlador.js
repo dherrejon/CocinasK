@@ -100,6 +100,11 @@ function SetPerfil(perfil, $rootScope, $window, $http, CONFIG, usuario)
         $rootScope.barraNavegacionOpciones[0].elemento[k].show = false;
     }
     
+    for(var k=0; k< $rootScope.barraNavegacionOpciones[1].elemento.length; k++)
+    {
+        $rootScope.barraNavegacionOpciones[1].elemento[k].show = false;
+    }
+    
     for(var k=0; k< $rootScope.barraNavegacionOpciones[2].elemento.length; k++)
     {
         $rootScope.barraNavegacionOpciones[2].elemento[k].show = false;
@@ -132,6 +137,14 @@ function SetPerfil(perfil, $rootScope, $window, $http, CONFIG, usuario)
             else if(usuario.Permiso[k] == "ConEmpConsultar" || usuario.Permiso[k] == "ConTUNConsultar")
             {
                 $rootScope.barraNavegacionOpciones[2].elemento[1].show = true;
+            }
+            else if(usuario.Permiso[k] == "ConMatConfigurar")
+            {
+                $rootScope.barraNavegacionOpciones[2].elemento[2].show = true;
+            }
+            else if(usuario.Permiso[k] == "AdmComConsultar")
+            {
+                $rootScope.barraNavegacionOpciones[1].elemento[0].show = true;
             }
         }
     }

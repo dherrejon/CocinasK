@@ -30,6 +30,13 @@
     background: white;
 }
 
+.botonOperacionError
+{
+    border: 2px solid rgb(250, 97, 21);
+    color: rgb(250, 97, 21);
+    background: white;
+}
+
 .botonOrdenar
 {
     background: transparent;

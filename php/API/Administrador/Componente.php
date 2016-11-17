@@ -7,7 +7,35 @@ function GetComponente()
 
     $request = \Slim\Slim::getInstance()->request();
 
-    $sql = "SELECT * FROM Componente WHERE TipoComponenteId = 1";
+    $sql = "SELECT * FROM Componente WHERE TipoComponenteId = 1 AND ComponenteId > 0";
+
+    try 
+    {
+
+        $db = getConnection();
+        $stmt = $db->query($sql);
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $db = null;
+
+        
+        echo json_encode($response);  
+    } 
+    catch(PDOException $e) 
+    {
+        echo($e);
+        $app->status(409);
+        $app->stop();
+    }
+}
+
+function GetTodosComponente()
+{
+    global $app;
+    global $session_expiration_time;
+
+    $request = \Slim\Slim::getInstance()->request();
+
+    $sql = "SELECT * FROM Componente WHERE ComponenteId >0";
 
     try 
     {
@@ -60,6 +88,35 @@ function AgregarComponente()
         $db->rollBack();
         $app->status(409);
         $app->stop();
+    }
+    
+    $countCombinaciones = count($componente->componente->CombinacionMaterial);
+    
+    if($countCombinaciones > 0)
+    {
+        $sql = "INSERT INTO CombinacionPorMaterialComponente (ComponenteId, CombinacionMaterialId, MaterialId, Grueso) VALUES";
+
+        for($k=0; $k<$countCombinaciones; $k++)
+        {
+            $sql .= " (".$componenteId.", ".$componente->componente->CombinacionMaterial[$k]->CombinacionMaterial->CombinacionMaterialId.", ".$componente->componente->CombinacionMaterial[$k]->Material->MaterialId.", '".$componente->componente->CombinacionMaterial[$k]->Grueso."'),";
+        }
+
+        $sql = rtrim($sql,",");
+
+        try 
+        {
+            $stmt = $db->prepare($sql);
+            $stmt->execute();
+        } 
+        catch(PDOException $e) 
+        {
+            echo $e;
+            $db->rollBack();
+            $app->status(409);
+            $app->stop();
+
+            //echo '[{"Estatus": "Fallido"}]';
+        }
     }
 
     $numeroPieza = count($componente->pieza);
@@ -144,6 +201,51 @@ function EditarComponente()
         $db->rollBack();
         $app->status(409);
         $app->stop();
+    }
+    
+    $sql = "DELETE FROM CombinacionPorMaterialComponente WHERE ComponenteId=".$componente->componente->ComponenteId;
+    try 
+    {
+        $stmt = $db->prepare($sql); 
+        $stmt->execute(); 
+        
+    } 
+    catch(PDOException $e) 
+    {
+        //echo '[ { "Estatus": "Fallo" } ]';
+        echo $e;
+        $db->rollBack();
+        $app->status(409);
+        $app->stop();
+    }
+    
+    $countCombinaciones = count($componente->componente->CombinacionMaterial);
+    
+    if($countCombinaciones > 0)
+    {
+        $sql = "INSERT INTO CombinacionPorMaterialComponente (ComponenteId, CombinacionMaterialId, MaterialId, Grueso) VALUES";
+
+        for($k=0; $k<$countCombinaciones; $k++)
+        {
+            $sql .= " (".$componente->componente->ComponenteId.", ".$componente->componente->CombinacionMaterial[$k]->CombinacionMaterial->CombinacionMaterialId.", ".$componente->componente->CombinacionMaterial[$k]->Material->MaterialId.", '".$componente->componente->CombinacionMaterial[$k]->Grueso."'),";
+        }
+
+        $sql = rtrim($sql,",");
+
+        try 
+        {
+            $stmt = $db->prepare($sql);
+            $stmt->execute();
+        } 
+        catch(PDOException $e) 
+        {
+            echo $e;
+            $db->rollBack();
+            $app->status(409);
+            $app->stop();
+
+            //echo '[{"Estatus": "Fallido"}]';
+        }
     }
     
 

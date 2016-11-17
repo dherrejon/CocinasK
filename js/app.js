@@ -100,6 +100,14 @@ app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpPro
     when('/ConfigurarModulo',{
         templateUrl: 'html/Administrador/Configuracion/Modulo/ConfiguracionModulo.html'
     }).
+    when('/ConfigurarMaterial',{
+        templateUrl: 'html/Administrador/Configuracion/ConfiguracionMaterial.html'
+    }).
+    
+     when('/Combinacion',{
+        templateUrl: 'html/Administrador/Catalogo/Combinacion.html'
+    }).
+    
     when('/Ejecutivo',{
         templateUrl: 'html/Ejecutivo/Ejecutivo.html'
     }).
@@ -180,6 +188,8 @@ app.run(function($rootScope, $location, $window, $http, CONFIG, $q, datosUsuario
     $rootScope.erDecimal = /^[0-9]+(\.[0-9][0-9]?)?$/;   //expresion regular para RFC de una empresa
     $rootScope.erNombrePersonal = /^(([A-Z]|Ñ|[a-z]|[ñáéíóú]|[ÁÉÍÓÚ]){2,120}\s?)+$/;   //expresion regular para los apellido y el nombre de una persona
     $rootScope.erNombreUsuario = /^([a-z]|ñ|[1-9]){4}([a-z]|ñ|[1-9])*$/;   //expresion regular para el nombre de usurio
+    $rootScope.erNumeroDecimal = /^[0-9]+(\.[0-9][0-9]?)?$/;   //expresion regular para un número decimal
+    $rootScope.erNumeroFraccion = /^((([1-9]\s)?([1-9]\/[1-9]{1,2}))|([1-9])){1}$/;   //expresion regular para un número fraccional
     
     /*---------------------------------- Mantener la barra de navegacion visible-----------------------*/
     /*$window.onscroll = function ()

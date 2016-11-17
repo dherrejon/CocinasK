@@ -336,11 +336,18 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
     
     $rootScope.clasePrincipal = "";
 
-    $scope.titulo = "Pieza";
+    $scope.titulo = "Componente";
     $scope.tabs = tabConModulo;
     $scope.tipoModulo = null;
     $scope.pieza = null;
     $scope.componente = null;
+    $scope.consumible = null;
+    
+    $scope.combinacion = null;
+    $scope.combinacionMaterialComponente = null;
+    $scope.material = null;
+    $scope.tipoMaterial = null;
+    $scope.gruesoMaterial = null;
     
     $scope.mensajeError = [];
     
@@ -350,6 +357,14 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
     $scope.botonPieza = {mostrar:true, texto:"<<"};
     $scope.buscarPieza = "";
     $scope.piezaPorComponente = [];
+    $scope.claseComponente = {nombre:"entrada", pieza:"botonOperacion"};
+    
+    $scope.componenteTab = "Datos";
+    
+    $scope.mostrarDetalles = [{
+                                pieza:{mostrar:true, texto:"<<"},
+                                combinacion:{mostrar:true, texto:"<<"}
+                              }];
     
     //Cambia el contenido de la pestaña
     $scope.SeleccionarTab = function(tab, index)    
@@ -379,18 +394,6 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
     };
     
     /*-----------------------------------Componente----------------------------------------------------------*/
-    
-    $scope.GetComponente = function()      
-    {
-        GetComponente($http, $q, CONFIG).then(function(data)
-        {
-            $scope.componente = data;
-        }).catch(function(error)
-        {
-            alert(error);
-        });
-    };
-    
     $scope.AbrirComponenteForma = function(operacion, objeto)
     {
         $scope.operacion = operacion;
@@ -399,21 +402,196 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
         {
             $scope.botonPieza.mostrar = true;
             $scope.botonPieza.texto = "<<";
-            $scope.nuevoComponente = new Componente();   
+            $scope.nuevoComponente = new Componente(); 
+            
+            $scope.nuevoComponente.CombinacionMaterial = [];
+            
+            for(var k=0; k<$scope.combinacion.length; k++)
+            {
+                $scope.nuevoComponente.CombinacionMaterial[k] = new CombinacionPorMaterialComponente();
+                $scope.nuevoComponente.CombinacionMaterial[k].CombinacionMaterial = SetCombinacionMaterial($scope.combinacion[k]);
+                
+                $scope.nuevoComponente.CombinacionMaterial[k].claseTipoMaterial = "dropdownListModal";
+                $scope.nuevoComponente.CombinacionMaterial[k].claseMaterial = "dropdownListModal";
+                $scope.nuevoComponente.CombinacionMaterial[k].claseGrueso = "dropdownListModal";
+            }
         }
         else if(operacion == "Editar")
         {
             $scope.botonPieza.mostrar = false;
             $scope.botonPieza.texto = ">>";
-            $scope.nuevoComponente = SetComponente(objeto);
             $scope.GetPiezaPorComponente(objeto.ComponenteId);
+            
+            $scope.nuevoComponente = SetComponente(objeto)
+            $scope.nuevoComponente.CombinacionMaterial = [];
+            
+            for(var k=0; k<objeto.CombinacionMaterial.length; k++)
+            {
+                $scope.nuevoComponente.CombinacionMaterial[k] = new CombinacionPorMaterialComponente();
+                
+                $scope.nuevoComponente.CombinacionMaterial[k].Grueso = objeto.CombinacionMaterial[k].Grueso;
+                
+                $scope.nuevoComponente.CombinacionMaterial[k].CombinacionMaterial.CombinacionMaterialId = objeto.CombinacionMaterial[k].CombinacionMaterial.CombinacionMaterialId;
+                $scope.nuevoComponente.CombinacionMaterial[k].CombinacionMaterial.Nombre = objeto.CombinacionMaterial[k].CombinacionMaterial.Nombre;
+                $scope.nuevoComponente.CombinacionMaterial[k].CombinacionMaterial.Activo = objeto.CombinacionMaterial[k].CombinacionMaterial.Activo;
+                
+                $scope.nuevoComponente.CombinacionMaterial[k].Material = SetMaterial(objeto.CombinacionMaterial[k].Material);
+                $scope.nuevoComponente.CombinacionMaterial[k].Material.TipoMaterial = SetTipoMaterial(objeto.CombinacionMaterial[k].Material.TipoMaterial);
+            
+                for(var i=0; i<$scope.material.length; i++)
+                {
+                    if($scope.material[i].MaterialId == $scope.nuevoComponente.CombinacionMaterial[k].Material.MaterialId)
+                    {
+                        $scope.nuevoComponente.CombinacionMaterial[k].Material.Grueso = $scope.material[i].grueso;
+                    }
+                }
+                
+                $scope.nuevoComponente.CombinacionMaterial[k].claseTipoMaterial = "dropdownListModal";
+                $scope.nuevoComponente.CombinacionMaterial[k].claseMaterial = "dropdownListModal";
+                $scope.nuevoComponente.CombinacionMaterial[k].claseGrueso = "dropdownListModal";
+            }
         }
         
         $('#componenteForma').modal('toggle');
     };
     
+    $scope.CambiarTipoMaterial = function(tipoMaterial, componente)
+    {
+        if(tipoMaterial == "No Aplica")
+        {
+            componente.Material.TipoMaterial.Nombre = "No Aplica";
+            componente.Material.TipoMaterial.TipoMaterialId = 0;
+            componente.Grueso = "No Aplica";
+            componente.Material.MaterialId = 0;
+            componente.Material.Nombre = "No Aplica";
+        }
+        else if(tipoMaterial.Nombre != componente.Material.TipoMaterial.Nombre)
+        {
+            componente.Material = new Material();
+            componente.Material.Grueso = [];
+            
+            componente.Material.TipoMaterial.Nombre = tipoMaterial.Nombre;
+            componente.Material.TipoMaterial.TipoMaterialId = tipoMaterial.TipoMaterialId;
+            
+            componente.Grueso = ""; 
+        }
+        
+    };
+    
+    $scope.CambiarMaterial = function(material, componente)
+    {
+        componente.Material.Nombre = material.Nombre;
+        componente.Material.MaterialId = material.MaterialId;
+        componente.Material.Grueso = material.grueso;
+        
+        if(material.grueso.length == 0)
+        {
+            componente.Grueso = 1;
+        }
+    };
+    
+    $scope.CambiarGrueso = function(grueso, componente)
+    {
+        componente.Grueso = grueso;
+    };
+    
+    $scope.SiguienteComponente = function(nombreInvalido)
+    {
+        $scope.mensajeError = [];
+        
+        if(nombreInvalido)
+        {
+            $scope.claseComponente.nombre = "entradaError";
+            $scope.mensajeError[$scope.mensajeError.length] = "*El nombre solo puede tener los siguientes caracteres: letras, números, '.', '+', '-' y '#'.";
+        }
+        else
+        {
+            $scope.claseComponente.nombre = "entrada";
+        }
+        
+        if($scope.piezaPorComponente.length === 0)
+        {
+            $scope.claseComponente.pieza = "botonOperacionError";
+            $scope.mensajeError[$scope.mensajeError.length] = "*El componente debe de tener almenos una pieza.";
+        }
+        else
+        {
+            $scope.claseComponente.pieza = "botonOperacion";
+        }
+        
+        if($scope.mensajeError.length > 0)
+        {
+            return;
+        }
+        
+        for(var k=0; k<$scope.componente.length; k++)
+        {
+            if($scope.componente[k].Nombre == $scope.nuevoComponente.Nombre && $scope.componente[k].ComponenteId != $scope.nuevoComponente.ComponenteId)
+            {
+                $scope.claseComponente.nombre = "entradaError";
+                $scope.mensajeError[$scope.mensajeError.length] = "*El componente " + $scope.nuevoComponente.Nombre + " ya existe.";
+                return;        
+            }
+        }
+        
+        $scope.componenteTab = "Combinacion";
+    };
+    
+    $scope.AnteriorComponente = function()
+    {
+        $scope.componenteTab = "Datos";
+        $scope.mensajeError = [];
+    };
+    
     $scope.TerminarComponente = function()
     {
+        $scope.mensajeError = [];
+        var datosIncompletos = false;
+        
+        for(var k=0; k<$scope.nuevoComponente.CombinacionMaterial.length; k++)
+        {
+            if(!$scope.nuevoComponente.CombinacionMaterial[k].CombinacionMaterial.Activo)
+            {
+                $scope.CambiarTipoMaterial('No Aplica', $scope.nuevoComponente.CombinacionMaterial[k]);
+            }
+            else
+            {
+                if($scope.nuevoComponente.CombinacionMaterial[k].Material.TipoMaterial.Nombre.length === 0)
+                {
+                    datosIncompletos = true;
+                    $scope.nuevoComponente.CombinacionMaterial[k].claseTipoMaterial = "dropdownListModalError";
+                }
+                else
+                {
+                  $scope.nuevoComponente.CombinacionMaterial[k].claseTipoMaterial = "dropdownListModal";  
+                }
+                if($scope.nuevoComponente.CombinacionMaterial[k].Material.Nombre.length === 0)
+                {
+                    datosIncompletos = true;
+                    $scope.nuevoComponente.CombinacionMaterial[k].claseMaterial = "dropdownListModalError";
+                }
+                else
+                {
+                  $scope.nuevoComponente.CombinacionMaterial[k].claseMaterial = "dropdownListModal";  
+                }
+                if($scope.nuevoComponente.CombinacionMaterial[k].Grueso.length === 0)
+                {
+                    $scope.nuevoComponente.CombinacionMaterial[k].claseGrueso = "dropdownListModalError";
+                    datosIncompletos = true;
+                }
+                else
+                {
+                  $scope.nuevoComponente.CombinacionMaterial[k].claseGrueso = "dropdownListModal";  
+                }
+            }
+        }
+        
+        if(datosIncompletos)
+        {
+            $scope.mensajeError[$scope.mensajeError.length] = "*Completa todos los datos"; 
+            return;
+        }
+        
         var datos = {componente:"", pieza:""};
         datos.componente = $scope.nuevoComponente;
         datos.pieza = $scope.piezaPorComponente;
@@ -439,13 +617,15 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
     
     $scope.AgregarComponente = function(datos)
     {   
-        console.log("entra");
         AgregarComponente($http, CONFIG, $q, datos).then(function(data)
         {
             if(data == "Exitoso")
             {
                 $scope.GetComponente();
+                $scope.GetCombinacionPorMaterialComponente();
+                
                 $scope.CerrarComponenteForma();
+                
                 $('#componenteForma').modal('toggle');
                 $scope.mensaje = "El componente se ha agregado.";
             }
@@ -468,6 +648,8 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
             if(data == "Exitoso")
             {
                 $scope.GetComponente();
+                $scope.GetCombinacionPorMaterialComponente();
+                
                 $scope.CerrarComponenteForma();
                 $('#componenteForma').modal('toggle');
                 $scope.mensaje = "El componente se ha editado.";
@@ -553,7 +735,10 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
     
     $scope.CerrarComponenteForma = function()
     {
+        $scope.claseComponente = {nombre:"entrada", pieza:"botonOperacion"};
+        $scope.mensajeError = [];
         $scope.piezaPorComponente = [];
+        $scope.componenteTab = "Datos";
     };
     
     $scope.GetPiezaPorComponente = function(componenteId)
@@ -567,6 +752,42 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
             alert("Ha ocurrido un error al obtener los permisos." + error);
             return;
         });
+    };
+    
+    /*--detalles--*/
+    $scope.AbrirDetallesComponenteForma = function(componente)
+    {
+        $scope.GetPiezaPorComponente(componente.ComponenteId);
+        $scope.componenteDetalles = componente;
+        $('#DetallesComponente').modal('toggle');
+    };
+    
+    $scope.MostrarPanelDetalles = function(detalle)
+    {
+        if(detalle == "pieza")
+        {
+            $scope.mostrarDetalles[0].pieza.mostrar = !$scope.mostrarDetalles[0].pieza.mostrar;
+            if($scope.mostrarDetalles[0].pieza.mostrar)
+            {
+                $scope.mostrarDetalles[0].pieza.texto = "<<";
+            }
+            else
+            {
+                $scope.mostrarDetalles[0].pieza.texto = ">>";
+            }
+        }
+        else if(detalle == "combinacion")
+        {
+            $scope.mostrarDetalles[0].combinacion.mostrar = !$scope.mostrarDetalles[0].combinacion.mostrar;
+            if($scope.mostrarDetalles[0].combinacion.mostrar)
+            {
+                $scope.mostrarDetalles[0].combinacion.texto = "<<";
+            }
+            else
+            {
+                $scope.mostrarDetalles[0].combinacion.texto = ">>";
+            }
+        }
     };
     
     /*-----------------------------------Pieza----------------------------------------------------------*/
@@ -725,6 +946,19 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
         });
     };
     
+    /*----------------------------Consumible --------------------*/
+    //Obtiene los consumibles
+    $scope.GetConsumible = function()      
+    {
+        GetConsumible($http, $q, CONFIG).then(function(data)
+        {
+            $scope.consumible = data;
+        }).catch(function(error)
+        {
+            alert(error);
+        });
+    };
+    
     /*---------------------- Cambiar Activo -------------*/
     
     $scope.CambiarEstatusActivo = function(seccion, objeto)
@@ -732,7 +966,7 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
         $scope.objetoActivo = objeto;
         $scope.seccionCambiarActivo = seccion;
         
-        if(objeto.activo)
+        if(objeto.Activo)
         {
             $scope.mensajeAdvertencia = "¿Estas seguro de ACTIVAR - " + objeto.Nombre + "?";
         }
@@ -841,11 +1075,142 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
         $scope.mensajeError = [];
     };
     
+    /*------- Catálogos componentes ----------------*/
+    $scope.GetComponente = function()      
+    {
+        GetComponente($http, $q, CONFIG).then(function(data)
+        {
+            $scope.componente = data;
+            if($scope.combinacionMaterialComponente !== null)
+            {
+                $scope.SetCombinacionlPorComponente();
+            }
+        }).catch(function(error)
+        {
+            alert(error);
+        });
+    };
+    
+    $scope.GetCombinacionMaterial = function()
+    {
+        GetCombinacionMaterial($http, $q, CONFIG).then(function(data)
+        {
+            if(data.length > 0)
+            {
+                $scope.combinacion = data;
+            }
+        }).catch(function(error)
+        {
+            alert(error);
+        });
+    };
+    
+    $scope.GetCombinacionPorMaterialComponente = function()          
+    {
+        GetCombinacionPorMaterialComponente($http, $q, CONFIG).then(function(data)
+        {
+            if(data.length > 0)
+            {
+                $scope.combinacionMaterialComponente = data;
+                if($scope.componente !== null)
+                {
+                    $scope.SetCombinacionlPorComponente();
+                }
+            }
+        }).catch(function(error)
+        {
+            alert(error);
+        });
+    };
+    
+    $scope.SetCombinacionlPorComponente = function()
+    {
+        for(var i=0; i<$scope.componente.length; i++)
+        {
+            $scope.componente[i].CombinacionMaterial = [];
+            for(var j=0; j<$scope.combinacionMaterialComponente.length; j++)
+            {
+                if($scope.componente[i].ComponenteId == $scope.combinacionMaterialComponente[j].Componente.ComponenteId)
+                {
+                    $scope.componente[i].CombinacionMaterial[$scope.componente[i].CombinacionMaterial.length] =  $scope.combinacionMaterialComponente[j];
+                }
+            }
+        }
+    };
+    
+    $scope.GetTipoMaterial = function()      
+    {
+        GetTipoMaterialParaModulos($http, $q, CONFIG).then(function(data)
+        {
+            $scope.tipoMaterial = data;
+        }).catch(function(error)
+        {
+            alert(error);
+        });
+    };
+    
+    $scope.GetMaterial = function()      
+    {
+        GetMaterial($http, $q, CONFIG).then(function(data)
+        {
+            $scope.material = data;
+            if($scope.gruesoMaterial !== null)
+            {
+                $scope.SetGrueso();
+            }
+        }).catch(function(error)
+        {
+            alert(error);
+        });
+    };
+    
+    $scope.GetGruesoMaterial = function()      
+    {
+        
+        GetGruesoMaterial($http, $q, CONFIG).then(function(data)
+        {
+            $scope.gruesoMaterial = data;
+            if($scope.material !== null)
+            {
+                $scope.SetGrueso();
+            }
+        }).catch(function(error)
+        {
+            alert(error);
+        });
+    };
+    
+    $scope.SetGrueso = function()
+    {
+        for(var i=0; i<$scope.material.length; i++)
+        {
+            $scope.material[i].grueso = [];
+        }
+
+        for(var k=0; k<$scope.gruesoMaterial.length; k++)
+        {
+            for(var i=0; i<$scope.material.length; i++)
+            {
+                if($scope.material[i].MaterialId == $scope.gruesoMaterial[k].MaterialId)
+                {
+                    $scope.material[i].grueso[$scope.material[i].grueso.length] = SetGruesoMaterial($scope.gruesoMaterial[k]);
+                    break;
+                }
+            }
+        }
+    };
+    
     //-------------Inicializar-----------------------
     $scope.GetTipoModulo();
     $scope.GetPieza();
     $scope.GetComponente();
-     
+    $scope.GetConsumible();
+    
+    $scope.GetCombinacionMaterial();
+    $scope.GetCombinacionPorMaterialComponente();
+    $scope.GetTipoMaterial();
+    $scope.GetMaterial();
+    $scope.GetGruesoMaterial();
 
 });
 

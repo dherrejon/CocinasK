@@ -4,13 +4,13 @@ class Componente
     constructor()
     {
         this.ComponenteId = "";
-        this.TipoComponente = ""; 
+        this.TipoComponenteId = ""; 
         this.Nombre = ""; 
         this.Activo = true; 
     }
 }
 
-//obtiene los tipos de módulos
+//obtiene los compoenetes para los módulos
 function GetComponente($http, $q, CONFIG)     
 {
     var q = $q.defer();
@@ -18,6 +18,32 @@ function GetComponente($http, $q, CONFIG)
     $http({      
           method: 'GET',
           url: CONFIG.APIURL + '/GetComponente',
+
+      }).success(function(data)
+        {
+            var componente = []; 
+            
+            for(var k=0; k<data.length; k++)
+            {
+                componente[k] = new Componente();
+                componente[k] = SetComponente(data[k]);
+            }
+        
+            q.resolve(componente);  
+        }).error(function(data, status){
+            q.resolve(status);
+     }); 
+    return q.promise;
+}
+
+//obtiene los compoenetes para los módulos
+function GetTodosComponente($http, $q, CONFIG)     
+{
+    var q = $q.defer();
+
+    $http({      
+          method: 'GET',
+          url: CONFIG.APIURL + '/GetTodosComponente',
 
       }).success(function(data)
         {
@@ -60,7 +86,7 @@ function SetComponente(data)
 //agrega un componente
 function AgregarComponente($http, CONFIG, $q, componente)
 {
-    var q = $q.defer();    
+    var q = $q.defer();
 
     $http({      
           method: 'POST',

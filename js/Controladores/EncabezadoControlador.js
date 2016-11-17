@@ -83,7 +83,7 @@ app.controller("EncabezadoControlador", function($scope, $rootScope, $http, CONF
     /*-------------------------------Opciones para cada perfil-------------------------------------*/
     $rootScope.Perfiles = 
     [
-        {nombre: "Administrador", paginaPrincipal: "#ConfigurarModulo", visible: false, barraNavegacion: OpcionAdministrador}, 
+        {nombre: "Administrador", paginaPrincipal: "#Combinacion", visible: false, barraNavegacion: OpcionAdministrador}, 
         {nombre: "Ejecutivo",  paginaPrincipal: "#Ejecutivo", visible: false, barraNavegacion: OpcionEjecutivo}, 
         {nombre: "Operativo",  paginaPrincipal: "#Operativo", visible: false, barraNavegacion: OpcionOperativo} 
     ];
@@ -130,6 +130,13 @@ function SetPerfilNombre($rootScope, usuario)
             {
                 $rootScope.barraNavegacionOpciones[0].elemento[3].show= true;
             }
+            
+            else if(usuario.Permiso[k] == "AdmComConsultar")
+            {
+                $rootScope.barraNavegacionOpciones[1].elemento[0].show = true;
+            }
+            
+            
             else if(usuario.Permiso[k] == "ConModConfigurar")
             {
                 $rootScope.barraNavegacionOpciones[2].elemento[0].show = true;
@@ -137,6 +144,10 @@ function SetPerfilNombre($rootScope, usuario)
             else if(usuario.Permiso[k] == "ConEmpConsultar" || usuario.Permiso[k] == "ConTUNConsultar")
             {
                 $rootScope.barraNavegacionOpciones[2].elemento[1].show = true;
+            }
+            else if(usuario.Permiso[k] == "ConMatConfigurar")
+            {
+                $rootScope.barraNavegacionOpciones[2].elemento[2].show = true;
             }
         }
     }
@@ -157,7 +168,7 @@ var OpcionAdministrador =
     { 
         Opcion: {texto:"Catálogos", id:"catalogos"},
         elemento: [ 
-
+                       { referencia: "#Combinacion", texto:"Combinación de Materiales", nuevaPagina:true, show:false} 
                   ]                      
     },
     { 
@@ -165,6 +176,7 @@ var OpcionAdministrador =
         elemento: [ 
                         { referencia: "#ConfigurarModulo", texto:"Módulos", nuevaPagina:true, show:false},
                         { referencia: "#ConfigurarUnidadNegocio", texto:"Unidades de Negocio", nuevaPagina:true, show:false},
+                        { referencia: "#ConfigurarMaterial", texto:"Material", nuevaPagina:true, show:false}
                   ]                      
     },
     { 

@@ -1,0 +1,578 @@
+<div ng-controller="ConfiguaracionMaterial as Material" class="container-fluid">
+    
+    <br><br>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="tituloModulo">
+                <span>Configurar - {{titulo}}</span>
+            </div>
+        </div>
+    </div>
+    <br>
+    
+    <div class="row">
+        <div class="col-md-12">
+            <div class="tab" role="tabpanel">
+                <!-- Pestañas -->
+                
+                <ul ng-if="anchoPantalla > 450" class="nav nav-tabs" role="tablist">
+                    <li   ng-repeat="tab in tabs" class="{{tab.clase}}"><a  href="" aria-controls="{{tab.area}}" role="tab" data-toggle="tab" ng-click="SeleccionarTab(tab, $index)">{{tab.titulo}}</a></li>
+                </ul>
+                
+                <ul ng-if="anchoPantalla < 451" class="nav nav">
+                    <li  class="tabSm dropdown">
+
+                        <button  class="dropdown-toggle  btn bt-block dropDownTab" data-toggle="dropdown" >
+                            <span>{{titulo}}</span>
+                            <span class="caret"></span>
+                        </button>
+                        
+                        <ul class="dropdown-menu elemetosDropdownListModal">
+                            <li ng-repeat="tab in tabs"  class="dropdownOpcionModal">
+                                <a  href="" class="dropdownOpcionModal" aria-controls="{{tab.area}}" ng-click="SeleccionarTab(tab, $index)">
+                                    <span>{{tab.titulo}}</span>
+                                </a>
+                            </li>
+                        </ul>
+                        
+                    </li>
+                </ul>
+                
+                <!-- Contenido -->
+                <div class="tab-content">
+                    <!-- TipoMaterial -->
+                    <div role="tabpanel" class="tab-pane in active" id="TipoMaterial">
+                      <br>  
+                        <div class="row">
+                            <div class="col-md-11 col-xs-10">
+                                <div class="table-responsive TablaUnidadNegocio">
+                                    <table class="table table-hover">
+                                        <thead class="TituloTabla">
+                                          <tr>
+                                            <th><button class="btn botonOrdenar" ng-click="CambiarOrdenarTipoMaterial('Nombre')"><b>Nombre </b><b ng-if="ordenarPorTipo === 'Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPorTipo === '-Nombre'" class="fa fa-arrow-down"></b></button></th>
+                                            <th><button class="btn botonOrdenar" ng-click="CambiarOrdenarTipoMaterial('NombreMaterialPara')"><b>Usado en </b><b ng-if="ordenarPorTipo === 'NombreMaterialPara'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPorTipo === '-NombreMaterialPara'" class="fa fa-arrow-down"></b></button></th>
+                                            <th><button class="btn botonFalso"><b>Editar</b></button></th>
+                                            <th><button class="btn botonFalso"><b>Activo</b></button></th>
+                                          </tr>
+                                        </thead>
+                                        <tbody ng-repeat="tipo in tipoMaterial | orderBy:[ordenarPorTipo, 'Nombre']">
+                                          <tr>
+                                            <td>{{tipo.Nombre}}</td>
+                                            <td>{{tipo.NombreMaterialPara}}</td>
+
+                                            <td>
+                                                <a class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirTipoMaterialForma('Editar', tipo)">
+                                                    <span class="fa fa-pencil fa-2x"></span>
+                                                </a>
+                                                
+                                                <!--<span ng-if="!permisoUsuario.editarTipoUnidad" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>-->
+                                            </td>
+                                              
+                                            <td>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input ng-model="tipo.Activo" type="checkbox" value="" ng-click="CambiarEstatusActivo('tipoMaterial', tipo)">
+                                                        <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+                                                    </label>
+                                                </div>
+                                            </td>
+                                              
+                                          </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-2 col-md-1">
+                                 <button  class="btn btn-block botonOperacion fa fa-plus text-center" data-toggle="tooltip" data-placement="bottom" title="Agregar Tipo Módulo" ng-click="AbrirTipoMaterialForma('Agregar', null)"></button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!--- Material -->
+                    <div role="tabpanel" class="tab-pane" id="Material">
+                        <br>
+                        <div class="row">
+                            <div class="col-md-11 col-xs-10">
+                                <div class="table-responsive TablaUnidadNegocio">
+                                    <table class="table table-hover">
+                                        <thead class="TituloTabla">
+                                          <tr>
+                                            <th><button class="btn botonOrdenar" ng-click="CambiarOrdenarMaterial('Nombre')"><b>Nombre </b><b ng-if="ordenarPorMaterial === 'Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPorMaterial === '-Nombre'" class="fa fa-arrow-down"></b></button></th>
+                                            <th><button class="btn botonOrdenar" ng-click="CambiarOrdenarMaterial('TipoMaterial.Nombre')"><b>Tipo Material </b><b ng-if="ordenarPorMaterial === 'TipoMaterial.Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPorMaterial === '-TipoMaterial.Nombre'" class="fa fa-arrow-down"></b></button></th>
+                                            <th><button class="btn botonOrdenar" ng-click="CambiarOrdenarMaterial('CostoUnidad')"><b>CostoUnidad </b><b ng-if="ordenarPorMaterial === 'CostoUnidad'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPorMaterial === '-CostoUnidad'" class="fa fa-arrow-down"></b></button></th>
+                                            <th><button class="btn botonFalso"><b>Editar</b></button></th>
+                                            <th><button class="btn botonFalso"><b>Activo</b></button></th>
+                                          </tr>
+                                        </thead>
+                                        <tbody ng-repeat="material in material | orderBy:[ordenarPorMaterial, 'Nombre'] | filter:buscar | filter:FiltrarMaterial">
+                                          <tr>
+                                            <td>{{material.Nombre}}</td>
+                                            <td>{{material.TipoMaterial.Nombre}}</td>
+                                            <td ng-if="material.grueso.length == 0">{{material.CostoUnidad}}</td>
+                                            
+                                            <td ng-if="material.grueso.length > 0">
+                                                <a class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirGruesoForma(material)">
+                                                    <span class="fa fa-eye fa-2x"></span>
+                                                </a>
+                                            </td>
+                        
+                                            <td>
+                                                <a class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirMaterialForma('Editar', material)">
+                                                    <span class="fa fa-pencil fa-2x"></span>
+                                                </a>
+                                                
+                                                <!--<span ng-if="!permisoUsuario.editarTipoUnidad" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>-->
+                                            </td>
+                                              
+                                            <td>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input ng-model="material.Activo" type="checkbox" value="" ng-click="CambiarEstatusActivo('material', material)">
+                                                        <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+                                                    </label>
+                                                </div>
+                                            </td>
+                                              
+                                          </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-2 col-md-1">
+                                
+                                <!-- Botón Agregar -->
+                                <button  class="btn btn-block botonOperacion fa fa-plus text-center" data-toggle="tooltip" data-placement="bottom" title="Agregar Tipo Módulo" ng-click="AbrirMaterialForma('Agregar', null)"></button>
+                                <br><br>
+                                
+                                <!-- Boton filtrar -->
+                                <div class="dropdown">
+
+                                    <button class="btn btn btn-block botonOperacion fa fa-filter text-center" data-toggle="dropdown" ></button>
+
+                                    <ul class="dropdown-menu dropdown-menu-right operacionPanel">
+
+                                        <div  class="row ">
+                                            <div class="col-xs-9">
+                                                <li  class="dropdown-header tituloOpcionLateral">FILTRAR</li>
+                                            </div>
+                                            <div class="col-xs-3">
+                                                <li> <button class="btn botonOperacion fa fa-ban" data-toggle="tooltip" data-placement="bottom" title="Limpiar filtro" ng-click="LimpiarFiltro()"></button></li>
+                                            </div>
+                                        </div>
+                                        <li role="separator" class="divider"></li>
+
+                                        <li style="width: 275px;">
+
+                                            <form role="filtro">
+
+                                                <!------ Tipo de Material ------>
+                                                <button class="btn btn-block botonFiltro">Tipo Material</button>
+
+                                                <div class="row">
+                                                    <div class="col-xs-12" >
+                                                        <div class="opcionFiltro">
+                                                            <div  ng-repeat="tipo in tipoMaterial | orderBy:'Nombre' track by $index">
+                                                                <label class="checkBoxActivoFiltro">
+                                                                    <input type="checkbox" class="badgebox" ng-model="filtroCheckbox[$index]"  ng-click="setFiltro( tipo.Nombre )"><span class="badge">&check;</span>
+                                                                    {{tipo.Nombre}}
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <br>
+                                                
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <br>
+                                 
+                                <!-- Boton buscar -->
+                                <div class="dropdown">
+
+                                    <button class="btn btn btn-block botonOperacion fa fa-search text-center" data-toggle="dropdown" ></button>
+
+                                    <ul class="dropdown-menu dropdown-menu-right operacionPanel">
+
+                                        <li style="width: 225px; height: 35px !important;">
+
+                                            <form role="buscar" style="max-width: 200px; height: 25px !important;">
+                                                <div class="input-group" >
+                                                  <input  type="text" class="form-control operacionPanelEntrada" placeholder="Buscar" style="margin-left: 5px; width: 175px;" ng-model="buscar">
+                                                  <span class="input-group-btn" style="width: 25px;">
+                                                    <button class="btn operacionPanelBoton" type="button">
+                                                        <i class="fa fa-search"></i>
+                                                    </button>
+                                                  </span>
+                                                </div>
+                                            </form>
+                                        </li>
+                                    </ul>
+
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    
+    
+    <!----------------------------------------------------- Modales ------------------------------------------------>
+    
+    <!---- Agregar y editar tipo de material -->
+    <div class="modal fade" id="tipoMaterialForma" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static" >
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <!-- encabezado del modal -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarTipoMaterialForma()"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center" ng-if="operacion === 'Agregar'">Agregar Tipo Material</h3>
+                            <h3 class="text-center" ng-if="operacion === 'Editar'">Editar Tipo Material</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+                <br>
+
+                <form class="modal-body" name="tipoMaterialModal">
+                <!-- Datos -->
+                    
+                    <!-- Nombre -->
+                    <div class="row">
+                        <div class="col-sm-6">
+                             <div class="entrada2">
+                                <input ng-pattern="erNombreGeneral" type="text" required class="{{claseTipoModulo.nombre}} form-control" name="nombre" ng-model="nuevoTipoMaterial.Nombre"/>
+                                <label>Nombre</label>
+                            </div>
+                        </div>
+                        
+                        <br class="hidden-sm hidden-md hidden-lg">
+                        
+                        <div class="col-sm-6">
+                             <label class="btn checkBoxActivo">Tipo Módulo Activo <input type="checkbox" class="badgebox" ng-model="nuevoTipoMaterial.Activo"><span class="badge">&check;</span></label>
+                         </div>
+                        
+                    </div> 
+                    <br>
+                    <!-- Material para-->
+                    <div class="row">
+                        <div class="col-xs-12 subtituloModal">
+                            <b>¿En donde se usa este tipo de material?</b>
+                        </div>
+                        
+                        <br><br><br>
+                        
+                        <div class="col-sm-6 etiquetaDropdownList">
+                             <div class="dropdown">
+
+                                <button class="dropdown-toggle  {{claseTipoModulo.material}}" data-toggle="dropdown">
+                                    <span>{{nuevoTipoMaterial.NombreMaterialPara}}</span>
+                                    <span class="caret"></span>
+                                </button>
+
+                                <ul class="dropdown-menu elemetosDropdownListModal">
+                                     <li ng-repeat="materialPara in materialPara | orderBy:'Nombre' | filter:{NombreTipoUnidadNegocio:nuevaPlaza.NombreTipoUnidadNegocio}:true">
+                                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarMaterialPara(materialPara)">
+                                            <span>{{materialPara.Nombre}}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <!-------- mensaje de error ---->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div ng-repeat="error in mensajeError">
+                                <span class="textoError">{{error}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!---- botones de operacion --->
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <button class="btn botonCancelar btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarTipoMaterialForma()">CANCELAR</button>
+                        </div>
+                        
+                        <div class="col-xs-6">
+                            <button focus class="btn botonAvanzar btn-block" ng-click="TerminarTipoMaterial(tipoMaterialModal.nombre.$invalid)">TERMINAR</button>
+                        </div>
+                    </div>
+                    <br> 
+                </form>
+            </div>
+            <br><br><br>
+        </div>
+    </div>
+    
+    <!--- Modal para Detalles de costos por grueso del material --->
+    <div class="modal fade " id="DetallesCostoPorGrueso"  >
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <!-- encabezado del modal -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center">Costos de {{costoPorGrueso.TipoMaterial.Nombre}} - {{costoPorGrueso.Nombre}}</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <!-- cuerpo del modal -->
+                <div class="modal-body">
+                    <div class="row">
+                       
+                       <div class="col-xs-12 subtituloModal">
+                            <b>Costos por grueso del material</b>
+                        </div>
+                        <br><br>
+                        <div class="col-xs-12">
+                            <div class="table-responsive TablaModal">
+                                <table class="table table-hover">
+                                    <thead class="TituloTabla">
+                                      <tr>
+                                        <th><button class="btn botonOrdenar"><b>Grueso </b></button></th>
+                                        <th><button class="btn botonOrdenar"><b>Costo por Unidad </b></button></th>
+                                        <th><button class="btn botonOrdenar"><b>Activo </b></button></th>
+                                      </tr>
+                                    </thead>
+                                    <tbody ng-repeat="grueso in costoPorGrueso.grueso | orderBy:'CostoUnidad'">
+                                      <tr>
+                                        <td>{{grueso.Grueso}}</td>
+                                        <td>{{grueso.CostoUnidad}}</td>
+                                        <td>
+                                            <div class="checkbox">
+                                                <label>
+                                                    <input ng-model="grueso.Activo" type="checkbox" value="" ng-click="CambiarEstatusActivo('gruesoMaterial', grueso)">
+                                                    <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+                                                </label>
+                                            </div>
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!--- Modal para Agregar-Editar Material-->
+    <div class="modal fade" id="MaterialForma" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static" >
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <!-- encabezado del modal -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="cerrarMaterialForma()"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center" ng-if="operacion === 'Agregar'">Agregar Material</h3>
+                            <h3 class="text-center" ng-if="operacion === 'Editar'">Editar Material</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+                <br>
+
+                <form class="modal-body" name="materialModal">
+                <!-- Datos -->
+                    <div class="row">
+                        <!-- Tipo de material -->
+                        <div class="col-sm-6 etiquetaDropdownList">
+                             <label>Tipo de Material</label>
+                             <div class="dropdown">
+
+                                <button class="dropdown-toggle {{claseMaterial.tipoMaterial}}" data-toggle="dropdown">
+                                    <span>{{nuevoMaterial.TipoMaterial.Nombre}}</span>
+                                    <span class="caret"></span>
+                                </button>
+                                 
+                                <ul class="dropdown-menu elemetosDropdownListModal">
+                                    <li ng-repeat="tipo in tipoMaterial | orderBy:'Nombre'" ng-show="tipo.Activo">
+                                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarTipoMaterial(tipo)">
+                                            <span>{{tipo.Nombre}}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                            </div>
+                        </div>
+                        <!-- Nombre -->
+                        <br class="hidden-sm hidden-md hidden-lg">
+                        <div class="col-sm-6">
+                             <div class="entrada2">
+                                <input ng-pattern="erNombreGeneral" type="text" required class="{{claseMaterial.nombre}} form-control" name="nombre" ng-model="nuevoMaterial.Nombre"/>
+                                <label>Nombre</label>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <br  ng-if="nuevoMaterial.grueso.length == 0">
+                    <div class="row" >
+                        <!-- Costo -->
+                        
+                        <div class="col-sm-6" ng-if="nuevoMaterial.grueso.length == 0">
+                             <div class="entrada2">
+                                <input ng-pattern="erNumeroDecimal" type="text" required class="{{claseMaterial.costo}} form-control" name="costo"   ng-model="nuevoMaterial.CostoUnidad"/>
+                                <label>Costo por Unidad</label>
+                            </div>
+                        </div>
+                        
+                        <br class="hidden-sm hidden-md hidden-lg"><br class="hidden-sm hidden-md hidden-lg">
+                        
+                        <div class="col-sm-6">
+                             <label class="btn checkBoxActivo">Material Activo <input type="checkbox" class="badgebox" ng-model="nuevoMaterial.Activo"><span class="badge">&check;</span></label>
+                         </div>
+                    </div> 
+                    
+                    <br><br>
+                    <div class="row">
+                       
+                       <div class="col-xs-12 subtituloModal">
+                           <b>¿Con cuantos gruesos distintos cuenta el material?</b>
+                        </div>
+                        
+                        <br><br>
+                        <div class="col-xs-12 subtituloModal">
+                            <div class="cantidad">
+                                <button class="btn btn-sm cantidadMenos fa fa-minus" ng-click="CambiarNumeroGrueso('Quitar')"></button>
+                                <input  disabled type="text" class="cantidadGrueso" ng-model="nuevoMaterial.grueso.length"/>
+                                <button class="btn btn-sm cantidadMas fa fa-plus" ng-click="CambiarNumeroGrueso('Agregar')"></button>
+                            </div>
+                        </div>
+                        <br><br>
+                        <div class="col-xs-12" ng-if="nuevoMaterial.grueso.length > 0">
+                            <div class="table-responsive TablaModal">
+                                <table class="table table-hover">
+                                    <thead class="TituloTabla">
+                                      <tr>
+                                        <th><button class="btn botonOrdenar"><b>Grueso </b></button></th>
+                                        <th><button class="btn botonOrdenar"><b>Costo por Unidad </b></button></th>
+                                        <th><button class="btn botonOrdenar"><b>Activo </b></button></th>
+                                      </tr>
+                                    </thead>
+                                    <tbody ng-repeat="grueso in nuevoMaterial.grueso">
+                                      <tr>
+                                        <td>
+                                            <input required ng-pattern="erNumeroFraccion" type="text" ng-model="grueso.Grueso" class="text-right {{grueso.ClaseGrueso}}"/>
+                                        </td>
+                                        <td>
+                                            $<input required ng-pattern="erNumeroDecimal" type="text" ng-model="grueso.CostoUnidad" class="text-right {{grueso.ClaseCosto}}"/>
+                                        </td>
+                                        <td>
+                                            <div class="checkbox">
+                                                <label>
+                                                    <input ng-model="grueso.Activo" type="checkbox" value="" >
+                                                    <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+                                                </label>
+                                            </div>
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <br><br>
+                    
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div ng-repeat="error in mensajeError">
+                                <span class="textoError">{{error}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <button class="btn botonCancelar btn-block" data-dismiss="modal" aria-label="Close" ng-click="cerrarMaterialForma()">CANCELAR</button>
+                        </div>
+                        
+                        <div class="col-xs-6">
+                            <button class="btn botonAvanzar btn-block" ng-click="TerminarMaterial(materialModal.nombre.$invalid , materialModal.costo.$invalid) ">TERMINAR</button>
+                        </div>
+                    </div>
+                    <br> 
+                </form>
+            </div>
+            <br><br><br>
+        </div>
+    </div> 
+    
+    <!-- Desactivar Modal -->
+    <div class="modal fade" id="modalActivarDesactivarConfigurarMaterial" data-keyboard="false" data-backdrop="static">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                
+                <div class="modal-body">
+                    <br>
+                    <div class="panel panel-default modalMensaje">
+                        <br>
+                        <b>{{mensajeAdvertencia}}</b>
+                        <br><br>
+
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <button class="btn botonCancelar" data-dismiss="modal" aria-label="Close" ng-click="CancelarCambiarActivo()">No</button>
+                            </div>
+                            <div class="col-xs-6">
+                                <button class="btn botonAvanzar" data-dismiss="modal" aria-label="Close" ng-click="ConfirmarActualizarActivo()">Si</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div> 
+    
+    <!-- Modal para mensajes -->
+    <div class="modal fade" id="mensajeConfigurarMaterial">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                
+                <div class="modal-body">
+                    <div class="panel panel-default modalMensaje">
+                        <br>
+                        <b>{{mensaje}}</b>
+
+                        <br><br>
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <button class="btn  botonAvanzar" data-dismiss="modal" aria-label="Close">Aceptar</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>  
+</div>
+
+     

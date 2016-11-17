@@ -12,6 +12,9 @@
     require 'Administrador/Modulo.php';
     require 'Administrador/Pieza.php';
     require 'Administrador/Componente.php';
+    require 'Administrador/Material.php';
+    require 'Administrador/Combinacion.php';
+    require 'Administrador/Consumible.php';
 
     require 'General/Direccion.php';
     require 'General/Sesion.php';
@@ -260,11 +263,43 @@
 
     /*------------------------  Componente  ----------------------------*/
     $app->get('/GetComponente', $seguridad, $ChecarSesion, 'GetComponente');
+    $app->get('/GetTodosComponente', $seguridad, $ChecarSesion, 'GetTodosComponente');
     $app->post('/AgregarComponente', $seguridad, $ChecarSesion, 'AgregarComponente');
     $app->put('/EditarComponente', $seguridad, $ChecarSesion, 'EditarComponente');
     $app->post('/ActivarDesactivarComponente', $seguridad, $ChecarSesion, 'ActivarDesactivarComponente');
 
     $app->post('/GetPiezaPorComponente', $seguridad, $ChecarSesion, 'GetPiezaPorComponente');
+
+    /*------------------------Tipo Material----------------------------*/
+    $app->get('/GetTipoMaterial', $seguridad, $ChecarSesion, 'GetTipoMaterial');
+    $app->post('/AgregarTipoMaterial', $seguridad, $ChecarSesion, 'AgregarTipoMaterial');
+    $app->put('/EditarTipoMaterial', $seguridad, $ChecarSesion, 'EditarTipoMaterial');
+    $app->post('/ActivarDesactivarTipoMaterial', $seguridad, $ChecarSesion, 'ActivarDesactivarTipoMaterial');
+
+    /*------------------------Material Para----------------------------*/
+    $app->get('/GetMaterialPara', $seguridad, $ChecarSesion, 'GetMaterialPara');
+    $app->get('/GetTipoMaterialParaModulo', $seguridad, $ChecarSesion, 'GetTipoMaterialParaModulo');
+
+    /*------------------------ Grueso Material ----------------------------*/
+    $app->get('/GetGruesoMaterial', $seguridad, $ChecarSesion, 'GetGruesoMaterial');
+    $app->post('/ActivarDesactivarGruesoMaterial', $seguridad, $ChecarSesion, 'ActivarDesactivarGruesoMaterial');
+
+    /*------------------------Material----------------------------*/
+    $app->get('/GetMaterial', $seguridad, $ChecarSesion, 'GetMaterial');
+    $app->post('/AgregarMaterial', $seguridad, $ChecarSesion, 'AgregarMaterial');
+    $app->put('/EditarMaterial', $seguridad, $ChecarSesion, 'EditarMaterial');
+    $app->post('/ActivarDesactivarMaterial', $seguridad, $ChecarSesion, 'ActivarDesactivarMaterial');
+
+    /*------------------------Combinacion Material----------------------------*/
+    $app->get('/GetCombinacionMaterial', $seguridad, $ChecarSesion, 'GetCombinacionMaterial');
+    $app->post('/AgregarCombinacionMaterial', $seguridad, $ChecarSesion, 'AgregarCombinacionMaterial');
+    $app->put('/EditarCombinacionMaterial', $seguridad, $ChecarSesion, 'EditarCombinacionMaterial');
+    $app->post('/ActivarDesactivarCombinacionMaterial', $seguridad, $ChecarSesion, 'ActivarDesactivarCombinacionMaterial');
+
+    $app->get('/GetCombinacionPorMaterialComponente', $seguridad, $ChecarSesion, 'GetCombinacionPorMaterialComponente');
+
+    /*------------------------Consumible----------------------------*/
+    $app->get('/GetConsumible', $seguridad, $ChecarSesion, 'GetConsumible');
     
 
     $app->run(); 

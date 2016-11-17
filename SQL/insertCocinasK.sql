@@ -66,7 +66,7 @@ INSERT INTO PerfilPorUsuario(UsuarioId, PerfilId)
 
 
 INSERT INTO ModuloGUI(Nombre)
-			VALUES("Cocinas K"), ("Configuración");
+			VALUES("Cocinas K"), ("Configuración"), ("Catálogos");
 
 INSERT INTO Permiso(PerfilId, ModuloGUIId, Seccion, Operacion, Clave)
 			VALUES (1, 1, "Unidades de Negocio", "Agregar", "AdmUNeAgregar"),
@@ -109,7 +109,11 @@ INSERT INTO Permiso(PerfilId, ModuloGUIId, Seccion, Operacion, Clave)
 				   (1, 2, "Tipo de Unidad Negocio", "Activar-Desactivar", "AdmTUNActivar"),
 
 				   (2, 1, "Unidades de Negocio", "Agregar", "EjeUNeAgregar"),
-				   (3, 1, "Unidades de Negocio", "Consultar", "OpeUNeConsultar");
+				   (3, 1, "Unidades de Negocio", "Consultar", "OpeUNeConsultar"),
+
+				   (1, 2, "Material", "Configurar", "ConMatConfigurar"),
+					
+				   (1, 3, "Combinación de Materiales", "Consultar", "AdmComConsultar");
 
 INSERT INTO PermisoPorUsuario(UsuarioId, PermisoId)
 			VALUES(1,1), (1,2), (1,3), (1,4), (1,5), (2,1), (2,3);
