@@ -614,7 +614,9 @@ app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, dat
             }
         }
         
-        if( $scope.editarContacto.origen != "registrado")
+        
+        console.log($scope.editarContacto.tipoContacto);
+        if( $scope.editarContacto.origen != "registrado" || $scope.editarContacto.tipoContacto != "telefono")
         {
             var datosContactoColaborador = {NombreMedioContacto:"", TipoMedioContactoId:"", NombreTipoMedioContacto:"", Contacto:""};
             datosContactoColaborador.NombreMedioContacto = "Teléfono";
@@ -851,7 +853,7 @@ app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, dat
             }
         }
         
-        if($scope.editarContacto.origen  != "registrado")
+        if($scope.editarContacto.origen  != "registrado" || $scope.editarContacto.tipoContacto != "correo")
         {
             var datosContactoColaborador = {NombreMedioContacto:"", TipoMedioContactoId:"", NombreTipoMedioContacto:"", Contacto:""};
             datosContactoColaborador.NombreMedioContacto = "Correo Electrónico";

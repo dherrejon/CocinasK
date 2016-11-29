@@ -1,0 +1,1188 @@
+<div ng-controller="ModuloControlador as modulo" class="container-fluid" >
+
+    <br><br>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="tituloModulo">
+                <span>{{titulo}}</span>
+            </div>
+        </div>
+    </div>
+    <br>
+        
+    <div class="row">
+        <div class="col-md-11 col-xs-10">
+            <div class="table-responsive TablaUnidadNegocio">
+                <table class="table table-hover">
+                    <thead class="TituloTabla">
+                      <tr>
+                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('TipoModulo.Nombre')"><b>Tipo Módulo </b><b ng-if="ordenarPor === 'TipoModulo.Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-TipoModulo.Nombre'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('Nombre')"><b>Nombre </b><b ng-if="ordenarPor === 'Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-Nombre'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonFalso"><b>Detalles</b></button></th>
+                        <th><button class="btn botonFalso"><b>Editar</b></button></th>
+                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('ActivoN')"><b>Activo</b> <b ng-if="ordenarPor === 'ActivoN'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-ActivoN'" class="fa fa-arrow-down"></b></button></th>
+                      </tr>
+                    </thead>
+                    <tbody ng-repeat="modulo in modulo | filter:buscar | orderBy:[ordenarPor, 'Nombre']">
+                      <tr>
+                        <td>{{modulo.TipoModulo.Nombre}}</td>
+                        <td>{{modulo.Nombre}}</td>
+                          
+                        <td>
+                            <a  class="BotonOperacion" href="" data-toggle="modal" data-target="#DetallesModulo" ng-click="MostarDetalles(modulo)">
+                                <span class="fa fa-eye fa-2x"></span>
+                            </a>
+                        </td>
+
+                        <td>
+                            <a  class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirModuloModal('Editar', modulo)">
+                                <span class="fa fa-pencil fa-2x"></span>
+                            </a>
+                            
+                            <!-- <span ng-if="!permisoUsuario.editar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>-->
+                        </td>
+
+                        <td>
+                            <div class="checkbox">
+                                <label>
+                                    <input ng-model="modulo.Activo" type="checkbox" value="" ng-click="CambiarEstatusActivo(modulo, 'modulo')">
+                                    <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+                                </label>
+                            </div>
+                        </td>
+
+                      </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-xs-2 col-md-1">
+            <button class="btn btn-block botonOperacion fa fa-plus text-center" data-toggle="tooltip" data-placement="bottom" title="Agregar Combinación de Materiales" ng-click="AbrirModuloModal('Agregar', null)"></button>
+            
+            <br><br>
+            
+            <!-- Boton filtrar -->
+            <div class="dropdown">
+
+                <button class="btn btn btn-block botonOperacion fa fa-filter text-center" data-toggle="dropdown" ></button>
+
+                <ul class="dropdown-menu dropdown-menu-right operacionPanel">
+
+                    <div  class="row ">
+                        <div class="col-xs-9">
+                            <li  class="dropdown-header tituloOpcionLateral">FILTRAR</li>
+                        </div>
+                        <div class="col-xs-3">
+                            <li> <button class="btn botonOperacion fa fa-ban" data-toggle="tooltip" data-placement="bottom" title="Limpiar filtro" ng-click="LimpiarFiltro()"></button></li>
+                        </div>
+                    </div>
+                    <li role="separator" class="divider"></li>
+
+                    <li style="width: 275px;">
+
+                        <form role="filtro">
+
+                            <!------ Tipo de Modulo ------>
+                            <button class="btn btn-block botonFiltro">Tipo Módulo</button>
+
+                            <div class="row">
+                                <div class="col-xs-12" >
+                                    <div class="opcionFiltro">
+                                        <div  ng-repeat="tipo in tipoModulo | orderBy:'Nombre' track by $index">
+                                            <label class="checkBoxActivoFiltro">
+                                                <input type="checkbox" class="badgebox" ng-model="filtroCheckbox[$index]"  ng-click="setFiltro( tipo.Nombre )"><span class="badge">&check;</span>
+                                                {{tipo.Nombre}}
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+
+                        </form>
+                    </li>
+                </ul>
+            </div>
+
+            <br>
+            
+            <!-- Boton buscar -->
+            <div class="dropdown">
+                
+                <button class="btn btn btn-block botonOperacion fa fa-search text-center" data-toggle="dropdown" ></button>
+                    
+                <ul class="dropdown-menu dropdown-menu-right operacionPanel">
+
+                    <li style="width: 225px; height: 35px !important;">
+
+                        <form role="buscar" style="max-width: 200px; height: 25px !important;">
+                            <div class="input-group" >
+                              <input  type="text" class="form-control operacionPanelEntrada" placeholder="Buscar" style="margin-left: 5px; width: 175px;" ng-model="buscar">
+                              <span class="input-group-btn" style="width: 25px;">
+                                <button class="btn operacionPanelBoton" type="button">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                              </span>
+                            </div>
+                        </form>
+                    </li>
+                </ul>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+    <!----------------------------------- Modales --------------------------->
+    
+    <!--- Modal para Detalles del módulo --->
+    <div class="modal fade " id="DetallesModulo" >
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <!-- encabezado del modal -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center">Detalles del Módulo</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- cuerpo del modal -->
+                <div class="modal-body">
+                    <!-- Opciones de unidad de negocio -->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="pull-right">
+                                <button class="btn botonOperacion" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" data-placement="bottom" title="Editar Módulo"  ng-click="AbrirModuloModal('Editar', nuevoModulo)"><span class="fa fa-pencil fa-2x"></span></button>
+                                <button  ng-if="nuevoModulo.Activo" class="btn botonOperacion activo"  data-toggle="tooltip" data-placement="bottom" title="Desactivar" ng-click="CambiarEstatusActivoModal()"><span class="fa fa-power-off fa-2x"></span></button>
+                                <button  ng-if="!nuevoModulo.Activo" class="btn botonOperacion desactivo" data-toggle="tooltip" data-placement="bottom" title="Activar" ng-click="CambiarEstatusActivoModal()"><span class="fa fa-power-off fa-2x"></span></button>
+                            </div>
+                        </div>
+                    </div>
+                        
+                    <br>
+                    <div class="row">
+                        <div class="col-sm-6">
+                          
+                           <div class="marcoImagen" ng-if="nuevoModulo.Imagen.length > 0">
+                                <div class="imagenVista">
+                                    <img class="imagenModulo center-block" ng-src="data:image/PNG;base64,{{nuevoModulo.Imagen}}"/>
+                                    <a  class="BotonOperacion botonVerImagen" href="" data-toggle="modal" data-target="#ImagenModal">
+                                        <span class="fa fa-arrows-alt fa-2x"></span>
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <!-- Imagen -->
+                           <div class="marcoImagen" ng-if="nuevoModulo.Imagen.length == 0">
+                                <div class="imagenModuloVacia">Imagen</div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-sm-6">
+                            <br class="hidden-sm hidden-md hidden-lg">
+                            <!-- Tipo Módulo -->
+                            <div class="row">
+                               <div class="col-xs-12">
+                                    <div class="subrayado">
+                                        <label>Tipo de Módulo</label><br>
+                                        <span class="textoModal">{{nuevoModulo.TipoModulo.Nombre}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <!-- Nombre -->
+                            <div class="row">
+                               <div class="col-xs-12">
+                                    <div class="subrayado">
+                                        <label>Nombre</label><br>
+                                        <span class="textoModal">{{nuevoModulo.Nombre}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <!-- Margen -->
+                            <div class="row">
+                               <div class="col-xs-12">
+                                    <div class="subrayado">
+                                        <label>Número de Secciones</label><br>
+                                        <span class="textoModal">{{nuevoModulo.NumeroSeccion}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            
+                        </div>
+                    </div>
+                    <br class="hidden-xs">
+                    
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="subrayado">
+                                <label>Margen</label><br>
+                                <span class="textoModal">{{nuevoModulo.Margen}}%</span>
+                            </div>
+                        </div>
+                        
+                        <br class="hidden-sm hidden-md hidden-lg">
+                        <div class="col-sm-6">
+                            <div class="subrayado">
+                                <label>Desperdicio</label><br>
+                                <span class="textoModal">{{nuevoModulo.Desperdicio}}%</span>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+                    <br><br>
+                    <!-- Medidas -->
+                    <div class="row" ng-if="medidaModulo.length > 0">
+                        <div class="col-xs-12">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <button class="btn btn-block"  ng-class="GetClaseDetallesSeccion('medida')" ng-click="MostrarDetalleEspecifico('medida')">Medidas</button>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="table-responsive TablaModal" ng-show="mostrarDato == 'medida'">
+                                <table class="table table-hover">
+                                    <thead class="TituloTabla">
+                                      <tr>
+                                        <th><button class="btn botonOrdenar"><b>Ancho</b></button></th>
+                                        <th><button class="btn botonOrdenar"><b>Alto</b></button></th>
+                                        <th><button class="btn botonOrdenar"><b>Profundo</b></button></th>
+                                        <th><button class="btn botonOrdenar"><b>Activo</b></button></th>
+                                      </tr>
+                                    </thead>
+                                    <tbody ng-repeat="medida in medidaModulo | orderBy:['Ancho']">
+                                      <tr>
+                                        <td>{{medida.Ancho}}</td>
+                                        <td>{{medida.Alto}}</td>
+                                        <td>{{medida.Profundo}}</td>
+                                        
+                                         <td>
+                                            <div class="checkbox">
+                                                <label>
+                                                    <input ng-model="medida.Activo" type="checkbox" value="" ng-click="CambiarEstatusActivo(medida, 'medida')">
+                                                    <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+                                                </label>
+                                            </div>
+                                        </td>
+                                        
+                                      </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Consumibles -->
+                    <div class="row" ng-if="consumibleModulo.length > 0">
+                        <div class="col-xs-12">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <button class="btn btn-block"  ng-class="GetClaseDetallesSeccion('consumible')" ng-click="MostrarDetalleEspecifico('consumible')">Consumibles</button>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="table-responsive TablaModal" ng-show="mostrarDato == 'consumible'">
+                                <table class="table table-hover">
+                                    <thead class="TituloTabla">
+                                      <tr>
+                                        <th><button class="btn botonOrdenar"><b>Nombre</b></button></th>
+                                        <th><button class="btn botonOrdenar"><b>Cantidad</b></button></th>
+                                        <th><button class="btn botonOrdenar"><b>Total</b></button></th>
+                                      </tr>
+                                    </thead>
+                                    <tbody ng-repeat="consumible in consumibleModulo | orderBy:['Consumible.Nombre']">
+                                      <tr>
+                                        <td>{{consumible.Consumible.Nombre}}</td>
+                                        <td>{{consumible.Cantidad}}</td>
+                                        <td>{{consumible.Cantidad * consumible.Consumible.Costo}}</td>
+                                      </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                     <!-- Componentes -->
+                    <div class="row" ng-if="componenteModulo.length > 0">
+                        <div class="col-xs-12">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <button class="btn btn-block" ng-class="GetClaseDetallesSeccion('componente')" ng-click="MostrarDetalleEspecifico('componente')">Componentes</button>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="table-responsive TablaModal" ng-show="mostrarDato == 'componente'">
+                                <table class="table table-hover">
+                                    <thead class="TituloTabla">
+                                      <tr>
+                                        <th><button class="btn botonOrdenar"><b>Nombre</b></button></th>
+                                        <th><button class="btn botonOrdenar"><b>Cantidad</b></button></th>
+                                      </tr>
+                                    </thead>
+                                    <tbody ng-repeat="componente in componenteModulo | orderBy:['Componente.Nombre']">
+                                      <tr>
+                                        <td>{{componente.Componente.Nombre}}</td>
+                                        <td>{{componente.Cantidad}}</td>
+                                      </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                     <!-- Frente Módulo -->
+                    <div class="row" ng-if="parteModulo.length > 0">
+                        <div class="col-xs-12">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <button class="btn btn-block"  ng-class="GetClaseDetallesSeccion('frente')" ng-click="MostrarDetalleEspecifico('frente')">Frente del Módulo</button>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="table-responsive TablaModal" ng-show="mostrarDato == 'frente'">
+                                <table class="table table-hover">
+                                    <thead class="TituloTabla">
+                                      <tr>
+                                        <th><button class="btn botonOrdenar"><b>Pieza</b></button></th>
+                                        <th><button class="btn botonOrdenar"><b>Ancho</b></button></th>
+                                      </tr>
+                                    </thead>
+                                    <tbody ng-repeat="parte in parteModulo | orderBy:['NombreTipoParte']">
+                                      <tr>
+                                        <td>{{parte.NombreTipoParte}}</td>
+                                        <td>{{parte.Ancho}}</td>
+                                      </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Secciones del módulo -->
+                    <div class="row" ng-if="seccionModulo.length > 0">
+                        <div class="col-xs-12">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <button class="btn btn-block" ng-class="GetClaseDetallesSeccion('seccion')" ng-click="MostrarDetalleEspecifico('seccion')">Secciones del Módulo</button>
+                                </div>
+                            </div>
+                            <br>
+                            <div ng-show="mostrarDato == 'seccion'">
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        Alto Módulo: 
+                                        <button ng-repeat="alto in medidaModulo | orderBy:'Alto' | unique: 'Alto'" class="btn" ng-class="GetClaseLuz(alto.Alto)" style="margin-right:10px" ng-click="CambiarAltoLuz(alto.Alto)">
+                                            {{alto.Alto}}
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <br>
+                                <div class="table-responsive TablaModal">
+                                    <table class="table table-hover">
+                                        <thead class="TituloTabla">
+                                          <tr>
+                                            <th><button class="btn botonOrdenar"><b>Sección</b></button></th>
+                                            <th><button class="btn botonOrdenar"><b>Luz</b></button></th>
+                                            <th><button class="btn botonOrdenar"><b># Entrepaños</b></button></th>
+                                            <th><button class="btn botonOrdenar"><b># Piezas</b></button></th>
+                                            <th><button class="btn botonOrdenar"><b>Peinazo Vertical</b></button></th>
+                                          </tr>
+                                        </thead>
+                                        <tbody ng-repeat="seccion in seccionModulo | orderBy:['seccion.SeccionModulo.Nombre']">
+                                          <tr>
+                                            <td>{{seccion.SeccionModulo.Nombre}}</td>
+                                            
+                                            <td ng-repeat="luz in seccionModulo[$index].LuzPorSeccion | filter:{AltoModulo:altoLuz}:true" class="text-center">{{luz.Luz}}</td>
+                                            <td ng-repeat="luz in seccionModulo[$index].LuzPorSeccion | filter:{AltoModulo:altoLuz}:true" class="text-center">{{luz.NumeroEntrepano}}</td>
+                                            
+                                            <td class="text-center">{{seccion.NumeroPiezas}}</td>
+                                            <td class="text-center">{{seccion.PeinazoVertical}}</td>
+                                          </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    
+     <!---- Modal para Agregar-editar Módulo -->
+    <div class="modal fade" id="moduloModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static" >
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <!-- encabezado del modal -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarModuloForma()"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center" ng-if="operacion === 'Agregar'">Agregar Módulo</h3>
+                            <h3 class="text-center" ng-if="operacion === 'Editar'">Editar Módulo</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+                <br>
+
+                <form class="modal-body" name="moduloForma">
+                
+                    <!-- Pasos -->
+                    <div class="row">
+                        <div class="col-xs-12">
+                          <button ng-show="$index !=2 || nuevoModulo.NumeroSeccion != '0'" ng-repeat="paso in pasoModulo" class="btn {{paso.clase}}" disabled ng-if="anchoPantalla > 485 || paso.clase=='pasoActivo'">{{paso.nombre}}</button>
+                        </div>
+                    </div>
+                    
+                    <div class="bordePaso">
+                        <br>
+                        <!-- Paso 1 -->
+                        <div ng-show="numeroPaso == 1">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                   <!-- Imagen Base de datos-->
+                                   <div class="marcoImagenAgregar" ng-if="nuevoModulo.Imagen.length > 0 && !imagenSeleccionada">
+                                        <img class="imagenModulo center-block" ng-src="data:image/PNG;base64,{{nuevoModulo.Imagen}}"/>
+                                        <a  class="BotonOperacion botonVerImagen" href="" data-toggle="modal" data-target="#ImagenModal">
+                                            <span class="fa fa-arrows-alt fa-2x"></span>
+                                        </a>
+                                    </div>
+
+                                    <!-- Imagen Cargarda -->
+                                    <div class="marcoImagenAgregar center-block" ng-if="imagenSeleccionada">
+                                        <span id="PrevisualizarImagen"></span>
+
+                                        <a  class="BotonOperacion botonVerImagen" href="" data-toggle="modal" data-target="#ImagenModal">
+                                            <span class="fa fa-arrows-alt fa-2x"></span>
+                                        </a>
+                                    </div>
+
+                                    <!-- Imagen vacia-->
+                                    <div class="marcoImagenAgregar" ng-if="nuevoModulo.Imagen.length == 0 && !imagenSeleccionada">
+                                        <div class="imagenModuloVacia">Imagen</div>
+                                    </div>
+
+                                    <form  method="post" enctype="multipart/form-data">
+                                        <div class="input-group">
+                                            <input disabled type="text" class="form-control cargarArchivo image-preview-filename" ng-model="imagen[0].name"> 
+                                            <span class="input-group-btn">
+                                                <div class="btn image-preview-input">
+                                                    <span class="image-preview-input-title fa fa-upload"></span>
+                                                    <input type="file" id="cargarImagen" accept="image/JPG" name="imagen" onchange="angular.element(this).scope().CargarImagen(this)" data-toggle="tooltip" data-placement="bottom" title="Cargar Imagen"/>
+                                                </div>
+                                            </span>
+                                        </div>
+                                    </form>
+
+                                </div>
+                                <br>
+
+                                <div class="col-sm-6">
+                                    <br class="hidden-sm hidden-md hidden-md">
+                                    <!-- Tipo Módulo -->
+                                    <div class="row">
+                                        <div class="col-xs-12 etiquetaDropdownList">
+                                             <label>Tipo de Módulo</label>
+                                             <div class="dropdown">
+
+                                                <button ng-disabled="operacion == 'Editar'" class="dropdown-toggle  {{claseModulo.tipoModulo}} " data-toggle="dropdown">
+                                                    <span>{{nuevoModulo.TipoModulo.Nombre}}</span>
+                                                    <span class="caret"></span>
+                                                </button>
+
+                                                <ul class="dropdown-menu elemetosDropdownListModal">
+                                                    <li ng-repeat="tipo in tipoModulo | orderBy:'Nombre'" ng-show="tipo.Activo">
+                                                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarTipoModulo(tipo)">
+                                                            <span>{{tipo.Nombre}}</span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <!-- Nombre -->
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                             <div class="entrada2">
+                                                <input ng-pattern="erNombreGeneral" type="text" required class="{{claseModulo.nombre}} form-control" name="nombre" ng-model="nuevoModulo.Nombre"/>
+                                                <label>Nombre</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br><br>
+                                    <!-- Numero de secciones -->
+                                    <div class="row">
+                                       <div class="col-xs-12" ng-if="operacion != 'Editar'">
+                                             <div class="entrada2">
+                                                <input ng-pattern="erNumeroEntero" type="text" required class="{{claseModulo.seccion}} form-control" name="numeroSeccion" ng-model="nuevoModulo.NumeroSeccion"/>
+                                                <label>Número de secciones</label>
+                                            </div>
+                                        </div>
+                                        
+                                         <div class="col-xs-12" ng-if="operacion == 'Editar'">
+                                            <div class="subrayado">
+                                            <label>Número de secciones</label><br>
+                                            <div class="textoModal">{{nuevoModulo.NumeroSeccion}}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br>
+
+                                </div>
+                            </div>
+                            <br><br class="hidden-xs">
+
+                            <div class="row">
+                               <!-- Nombre -->
+                                <div class="col-sm-6">
+                                     <div class="entrada2">
+                                        <input ng-pattern="erNumeroDecimal" type="text" required class="{{claseModulo.margen}} form-control" name="margen" ng-model="nuevoModulo.Margen"/>
+                                        <label>Margen</label>
+                                    </div>
+                                </div>
+                                <br class="hidden-sm hidden-md hidden-lg">
+                                <!-- Activo -->
+                                <div class="col-sm-6">
+                                     <label class="btn checkBoxActivo">Módulo Activo <input type="checkbox" class="badgebox" ng-model="nuevoModulo.Activo"><span class="badge">&check;</span></label>
+                                 </div>
+                            </div> 
+                            <br><br>
+
+                            <div class="row" ng-if="numeroPaso == 1">
+                                <div class="col-xs-12 subtituloModal">
+                                    <b>¿Qué medidas tiene este módulo?</b>
+                                </div>
+                                <br> <br><br>
+
+                                <!-- Medidas -->
+                                <!-- Ancho -->
+                                <div class="col-sm-3 col-xs-6">
+                                     <div class="entrada2">
+                                        <input ng-pattern="erNumeroFraccion" type="text" required class="{{medidasClase.ancho}} form-control" name="ancho" ng-model="nuevaMedida.Ancho"/>
+                                        <label>Ancho </label>
+                                    </div>
+                                </div>
+                                <!-- Alto -->
+                                <div class="col-sm-3 col-xs-6">
+                                     <div class="entrada2">
+                                        <input ng-pattern="erNumeroFraccion" type="text" required class="{{medidasClase.alto}}  form-control" name="alto" ng-model="nuevaMedida.Alto"/>
+                                        <label>Alto </label>
+                                    </div>
+                                </div>
+                                <span class="hidden-sm hidden-md hidden-lg"><br><br><br></span>
+                                <!-- Profundo -->
+                                <div class="col-sm-3 col-xs-6">
+                                     <div class="entrada2">
+                                        <input ng-pattern="erNumeroFraccion" type="text" required class="{{medidasClase.profundo}}  form-control" name="profundo" ng-model="nuevaMedida.Profundo"/>
+                                        <label>Profundo </label>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-sm-offset-1 col-sm-2 col-xs-6" ng-if="!editarMedida">
+                                     <a  class="btn btn-block botonOperacion fa fa-plus" data-toggle="tooltip" data-placement="bottom" title="Agregar Medidas" ng-click="AgregarMedidas(moduloForma.ancho.$invalid, moduloForma.alto.$invalid, moduloForma.profundo.$invalid)"></a>
+                                </div>
+
+                                <div class="col-sm-3 col-xs-6 " ng-if="editarMedida">
+                                    <div class="pull-right btn-group">
+                                        <button class="btn botonOperacion fa fa-pencil" data-toggle="tooltip" data-placement="bottom" title="Editar Medidas" ng-click="ConfirmarEditarMedida(moduloForma.ancho.$invalid, moduloForma.alto.$invalid, moduloForma.profundo.$invalid)"></button>
+                                        <button class="btn botonCancelar fa fa-ban" data-toggle="tooltip" data-placement="bottom" title="Cancelar" ng-click="CancelarEdicionMedida()"></button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <br>
+                            <br class="hidden-sm hidden-md hidden-lg">
+                            <!-- Mensaje error -->
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div ng-repeat="error in mensajeErrorMedida track by $index">
+                                        <span class="textoError">{{error}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <!-- Medidas del módulo -->
+                            <div class="row" ng-if="medidaModulo.length + nuevoModulo.MedidasPorModulo.length > 0">
+                                <div class="col-xs-12">
+                                    <div class="table-responsive TablaModal">
+                                        <table class="table table-hover">
+                                            <thead class="TituloTabla">
+                                              <tr>
+                                                <th><button class="btn botonOrdenar"><b>Ancho(plg)</b></button></th>
+                                                <th><button class="btn botonOrdenar"><b>Alto(plg) </b></button></th>
+                                                <th><button class="btn botonOrdenar"><b>Profundo(plg) </b></button></th>
+                                                <th><button class="btn botonOrdenar"><b>Editar </b></button></th>
+                                                <th><button class="btn botonOrdenar"><b>Activar/Eliminar </b></button></th>
+                                              </tr>
+                                            </thead>
+                                            <tbody >
+                                              <tr ng-repeat="medida in medidaModulo | orderBy:['Ancho', 'Alto', 'Profundo']">
+                                                <td class="text-center">{{medida.Ancho}}</td>
+                                                <td class="text-center">{{medida.Alto}}</td>
+                                                <td class="text-center">{{medida.Profundo}}</td>
+
+                                                <td class="text-center">
+                                                    <span class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
+                                                </td>
+
+                                                <td class="text-center">
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            <input ng-model="medida.Activo" type="checkbox" value="" ng-click="CambiarEstatusActivo(medida, 'medida')">
+                                                            <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+                                                        </label>
+                                                    </div>
+                                                </td>
+                                              </tr>
+
+                                              <!-- Medidas agregadas sin registro en la base de datos -->
+                                              <tr class="nuevoContacto" ng-repeat="medida in nuevoModulo.MedidasPorModulo | orderBy:['Ancho', 'Alto', 'Profundo']">
+                                                <td class="text-center">{{medida.Ancho}}</td>
+                                                <td class="text-center">{{medida.Alto}}</td>
+                                                <td class="text-center">{{medida.Profundo}}</td>
+
+                                                <td class="text-center">
+                                                    <a  ng-if="!editarMedida" class="BotonOperacion" href="" ng-click="EditarMedida(medida, 'nueva')">
+                                                        <span class="fa fa-pencil fa-2x"></span>
+                                                    </a>
+
+                                                    <span ng-if="editarMedida"  class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
+                                                </td>
+
+                                                <td class="text-center">
+                                                    <a  class="BotonOperacion" href=""  ng-click="BorrarMedidaAgregada($index)">
+                                                        <span class="fa fa-trash fa-2x"></span>
+                                                    </a>
+                                                </td>
+                                              </tr>    
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <br>
+                            <!-------- mensaje de error ---->
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div ng-repeat="error in mensajeError track by $index">
+                                        <span class="textoError">{{error}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <!---- botones de operacion --->
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <button class="btn botonCancelar btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarModuloForma()">CANCELAR</button>
+                                </div>
+
+                                <div class="col-xs-6">
+                                    <button focus class="btn botonAvanzar btn-block" ng-click="SiguienteDatosModulo1(moduloForma.nombre.$invalid, moduloForma.numeroSeccion.$invalid, moduloForma.margen.$invalid)">SIGUIENTE &#62;&#62;</button>
+                                </div>
+                            </div>
+                            <br> 
+                        </div>
+                        
+                        <!-- Paso 2-->
+                        <div ng-if="numeroPaso == 2">
+                           <div class="row">
+                                <div class="col-sm-6" ng-if="operacion != 'Editar'">
+                                     <h4>Otros Gastos</h4>
+                                     <br>
+                                     <div class="entrada2">
+                                        <input ng-pattern="erNumeroDecimal" type="text" required class="{{claseModulo.desperdicio}} form-control" name="desperdicio" ng-model="nuevoModulo.Desperdicio"/>
+                                        <label>Desperdicio</label>
+                                    </div>
+                               </div>
+                               
+                               <div class="col-sm-6" ng-if="operacion == 'Editar'">
+                                    <div class="subrayado">
+                                    <label>Desperdicio</label><br>
+                                    <div class="textoModal">{{nuevoModulo.Desperdicio}}</div>
+                                    </div>
+                                </div>
+                            </div> 
+                            <br><br>
+  
+                            <div class="row">
+                                <div class="col-xs-12 subtituloModal">
+                                    <b>¿Qué consumibles se usan en este módulo?</b>
+                                </div>
+
+                                <br><br>
+                                <div class="col-xs-12">
+                                    <button ng-disabled="operacion == 'Editar'" class="btn btn-block {{claseModulo.consumible}}" ng-click="CambiarMostrarCatalogo(mostrarCatalago.consumible)">Consumible {{mostrarCatalago.consumible.texto}}</button>
+                                </div>
+                                <br><br><br>
+
+                                <div ng-show="mostrarCatalago.consumible.mostrar && operacion != 'Editar'">
+                                    <div class="col-xs-12">
+                                       <div class="panelOculto">
+                                            <input type="text" class="buscar input-md form-control" placeholder="Buscar" ng-model="buscarConsumible"/>
+                                            <br>
+                                            <div class="panel panel-default  tablaDropdowlist" >
+                                                <table class="table table-hover table-responsive">
+                                                  <tbody  style="cursor: pointer">
+                                                    <tr ng-repeat="consumible in consumible | filter: { Nombre:buscarConsumible} | orderBy:'Nombre'">
+                                                        <td ng-show="consumible.Activo && consumible.mostrar" data-toggle="tooltip" data-placement="bottom" title="Costo: ${{consumible.Costo}}">
+                                                            {{consumible.Nombre}} 
+                                                            <span class="pull-right">
+                                                                <a style="margin-left:10px" class="BotonOperacion" href=""  ng-click="AgregarConsumible(consumible)">
+                                                                    <span class="fa fa-plus fa-2x"></span>
+                                                                </a>
+                                                                
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                  </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <br>
+
+                            <div class="row" ng-if="consumibleModulo.length > 0">
+                                <div class="col-xs-12 subtituloModal">
+                                    <b>Consumibles</b>
+                                </div>
+                                <br> <br>
+                                <div class="col-xs-12">
+                                    <div class="piezaPorComponenteTabla">
+                                        <table class="table table-hover">
+                                            <thead class="TituloTabla">
+                                              <tr>
+                                                <th><button class="btn botonFalso"><b>Consumible</b></button></th>
+                                                <th><button class="btn botonFalso"><b>Cantidad</b></button></th>
+                                                <th><button class="btn botonFalso"><b>Total</b></button></th>
+                                                <th><button class="btn botonFalso"><b>Quitar</b></button></th>
+                                              </tr>
+                                            </thead>
+                                            <tbody ng-repeat="consumible in consumibleModulo | orderBy:'Consumible.Nombre'">
+                                              <tr>
+                                                <td>{{consumible.Consumible.Nombre}}</td>
+
+                                                <td>
+                                                    <div class="cantidad">
+                                                        <button ng-disabled="operacion == 'Editar'" class="btn btn-sm cantidadMenos fa fa-minus" ng-click="RemoverCantidadConsumible(consumible)"></button>
+                                                        <input  disabled type="text" class="cantidadPieza" ng-model="consumible.Cantidad"/>
+                                                        <button ng-disabled="operacion == 'Editar'" class="btn btn-sm cantidadMas fa fa-plus" ng-click="AgregarCantidadConsumible(consumible)"></button>
+                                                    </div>
+                                                </td>
+                                                
+                                                <td>{{consumible.Cantidad * consumible.Consumible.Costo}}</td>
+
+                                                <td>
+                                                    <a ng-if="operacion != 'Editar'" class="BotonOperacion" href=""  ng-click="QuitarConsumible(consumible)">
+                                                        <span class="fa fa-times fa-2x"></span>
+                                                    </a>
+                                                    
+                                                    <a ng-if="operacion == 'Editar'" class="botonRegistroDeshabilitado" href="" >
+                                                        <span class="fa fa-times fa-2x"></span>
+                                                    </a>
+                                                </td>
+
+                                              </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <br>
+                            <!-------- mensaje de error ---->
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div ng-repeat="error in mensajeError">
+                                        <span class="textoError">{{error}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <!---- botones de operacion --->
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <button class="btn botonCancelar btn-block" data-dismiss="modal" aria-label="Close" ng-click="PasoAnterior()">&lt;&lt; ANTERIOR</button>
+                                </div>
+
+                                <div class="col-xs-6">
+                                    <button focus class="btn botonAvanzar btn-block" ng-click="SiguienteDatosModulo2(moduloForma.desperdicio.$invalid)">SIGUIENTE &gt;&gt;</button>
+                                </div>
+                            </div>
+                            <br> 
+                        </div>
+                        
+                        <!-- Paso 3 -->
+                        <div ng-if="numeroPaso == 3">
+                           <div class="row">
+                                <div class="col-sm-12">
+                                     <h4>{{nuevoModulo.TipoModulo.Nombre}} - {{nuevoModulo.Nombre}}</h4>
+                               </div>
+                            </div> 
+                            <br>
+                            
+                            <div class="row">
+                                <div class="col-xs-12 subtituloModal">
+                                    <b>¿Qué componentes se usan para fabricar este módulo?</b>
+                                </div>
+
+                                <br><br>
+                                <div class="col-xs-12">
+                                    <button ng-disabled="operacion == 'Editar'" class="btn btn-block {{claseModulo.componente}}" ng-click="CambiarMostrarCatalogo(mostrarCatalago.componente)">Componente {{mostrarCatalago.componente.texto}}</button>
+                                </div>
+                                <br><br><br>
+
+                                <div ng-show="mostrarCatalago.componente.mostrar && operacion != 'Editar'">
+                                    <div class="col-xs-12">
+                                       <div class="panelOculto">
+                                            <input type="text" class="buscar input-md form-control" placeholder="Buscar" ng-model="buscarComponente"/>
+                                            <br>
+                                            <div class="panel panel-default  tablaDropdowlist" >
+                                                <table class="table table-hover table-responsive">
+                                                  <tbody  style="cursor: pointer">
+                                                    <tr ng-repeat="componente in componente | filter: { Nombre:buscarComponente} | orderBy:'Nombre'">
+                                                        <td ng-show="componente.Activo && componente.mostrar">
+                                                           {{componente.Nombre}}
+                                                            <span class="pull-right">
+                                                                <a  style="margin-left:10px" class="BotonOperacion" href=""  ng-click="AgregarComponente(componente)">
+                                                                    <span class="fa fa-plus fa-2x"></span>
+                                                                </a>
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                  </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <br>
+
+                            <div class="row" ng-if="componenteModulo.length > 0">
+                                <div class="col-xs-12 subtituloModal">
+                                    <b>Componentes</b>
+                                </div>
+                                <br> <br>
+                                <div class="col-xs-12">
+                                    <div class="piezaPorComponenteTabla">
+                                        <table class="table table-hover">
+                                            <thead class="TituloTabla">
+                                              <tr>
+                                                <th><button class="btn botonFalso"><b>Componente</b></button></th>
+                                                <th><button class="btn botonFalso"><b>Cantidad</b></button></th>
+                                                <th><button class="btn botonFalso"><b>Quitar</b></button></th>
+                                              </tr>
+                                            </thead>
+                                            <tbody ng-repeat="componente in componenteModulo | orderBy:'Componente.Nombre'">
+                                              <tr>
+                                                <td>{{componente.Componente.Nombre}}</td>
+
+                                                <td>
+                                                    <div class="cantidad">
+                                                        <button ng-disabled="operacion == 'Editar'" class="btn btn-sm cantidadMenos fa fa-minus" ng-click="RemoverCantidadComponente(componente)"></button>
+                                                        <input  disabled type="text" class="cantidadPieza" ng-model="componente.Cantidad"/>
+                                                        <button ng-disabled="operacion == 'Editar'" class="btn btn-sm cantidadMas fa fa-plus" ng-click="AgregarCantidadComponente(componente)"></button>
+                                                    </div>
+                                                </td>
+
+                                                <td>
+                                                    <a ng-if="operacion != 'Editar'" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="QuitarComponente(componente)">
+                                                        <span class="fa fa-times fa-2x"></span>
+                                                    </a>
+                                                    
+                                                    <a ng-if="operacion == 'Editar'" class="botonRegistroDeshabilitado" href="" data-toggle="modal" data-target="#">
+                                                        <span class="fa fa-times fa-2x"></span>
+                                                    </a>
+                                                </td>
+
+                                              </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <br>
+                            <!-------- mensaje de error ---->
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div ng-repeat="error in mensajeError">
+                                        <span class="textoError">{{error}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <!---- botones de operacion --->
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <button class="btn botonCancelar btn-block" data-dismiss="modal" aria-label="Close" ng-click="PasoAnterior()">&lt;&lt; ANTERIOR</button>
+                                </div>
+
+                                <div class="col-xs-6">
+                                    <button ng-if="nuevoModulo.NumeroSeccion != '0'" focus class="btn botonAvanzar btn-block" ng-click="SiguienteComponente()">SIGUIENTE &gt;&gt;</button>
+                                </div>
+                                
+                                <div class="col-xs-6">
+                                    <button ng-if="nuevoModulo.NumeroSeccion == '0'" focus class="btn botonAvanzar btn-block" ng-click="SiguienteComponente()">TERMINAR</button>
+                                </div>
+                                
+                            </div>
+                            <br> 
+                        </div>
+                        
+                        <!-- Paso 4 -->
+                        <div ng-if="numeroPaso == 4">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                     <h4>{{nuevoModulo.TipoModulo.Nombre}} - {{nuevoModulo.Nombre}}</h4>
+                               </div>
+                            </div> 
+                            <br>
+                            
+                            <div class="row">
+                                <div class="col-xs-12 subtituloModal">
+                                   <b>Indica el ancho de las pizas del frente del módulo</b>
+                                </div>
+
+                                <br><br>
+                                <div class="col-xs-12">
+                                    <div class="table-responsive TablaModal">
+                                        <table class="table table-hover">
+                                            <thead class="TituloTabla">
+                                              <tr>
+                                                <th><button class="btn botonOrdenar"><b>Parte </b></button></th>
+                                                <th><button class="btn botonOrdenar"><b>Ancho </b></button></th>
+                                              </tr>
+                                            </thead>
+                                            <tbody ng-repeat="parte in parteModulo | orderBy:'NombreTipoParte'">
+                                              <tr>
+                                               
+                                                <td>{{parte.NombreTipoParte}}</td>
+                                                
+                                                <td>
+                                                    <input ng-disabled="operacion == 'Editar'" required ng-pattern="erNumeroFraccion" type="text" ng-model="parte.Ancho" class="text-right {{parte.claseAncho}}"/>
+                                                </td>              
+                
+                                              </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            
+                            <!-- Secciones del módulo -->
+                            <div class="row">
+                               <div class="col-xs-12 subtituloModal">
+                                   <b>Indica los datos de cada sección</b>
+                                </div>
+                                <br><br>
+                                <div class="col-xs-12">
+                                    <div>
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                Alto Módulo: 
+                                                <button ng-repeat="alto in alturas" class="btn" ng-class="GetClaseLuz(alto)" style="margin-right:10px" ng-click="CambiarAltoLuz(alto)">
+                                                    {{alto}}
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <br>
+                                        <div class="table-responsive">
+                                            <table class="table table-hover">
+                                                <thead class="TituloTabla">
+                                                  <tr>
+                                                    <th><button class="btn botonOrdenar"><b>Tipo Sección</b></button></th>
+                                                    <th><button class="btn botonOrdenar"><b>Luz</b></button></th>
+                                                    <th><button class="btn botonOrdenar"><b># Entrepaños</b></button></th>
+                                                    <th><button class="btn botonOrdenar"><b># Piezas</b></button></th>
+                                                    <th><button class="btn botonOrdenar"><b>Peinazo Vertical</b></button></th>
+                                                  </tr>
+                                                </thead>
+                                                <tbody ng-repeat="seccion in seccionModulo | orderBy:['SeccionPorModulo.SeccionModulo.Nombre']">
+                                                  <tr>
+                                                    <!-- Tipo de seccion Modulo -->
+                                                    <td class="dropdown">
+                                                        <button ng-disabled="operacion == 'Editar'" class="dropdown-toggle  {{seccion.claseTipoSeccion}}" data-toggle="dropdown">
+                                                            <span>{{seccion.SeccionModulo.Nombre}}</span>
+                                                            <span class="caret"></span>
+                                                        </button>
+
+                                                        <ul class="dropdown-menu elemetosDropdownListModal">
+                                                            <li ng-repeat="tipo in tipoSeccion | orderBy:'Nombre'">
+                                                                <a  href="" class="dropdownOpcionModal" ng-click="CambiaSeccionModulo(tipo, seccion)">
+                                                                    <span>{{tipo.Nombre}}</span>
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </td>
+                                                   
+                                                    <td style="max-width:100px" ng-repeat="luz in seccionModulo[$index].LuzPorSeccion | filter:{AltoModulo: altoLuz}:true" class="text-center">
+                                                        <input style="max-width:90px" required ng-pattern="erNumeroFraccion" type="text" ng-model="luz.Luz" class="text-right {{luz.claseLuz}}"/>
+                                                    </td>
+                                                    
+                                                    <td ng-repeat="luz in seccionModulo[$index].LuzPorSeccion | filter:{AltoModulo: altoLuz}:true" class="text-center cantidadModulo">
+                                                       <div class="cantidad">
+                                                            <button ng-disabled="seccion.SeccionModulo.Nombre == 'Cajón'" class="btn btn-sm cantidadMenos fa fa-minus" ng-click="RemoverNumeroEntrepano(luz)"></button>
+                                                            <input  disabled type="text" class="cantidadPieza" ng-model="luz.NumeroEntrepano"/>
+                                                            <button ng-disabled="seccion.SeccionModulo.Nombre == 'Cajón'" class="btn btn-sm cantidadMas fa fa-plus" ng-click="AgregarNumeroEntrepano(luz)"></button>
+                                                        </div>
+                    
+                                                    </td>
+                                                    
+                                                    <td>
+                                                        <div class="cantidad cantidadModulo">
+                                                            <button ng-disabled="operacion == 'Editar'" class="btn btn-sm cantidadMenos fa fa-minus" ng-click="RemoverNumeroPiezas(seccion)"></button>
+                                                            <input  disabled type="text" class="cantidadPieza" ng-model="seccion.NumeroPiezas"/>
+                                                            <button ng-disabled="operacion == 'Editar'" class="btn btn-sm cantidadMas fa fa-plus" ng-click="AgregarNumeroPiezas(seccion)"></button>
+                                                        </div>
+                                                    </td>
+                                            
+                                                    <td> 
+                                                        <input ng-disabled="seccion.NumeroPiezas == '1' || operacion == 'Editar'" required ng-pattern="erNumeroFraccion" type="text" ng-model="seccion.PeinazoVertical" class="text-right {{seccion.clasePeinazo}}"/> 
+                                                    </td>
+                                                  </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    
+                           
+                            <br>
+                            <!-------- mensaje de error ---->
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div ng-repeat="error in mensajeError">
+                                        <span class="textoError">{{error}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <!---- botones de operacion --->
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <button class="btn botonCancelar btn-block" data-dismiss="modal" aria-label="Close" ng-click="PasoAnterior()">&lt;&lt; ANTERIOR</button>
+                                </div>
+
+                                <div class="col-xs-6">
+                                    <button focus class="btn botonAvanzar btn-block" ng-click="TerminarModuloForma()">TERMINAR</button>
+                                </div>
+                            </div>
+                            <br> 
+                        </div>
+                        
+                    </div>
+                </form>
+            </div>
+            <br><br><br>
+        </div>
+    </div>
+    
+    <!-------------- Imagen expandida-------------->
+    <div class="modal fade" id="ImagenModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <br>    <br>   <br>
+        <div class="modal-dialog">
+            <div class="modal-content">
+              
+               <div class="row">
+                  
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center">{{nuevoModulo.TipoModulo.Nombre}} {{nuevoModulo.Nombre}}</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-body">
+                    <img ng-if="!imagenSeleccionada" class="image-responsive center-block" ng-src="data:image/PNG;base64,{{nuevoModulo.Imagen}}"/> 
+                    <span ng-if="imagenSeleccionada" id="PrevisualizarImagenDetalles"></span>
+                </div>
+            </div>
+        </div>
+    </div>  
+    
+    <!-- Desactivar Modal -->
+    <div class="modal fade" id="CambiarActivoModuloModal" data-keyboard="false" data-backdrop="static">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                
+                <div class="modal-body">
+                    <br>
+                    <div class="panel panel-default modalMensaje">
+                        <br>
+                        <b>{{mensajeAdvertencia}}</b>
+                        <br><br>
+
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <button class="btn botonCancelar" data-dismiss="modal" aria-label="Close" ng-click="CancelarCambiarActivo()">No</button>
+                            </div>
+                            <div class="col-xs-6">
+                                <button class="btn botonAvanzar" data-dismiss="modal" aria-label="Close" ng-click="ConfirmarActualizarActivo()">Si</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div> 
+    
+    
+    <!-- Modal para mensajes -->
+    <div class="modal fade" id="mensajeModulo">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                
+                <div class="modal-body">
+                    <div class="panel panel-default modalMensaje">
+                        <br>
+                        <b>{{mensaje}}</b>
+
+                        <br><br>
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <button class="btn  botonAvanzar" data-dismiss="modal" aria-label="Close">Aceptar</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div> 
+</div>
+
+     

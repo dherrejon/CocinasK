@@ -257,6 +257,23 @@
     $app->put('/EditarTipoModulo', $seguridad, $ChecarSesion, 'EditarTipoModulo');
     $app->post('/ActivarDesactivarTipoModulo', $seguridad, $ChecarSesion, 'ActivarDesactivarTipoModulo');
 
+    /*------------------------ Modulo ----------------------------*/
+    $app->get('/GetModulo', $seguridad, $ChecarSesion, 'GetModulo');
+    $app->post('/AgregarModulo', $seguridad, $ChecarSesion, 'AgregarModulo');
+    $app->put('/EditarModulo', $seguridad, $ChecarSesion, 'EditarModulo');
+    $app->post('/ActivarDesactivarModulo', $seguridad, $ChecarSesion, 'ActivarDesactivarModulo');
+
+    $app->post('/GetMedidasPorModulo', $seguridad, $ChecarSesion, 'GetMedidasPorModulo');
+    $app->post('/ActivarDesactivarMedidasPorModulo', $seguridad, $ChecarSesion, 'ActivarDesactivarMedidasPorModulo');
+    $app->post('/GetConsumiblePorModulo', $seguridad, $ChecarSesion, 'GetConsumiblePorModulo');
+    $app->post('/GetComponentePorModulo', $seguridad, $ChecarSesion, 'GetComponentePorModulo');
+    $app->post('/GetPartePorModulo', $seguridad, $ChecarSesion, 'GetPartePorModulo');
+    $app->post('/GetSeccionPorModulo', $seguridad, $ChecarSesion, 'GetSeccionPorModulo');
+    $app->post('/GetLuzPorSeccion', $seguridad, $ChecarSesion, 'GetLuzPorSeccion');
+
+    $app->put('/EditarMedidaPorModulo', $seguridad, $ChecarSesion, 'EditarMedidaPorModulo');
+    $app->post('/GuardarImagenModulo/:id', $seguridad, $ChecarSesion, 'GuardarImagenModulo');
+
     /*------------------------Pieza----------------------------*/
     $app->get('/GetPieza', $seguridad, $ChecarSesion, 'GetPieza');
     $app->post('/ActivarDesactivarPieza', $seguridad, $ChecarSesion, 'ActivarDesactivarPieza');
@@ -296,10 +313,14 @@
     $app->put('/EditarCombinacionMaterial', $seguridad, $ChecarSesion, 'EditarCombinacionMaterial');
     $app->post('/ActivarDesactivarCombinacionMaterial', $seguridad, $ChecarSesion, 'ActivarDesactivarCombinacionMaterial');
 
-    $app->get('/GetCombinacionPorMaterialComponente', $seguridad, $ChecarSesion, 'GetCombinacionPorMaterialComponente');
+    $app->post('/GetCombinacionPorMaterialComponente', $seguridad, $ChecarSesion, 'GetCombinacionPorMaterialComponente');
+    $app->post('/GetCombinacionPorMaterialComponentePorComponente', $seguridad, $ChecarSesion, 'GetCombinacionPorMaterialComponentePorComponente');
 
     /*------------------------Consumible----------------------------*/
     $app->get('/GetConsumible', $seguridad, $ChecarSesion, 'GetConsumible');
+    $app->post('/AgregarConsumible', $seguridad, $ChecarSesion, 'AgregarConsumible');
+    $app->put('/EditarConsumible', $seguridad, $ChecarSesion, 'EditarConsumible');
+    $app->post('/ActivarDesactivarConsumible', $seguridad, $ChecarSesion, 'ActivarDesactivarConsumible');
     
 
     $app->run(); 

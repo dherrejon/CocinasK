@@ -218,31 +218,63 @@ function ActivarDesactivarCombinacionMaterial()
 
 /*--------------------Combinacion Por material Componente-------------------*/
 function GetCombinacionPorMaterialComponente()
-{
+{    
     global $app;
     global $session_expiration_time;
 
     $request = \Slim\Slim::getInstance()->request();
-
-    $sql = "SELECT * FROM CombinacionMaterialVista";
-
+    $combinacionId = json_decode($request->getBody());
+    
+    
+    $sql = "SELECT * FROM CombinacionMaterialVista WHERE CombinacionMaterialId='".$combinacionId[0]."'";
+    
     try 
     {
-
         $db = getConnection();
         $stmt = $db->query($sql);
         $response = $stmt->fetchAll(PDO::FETCH_OBJ);
         $db = null;
-
         
         echo json_encode($response);  
     } 
     catch(PDOException $e) 
     {
-        echo($e);
+        echo $e;
+        //echo '[ { "Estatus": "Fallo" } ]';
         $app->status(409);
         $app->stop();
     }
 }
+
+function GetCombinacionPorMaterialComponentePorComponente()
+{    
+    global $app;
+    global $session_expiration_time;
+
+    $request = \Slim\Slim::getInstance()->request();
+    $componente = json_decode($request->getBody());
+    
+    
+    $sql = "SELECT * FROM CombinacionMaterialVista WHERE ComponenteId='".$componente[0]."'";
+    
+    try 
+    {
+        $db = getConnection();
+        $stmt = $db->query($sql);
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $db = null;
+        
+        echo json_encode($response);  
+    } 
+    catch(PDOException $e) 
+    {
+        echo $e;
+        //echo '[ { "Estatus": "Fallo" } ]';
+        $app->status(409);
+        $app->stop();
+    }
+}
+
+
 
 ?>

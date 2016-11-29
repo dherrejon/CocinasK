@@ -65,9 +65,9 @@
     cursor: default;
 }
 
-.botonOperacion:hover, .botonOperacion:active
+.botonOperacion:hover, .botonOperacion:active, .botonOperacionNegro:hover
 {
-    color: white;
+    color: white !important;
     background:  rgb(250, 97, 21);
     border: 2px solid rgb(250, 97, 21);
     outline: none !important;

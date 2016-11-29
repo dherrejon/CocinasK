@@ -280,7 +280,6 @@ function EditarTipoMaterial($http, CONFIG, $q, tipoMaterial)
     return q.promise;
 }
 
-
 //Activar - Desactivar Tipo de Material
 function ActivarDesactivarTipoMaterial($http, $q, CONFIG, tipoMaterial) 
 {

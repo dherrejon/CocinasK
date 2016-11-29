@@ -164,29 +164,44 @@ class CombinacionPorMaterialComponente
     }
 }
 
-//obtener combinaciones por material componente
-function GetCombinacionPorMaterialComponente($http, $q, CONFIG)     
+function GetCombinacionPorMaterialComponente($http, $q, CONFIG, id, modulo)    // obtener los componentes del módulo
 {
     var q = $q.defer();
+    
+    var dato = [];
+    var urlPHP;
+    dato[0] = id;
+    
+    if(modulo == "componente")
+    {
+        urlPHP ='/GetCombinacionPorMaterialComponentePorComponente';
+    }
+    else if(modulo == "combinacion") 
+    {
+        urlPHP ='/GetCombinacionPorMaterialComponente';
+    }
+        
 
     $http({      
-          method: 'GET',
-          url: CONFIG.APIURL + '/GetCombinacionPorMaterialComponente',
+          method: 'POST',
+          url: CONFIG.APIURL + urlPHP,
+          data: dato
 
       }).success(function(data)
         {
-            var combinacionPorMaterial = []; 
+            var combinacionMaterialComponente = []; 
             
             for(var k=0; k<data.length; k++)
             {
-                combinacionPorMaterial[k] = new CombinacionPorMaterialComponente();
-                combinacionPorMaterial[k] = SetCombinacionPorMaterialComponente(data[k]);
+                combinacionMaterialComponente[k] = new CombinacionPorMaterialComponente();
+                combinacionMaterialComponente[k] = SetCombinacionPorMaterialComponente(data[k]);
             }
         
-            q.resolve(combinacionPorMaterial);  
-        }).error(function(data, status){
-            q.resolve(status);
+            q.resolve(combinacionMaterialComponente);   
+        }).error(function(data){
+            q.resolve(data);
      }); 
+    
     return q.promise;
 }
 

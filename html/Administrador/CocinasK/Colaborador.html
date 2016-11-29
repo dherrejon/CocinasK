@@ -480,12 +480,13 @@
                                 <label>Telefono </label>
                             </div>
                         </div>
+                        
                         <div class="col-sm-2 col-md-2 col-xs-4" ng-if="!editarContacto.realizar || editarContacto.tipoContacto != 'telefono'">
-                             <a  class="btn btn-block botonOperacion fa fa-plus" data-toggle="tooltip" data-placement="bottom" title="Agregar Teléfono" ng-click="AgregarTelefono(colaboradorForma.telefono.$invalid)"></a>
+                             <button ng-disabled="editarContacto.realizar" class="btn btn-block botonOperacion fa fa-plus" data-toggle="tooltip" data-placement="bottom" title="Agregar Teléfono" ng-click="AgregarTelefono(colaboradorForma.telefono.$invalid)"></button>
                         </div>
                        
                         <div class="col-sm-2 col-md-2 col-xs-4" ng-if="editarContacto.realizar && editarContacto.tipoContacto == 'telefono'">
-                            <div class="btn-group">
+                            <div class="pull-right btn-group">
                               <button class="btn  botonOperacion fa fa-pencil" data-toggle="tooltip" data-placement="bottom" title="Editar Teléfono" ng-click="AgregarTelefono(colaboradorForma.telefono.$invalid)"></button>
                               <button class="btn  botonCancelar fa fa-ban" data-toggle="tooltip" data-placement="bottom" title="Cancelar" ng-click="CancelarEdicion()"></button>
                             </div> 
@@ -518,9 +519,11 @@
                                         <td>{{telefono.Contacto | tel}}</td>
                                           
                                         <td>
-                                            <a  class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="EditarContactoAgregado(telefono,'registrado')">
+                                            <a  ng-if="!editarContacto.realizar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="EditarContactoAgregado(telefono,'registrado')" >
                                                 <span class="fa fa-pencil fa-2x"></span>
                                             </a>
+                                            
+                                            <span ng-if="editarContacto.realizar"  class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
                                         </td>
                                           
                                         <td>
@@ -536,9 +539,11 @@
                                         <td>{{telefono.Contacto | tel}}</td>
                                           
                                         <td>
-                                            <a  class="BotonOperacion" href=""  ng-click="EditarContactoAgregado(telefono, 'nuevo')">
+                                            <a  ng-if="!editarContacto.realizar" class="BotonOperacion" href=""  ng-click="EditarContactoAgregado(telefono, 'nuevo')">
                                                 <span class="fa fa-pencil fa-2x"></span>
                                             </a>
+                                            
+                                            <span ng-if="editarContacto.realizar"  class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
                                         </td>
                                           
                                         <td>
@@ -584,11 +589,13 @@
                                 <label>Correo</label>
                             </div>
                         </div>
+                        
                         <div class="col-sm-2 col-xs-4" ng-if="!editarContacto.realizar || editarContacto.tipoContacto != 'correo'">
-                             <a class="btn btn-block botonOperacion fa fa-plus" data-toggle="tooltip" data-placement="bottom" title="Agregar Correo Electrónico" ng-click="AgregarCorreo(colaboradorForma.correo.$invalid)"></a>
+                             <button  ng-disabled="editarContacto.realizar" class="btn btn-block botonOperacion fa fa-plus" data-toggle="tooltip" data-placement="bottom" title="Agregar Correo Electrónico" ng-click="AgregarCorreo(colaboradorForma.correo.$invalid)"></button>
                         </div>
+                        
                         <div class="col-sm-2 col-xs-4" ng-if="editarContacto.realizar && editarContacto.tipoContacto == 'correo'">
-                            <div class="btn-group btn-block">
+                            <div class="pull-right btn-group">
                               <button class="btn  botonOperacion fa fa-pencil" data-toggle="tooltip" data-placement="bottom" title="Editar Correo" ng-click="AgregarCorreo(colaboradorForma.correo.$invalid)"></button>
                               <button class="btn  botonCancelar fa fa-ban" data-toggle="tooltip" data-placement="bottom" title="Cancelar" ng-click="CancelarEdicion()"></button>
                             </div> 
@@ -621,13 +628,15 @@
                                         <td>{{correo.Contacto}}</td>
                                         
                                         <td>
-                                            <a  class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="EditarContactoAgregado(correo,'registrado')">
+                                            <a  ng-if="!editarContacto.realizar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="EditarContactoAgregado(correo,'registrado')">
                                                 <span class="fa fa-pencil fa-2x"></span>
                                             </a>
+                                            
+                                            <span ng-if="editarContacto.realizar"  class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
                                         </td>
                                           
                                         <td>
-                                            <a  class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirModalEliminarContacto(correo)">
+                                            <a class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirModalEliminarContacto(correo)">
                                                 <span class="fa fa-trash fa-2x"></span>
                                             </a>
                                         </td>
@@ -639,13 +648,15 @@
                                         <td>{{correo.Contacto}}</td>
                                           
                                         <td>
-                                            <a  class="BotonOperacion" href=""  ng-click="EditarContactoAgregado(correo, 'nuevo')">
+                                            <a ng-if="!editarContacto.realizar"   class="BotonOperacion" href=""  ng-click="EditarContactoAgregado(correo, 'nuevo')">
                                                 <span class="fa fa-pencil fa-2x"></span>
                                             </a>
+                                            
+                                            <span ng-if="editarContacto.realizar"  class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
                                         </td>
                                           
                                         <td>
-                                            <a  class="BotonOperacion" href=""  ng-click="BorrarContactoAgregado(correo.Contacto)">
+                                            <a class="BotonOperacion" href=""  ng-click="BorrarContactoAgregado(correo.Contacto)">
                                                 <span class="fa fa-trash fa-2x"></span>
                                             </a>
                                         </td>

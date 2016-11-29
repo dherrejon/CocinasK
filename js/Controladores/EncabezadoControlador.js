@@ -83,7 +83,7 @@ app.controller("EncabezadoControlador", function($scope, $rootScope, $http, CONF
     /*-------------------------------Opciones para cada perfil-------------------------------------*/
     $rootScope.Perfiles = 
     [
-        {nombre: "Administrador", paginaPrincipal: "#Combinacion", visible: false, barraNavegacion: OpcionAdministrador}, 
+        {nombre: "Administrador", paginaPrincipal: "#Modulo", visible: false, barraNavegacion: OpcionAdministrador}, 
         {nombre: "Ejecutivo",  paginaPrincipal: "#Ejecutivo", visible: false, barraNavegacion: OpcionEjecutivo}, 
         {nombre: "Operativo",  paginaPrincipal: "#Operativo", visible: false, barraNavegacion: OpcionOperativo} 
     ];
@@ -131,9 +131,13 @@ function SetPerfilNombre($rootScope, usuario)
                 $rootScope.barraNavegacionOpciones[0].elemento[3].show= true;
             }
             
-            else if(usuario.Permiso[k] == "AdmComConsultar")
+            else if(usuario.Permiso[k] == "CatModConsultar")
             {
                 $rootScope.barraNavegacionOpciones[1].elemento[0].show = true;
+            }
+            else if(usuario.Permiso[k] == "AdmComConsultar")
+            {
+                $rootScope.barraNavegacionOpciones[1].elemento[1].show = true;
             }
             
             
@@ -167,8 +171,9 @@ var OpcionAdministrador =
     },
     { 
         Opcion: {texto:"Catálogos", id:"catalogos"},
-        elemento: [ 
-                       { referencia: "#Combinacion", texto:"Combinación de Materiales", nuevaPagina:true, show:false} 
+        elemento: [     
+                        { referencia: "#Modulo", texto:"Módulos", nuevaPagina:true, show:false},
+                        { referencia: "#Combinacion", texto:"Combinación de Materiales", nuevaPagina:true, show:false} 
                   ]                      
     },
     { 

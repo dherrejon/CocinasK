@@ -361,10 +361,9 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
     
     $scope.componenteTab = "Datos";
     
-    $scope.mostrarDetalles = [{
-                                pieza:{mostrar:true, texto:"<<"},
-                                combinacion:{mostrar:true, texto:"<<"}
-                              }];
+    $scope.ordenarPorConsumible = "Nombre";
+    
+    $scope.mostrarDetalles = "pieza";
     
     //Cambia el contenido de la pestaña
     $scope.SeleccionarTab = function(tab, index)    
@@ -377,16 +376,25 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
                 $('#Componente').show();
                 $('#TipoModulo').hide();
                 $('#Pieza').hide();
+                $('#Consumible').hide();
                 break;
             case 1:
                 $('#Pieza').show();
                 $('#TipoModulo').hide();
                 $('#Componente').hide();
+                $('#Consumible').hide();
                 break;
             case 2:
                 $('#TipoModulo').show();
                 $('#Componente').hide();
                 $('#Pieza').hide();
+                $('#Consumible').hide();
+                break;
+            case 3:
+                $('#Consumible').show();
+                $('#Componente').hide();
+                $('#Pieza').hide();
+                $('#TipoModulo').hide();
                 break;
             default:
                 break;
@@ -404,16 +412,16 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
             $scope.botonPieza.texto = "<<";
             $scope.nuevoComponente = new Componente(); 
             
-            $scope.nuevoComponente.CombinacionMaterial = [];
+            $scope.combinacionMaterialComponente = [];
             
             for(var k=0; k<$scope.combinacion.length; k++)
             {
-                $scope.nuevoComponente.CombinacionMaterial[k] = new CombinacionPorMaterialComponente();
-                $scope.nuevoComponente.CombinacionMaterial[k].CombinacionMaterial = SetCombinacionMaterial($scope.combinacion[k]);
+                $scope.combinacionMaterialComponente[k] = new CombinacionPorMaterialComponente();
+                $scope.combinacionMaterialComponente[k].CombinacionMaterial = SetCombinacionMaterial($scope.combinacion[k]);
                 
-                $scope.nuevoComponente.CombinacionMaterial[k].claseTipoMaterial = "dropdownListModal";
-                $scope.nuevoComponente.CombinacionMaterial[k].claseMaterial = "dropdownListModal";
-                $scope.nuevoComponente.CombinacionMaterial[k].claseGrueso = "dropdownListModal";
+                $scope.combinacionMaterialComponente[k].claseTipoMaterial = "dropdownListModal";
+                $scope.combinacionMaterialComponente[k].claseMaterial = "dropdownListModal";
+                $scope.combinacionMaterialComponente[k].claseGrueso = "dropdownListModal";
             }
         }
         else if(operacion == "Editar")
@@ -423,33 +431,8 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
             $scope.GetPiezaPorComponente(objeto.ComponenteId);
             
             $scope.nuevoComponente = SetComponente(objeto)
-            $scope.nuevoComponente.CombinacionMaterial = [];
-            
-            for(var k=0; k<objeto.CombinacionMaterial.length; k++)
-            {
-                $scope.nuevoComponente.CombinacionMaterial[k] = new CombinacionPorMaterialComponente();
-                
-                $scope.nuevoComponente.CombinacionMaterial[k].Grueso = objeto.CombinacionMaterial[k].Grueso;
-                
-                $scope.nuevoComponente.CombinacionMaterial[k].CombinacionMaterial.CombinacionMaterialId = objeto.CombinacionMaterial[k].CombinacionMaterial.CombinacionMaterialId;
-                $scope.nuevoComponente.CombinacionMaterial[k].CombinacionMaterial.Nombre = objeto.CombinacionMaterial[k].CombinacionMaterial.Nombre;
-                $scope.nuevoComponente.CombinacionMaterial[k].CombinacionMaterial.Activo = objeto.CombinacionMaterial[k].CombinacionMaterial.Activo;
-                
-                $scope.nuevoComponente.CombinacionMaterial[k].Material = SetMaterial(objeto.CombinacionMaterial[k].Material);
-                $scope.nuevoComponente.CombinacionMaterial[k].Material.TipoMaterial = SetTipoMaterial(objeto.CombinacionMaterial[k].Material.TipoMaterial);
-            
-                for(var i=0; i<$scope.material.length; i++)
-                {
-                    if($scope.material[i].MaterialId == $scope.nuevoComponente.CombinacionMaterial[k].Material.MaterialId)
-                    {
-                        $scope.nuevoComponente.CombinacionMaterial[k].Material.Grueso = $scope.material[i].grueso;
-                    }
-                }
-                
-                $scope.nuevoComponente.CombinacionMaterial[k].claseTipoMaterial = "dropdownListModal";
-                $scope.nuevoComponente.CombinacionMaterial[k].claseMaterial = "dropdownListModal";
-                $scope.nuevoComponente.CombinacionMaterial[k].claseGrueso = "dropdownListModal";
-            }
+           
+            $scope.GetCombinacionPorMaterialComponente(objeto.ComponenteId, "editar");
         }
         
         $('#componenteForma').modal('toggle');
@@ -546,6 +529,7 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
     $scope.TerminarComponente = function()
     {
         $scope.mensajeError = [];
+        $scope.nuevoComponente.CombinacionMaterial = $scope.combinacionMaterialComponente;
         var datosIncompletos = false;
         
         for(var k=0; k<$scope.nuevoComponente.CombinacionMaterial.length; k++)
@@ -749,7 +733,7 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
             
         }).catch(function(error)
         {
-            alert("Ha ocurrido un error al obtener los permisos." + error);
+            alert("Ha ocurrido un error al obtener las piezas del componente." + error);
             return;
         });
     };
@@ -758,35 +742,31 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
     $scope.AbrirDetallesComponenteForma = function(componente)
     {
         $scope.GetPiezaPorComponente(componente.ComponenteId);
+        $scope.GetCombinacionPorMaterialComponente(componente.ComponenteId);
         $scope.componenteDetalles = componente;
         $('#DetallesComponente').modal('toggle');
     };
     
     $scope.MostrarPanelDetalles = function(detalle)
     {
-        if(detalle == "pieza")
+        if(detalle == $scope.mostrarDetalles)
         {
-            $scope.mostrarDetalles[0].pieza.mostrar = !$scope.mostrarDetalles[0].pieza.mostrar;
-            if($scope.mostrarDetalles[0].pieza.mostrar)
-            {
-                $scope.mostrarDetalles[0].pieza.texto = "<<";
-            }
-            else
-            {
-                $scope.mostrarDetalles[0].pieza.texto = ">>";
-            }
+            $scope.mostrarDetalles = "";
+            return;
         }
-        else if(detalle == "combinacion")
+        
+        $scope.mostrarDetalles = detalle;
+    };
+    
+    $scope.GetClaseDetallesSeccion = function(seccion)
+    {
+        if($scope.mostrarDetalles == seccion)
         {
-            $scope.mostrarDetalles[0].combinacion.mostrar = !$scope.mostrarDetalles[0].combinacion.mostrar;
-            if($scope.mostrarDetalles[0].combinacion.mostrar)
-            {
-                $scope.mostrarDetalles[0].combinacion.texto = "<<";
-            }
-            else
-            {
-                $scope.mostrarDetalles[0].combinacion.texto = ">>";
-            }
+            return "botonOperacionNegro";
+        }
+        else
+        {
+            return "botonOperacion";
         }
     };
     
@@ -947,6 +927,7 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
     };
     
     /*----------------------------Consumible --------------------*/
+    $scope.claseConsumible = {nombre:"entrada", costo:"entrada"};
     //Obtiene los consumibles
     $scope.GetConsumible = function()      
     {
@@ -959,6 +940,136 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
         });
     };
     
+    /*-------- Ordenar -----------*/
+    //cambia el campo por el cual se van a ordenar los consumibles
+    $scope.CambiarOrdenarConsumible = function(campoOrdenar)
+    {
+        if($scope.ordenarPorConsumible == campoOrdenar)
+        {
+            $scope.ordenarPorConsumible = "-" + campoOrdenar;
+        }
+        else
+        {
+            $scope.ordenarPorConsumible = campoOrdenar;
+        }
+    };
+    
+    $scope.AbrirConsumibleForma = function(operacion, consumible)
+    {
+        $scope.operacion = operacion;
+        
+        if(operacion == "Agregar")
+        {
+            $scope.nuevoConsumible = new Consumible();
+        }
+        else if(operacion == "Editar")
+        {
+            $scope.nuevoConsumible = SetConsumible(consumible);
+        }
+        
+        $('#consumibleForma').modal('toggle');
+    };
+    
+    $scope.TerminarConsumible = function(nombreInvalido, costoInvalido)
+    {
+        $scope.mensajeError = [];
+        
+        if(nombreInvalido)
+        {
+            $scope.claseConsumible.nombre = "entradaError";
+            $scope.mensajeError[$scope.mensajeError.length] = "*El nombre solo puede tener los siguientes caracteres: letras, números, '.', '+', '-' y '#'.";  
+        }
+        else
+        {
+            $scope.claseConsumible.nombre = "entrada";
+        }
+        if(costoInvalido)
+        {
+            $scope.claseConsumible.costo = "entradaError";
+            $scope.mensajeError[$scope.mensajeError.length] = "*Indica un costo válido.";  
+        }
+        else
+        {
+            $scope.claseConsumible.costo = "entrada";
+        }
+        
+        if($scope.mensajeError.length > 0)
+        {
+            return;
+        }
+        
+        for(var k=0; k<$scope.consumible.length; k++)
+        {
+            if($scope.consumible[k].Nombre == $scope.nuevoConsumible.Nombre && $scope.consumible[k].ConsumibleId != $scope.nuevoConsumible.ConsumibleId)
+            {
+                $scope.claseConsumible.nombre = "entradaError";
+                $scope.mensajeError[$scope.mensajeError.length] = "*El consumible " + $scope.nuevoConsumible.Nombre + " ya exite."; 
+                return;
+            }
+        }
+        
+        if($scope.operacion == "Agregar")
+        {
+            $scope.AgregarConsumible();
+        }
+        else if($scope.operacion == "Editar")
+        {
+            $scope.EditarConsumible();
+        }
+        
+    };
+    
+    $scope.AgregarConsumible = function()
+    {
+        AgregarConsumible($http, CONFIG, $q, $scope.nuevoConsumible).then(function(data)
+        {
+            if(data == "Exitoso")
+            {
+                $scope.GetConsumible();
+                $('#consumibleForma').modal('toggle');
+                $scope.mensaje = "El consumible se ha agregado.";
+            }
+            else
+            {
+                $scope.mensaje = "Ha ocurrido un error. Intente más tarde.";
+            }
+            
+            $('#mensajeConfigurarModulo').modal('toggle');
+            
+        }).catch(function(error)
+        {
+            $scope.mensaje = "Ha ocurrido un error. Intente más tarde. Error: " + error;
+            $('#mensajeConfigurarModulo').modal('toggle');
+        });
+    };
+    
+    $scope.EditarConsumible = function()
+    {
+        EditarConsumible($http, CONFIG, $q, $scope.nuevoConsumible).then(function(data)
+        {
+            if(data == "Exitoso")
+            {
+                $scope.GetConsumible();
+                $('#consumibleForma').modal('toggle');
+                $scope.mensaje = "El consumible se ha editado.";
+            }
+            else
+            {
+                $scope.mensaje = "Ha ocurrido un error. Intente más tarde"; 
+            }
+            $('#mensajeConfigurarModulo').modal('toggle');
+        }).catch(function(error)
+        {
+            $scope.mensaje = "Ha ocurrido un error. Intente más tarde. Error: " + error;
+            $('#mensajeConfigurarModulo').modal('toggle');
+        });
+    };
+    
+    $scope.CerrarConsumibleForma = function()
+    {
+        $scope.claseConsumible = {nombre:"entrada", costo:"entrada"};
+        $scope.mensajeError = [];
+    };
     /*---------------------- Cambiar Activo -------------*/
     
     $scope.CambiarEstatusActivo = function(seccion, objeto)
@@ -1067,6 +1178,30 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
                 $('#mensajeConfigurarModulo').modal('toggle');
             });
         }
+        
+        if($scope.seccionCambiarActivo == "consumible")
+        {
+            datos[1] = $scope.objetoActivo.ConsumibleId;
+            
+            ActivarDesactivarConsumible($http, $q, CONFIG, datos).then(function(data)
+            {
+                if(data[0].Estatus == "Exito")
+                {
+                    $scope.mensaje = "El consumible se ha actualizado correctamente";
+                }
+                else
+                {
+                    $scope.objetoActivo.Activo = !$scope.objetoActivo.Activo;
+                    $scope.mensaje = "Ha ocurrido un error. Intente más tarde.";
+                } 
+                $('#mensajeConfigurarModulo').modal('toggle');
+            }).catch(function(error)
+            {
+                $scope.objetoActivo.Activo = !$scope.objetoActivo.Activo;
+                $scope.mensaje = "Ha ocurrido un error. Intente más tarde. Error: " + error;
+                $('#mensajeConfigurarModulo').modal('toggle');
+            });
+        }
     };
     
     $scope.CerrarTipoModuloForma = function()
@@ -1081,10 +1216,6 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
         GetComponente($http, $q, CONFIG).then(function(data)
         {
             $scope.componente = data;
-            if($scope.combinacionMaterialComponente !== null)
-            {
-                $scope.SetCombinacionlPorComponente();
-            }
         }).catch(function(error)
         {
             alert(error);
@@ -1105,16 +1236,27 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
         });
     };
     
-    $scope.GetCombinacionPorMaterialComponente = function()          
+    $scope.GetCombinacionPorMaterialComponente = function(componenteId, operacion)          
     {
-        GetCombinacionPorMaterialComponente($http, $q, CONFIG).then(function(data)
+        GetCombinacionPorMaterialComponente($http, $q, CONFIG, componenteId, "componente").then(function(data)
         {
             if(data.length > 0)
             {
                 $scope.combinacionMaterialComponente = data;
-                if($scope.componente !== null)
+                if(operacion == "editar")
+                for(var k=0; k<data.length; k++)
                 {
-                    $scope.SetCombinacionlPorComponente();
+                    for(var i=0; i<$scope.material.length; i++)
+                    {
+                        if($scope.material[i].MaterialId == $scope.combinacionMaterialComponente[k].Material.MaterialId)
+                        {
+                            $scope.combinacionMaterialComponente[k].Material.Grueso = $scope.material[i].grueso;
+                        }
+                    }
+
+                    $scope.combinacionMaterialComponente[k].claseTipoMaterial = "dropdownListModal";
+                    $scope.combinacionMaterialComponente[k].claseMaterial = "dropdownListModal";
+                    $scope.combinacionMaterialComponente[k].claseGrueso = "dropdownListModal";
                 }
             }
         }).catch(function(error)
@@ -1207,7 +1349,6 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
     $scope.GetConsumible();
     
     $scope.GetCombinacionMaterial();
-    $scope.GetCombinacionPorMaterialComponente();
     $scope.GetTipoMaterial();
     $scope.GetMaterial();
     $scope.GetGruesoMaterial();
@@ -1219,5 +1360,6 @@ var tabConModulo =
     [
         {titulo:"Componente", referencia: "#Componente", clase:"active", area:"componente"},
         {titulo:"Pieza", referencia: "#Pieza", clase:"", area:"pieza"},
-        {titulo:"Tipo Módulo", referencia: "#TipoModulo", clase:"", area:"tipoModulo"}
+        {titulo:"Tipo Módulo", referencia: "#TipoModulo", clase:"", area:"tipoModulo"},
+        {titulo:"Consumible", referencia: "#Consumible", clase:"", area:"consumible"}
     ];

@@ -15,11 +15,11 @@
             <div class="tab" role="tabpanel">
                 <!-- Pestañas -->
                 
-                <ul ng-if="anchoPantalla > 450" class="nav nav-tabs" role="tablist">
+                <ul ng-if="anchoPantalla > 714" class="nav nav-tabs" role="tablist">
                     <li   ng-repeat="tab in tabs" class="{{tab.clase}}"><a  href="" aria-controls="{{tab.area}}" role="tab" data-toggle="tab" ng-click="SeleccionarTab(tab, $index)">{{tab.titulo}}</a></li>
                 </ul>
                 
-                <ul ng-if="anchoPantalla < 451" class="nav nav">
+                <ul ng-if="anchoPantalla < 715" class="nav nav">
                     <li  class="tabSm dropdown">
 
                         <button  class="dropdown-toggle  btn bt-block dropDownTab" data-toggle="dropdown" >
@@ -191,6 +191,56 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <!--- Consumible -->
+                    <div role="tabpanel" class="tab-pane" id="Consumible">
+                        <br>
+                        <div class="row">
+                            <div class="col-md-11 col-xs-10">
+                                <div class="table-responsive TablaUnidadNegocio">
+                                    <table class="table table-hover">
+                                        <thead class="TituloTabla">
+                                          <tr>
+                                            <th><button class="btn botonOrdenar" ng-click="CambiarOrdenarConsumible('Nombre')"><b>Nombre </b><b ng-if="ordenarPorConsumible === 'Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPorConsumible === '-Nombre'" class="fa fa-arrow-down"></b></button></th>
+                                            <th><button class="btn botonOrdenar" ng-click="CambiarOrdenarConsumible('Costo')"><b>Costo </b><b ng-if="ordenarPorConsumible === 'Costo'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPorConsumible === '-Costo'" class="fa fa-arrow-down"></b></button></th>
+                                            <th><button class="btn botonFalso"><b>Editar</b></button></th>
+                                            <th><button class="btn botonFalso"><b>Activo</b></button></th>
+                                          </tr>
+                                        </thead>
+                                        <tbody ng-repeat="consumible in consumible | orderBy:[ordenarPorConsumible, 'Nombre']">
+                                          <tr>
+                                            <td>{{consumible.Nombre}}</td>
+                                            <td>{{consumible.Costo}}</td>
+
+                                            <td>
+                                                <a class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirConsumibleForma('Editar', consumible)">
+                                                    <span class="fa fa-pencil fa-2x"></span>
+                                                </a>
+                                                
+                                                <!--<span ng-if="!permisoUsuario.editarTipoUnidad" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>-->
+                                            </td>
+                                              
+                                            <td>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input ng-model="consumible.Activo" type="checkbox" value="" ng-click="CambiarEstatusActivo('consumible', consumible)">
+                                                        <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+                                                    </label>
+                                                </div>
+                                            </td>
+                                              
+                                          </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-2 col-md-1">
+                                 <button  class="btn btn-block botonOperacion fa fa-plus text-center" data-toggle="tooltip" data-placement="bottom" title="Agregar Tipo Módulo" ng-click="AbrirConsumibleForma('Agregar', null)"></button>
+                            </div>
+                        </div>
+                    </div>
+                    
                 </div>
             </div>
         </div>
@@ -234,11 +284,11 @@
                             <br>
                             <div class="row">
                                 <div class="col-xs-12">
-                                    <button class="btn btn-block botonOperacion" ng-click="MostrarPanelDetalles('pieza')">Piezas del componente {{mostrarDetalles[0].pieza.texto}}</button>
+                                    <button class="btn btn-block"  ng-class="GetClaseDetallesSeccion('pieza')" ng-click="MostrarPanelDetalles('pieza')">Piezas del componente</button>
                                 </div>
                             </div>
                             <br>
-                            <div class="table-responsive TablaModal" ng-show="mostrarDetalles[0].pieza.mostrar">
+                            <div class="table-responsive TablaModal" ng-show="mostrarDetalles == 'pieza'">
                                 <table class="table table-hover">
                                     <thead class="TituloTabla">
                                       <tr>
@@ -257,15 +307,15 @@
                         </div>
                     </div>
                     
-                    <div class="row" ng-if="componenteDetalles.CombinacionMaterial.length > 0">
+                    <div class="row" ng-if="combinacionMaterialComponente.length > 0">
                         <div class="col-xs-12">
                             <div class="row">
                                 <div class="col-xs-12">
-                                    <button class="btn btn-block botonOperacion" ng-click="MostrarPanelDetalles('combinacion')">Combinaciones de materiales {{mostrarDetalles[0].combinacion.texto}}</button>
+                                    <button class="btn btn-block" ng-class="GetClaseDetallesSeccion('combinacion')" ng-click="MostrarPanelDetalles('combinacion')">Combinaciones de materiales</button>
                                 </div>
                             </div>
                             <br>
-                            <div class="table-responsive TablaModal" ng-show="mostrarDetalles[0].combinacion.mostrar">
+                            <div class="table-responsive TablaModal" ng-show="mostrarDetalles == 'combinacion'">
                                 <table class="table table-hover">
                                     <thead class="TituloTabla">
                                       <tr>
@@ -275,7 +325,7 @@
                                         <th><button class="btn botonOrdenar"><b>Grueso</b></button></th>
                                       </tr>
                                     </thead>
-                                    <tbody ng-repeat="combinacion in componenteDetalles.CombinacionMaterial | orderBy:['CombinacionMaterial.Nombre']">
+                                    <tbody ng-repeat="combinacion in combinacionMaterialComponente | orderBy:['CombinacionMaterial.Nombre']">
                                       <tr ng-if="combinacion.CombinacionMaterial.Activo">
                                         <td>{{combinacion.CombinacionMaterial.Nombre}}</td>
                                         <td>{{combinacion.Material.TipoMaterial.Nombre}}</td>
@@ -447,7 +497,7 @@
                                             <th><button class="btn botonFalso"><b>Grueso</b></button></th>
                                           </tr>
                                         </thead>
-                                        <tbody ng-repeat="combinacion in nuevoComponente.CombinacionMaterial | orderBy:'CombinacionMaterial.Nombre'" ng-if="combinacion.CombinacionMaterial.Activo">
+                                        <tbody ng-repeat="combinacion in combinacionMaterialComponente | orderBy:'CombinacionMaterial.Nombre'" ng-if="combinacion.CombinacionMaterial.Activo">
                                           <tr>
                                             <td>{{combinacion.CombinacionMaterial.Nombre}}</td>
                                             <!--- tipo material --->
@@ -734,6 +784,82 @@
                         
                         <div class="col-xs-6">
                             <button focus class="btn botonAvanzar btn-block" ng-click="TerminarTipoModulo(tipoModuloModal.nombre.$invalid)">TERMINAR</button>
+                        </div>
+                    </div>
+                    <br> 
+                </form>
+            </div>
+            <br><br><br>
+        </div>
+    </div>
+    
+    <!---- Agregar y editar consumible -->
+    <div class="modal fade" id="consumibleForma" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static" >
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <!-- encabezado del modal -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarConsumibleForma()"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center" ng-if="operacion === 'Agregar'">Agregar Consumible</h3>
+                            <h3 class="text-center" ng-if="operacion === 'Editar'">Editar Consumible</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+                <br>
+
+                <form class="modal-body" name="consumibleModal">
+                <!-- Datos -->
+                    
+                    <!-- Nombre -->
+                    <div class="row">
+                        <!-- Nombre -->
+                        <div class="col-sm-6">
+                             <div class="entrada2">
+                                <input ng-pattern="erNombreGeneral" type="text" required class="{{claseConsumible.nombre}} form-control" name="nombre" ng-model="nuevoConsumible.Nombre"/>
+                                <label>Nombre</label>
+                            </div>
+                        </div>
+                        
+                        <br class="hidden-sm hidden-md hidden-lg">
+                        <!-- Costo -->
+                        <div class="col-sm-6">
+                             <div class="entrada2">
+                                <input ng-pattern="erNumeroDecimal" type="text" required class="{{claseConsumible.costo}} form-control" name="costo" ng-model="nuevoConsumible.Costo"/>
+                                <label>Costo</label>
+                            </div>
+                        </div>
+                        
+                    </div> 
+                    <br>
+                    
+                    <div class="row"> 
+                        <!-- Activo -->
+                        <div class="col-sm-6">
+                             <label class="btn checkBoxActivo">Consumible Activo <input type="checkbox" class="badgebox" ng-model="nuevoConsumible.Activo"><span class="badge">&check;</span></label>
+                         </div>
+                    </div>
+                    <br>
+                    <!-------- mensaje de error ---->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div ng-repeat="error in mensajeError">
+                                <span class="textoError">{{error}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!---- botones de operacion --->
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <button class="btn botonCancelar btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarConsumibleForma()">CANCELAR</button>
+                        </div>
+                        
+                        <div class="col-xs-6">
+                            <button focus class="btn botonAvanzar btn-block" ng-click="TerminarConsumible(consumibleModal.nombre.$invalid, consumibleModal.costo.$invalid)">TERMINAR</button>
                         </div>
                     </div>
                     <br> 

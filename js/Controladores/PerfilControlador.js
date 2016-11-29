@@ -130,6 +130,16 @@ function SetPerfil(perfil, $rootScope, $window, $http, CONFIG, usuario)
             {
                 $rootScope.barraNavegacionOpciones[0].elemento[3].show= true;
             }
+            
+            else if(usuario.Permiso[k] == "CatModConsultar")
+            {
+                $rootScope.barraNavegacionOpciones[1].elemento[0].show = true;
+            }
+            else if(usuario.Permiso[k] == "AdmComConsultar")
+            {
+                $rootScope.barraNavegacionOpciones[1].elemento[1].show = true;
+            }
+            
             else if(usuario.Permiso[k] == "ConModConfigurar")
             {
                 $rootScope.barraNavegacionOpciones[2].elemento[0].show = true;
@@ -141,10 +151,6 @@ function SetPerfil(perfil, $rootScope, $window, $http, CONFIG, usuario)
             else if(usuario.Permiso[k] == "ConMatConfigurar")
             {
                 $rootScope.barraNavegacionOpciones[2].elemento[2].show = true;
-            }
-            else if(usuario.Permiso[k] == "AdmComConsultar")
-            {
-                $rootScope.barraNavegacionOpciones[1].elemento[0].show = true;
             }
         }
     }

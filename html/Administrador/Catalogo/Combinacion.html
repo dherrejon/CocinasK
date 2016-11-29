@@ -129,7 +129,7 @@
                     </div>
                     <br>
                     
-                    <div class="row" ng-if="nuevaCombinacion.MaterialComponente.length > 0">
+                    <div class="row" ng-if="combinacionMaterialComponente.length > 0">
                         <div class="col-xs-12">
                             <h4>Materiales por Componente</h4>
                             <div class="table-responsive TablaModal">
@@ -143,7 +143,7 @@
                                         <th><button class="btn botonOrdenar"><b>Grueso </b></button></th>
                                       </tr>
                                     </thead>
-                                    <tbody ng-repeat="material in nuevaCombinacion.MaterialComponente | orderBy:['Componente.Nombre']">
+                                    <tbody ng-repeat="material in combinacionMaterialComponente | orderBy:['Componente.Nombre']">
                                       <tr ng-if="material.Componente.Activo">
                                         <td>{{material.Componente.Nombre}}</td>
                                         <td>{{material.Material.TipoMaterial.Nombre}}</td>
@@ -212,7 +212,7 @@
                                         <th><button class="btn botonFalso"><b>Grueso</b></button></th>
                                       </tr>
                                     </thead>
-                                    <tbody ng-repeat="combinacion in nuevaCombinacion.MaterialComponente | orderBy:'Componente.Nombre'" ng-if="combinacion.Componente.Activo">
+                                    <tbody ng-repeat="combinacion in combinacionMaterialComponente | orderBy:'Componente.Nombre'" ng-if="combinacion.Componente.Activo">
                                       <tr>
                                         <td>{{combinacion.Componente.Nombre}}</td>
                                         <!--- tipo material --->

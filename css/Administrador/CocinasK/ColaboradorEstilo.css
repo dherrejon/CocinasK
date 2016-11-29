@@ -1,12 +1,12 @@
 .nuevoContacto
 {
-    background: rgba(232,153,21, 1);
+    background: rgba(255,169,26, 0.9);
     
 }
 
 .nuevoContacto:hover
 {
-    background: rgb(232,153,21) !important;
+    background: rgba(255,169,26, 0.9) !important;
 }
 
 .checkBoxActivoError
