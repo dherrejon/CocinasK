@@ -22,7 +22,7 @@
 .tablaDropdowlist
 {
     border: 1px solid #262626;
-    max-height: 160px;
+    max-height: 125px;
     overflow: scroll;
 }
 

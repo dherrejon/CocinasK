@@ -240,12 +240,11 @@
                             </div>
                         </div>
                     </div>
-                    
                 </div>
             </div>
         </div>
     </div>
-    
+    <br>   
     
     
     <!------------------------------------------------Modales------------------------------------------> 
@@ -385,16 +384,13 @@
                             </div>
 
                             <br><br>
-                            <div class="col-sm-6">
+                            <div class="col-xs-12">
                                 <button class="btn btn-block {{claseComponente.pieza}}" ng-click="CambiarMostrarPiezas()">Piezas {{botonPieza.texto}}</button>
                             </div>
-
-                            <div class="col-sm-6 hidden-xs" style="min-height: 40px">
-
-                            </div>
-
+                            <br><br><br>
+                            
                             <div ng-show="botonPieza.mostrar">
-                                <div class="col-sm-6">
+                                <div class="col-xs-12">
                                    <div class="panelOculto">
                                         <input type="text" class="buscar input-md form-control" placeholder="Buscar" ng-model="buscarPieza"/>
                                         <br>
@@ -402,7 +398,14 @@
                                             <table class="table table-hover table-responsive">
                                               <tbody  style="cursor: pointer">
                                                 <tr ng-repeat="pieza in pieza | filter: { Nombre:buscarPieza} | orderBy:'Nombre'">
-                                                  <td ng-show="pieza.Activo" class="botonPieza" ng-click="AgregarPiezaComponente(pieza)">{{pieza.Nombre}}</td>
+                                                  <td ng-show="pieza.Activo && pieza.mostrar">
+                                                      {{pieza.Nombre}}
+                                                      <span class="pull-right">
+                                                           <a style="margin-left:10px" class="BotonOperacion" href=""  ng-click="AgregarPiezaComponente(pieza)">
+                                                                <span class="fa fa-plus fa-2x"></span>
+                                                            </a>
+                                                      </span>
+                                                  </td>
                                                 </tr>
                                               </tbody>
                                             </table>

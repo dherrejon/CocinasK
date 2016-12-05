@@ -39,7 +39,7 @@
     left:30px;
 }
 
-.botonOperacionNegro, botonOperacionNegro:active
+.botonOperacionMarcoNaranja, botonOperacionMarcoNaranja:active
 {
     border: 2px solid rgb(250, 97, 21);
     color: rgb(250, 97, 21) !important;
@@ -163,6 +163,3 @@
     left: 3px;
     z-index: 100;
 }
-
-
-

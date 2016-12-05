@@ -30,7 +30,7 @@
     opacity: 1.0;
 }
 
-.botonPerfil:hover:disabled
+.botonPerfil:disabled
 {
     border: solid 2px white;
     background:rgb(250, 97, 21);

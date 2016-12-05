@@ -1,0 +1,97 @@
+.checkSeleccionado
+{
+    background: #262626;
+    color: white;
+    border: 1px solid #262626;
+}
+
+.checkNoSeleccionado
+{
+    background: rgb(250, 97, 21);
+    color: white;
+    border: 1px solid #262626;
+}
+
+.checkSeleccionado:active, .checkSeleccionado:hover, checkSeleccionado:focus
+{
+    background: #262626 !important;
+    color: white !important;
+    border: 1px solid #262626 !important;
+}
+
+.checkNoSeleccionado:active, .checkNoSeleccionado:hover, .checkNoSeleccionado:focus
+{
+    background: rgb(250, 97, 21) !important;
+    color: white !important;
+    border: 1px solid #262626 !important;
+}
+
+.subtituloModal2
+{
+    color: #262626;
+    font-size: 13px;
+}
+
+.resaltarSeleccion
+{
+    color: white !important;
+    background: #262626 !important;
+    font: 16pt;
+}
+
+/*Animacion de aparecer*/
+.animated 
+{
+    -webkit-animation-duration: 1s;
+    animation-duration: 1s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+}
+
+.animated.infinite 
+{
+    -webkit-animation-iteration-count: infinite;
+    animation-iteration-count: infinite;
+}
+
+.animated.hinge 
+{
+    -webkit-animation-duration: 2s;
+    animation-duration: 2s;
+}
+
+.zoomIn 
+{
+  -webkit-animation-name: zoomIn;
+  animation-name: zoomIn;
+}
+
+@-webkit-keyframes zoomIn 
+{
+    from 
+    {
+        opacity: 0;
+        -webkit-transform: scale3d(.3, .3, .3);
+        transform: scale3d(.3, .3, .3);
+    }
+
+    50% 
+    {
+        opacity: 1;
+    }
+}
+
+@keyframes zoomIn 
+{
+    from 
+    {
+        opacity: 0;
+        -webkit-transform: scale3d(.3, .3, .3);
+        transform: scale3d(.3, .3, .3);
+    }
+
+    50% 
+    {
+        opacity: 1;
+    }
+}

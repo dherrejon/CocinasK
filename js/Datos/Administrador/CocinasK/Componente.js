@@ -62,6 +62,32 @@ function GetTodosComponente($http, $q, CONFIG)
     return q.promise;
 }
 
+//obtiene los compoenetes exclusivos para puerta
+function GetComponentePuerta($http, $q, CONFIG)     
+{
+    var q = $q.defer();
+
+    $http({      
+          method: 'GET',
+          url: CONFIG.APIURL + '/GetComponentePuerta',
+
+      }).success(function(data)
+        {
+            var componente = []; 
+            
+            for(var k=0; k<data.length; k++)
+            {
+                componente[k] = new Componente();
+                componente[k] = SetComponente(data[k]);
+            }
+        
+            q.resolve(componente);  
+        }).error(function(data, status){
+            q.resolve(status);
+     }); 
+    return q.promise;
+}
+
 //copia los datos del tipo modulo
 function SetComponente(data)
 {

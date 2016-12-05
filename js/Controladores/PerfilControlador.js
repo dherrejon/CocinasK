@@ -152,6 +152,10 @@ function SetPerfil(perfil, $rootScope, $window, $http, CONFIG, usuario)
             {
                 $rootScope.barraNavegacionOpciones[2].elemento[2].show = true;
             }
+            else if(usuario.Permiso[k] == "ConPueConfigurar")
+            {
+                $rootScope.barraNavegacionOpciones[2].elemento[3].show = true;
+            }
         }
     }
 }

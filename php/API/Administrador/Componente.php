@@ -56,6 +56,34 @@ function GetTodosComponente()
     }
 }
 
+function GetComponentePuerta()  //obtiene los componentes exclusivos para puertas
+{
+    global $app;
+    global $session_expiration_time;
+
+    $request = \Slim\Slim::getInstance()->request();
+
+    $sql = "SELECT * FROM Componente WHERE TipoComponenteId = 2 AND ComponenteId > 0";
+
+    try 
+    {
+
+        $db = getConnection();
+        $stmt = $db->query($sql);
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $db = null;
+
+        
+        echo json_encode($response);  
+    } 
+    catch(PDOException $e) 
+    {
+        echo($e);
+        $app->status(409);
+        $app->stop();
+    }
+}
+
 function AgregarComponente()
 {
     $request = \Slim\Slim::getInstance()->request();

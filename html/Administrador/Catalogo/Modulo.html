@@ -23,7 +23,7 @@
                         <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('ActivoN')"><b>Activo</b> <b ng-if="ordenarPor === 'ActivoN'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-ActivoN'" class="fa fa-arrow-down"></b></button></th>
                       </tr>
                     </thead>
-                    <tbody ng-repeat="modulo in modulo | filter:buscar | orderBy:[ordenarPor, 'Nombre']">
+                    <tbody ng-repeat="modulo in modulo | filter:buscar | filter:FiltrarModulo | orderBy:[ordenarPor, 'Nombre']">
                       <tr>
                         <td>{{modulo.TipoModulo.Nombre}}</td>
                         <td>{{modulo.Nombre}}</td>
@@ -84,9 +84,9 @@
                         <form role="filtro">
 
                             <!------ Tipo de Modulo ------>
-                            <button class="btn btn-block botonFiltro">Tipo Módulo</button>
+                            <button class="btn btn-block botonFiltro" ng-click="MostrarFiltros('tipoModulo')">Tipo Módulo</button>
 
-                            <div class="row">
+                            <div class="row" ng-show="mostrarFiltro.tipoModulo">
                                 <div class="col-xs-12" >
                                     <div class="opcionFiltro">
                                         <div  ng-repeat="tipo in tipoModulo | orderBy:'Nombre' track by $index">
@@ -99,7 +99,68 @@
                                 </div>
                             </div>
                             <br>
+                            
+                            <!------ Número de secciones ------>
+                            <button class="btn btn-block botonFiltro" ng-click="MostrarFiltros('numSeccion')">Número de Secciones</button>
 
+                            <div class="row" ng-show="mostrarFiltro.numSeccion">
+                                <div class="col-xs-12" >
+                                    <div class="opcionFiltro" style="padding: 7px">
+                                        <div class="cantidad">
+                                            <button class="btn btn-sm cantidadMenos fa fa-minus" ng-click="ReducirNumeroSeccionFiltro()"></button>
+                                            <input  disabled type="text" class="cantidadPieza" ng-model="filtro.numSeccion"/>
+                                            <button class="btn btn-sm cantidadMas fa fa-plus" ng-click="AgregarNumeroSeccionFiltro()"></button>
+                                        </div>
+                                        <button class="btn btn-sm botonOperacion fa fa-ban pull-right" ng-click="LimpiarNumeroSeccionFiltro()"></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            
+                            <!--------- Margen -------------->
+                            <button class="btn btn-block botonFiltro" ng-click="MostrarFiltros('margen')">Margen</button>
+                            
+                            <div class="row" ng-show="mostrarFiltro.margen">
+                                <div class="col-xs-12" >
+                                    <div class="opcionFiltro">
+                                        <div>
+                                            <label >
+                                                <input class="margenFiltro" type="number"  ng-model="filtro.margen.maximo">
+                                                Margen Máximo
+                                            </label>
+                                            
+                                            <label>
+                                                <input class="margenFiltro" type="number"  ng-model="filtro.margen.minimo">
+                                                Margen Mínimo
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            
+                            <!------------- Activo ---------->
+                            <button class="btn btn-block botonFiltro" ng-click="MostrarFiltros('activo')">Activo</button>
+                            
+                            <div class="row" ng-show="mostrarFiltro.activo">
+                                <div class="col-xs-12" >
+                                    <div class="opcionFiltro">
+                                        <div>
+                                            <label class="checkBoxActivoFiltro">
+                                                <input type="checkbox" class="badgebox" ng-model="filtro.activo.activo"><span class="badge">&check;</span>
+                                                Módulos Activos
+                                            </label>
+                                            
+                                            <label class="checkBoxActivoFiltro">
+                                                <input type="checkbox" class="badgebox" ng-model="filtro.activo.inactivo"><span class="badge">&check;</span>
+                                                Módulos No Activos
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                
                         </form>
                     </li>
                 </ul>
@@ -498,7 +559,7 @@
                                              <label>Tipo de Módulo</label>
                                              <div class="dropdown">
 
-                                                <button ng-disabled="operacion == 'Editar'" class="dropdown-toggle  {{claseModulo.tipoModulo}} " data-toggle="dropdown">
+                                                <button class="dropdown-toggle  {{claseModulo.tipoModulo}} " data-toggle="dropdown">
                                                     <span>{{nuevoModulo.TipoModulo.Nombre}}</span>
                                                     <span class="caret"></span>
                                                 </button>
@@ -527,19 +588,19 @@
                                     <br><br>
                                     <!-- Numero de secciones -->
                                     <div class="row">
-                                       <div class="col-xs-12" ng-if="operacion != 'Editar'">
+                                       <div class="col-xs-12">
                                              <div class="entrada2">
                                                 <input ng-pattern="erNumeroEntero" type="text" required class="{{claseModulo.seccion}} form-control" name="numeroSeccion" ng-model="nuevoModulo.NumeroSeccion"/>
                                                 <label>Número de secciones</label>
                                             </div>
                                         </div>
                                         
-                                         <div class="col-xs-12" ng-if="operacion == 'Editar'">
+                                         <!--<div class="col-xs-12" ng-if="operacion == 'Editar'">
                                             <div class="subrayado">
                                             <label>Número de secciones</label><br>
                                             <div class="textoModal">{{nuevoModulo.NumeroSeccion}}</div>
                                             </div>
-                                        </div>
+                                        </div>-->
                                     </div>
                                     <br>
 
@@ -704,7 +765,7 @@
                         <!-- Paso 2-->
                         <div ng-if="numeroPaso == 2">
                            <div class="row">
-                                <div class="col-sm-6" ng-if="operacion != 'Editar'">
+                                <div class="col-sm-6">
                                      <h4>Otros Gastos</h4>
                                      <br>
                                      <div class="entrada2">
@@ -713,12 +774,12 @@
                                     </div>
                                </div>
                                
-                               <div class="col-sm-6" ng-if="operacion == 'Editar'">
+                               <!--<div class="col-sm-6" ng-if="operacion == 'Editar'">
                                     <div class="subrayado">
                                     <label>Desperdicio</label><br>
                                     <div class="textoModal">{{nuevoModulo.Desperdicio}}</div>
                                     </div>
-                                </div>
+                                </div>-->
                             </div> 
                             <br><br>
   
@@ -729,11 +790,11 @@
 
                                 <br><br>
                                 <div class="col-xs-12">
-                                    <button ng-disabled="operacion == 'Editar'" class="btn btn-block {{claseModulo.consumible}}" ng-click="CambiarMostrarCatalogo(mostrarCatalago.consumible)">Consumible {{mostrarCatalago.consumible.texto}}</button>
+                                    <button class="btn btn-block {{claseModulo.consumible}}" ng-click="CambiarMostrarCatalogo(mostrarCatalago.consumible)">Consumible {{mostrarCatalago.consumible.texto}}</button>
                                 </div>
                                 <br><br><br>
 
-                                <div ng-show="mostrarCatalago.consumible.mostrar && operacion != 'Editar'">
+                                <div ng-show="mostrarCatalago.consumible.mostrar">
                                     <div class="col-xs-12">
                                        <div class="panelOculto">
                                             <input type="text" class="buscar input-md form-control" placeholder="Buscar" ng-model="buscarConsumible"/>
@@ -784,22 +845,22 @@
 
                                                 <td>
                                                     <div class="cantidad">
-                                                        <button ng-disabled="operacion == 'Editar'" class="btn btn-sm cantidadMenos fa fa-minus" ng-click="RemoverCantidadConsumible(consumible)"></button>
+                                                        <button class="btn btn-sm cantidadMenos fa fa-minus" ng-click="RemoverCantidadConsumible(consumible)"></button>
                                                         <input  disabled type="text" class="cantidadPieza" ng-model="consumible.Cantidad"/>
-                                                        <button ng-disabled="operacion == 'Editar'" class="btn btn-sm cantidadMas fa fa-plus" ng-click="AgregarCantidadConsumible(consumible)"></button>
+                                                        <button class="btn btn-sm cantidadMas fa fa-plus" ng-click="AgregarCantidadConsumible(consumible)"></button>
                                                     </div>
                                                 </td>
                                                 
                                                 <td>{{consumible.Cantidad * consumible.Consumible.Costo}}</td>
 
                                                 <td>
-                                                    <a ng-if="operacion != 'Editar'" class="BotonOperacion" href=""  ng-click="QuitarConsumible(consumible)">
+                                                    <a class="BotonOperacion" href=""  ng-click="QuitarConsumible(consumible)">
                                                         <span class="fa fa-times fa-2x"></span>
                                                     </a>
                                                     
-                                                    <a ng-if="operacion == 'Editar'" class="botonRegistroDeshabilitado" href="" >
+                                                    <!--<a ng-if="operacion == 'Editar'" class="botonRegistroDeshabilitado" href="" >
                                                         <span class="fa fa-times fa-2x"></span>
-                                                    </a>
+                                                    </a>-->
                                                 </td>
 
                                               </tr>
@@ -848,11 +909,11 @@
 
                                 <br><br>
                                 <div class="col-xs-12">
-                                    <button ng-disabled="operacion == 'Editar'" class="btn btn-block {{claseModulo.componente}}" ng-click="CambiarMostrarCatalogo(mostrarCatalago.componente)">Componente {{mostrarCatalago.componente.texto}}</button>
+                                    <button class="btn btn-block {{claseModulo.componente}}" ng-click="CambiarMostrarCatalogo(mostrarCatalago.componente)">Componente {{mostrarCatalago.componente.texto}}</button>
                                 </div>
                                 <br><br><br>
 
-                                <div ng-show="mostrarCatalago.componente.mostrar && operacion != 'Editar'">
+                                <div ng-show="mostrarCatalago.componente.mostrar">
                                     <div class="col-xs-12">
                                        <div class="panelOculto">
                                             <input type="text" class="buscar input-md form-control" placeholder="Buscar" ng-model="buscarComponente"/>
@@ -901,20 +962,20 @@
 
                                                 <td>
                                                     <div class="cantidad">
-                                                        <button ng-disabled="operacion == 'Editar'" class="btn btn-sm cantidadMenos fa fa-minus" ng-click="RemoverCantidadComponente(componente)"></button>
+                                                        <button class="btn btn-sm cantidadMenos fa fa-minus" ng-click="RemoverCantidadComponente(componente)"></button>
                                                         <input  disabled type="text" class="cantidadPieza" ng-model="componente.Cantidad"/>
-                                                        <button ng-disabled="operacion == 'Editar'" class="btn btn-sm cantidadMas fa fa-plus" ng-click="AgregarCantidadComponente(componente)"></button>
+                                                        <button class="btn btn-sm cantidadMas fa fa-plus" ng-click="AgregarCantidadComponente(componente)"></button>
                                                     </div>
                                                 </td>
 
                                                 <td>
-                                                    <a ng-if="operacion != 'Editar'" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="QuitarComponente(componente)">
+                                                    <a class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="QuitarComponente(componente)">
                                                         <span class="fa fa-times fa-2x"></span>
                                                     </a>
                                                     
-                                                    <a ng-if="operacion == 'Editar'" class="botonRegistroDeshabilitado" href="" data-toggle="modal" data-target="#">
+                                                    <!--<a ng-if="operacion == 'Editar'" class="botonRegistroDeshabilitado" href="" data-toggle="modal" data-target="#">
                                                         <span class="fa fa-times fa-2x"></span>
-                                                    </a>
+                                                    </a>-->
                                                 </td>
 
                                               </tr>
@@ -982,7 +1043,7 @@
                                                 <td>{{parte.NombreTipoParte}}</td>
                                                 
                                                 <td>
-                                                    <input ng-disabled="operacion == 'Editar'" required ng-pattern="erNumeroFraccion" type="text" ng-model="parte.Ancho" class="text-right {{parte.claseAncho}}"/>
+                                                    <input required ng-pattern="erNumeroFraccion" type="text" ng-model="parte.Ancho" class="text-right {{parte.claseAncho}}"/>
                                                 </td>              
                 
                                               </tr>
@@ -1026,7 +1087,7 @@
                                                   <tr>
                                                     <!-- Tipo de seccion Modulo -->
                                                     <td class="dropdown">
-                                                        <button ng-disabled="operacion == 'Editar'" class="dropdown-toggle  {{seccion.claseTipoSeccion}}" data-toggle="dropdown">
+                                                        <button class="dropdown-toggle  {{seccion.claseTipoSeccion}}" data-toggle="dropdown">
                                                             <span>{{seccion.SeccionModulo.Nombre}}</span>
                                                             <span class="caret"></span>
                                                         </button>
@@ -1055,14 +1116,14 @@
                                                     
                                                     <td>
                                                         <div class="cantidad cantidadModulo">
-                                                            <button ng-disabled="operacion == 'Editar'" class="btn btn-sm cantidadMenos fa fa-minus" ng-click="RemoverNumeroPiezas(seccion)"></button>
+                                                            <button class="btn btn-sm cantidadMenos fa fa-minus" ng-click="RemoverNumeroPiezas(seccion)"></button>
                                                             <input  disabled type="text" class="cantidadPieza" ng-model="seccion.NumeroPiezas"/>
-                                                            <button ng-disabled="operacion == 'Editar'" class="btn btn-sm cantidadMas fa fa-plus" ng-click="AgregarNumeroPiezas(seccion)"></button>
+                                                            <button class="btn btn-sm cantidadMas fa fa-plus" ng-click="AgregarNumeroPiezas(seccion)"></button>
                                                         </div>
                                                     </td>
                                             
                                                     <td> 
-                                                        <input ng-disabled="seccion.NumeroPiezas == '1' || operacion == 'Editar'" required ng-pattern="erNumeroFraccion" type="text" ng-model="seccion.PeinazoVertical" class="text-right {{seccion.clasePeinazo}}"/> 
+                                                        <input ng-disabled="seccion.NumeroPiezas == '1'" required ng-pattern="erNumeroFraccion" type="text" ng-model="seccion.PeinazoVertical" class="text-right {{seccion.clasePeinazo}}"/> 
                                                     </td>
                                                   </tr>
                                                 </tbody>

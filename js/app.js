@@ -94,6 +94,7 @@ app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpPro
     when('/UsuarioPerfil',{
         templateUrl: 'html/Administrador/CocinasK/UsuarioPerfil.html'
     }).
+    
     when('/ConfigurarUnidadNegocio',{
         templateUrl: 'html/Administrador/Configuracion/ConfiguracionUnidadNegocio.html'
     }).
@@ -103,8 +104,11 @@ app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpPro
     when('/ConfigurarMaterial',{
         templateUrl: 'html/Administrador/Configuracion/ConfiguracionMaterial.html'
     }).
+    when('/ConfigurarPuerta',{
+        templateUrl: 'html/Administrador/Configuracion/ConfiguracionPuerta.html'
+    }).
     
-     when('/Combinacion',{
+    when('/Combinacion',{
         templateUrl: 'html/Administrador/Catalogo/Combinacion.html'
     }).
     when('/Modulo',{

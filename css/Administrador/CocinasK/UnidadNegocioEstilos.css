@@ -28,6 +28,8 @@
     border: 2px solid #262626;
     color: #262626;
     background: white;
+    outline: none !important;
+    box-shadow: none;
 }
 
 .botonOperacionError
@@ -65,7 +67,8 @@
     cursor: default;
 }
 
-.botonOperacion:hover, .botonOperacion:active, .botonOperacionNegro:hover
+.botonOperacion:hover, .botonOperacion:active, .botonOperacionMarcoNaranja:hover
+.botonOperacion:hover, .botonOperacion:active, .botonOperacionMarcoNaranja:hover
 {
     color: white !important;
     background:  rgb(250, 97, 21);

@@ -423,6 +423,11 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
                 $scope.combinacionMaterialComponente[k].claseMaterial = "dropdownListModal";
                 $scope.combinacionMaterialComponente[k].claseGrueso = "dropdownListModal";
             }
+            
+            for(var k=0; k<$scope.pieza.length; k++)
+            {
+                $scope.pieza[k].mostrar = true;
+            }
         }
         else if(operacion == "Editar")
         {
@@ -670,23 +675,10 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
     {
         var index = $scope.piezaPorComponente.length;
         
-        var piezaAgregada = false;
-        for(var k=0; k<index; k++)
-        {
-            if($scope.piezaPorComponente[k].Pieza.PiezaId == pieza.PiezaId)
-            {
-                $scope.piezaPorComponente[k].Cantidad++;
-                piezaAgregada = true;
-                break;
-            }
-        }
-        
-        if(!piezaAgregada)
-        {
-            $scope.piezaPorComponente[index] = new PiezaPorComponente();
-            $scope.piezaPorComponente[index].Pieza = SetPieza(pieza);
-            $scope.piezaPorComponente[index].Cantidad = 1;
-        }
+        $scope.piezaPorComponente[index] = new PiezaPorComponente();
+        $scope.piezaPorComponente[index].Pieza = SetPieza(pieza);
+        $scope.piezaPorComponente[index].Cantidad = 1;
+        pieza.mostrar = false;
     };
     
     $scope.AgregarCantidadPieza = function(pieza)
@@ -715,6 +707,15 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
                 break;
             }
         }
+        
+        for(var k=0; k<$scope.pieza.length; k++)
+        {
+            if($scope.pieza[k].PiezaId == pieza.Pieza.PiezaId)
+            {
+                $scope.pieza[k].mostrar = true;
+                break;
+            }
+        }
     };
     
     $scope.CerrarComponenteForma = function()
@@ -730,6 +731,19 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
         GetPiezaPorComponente($http, $q, CONFIG, componenteId).then(function(data)
         {
             $scope.piezaPorComponente = data;
+            
+            for(var k=0; k<$scope.pieza.length; k++)
+            {
+                $scope.pieza[k].mostrar = true;
+                for(i=0; i<$scope.piezaPorComponente.length; i++)
+                {
+                    if($scope.pieza[k].PiezaId == $scope.piezaPorComponente[i].Pieza.PiezaId)
+                    {
+                        $scope.pieza[k].mostrar = false;
+                        break;
+                    }
+                }
+            }
             
         }).catch(function(error)
         {
@@ -762,7 +776,7 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
     {
         if($scope.mostrarDetalles == seccion)
         {
-            return "botonOperacionNegro";
+            return "botonOperacionMarcoNaranja";
         }
         else
         {

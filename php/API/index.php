@@ -15,6 +15,8 @@
     require 'Administrador/Material.php';
     require 'Administrador/Combinacion.php';
     require 'Administrador/Consumible.php';
+    require 'Administrador/Puerta.php';
+    require 'Administrador/Muestrario.php';
 
     require 'General/Direccion.php';
     require 'General/Sesion.php';
@@ -281,6 +283,8 @@
     /*------------------------  Componente  ----------------------------*/
     $app->get('/GetComponente', $seguridad, $ChecarSesion, 'GetComponente');
     $app->get('/GetTodosComponente', $seguridad, $ChecarSesion, 'GetTodosComponente');
+    $app->get('/GetComponentePuerta', $seguridad, $ChecarSesion, 'GetComponentePuerta');
+    
     $app->post('/AgregarComponente', $seguridad, $ChecarSesion, 'AgregarComponente');
     $app->put('/EditarComponente', $seguridad, $ChecarSesion, 'EditarComponente');
     $app->post('/ActivarDesactivarComponente', $seguridad, $ChecarSesion, 'ActivarDesactivarComponente');
@@ -321,6 +325,23 @@
     $app->post('/AgregarConsumible', $seguridad, $ChecarSesion, 'AgregarConsumible');
     $app->put('/EditarConsumible', $seguridad, $ChecarSesion, 'EditarConsumible');
     $app->post('/ActivarDesactivarConsumible', $seguridad, $ChecarSesion, 'ActivarDesactivarConsumible');
+
+    /*------------------------Muestrario----------------*/
+    $app->get('/GetMuestrarioPuerta', $seguridad, $ChecarSesion, 'GetMuestrarioPuerta');
+    $app->post('/AgregarMuestrario', $seguridad, $ChecarSesion, 'AgregarMuestrario');
+    $app->put('/EditarMuestrario', $seguridad, $ChecarSesion, 'EditarMuestrario');
+    $app->post('/ActivarDesactivarMuestrario', $seguridad, $ChecarSesion, 'ActivarDesactivarMuestrario');
+
+    $app->post('/GetPuertaPorMuestrario', $seguridad, $ChecarSesion, 'GetPuertaPorMuestrario');
+
+    /*------------------------Puerta----------------*/
+    $app->get('/GetPuerta', $seguridad, $ChecarSesion, 'GetPuerta');
+    $app->post('/AgregarPuerta', $seguridad, $ChecarSesion, 'AgregarPuerta');
+    $app->put('/EditarPuerta', $seguridad, $ChecarSesion, 'EditarPuerta');
+    $app->post('/ActivarDesactivarPuerta', $seguridad, $ChecarSesion, 'ActivarDesactivarPuerta');
+
+    $app->post('/GetComponentePorPuerta', $seguridad, $ChecarSesion, 'GetComponentePorPuerta');
+
     
 
     $app->run(); 

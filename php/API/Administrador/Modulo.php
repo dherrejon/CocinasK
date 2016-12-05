@@ -545,10 +545,6 @@ function EditarModulo()
         {
             $stmt = $db->prepare($sql);
             $stmt->execute();
-            
-            $db->commit();
-            $db = null; 
-            echo '[{"Estatus": "Exitoso"}]';
         } 
         catch(PDOException $e) 
         {
@@ -560,14 +556,9 @@ function EditarModulo()
         }
     }
     
-    else
-    {
-        $db->commit();
-        $db = null; 
-        echo '[{"Estatus": "Exitoso"}]';
-    }
     
-    /*$sql = "DELETE FROM ConsumiblePorModulo WHERE ModuloId=".$modulo->ModuloId;
+    
+    $sql = "DELETE FROM ConsumiblePorModulo WHERE ModuloId=".$modulo->ModuloId;
     try 
     {
         $stmt = $db->prepare($sql); 
@@ -581,9 +572,9 @@ function EditarModulo()
         $db->rollBack();
         $app->status(409);
         $app->stop();
-    }*/
+    }
     
-    /*$numeroConsumible = count($modulo->ConsumiblePorModulo);
+    $numeroConsumible = count($modulo->ConsumiblePorModulo);
     
     if($numeroConsumible > 0)
     {
@@ -609,9 +600,9 @@ function EditarModulo()
             $app->status(409);
             $app->stop();
         }
-    }*/
+    }
     
-    /*$sql = "DELETE FROM ComponentePorModulo WHERE ModuloId=".$modulo->ModuloId;
+    $sql = "DELETE FROM ComponentePorModulo WHERE ModuloId=".$modulo->ModuloId;
     try 
     {
         $stmt = $db->prepare($sql); 
@@ -668,9 +659,9 @@ function EditarModulo()
         $db->rollBack();
         $app->status(409);
         $app->stop();
-    }*/
+    }
     
-    /*$numeroParte = count($modulo->PartePorModulo);
+    $numeroParte = count($modulo->PartePorModulo);
     
     if($numeroParte > 0)
     {
@@ -701,7 +692,13 @@ function EditarModulo()
             $app->status(409);
             $app->stop();
         }
-    }*/
+    }
+    else
+    {
+        $db->commit();
+        $db = null; 
+        echo '[{"Estatus": "Exitoso"}]';
+    }
 }
 
 function GuardarImagenModulo($id)

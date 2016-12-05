@@ -36,6 +36,16 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
                                 componente:{mostrar:true, texto:"<<"}
                             };
     
+    $scope.filtro = {
+                            activo:{activo:false, inactivo: false},
+                            margen:{maximo:0, minimo: 0},
+                            numSeccion:"",
+                            tipoModulo:[]
+                     };
+    
+    $scope.filtroCheckbox = [];
+    $scope.mostrarFiltro = { activo:false, margen: false, numSeccion: false, tipoModulo:true};
+    
     /*-------- Ordenar -----------*/
     //cambia el campo por el cual se van a ordenar los modulos
     $scope.CambiarOrdenar = function(campoOrdenar)
@@ -48,6 +58,133 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
         {
             $scope.ordenarPor = campoOrdenar;
         }
+    };
+    
+    /*----------Filtrar--------------*/
+    $scope.FiltrarModulo = function(modulo)
+    {
+        if($scope.filtro.activo.activo != $scope.filtro.activo.inactivo)
+        {
+            if($scope.filtro.activo.activo)
+            {
+                if(!modulo.Activo)
+                {
+                    return false;
+                }
+            }
+            if($scope.filtro.activo.inactivo)
+            {
+                if(modulo.Activo)
+                {
+                    return false;
+                }
+            }   
+        }
+        
+        if(($scope.filtro.margen.maximo !==0 || $scope.filtro.margen.minimo !==0) && ($scope.filtro.margen.maximo >= $scope.filtro.margen.minimo))
+        {
+            if(modulo.Margen > $scope.filtro.margen.maximo || modulo.Margen < $scope.filtro.margen.minimo)
+            {
+                return false;
+            }
+        }
+        
+        if($scope.filtro.numSeccion !== "")
+        {
+            if(modulo.NumeroSeccion != $scope.filtro.numSeccion)
+            {
+                return false;
+            }
+        }
+        
+        if($scope.filtro.tipoModulo.length === 0)
+        {
+            return true;
+        }
+        else
+        {   
+            for(var k=0; k<$scope.filtro.tipoModulo.length; k++)
+            {
+                if(modulo.TipoModulo.Nombre == $scope.filtro.tipoModulo[k])
+                {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    };
+    
+    $scope.MostrarFiltros = function(filtro)
+    {
+        if(filtro == "tipoModulo")
+        {
+            $scope.mostrarFiltro.tipoModulo = !$scope.mostrarFiltro.tipoModulo;
+        }
+        else if(filtro == "numSeccion")
+        {
+            $scope.mostrarFiltro.numSeccion = !$scope.mostrarFiltro.numSeccion;
+        }
+        else if(filtro == "margen")
+        {
+            $scope.mostrarFiltro.margen = !$scope.mostrarFiltro.margen;
+        }
+        else if(filtro == "activo")
+        {
+            $scope.mostrarFiltro.activo = !$scope.mostrarFiltro.activo;
+        }
+        
+    };
+    
+    $scope.LimpiarFiltro = function()
+    {
+        $scope.filtro = {
+                            activo:{activo:false, inactivo: false},
+                            margen:{maximo:0, minimo: 0},
+                            numSeccion:"",
+                            tipoModulo:[]
+                        };
+        
+        $scope.filtroCheckbox = [];
+    };
+    
+    $scope.setFiltro = function(campo)
+    {
+        for(var k=0; k<$scope.filtro.tipoModulo.length; k++)
+        {
+            if($scope.filtro.tipoModulo[k] == campo)
+            {
+                $scope.filtro.tipoModulo.splice(k,1);
+                return;
+            }
+        }
+        $scope.filtro.tipoModulo.push(campo);
+        return;
+    };
+    
+    $scope.AgregarNumeroSeccionFiltro = function()
+    {
+        if($scope.filtro.numSeccion === "")
+        {
+            $scope.filtro.numSeccion = 1;
+        }
+        else
+        {
+            $scope.filtro.numSeccion++;
+        }
+    };
+    
+    $scope.ReducirNumeroSeccionFiltro = function()
+    {
+        if((($scope.filtro.numSeccion-1) >= 0) && $scope.filtro.numSeccion !== "")
+        {
+            $scope.filtro.numSeccion--;
+        }
+    };
+    
+    $scope.LimpiarNumeroSeccionFiltro = function()
+    {
+        $scope.filtro.numSeccion = "";
     };
     
     /*------- Detalles --------*/
@@ -87,7 +224,7 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
     {
         if($scope.mostrarDato == seccion)
         {
-            return "botonOperacionNegro";
+            return "botonOperacionMarcoNaranja";
         }
         else
         {
@@ -99,7 +236,7 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
     {
         if($scope.altoLuz == alto)
         {
-            return "botonOperacionNegro";
+            return "botonOperacionMarcoNaranja";
         }
         else
         {
@@ -687,7 +824,7 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
     
     $scope.RemoverNumeroEntrepano = function(luz)
     {
-        if((luz.NumeroEntrepano-1) !== 0)
+        if((luz.NumeroEntrepano-1) >= 0)
         {
             luz.NumeroEntrepano--;
         }
@@ -1317,6 +1454,15 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
                 $scope.mensaje = "Ha ocurrido un error. Intente más tarde. Error: " + error;
                 $('#mensajeModulo').modal('toggle');
             });
+            
+            if($scope.objetoCambiarActivo.Activo)
+            {
+                $scope.objetoCambiarActivo.ActivoN = 1;
+            }
+            else
+            {
+                $scope.objetoCambiarActivo.ActivoN = 0;
+            }
         }
         
         if($scope.seccion == "medida")
