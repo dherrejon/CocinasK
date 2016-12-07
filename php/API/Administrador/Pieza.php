@@ -29,6 +29,60 @@ function GetPieza()
     }
 }
 
+function AgregarPieza()
+{
+    $request = \Slim\Slim::getInstance()->request();
+    $pieza = json_decode($request->getBody());
+    global $app;
+    $sql = "INSERT INTO Pieza (Nombre, FormulaAncho, FormulaLargo, Activo) VALUES(:Nombre, :FormulaAncho, :FormulaLargo, :Activo)";
+
+    try 
+    {
+        $db = getConnection();
+        $stmt = $db->prepare($sql);
+
+        $stmt->bindParam("Nombre", $pieza->Nombre);
+        $stmt->bindParam("FormulaAncho", $pieza->FormulaAncho);
+        $stmt->bindParam("FormulaLargo", $pieza->FormulaLargo);
+        $stmt->bindParam("Activo", $pieza->Activo);
+
+        $stmt->execute();
+
+        $db = null;
+        echo '[{"Estatus": "Exitoso"}]';
+
+    } catch(PDOException $e) 
+    {
+        echo $e;
+        echo '[{"Estatus": "Fallido"}]';
+    }
+}
+
+function EditarPieza()
+{
+    global $app;
+    $request = \Slim\Slim::getInstance()->request();
+    $pieza = json_decode($request->getBody());
+   
+    $sql = "UPDATE Pieza SET Nombre='".$pieza->Nombre."', FormulaAncho='".$pieza->FormulaAncho."',  FormulaLargo='".$pieza->FormulaLargo."', Activo = '".$pieza->Activo."'  WHERE PiezaId=".$pieza->PiezaId."";
+    
+    try 
+    {
+        $db = getConnection();
+        $stmt = $db->prepare($sql);
+        $stmt->execute();
+        $db = null;
+
+        echo '[{"Estatus":"Exitoso"}]';
+    }
+    catch(PDOException $e) 
+    {    
+        echo '[{"Estatus": "Fallido"}]';
+        $app->status(409);
+        $app->stop();
+    }
+}
+
 function ActivarDesactivarPieza()
 {
     global $app;

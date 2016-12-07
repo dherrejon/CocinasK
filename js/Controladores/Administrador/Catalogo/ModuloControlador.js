@@ -224,11 +224,11 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
     {
         if($scope.mostrarDato == seccion)
         {
-            return "botonOperacionMarcoNaranja";
+            return "opcionAcordionSeleccionado";
         }
         else
         {
-            return "botonOperacion";
+            return "opcionAcordion";
         }
     };
     
@@ -856,7 +856,7 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
         
         for(var k=0; k<$scope.seccionModulo.length; k++)
         {
-            if($scope.seccionModulo[k].SeccionModulo.Nombre == "")
+            if($scope.seccionModulo[k].SeccionModulo.Nombre === "")
             {
                 if(!tipoError)
                 {

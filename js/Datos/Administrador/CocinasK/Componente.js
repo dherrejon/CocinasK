@@ -121,7 +121,6 @@ function AgregarComponente($http, CONFIG, $q, componente)
 
       }).success(function(data)
         {
-            q.resolve("Exitoso");
             if(data[0].Estatus == "Exitoso") 
             {
                 q.resolve("Exitoso");

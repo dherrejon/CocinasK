@@ -245,11 +245,11 @@ app.controller("ConfiguracionPuertaControlador", function($scope, $http, $q, CON
     {
         if($scope.mostrarComponentePuerta == componente)
         {
-            return "botonOperacionMarcoNaranja";
+            return "opcionAcordionSeleccionado";
         }
         else
         {
-            return "botonOperacion";
+            return "opcionAcordion";
         }
     };
     

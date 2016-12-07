@@ -60,6 +60,80 @@ function SetPieza(data)
     return pieza;
 }
 
+//agrega una pieza
+function AgregarPieza($http, CONFIG, $q, pieza)
+{
+    var q = $q.defer();
+    
+    if(pieza.Activo)
+    {
+        pieza.Activo = "1";
+    }
+    else
+    {
+        pieza.Activo = "0";
+    }
+
+    $http({      
+          method: 'POST',
+          url: CONFIG.APIURL + '/AgregarPieza',
+          data: pieza
+
+      }).success(function(data)
+        {
+            if(data[0].Estatus == "Exitoso") 
+            {
+                q.resolve("Exitoso");
+            }
+            else
+            {
+                q.resolve("Fallido");
+            }
+            
+        }).error(function(data, status){
+            q.resolve(status);
+
+     }); 
+    return q.promise;
+}
+
+//edita una pieza
+function EditarPieza($http, CONFIG, $q, pieza)
+{
+    var q = $q.defer();
+    
+    if(pieza.Activo)
+    {
+        pieza.Activo = "1";
+    }
+    else
+    {
+        pieza.Activo = "0";
+    }
+    
+    $http({      
+          method: 'PUT',
+          url: CONFIG.APIURL + '/EditarPieza',
+          data: pieza
+
+      }).success(function(data)
+        {
+            if(data[0].Estatus == "Exitoso") 
+            {
+                q.resolve("Exitoso");
+            }
+            else
+            {
+                q.resolve("Fallido");
+            }
+            
+        }).error(function(data, status){
+            q.resolve(status);
+
+     }); 
+    return q.promise;
+}
+
 function ActivarDesactivarPieza($http, $q, CONFIG, pieza) 
 {
     var q = $q.defer();

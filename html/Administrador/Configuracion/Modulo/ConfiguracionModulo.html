@@ -41,7 +41,7 @@
                 <!-- Contenido -->
                 <div class="tab-content">
                     <!-- Componentes -->
-                    <div role="tabpanel" class="tab-pane in active" id="Componente">
+                    <div role="tabpanel" class="tab-pane" id="Componente">
                         <br>
                         <div class="row">
                             <div class="col-md-11 col-xs-10">
@@ -55,7 +55,7 @@
                                             <th><button class="btn botonFalso"><b>Activo</b></button></th>
                                           </tr>
                                         </thead>
-                                        <tbody ng-repeat="componente in componente | orderBy:'Nombre'">
+                                        <tbody ng-repeat="componente in componente | orderBy:'Nombre' | filter:{TipoComponenteId:1}">
                                           <tr>
                                             <td>{{componente.Nombre}}</td>
 
@@ -95,7 +95,7 @@
                     </div>
                     
                     <!--- Pieza -->
-                    <div role="tabpanel" class="tab-pane" id="Pieza">
+                    <div role="tabpanel" class="tab-pane in active" id="Pieza">
                         <br>
                         <div class="row">
                             <div class="col-md-11 col-xs-10">
@@ -600,7 +600,7 @@
                 <div class="row">
                     <div class="col-xs-12">
                         <div class="margenModal">
-                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarTipoModuloForma()"><span aria-hidden="true">&times;</span></button>
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarPiezaForma()"><span aria-hidden="true">&times;</span></button>
                             <h3 class="text-center" ng-if="operacion === 'Agregar'">Agregar Pieza</h3>
                             <h3 class="text-center" ng-if="operacion === 'Editar'">Editar Pieza</h3>
                             <hr class="separador">
@@ -609,14 +609,14 @@
                 </div>
                 <br>
 
-                <form class="modal-body" name="tipoModuloModal">
+                <form class="modal-body" name="piezaModal">
                 <!-- Datos -->
                     
                     <!-- Nombre -->
                     <div class="row">
                         <div class="col-sm-12">
                              <div class="entrada2">
-                                <input ng-pattern="erNombreGeneral" type="text" required class="{{claseTipoModulo.nombre}} form-control" name="nombre" ng-model="nuevaPieza.Nombre"/>
+                                <input ng-pattern="erNombreGeneral" type="text" required class="{{clasePieza.nombre}} form-control" name="nombre" ng-model="nuevaPieza.Nombre"/>
                                 <label>Nombre</label>
                             </div>
                         </div>
@@ -629,7 +629,7 @@
                             <label>Formula Ancho</label>
 
                             <div class="input-group">
-                                <input  disabled type="text" required class="entrada form-control" name="formulaAncho" ng-model="nuevaPieza.FormulaAncho"/>
+                                <input  disabled type="text" required class="{{clasePieza.ancho}} form-control" name="formulaAncho" ng-model="nuevaPieza.FormulaAncho"/>
                                 <span class="input-group-btn">
                                     <button class="btn botonPanelOculto" type="button" ng-click="AbrirFormulaForma('Ancho', nuevaPieza.FormulaAncho)"><span class="fa fa-pencil"></span></button>
                                 </span>
@@ -644,7 +644,7 @@
                             <label>Formula Largo</label>
 
                             <div class="input-group">
-                                <input  disabled type="text" required class="entrada form-control" name="formulaLargo" ng-model="nuevaPieza.FormulaLargo"/>
+                                <input  disabled type="text" required class="{{clasePieza.largo}} form-control" name="formulaLargo" ng-model="nuevaPieza.FormulaLargo"/>
                                 <span class="input-group-btn">
                                     <button class="btn botonPanelOculto" type="button" ng-click="AbrirFormulaForma('Largo', nuevaPieza.FormulaLargo)"><span class="fa fa-pencil"></span></button>
                                 </span>
@@ -672,11 +672,11 @@
                     <!---- botones de operacion --->
                     <div class="row">
                         <div class="col-xs-6">
-                            <button class="btn botonCancelar btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarTipoModuloForma()">CANCELAR</button>
+                            <button class="btn botonCancelar btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarPiezaForma()">CANCELAR</button>
                         </div>
                         
                         <div class="col-xs-6">
-                            <button focus class="btn botonAvanzar btn-block" ng-click="TerminarTipoModulo(tipoModuloModal.nombre.$invalid)">TERMINAR</button>
+                            <button focus class="btn botonAvanzar btn-block" ng-click="TerminarPieza(piezaModal.nombre.$invalid)">TERMINAR</button>
                         </div>
                     </div>
                     <br> 
@@ -695,7 +695,7 @@
                 <div class="row">
                     <div class="col-xs-12">
                         <div class="margenModal">
-                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarTipoModuloForma()"><span aria-hidden="true">&times;</span></button>
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarFormulaForma()"><span aria-hidden="true">&times;</span></button>
                             <h3 class="text-center" ng-if="editarFormula === 'Ancho'">Formula del Ancho</h3>
                             <h3 class="text-center" ng-if="editarFormula === 'Largo'">Formula del Largo</h3>
                             <hr class="separador">
@@ -704,7 +704,7 @@
                 </div>
                 <br>
 
-                <form class="modal-body" name="tipoModuloModal">
+                <form class="modal-body" name="formulaForma">
             
                      <!-- Formula -->
                     <div class="row">
@@ -716,14 +716,205 @@
                         </div>
     
                         <div class="col-xs-2">
-                            <button style="margin-top:5px; min-height:42px" class="btn btn-block botonBorrarFormula" type="button" ng-click="">
+                            <button style="margin-top:5px; min-height:42px" class="btn btn-block botonBorrarFormula" type="button" ng-click="RegresarFormula()">
                                <span style="font-size: 14pt;" class="fa fa-arrow-left"></span>
                             </button>
                         </div>
                     </div>
                     <br>
+                    <!-------- mensaje de error ---->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div ng-repeat="error in mensajeError">
+                                <span class="textoError">{{error}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
                     
+                    <!-- Operadores -->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            
+                            <span ng-repeat="operador in tabOperador">
+                                <button ng-disabled="(valorFormula=='valor' && operador.tipo == 'operador') " class="btn botonOperacion " ng-click="SetOperador(operador.operador)">{{operador.operador}}</button>
+                            </span>
+                            
+                            <button ng-disabled="valorFormula=='valor'" class="btn botonOperacion" ng-click="GuardarFormula()">Guardar</button>
+                            
+                        </div>
+                    </div>
+                    <br>
                     
+                    <!-- Valores -->
+                    <div class="row">
+                        <div class="col-xs-5 col-sm-4">
+                            <div ng-repeat="titulo in tabFormula">
+                               
+                                <button ng-disabled="valorFormula=='operador'" class="btn btn-block" ng-class="GetClaseFormula(titulo.titulo)" ng-click="MostrarMedidasFormula(titulo.titulo)">{{titulo.titulo}}</button>
+                                
+                                <br>
+                           </div>
+                        </div>
+                        
+                        <div ng-show="valorFormula=='valor'" class="col-xs-7 col-sm-8" ng-if="medidasFormula != ''">                                
+                            <div class="col-xs-12 margenValor"> 
+                            <!-- Modulo -->
+                                <div class ng-if="medidasFormula == 'Módulo'">
+
+                                    <br>
+                                    <div class="col-xs-12 col-sm-6">
+                                        <button class="btn btn-block botonOperacion"  ng-click="SetModuloValor('Ancho')">Ancho</button>
+                                    </div>
+
+                                    <div class="col-xs-12 hidden-sm hidden-md hidden-lg" style="margin-top:10px">
+                                    </div>
+
+                                    <div class="col-xs-12 col-sm-6">
+                                        <button class="btn btn-block botonOperacion"  ng-click="SetModuloValor('Alto')">Alto</button>
+                                    </div>
+
+                                    <div class="col-xs-12 col-sm-6" style="margin-top:10px">
+                                        <button class="btn btn-block botonOperacion"  ng-click="SetModuloValor('Profundo')">Profundo</button>
+                                    </div>
+
+                                    <div class="col-xs-12" style="margin-top:10px">
+                                    </div>
+
+                                </div>
+
+                                <!-- Componente -->
+                                <div ng-if="medidasFormula == 'Componente'">
+                                    <br>
+
+                                    <div class="col-xs-12" >
+                                        Selecciona un componente
+                                        
+                                        <input type="text" class="buscar input-sm form-control" placeholder="Buscar" ng-model="buscarComponenteFormula"/>
+                                       
+                                        <br>
+                                        <div class="panel panel-default  tablaDropdowlist" >
+                                            <table class="table table-hover table-responsive">
+                                              <tbody  style="cursor: pointer">
+                                                <tr ng-repeat="componente in componente | filter: { Nombre:buscarComponenteFormula} | orderBy:'Nombre'">
+                                                    <td ng-show="componente.Activo">
+                                                        {{componente.Nombre}} 
+                                                        <span class="pull-right">
+                                                            <a style="margin-left:10px" class="BotonOperacion" href=""  ng-click="SetComponenteFormula(componente.Nombre)">
+                                                                <span class="fa fa-check fa-2x"></span>
+                                                            </a>
+
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                              </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-xs-12" style="margin-top:10px">
+                                        <button ng-disabled="componenteFormula.length == 0" class="btn btn-block botonOperacion"  ng-click="SetComponenteValor()">Grueso: {{componenteFormula}}</button>
+                                    </div>
+                                    
+                                    <div class="col-xs-12" style="margin-top:10px">
+                                    </div>
+                            
+                                </div>
+
+                                <!-- Pieza -->
+                                <div ng-if="medidasFormula == 'Pieza'">
+                                    <br>
+
+                                    <div class="col-xs-12" >
+                                        Selecciona una pieza
+                                        
+                                        <input type="text" class="buscar input-sm form-control" placeholder="Buscar" ng-model="buscarPiezaFormula"/>
+                                       
+                                        <br>
+                                        <div class="panel panel-default  tablaDropdowlist" >
+                                            <table class="table table-hover table-responsive">
+                                              <tbody  style="cursor: pointer">
+                                               <!-- Partes-->
+                                                <tr ng-repeat="parte in tipoParte | filter: { Nombre:buscarPiezaFormula} | orderBy:'Nombre'">
+                                                    <td>
+                                                        {{parte.Nombre}} 
+                                                        <span class="pull-right">
+                                                            <a style="margin-left:10px" class="BotonOperacion" href=""  ng-click="SetPiezaFormula(parte.Nombre)">
+                                                                <span class="fa fa-check fa-2x"></span>
+                                                            </a>
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                                <!--Piezas-->
+                                                <tr ng-repeat="pieza in pieza | filter: { Nombre:buscarPiezaFormula} | orderBy:'Nombre'">
+                                                    <td ng-show="pieza.Activo">
+                                                        {{pieza.Nombre}} 
+                                                        <span class="pull-right">
+                                                            <a style="margin-left:10px" class="BotonOperacion" href=""  ng-click="SetPiezaFormula(pieza.Nombre)">
+                                                                <span class="fa fa-check fa-2x"></span>
+                                                            </a>
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                              </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-xs-12" style="margin-top:10px">
+                                        <button ng-disabled="piezaFormula.length == 0" class="btn btn-block botonOperacion"  ng-click="SetPiezaValor('Ancho')"><b>Ancho: </b>{{piezaFormula}}</button>
+                                    </div>
+                                    
+                                    <div class="col-xs-12" style="margin-top:10px">
+                                        <button ng-disabled="piezaFormula.length == 0" class="btn btn-block botonOperacion"  ng-click="SetPiezaValor('Largo')"><b>Largo: </b>{{piezaFormula}}</button>
+                                    </div>
+                                    
+                                    <div class="col-xs-12" style="margin-top:10px">
+                                    </div>
+
+                                </div>
+
+                                <!-- Constante -->
+                                <div ng-if="medidasFormula == 'Constante'">
+                                    <br>
+                                    
+                                    <div class="col-xs-12">
+                                        <input required ng-pattern="erNumeroDecimal" name="constante" class="text-right {{contanteFormula.clase}} form-control"  ng-model="contanteFormula.valor">
+                                    </div>
+                                    
+                                    <div class="col-xs-12 textoError" style="margin-top:15px" ng-if="contanteFormula.mensaje.length > 0">{{contanteFormula.mensaje}}</div>
+                                    <div class="col-xs-12" style="margin-top:15px"></div>
+                                    
+                                    
+                                    <div class="col-xs-12">
+                                        <button class="btn btn-block botonOperacion"  ng-click="SetConstanteValor(formulaForma.constante.$invalid)">Ok</button>
+                                    </div>
+                                    <div class="col-xs-12" style="margin-top:15px"></div>
+
+                                </div>
+
+                                <!-- Puerta -->
+                                <div ng-if="medidasFormula == 'Puerta'">
+                                    <br>
+                                    
+                                    <div class="col-xs-12 col-sm-6">
+                                        <button class="btn btn-block botonOperacion"  ng-click="SetPuertaValor('Ancho')">Ancho</button>
+                                    </div>
+
+                                    <div class="col-xs-12 hidden-sm hidden-md hidden-lg" style="margin-top:10px">
+                                    </div>
+
+                                    <div class="col-xs-12 col-sm-6">
+                                        <button class="btn btn-block botonOperacion"  ng-click="SetPuertaValor('Alto')">Alto</button>
+                                    </div>
+                                    
+                                    <div class="col-xs-12" style="margin-top:15px"></div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+
                     
                 </form>
             </div>

@@ -348,6 +348,7 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
     $scope.material = null;
     $scope.tipoMaterial = null;
     $scope.gruesoMaterial = null;
+    $scope.tipoParte = null;
     
     $scope.mensajeError = [];
     
@@ -364,6 +365,10 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
     $scope.ordenarPorConsumible = "Nombre";
     
     $scope.mostrarDetalles = "pieza";
+    
+    $scope.tabFormula = tabFormula;
+    $scope.tabOperador = operadores;
+    $scope.medidasFormula = "";
     
     //Cambia el contenido de la pestaña
     $scope.SeleccionarTab = function(tab, index)    
@@ -400,6 +405,15 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
                 break;
         }        
     };
+    
+    $scope.contanteFormula = {valor:"", clase:"entrada", mensaje:""};
+    $scope.valorFormula = "valor";
+    $scope.buscarPiezaFormula = "";
+    $scope.buscarComponenteFormula = "";
+    $scope.componenteFormula = "";
+    $scope.piezaFormula = "";
+    $scope.clasePieza = {nombre:"entrada", ancho:"entrada", largo:"entrada"};
+    
     
     /*-----------------------------------Componente----------------------------------------------------------*/
     $scope.AbrirComponenteForma = function(operacion, objeto)
@@ -776,15 +790,15 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
     {
         if($scope.mostrarDetalles == seccion)
         {
-            return "botonOperacionMarcoNaranja";
+            return "opcionAcordionSeleccionado";
         }
         else
         {
-            return "botonOperacion";
+            return "opcionAcordion";
         }
     };
     
-    /*-----------------------------------Pieza----------------------------------------------------------*/
+    /*-----------------------------------Pestaña Pieza----------------------------------------------------------*/
     
     $scope.GetPieza = function()      
     {
@@ -810,7 +824,133 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
             $scope.nuevaPieza = SetPieza(objeto);
         }
         
+        if($scope.tipoParte === null)
+        {
+            $scope.GetTipoParte();
+        }
+        
         $('#piezaForma').modal('toggle');
+    };
+    
+    $scope.ValidarDatosPieza = function(nombreInvalido)
+    {
+        $scope.mensajeError = [];
+        
+        if(nombreInvalido)
+        {
+            $scope.mensajeError[$scope.mensajeError.length] = "*El nombre solo puede tener los siguientes caracteres: letras, números, '.', '+', '-' y '#'.";
+            $scope.clasePieza.nombre = "entradaError";
+        }
+        else
+        {
+            $scope.clasePieza.nombre = "entrada";
+        }
+        
+        if($scope.nuevaPieza.FormulaAncho.length  === 0)
+        {
+            $scope.mensajeError[$scope.mensajeError.length] = "*Debes de especificar una formula para calcular el ancho de la pieza.";
+            $scope.clasePieza.ancho = "entradaError";
+        }
+        else
+        {
+            $scope.clasePieza.ancho = "entrada";
+        }
+        
+        if($scope.nuevaPieza.FormulaLargo.length  === 0)
+        {
+            $scope.mensajeError[$scope.mensajeError.length] = "*Debes de especificar una formula para calcular el largo de la pieza.";
+            $scope.clasePieza.largo = "entradaError";
+        }
+        else
+        {
+            $scope.clasePieza.largo = "entrada";
+        }
+        
+        if($scope.mensajeError.length>0)
+        {
+            return false;
+        }
+        
+        for(var k=0; k<$scope.pieza.length; k++)
+        {
+            if($scope.pieza[k].Nombre == $scope.nuevaPieza.Nombre && $scope.pieza[k].PiezaId != $scope.nuevaPieza.PiezaId )
+            {
+                $scope.mensajeError[$scope.mensajeError.length] = "*La pieza " + $scope.nuevaPieza.Nombre + " ya existe.";
+                $scope.clasePieza.nombre = "entradaError";
+                return false;
+            }
+        }
+        
+        return true;
+    };
+    
+    $scope.TerminarPieza = function(nombreInvalido)
+    {
+        if(!($scope.ValidarDatosPieza(nombreInvalido)))
+        {
+            return;
+        }
+        
+        if($scope.operacion == "Agregar")
+        {
+            $scope.AgregarPieza();
+        }
+        else if($scope.operacion == "Editar")
+        {
+            $scope.EditarPieza();
+        }
+    };
+    
+    $scope.AgregarPieza = function(datos)
+    {   
+        AgregarPieza($http, CONFIG, $q, $scope.nuevaPieza).then(function(data)
+        {
+            if(data == "Exitoso")
+            {
+                $scope.GetPieza();
+                
+                $('#piezaForma').modal('toggle');
+                $scope.mensaje = "La pieza se ha agregado.";
+            }
+            else
+            {
+                $scope.mensaje = "Ha ocurrido un error. Intente más tarde";
+            }
+        }).catch(function(error)
+        {
+            $scope.mensaje = "Ha ocurrido un error. Intente más tarde. Error: " +error;
+        });
+        
+        $('#mensajeConfigurarModulo').modal('toggle');
+    };
+    
+    $scope.EditarPieza = function(datos)
+    {
+        EditarPieza($http, CONFIG, $q, $scope.nuevaPieza).then(function(data)
+        {
+            if(data == "Exitoso")
+            {
+                $scope.GetPieza();
+
+                $('#piezaForma').modal('toggle');
+                $scope.mensaje = "La pieza se ha editado.";
+            }
+            else
+            {
+                $scope.mensaje = "Ha ocurrido un error. Intente más tarde";
+            }
+        }).catch(function(error)
+        {
+            $scope.mensaje = "Ha ocurrido un error. Intente más tarde. Error: " +error;
+        });
+        
+        $('#mensajeConfigurarModulo').modal('toggle');
+    };
+    
+    $scope.CerrarPiezaForma = function()
+    {
+        $scope.mensajeError = [];
+        $scope.clasePieza = {nombre:"entrada", ancho:"entrada", largo:"entrada"};
     };
     
     
@@ -819,7 +959,259 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
     {
         $scope.editarFormula = medida;
         $scope.nuevaFormula = formula;
+        
+        if($scope.nuevaFormula.length > 0)
+        {
+            $scope.valorFormula = "operador";
+        }
+        else
+        {
+            $scope.valorFormula = "valor";
+        }
+        
+        $scope.mensajeError = [];
         $('#piezaFormulaForma').modal('toggle');
+    };
+    
+    $scope.MostrarMedidasFormula = function(valor)
+    {
+        if($scope.medidasFormula == valor)
+        {
+             $scope.medidasFormula = "";
+        }
+        else
+        {
+            $scope.medidasFormula = valor;
+        }
+    };
+    
+    $scope.GetClaseFormula = function(valor)
+    {
+        if($scope.medidasFormula == valor)
+        {
+            return "opcionAcordionSeleccionado";
+        }
+        else
+        {
+            return "opcionAcordion";
+        }
+    };
+    
+    $scope.SetModuloValor = function(valor)
+    {
+
+        $scope.nuevaFormula += "[Modulo][" + valor +"]";
+
+        $scope.valorFormula = "operador";
+    };
+    
+    $scope.SetPuertaValor = function(valor)
+    {
+
+        $scope.nuevaFormula += "[Puerta][" + valor +"]";
+
+        $scope.valorFormula = "operador";
+    };
+    
+    $scope.SetConstanteValor = function(constanteInvalida)
+    {
+        console.log(constanteInvalida);
+        if(constanteInvalida)
+        {
+            $scope.contanteFormula.clase = "entradaError";
+            $scope.contanteFormula.mensaje = "*La constante debe ser un número decimal.";
+            return;
+        }
+        else
+        {
+            $scope.contanteFormula.clase = "entrada";
+        }
+
+        $scope.nuevaFormula += $scope.contanteFormula.valor;
+        $scope.contanteFormula = {valor:"", clase:"entrada", mensaje:""};
+        $scope.valorFormula = "operador";
+    };
+    
+    $scope.SetOperador = function(operador)
+    {
+        $scope.nuevaFormula += operador;
+
+        if(operador == ")")
+        {
+            $scope.valorFormula = "operador";
+        }
+        else
+        {
+            $scope.valorFormula = "valor";
+        }
+    };
+    
+    $scope.CerrarFormulaForma = function()
+    {
+        $scope.contanteFormula = {valor:"", clase:"entrada", mensaje:""};
+        $scope.medidasFormula = "";
+        $scope.valorFormula = "valor";
+        $scope.mensajeError = [];
+    };
+    
+    $scope.SetComponenteFormula = function(componente)
+    {
+        $scope.componenteFormula = componente;
+    };
+    
+    $scope.SetComponenteValor = function()
+    {
+        $scope.nuevaFormula += "[Componente][" +$scope.componenteFormula + "][Grueso]"; 
+        $scope.valorFormula = "operador";
+        $scope.componenteFormula = "";
+    };
+    
+    $scope.SetPiezaFormula = function(pieza)
+    {
+        $scope.piezaFormula = pieza;
+    };
+    
+    $scope.SetPiezaValor = function(valor)
+    {
+        $scope.nuevaFormula += "[Pieza][" +$scope.piezaFormula + "]["+valor+"]"; 
+        $scope.valorFormula = "operador";
+        $scope.piezaFormula = "";
+    };
+    
+    $scope.RegresarFormula = function()
+    {
+        var index = $scope.nuevaFormula.length-1;
+        var caracter = $scope.nuevaFormula[index];
+        
+        if(caracter == "]")
+        {
+            var letra = true;
+            do
+            {
+                $scope.nuevaFormula  = $scope.nuevaFormula.substr(0, index);
+                
+                if(index > 0)
+                {
+                    index = $scope.nuevaFormula.length-1;
+                    caracter = $scope.nuevaFormula[index];
+
+
+
+                    for(var k=0; k<$scope.tabOperador.length; k++)
+                    {
+                        if($scope.tabOperador[k].operador == caracter)
+                        {
+                            letra = false;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    letra = false;
+                }
+            }while(letra);
+           $scope.valorFormula = "valor"; 
+        }
+        else
+        {
+            if($scope.IsNumero(caracter))
+            {
+                do
+                {
+                    $scope.nuevaFormula  = $scope.nuevaFormula.substr(0, index);
+                    index = $scope.nuevaFormula.length-1;
+                    
+                    if(index >= 0)
+                    {
+                        caracter = $scope.nuevaFormula[index];
+                    }
+                    
+                }while(($scope.IsNumero(caracter) || caracter==".") && index>=0);
+                
+                $scope.valorFormula = "valor";
+            }
+            else
+            {
+                $scope.nuevaFormula  = $scope.nuevaFormula.substr(0, index);
+                if(caracter == "(")
+                {
+                    $scope.valorFormula = "valor";
+                }
+                else
+                {
+                    $scope.valorFormula = "operador";
+                }
+            }
+        }
+    };
+    
+    $scope.IsNumero = function(caracter)
+    {
+        var isNumero = false;
+        
+        var numero = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+        
+        for(var k = 0; k<numero.length; k++)
+        {
+            if(numero[k] == caracter)
+            {
+                isNumero = true;
+                break;
+            }
+        }
+        
+        return isNumero;
+    };
+    
+    $scope.ValidarFormula = function()
+    {
+        var abierto = 0;
+        var cerrado = 0;
+        for(var k=0; k<$scope.nuevaFormula.length; k++)
+        {
+            if($scope.nuevaFormula[k] == "(")
+            {
+                abierto++;
+            }
+            else if($scope.nuevaFormula[k] == ")")
+            {
+                cerrado++;
+            }
+        }
+        
+        if(abierto == cerrado)
+        {
+           return true; 
+        }
+        else
+        {
+            return false;
+        }
+    };
+    
+    $scope.GuardarFormula = function()
+    {
+        $scope.mensajeError = [];
+        
+        if(!($scope.ValidarFormula()))
+        {
+            $scope.mensajeError[$scope.mensajeError.length] = "*Formula invalida. El número de parentesis abiertos debe ser el mismo que el número de parentesis cerrados.";
+            return;
+        }
+        else
+        {
+            if($scope.editarFormula == "Ancho")
+            {
+                $scope.nuevaPieza.FormulaAncho = $scope.nuevaFormula;
+            }
+            else if($scope.editarFormula == "Largo")
+            {
+                $scope.nuevaPieza.FormulaLargo = $scope.nuevaFormula;
+            }
+            
+            $('#piezaFormulaForma').modal('toggle');
+        }
     };
     
     /*-------------------------------TIPO MÓDULO----------------------------------------------------*/
@@ -1227,7 +1619,7 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
     /*------- Catálogos componentes ----------------*/
     $scope.GetComponente = function()      
     {
-        GetComponente($http, $q, CONFIG).then(function(data)
+        GetTodosComponente($http, $q, CONFIG).then(function(data)
         {
             $scope.componente = data;
         }).catch(function(error)
@@ -1356,6 +1748,11 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
         }
     };
     
+    $scope.GetTipoParte = function()
+    {
+        $scope.tipoParte = GetTipoParte();
+    };
+    
     //-------------Inicializar-----------------------
     $scope.GetTipoModulo();
     $scope.GetPieza();
@@ -1372,8 +1769,27 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
 //Pestañas
 var tabConModulo = 
     [
-        {titulo:"Componente", referencia: "#Componente", clase:"active", area:"componente"},
-        {titulo:"Pieza", referencia: "#Pieza", clase:"", area:"pieza"},
+        {titulo:"Componente", referencia: "#Componente", clase:"", area:"componente"},
+        {titulo:"Pieza", referencia: "#Pieza", clase:"active", area:"pieza"},
         {titulo:"Tipo Módulo", referencia: "#TipoModulo", clase:"", area:"tipoModulo"},
         {titulo:"Consumible", referencia: "#Consumible", clase:"", area:"consumible"}
+    ];
+
+var tabFormula = 
+    [
+        {titulo:"Módulo"},
+        {titulo:"Componente"},
+        {titulo:"Pieza"},
+        {titulo:"Constante"},
+        {titulo:"Puerta"}
+    ];
+
+var operadores = 
+    [
+        {operador:"+", tipo:"operador"},
+        {operador:"-", tipo:"operador"},
+        {operador:"*", tipo:"operador"},
+        {operador:"/", tipo:"operador"},
+        {operador:"(", tipo:""},
+        {operador:")", tipo:""}
     ];

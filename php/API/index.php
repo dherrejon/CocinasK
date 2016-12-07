@@ -278,6 +278,8 @@
 
     /*------------------------Pieza----------------------------*/
     $app->get('/GetPieza', $seguridad, $ChecarSesion, 'GetPieza');
+    $app->post('/AgregarPieza', $seguridad, $ChecarSesion, 'AgregarPieza');
+    $app->put('/EditarPieza', $seguridad, $ChecarSesion, 'EditarPieza');
     $app->post('/ActivarDesactivarPieza', $seguridad, $ChecarSesion, 'ActivarDesactivarPieza');
 
     /*------------------------  Componente  ----------------------------*/

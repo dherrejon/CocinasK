@@ -821,4 +821,41 @@ function SetPartePorModulo(datos)
     return parteModulo;
 }
 
+/*------Tipo Parte----------*/
+class TipoParte
+{
+    constructor()
+    {
+        this.TipoParteId = "";
+        this.Nombre = "";
+    }
+}
+
+function GetTipoParte()
+{
+    var parte = [];
+    
+    parte[1] = new TipoParte();
+    parte[1].TipoParteId = "1";
+    parte[1].Nombre = "Costado Izquierdo";
+    
+    parte[2] = new TipoParte();
+    parte[2].TipoParteId = "2";
+    parte[2].Nombre = "Costado Derecho";
+    
+    parte[3] = new TipoParte();
+    parte[3].TipoParteId = "3";
+    parte[3].Nombre = "Peinazo Superior";
+    
+    parte[4] = new TipoParte();
+    parte[4].TipoParteId = "4";
+    parte[4].Nombre = "Peinazo Medio";
+    
+    parte[5] = new TipoParte();
+    parte[5].TipoParteId = "5";
+    parte[5].Nombre = "Peinazo Inferior";
+    
+    return parte;
+}
+
 
