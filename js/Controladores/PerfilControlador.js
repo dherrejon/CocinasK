@@ -95,25 +95,30 @@ function SetPerfil(perfil, $rootScope, $window, $http, CONFIG, usuario)
     $window.location = perfil.paginaPrincipal;
     SetPerfilInSesion(perfil.nombre, $http, CONFIG);                    //Coloca el perfil seleccionado en _$Session
     
-    for(var k=0; k< $rootScope.barraNavegacionOpciones[0].elemento.length; k++)
-    {
-        $rootScope.barraNavegacionOpciones[0].elemento[k].show = false;
-    }
     
-    for(var k=0; k< $rootScope.barraNavegacionOpciones[1].elemento.length; k++)
+    if(perfil.nombre == "Administrador")
     {
-        $rootScope.barraNavegacionOpciones[1].elemento[k].show = false;
-    }
-    
-    for(var k=0; k< $rootScope.barraNavegacionOpciones[2].elemento.length; k++)
-    {
-        $rootScope.barraNavegacionOpciones[2].elemento[k].show = false;
+        for(var k=0; k< $rootScope.barraNavegacionOpciones[0].elemento.length; k++)
+        {
+            $rootScope.barraNavegacionOpciones[0].elemento[k].show = false;
+        }
+
+        for(var k=0; k< $rootScope.barraNavegacionOpciones[1].elemento.length; k++)
+        {
+            $rootScope.barraNavegacionOpciones[1].elemento[k].show = false;
+        }
+
+        for(var k=0; k< $rootScope.barraNavegacionOpciones[2].elemento.length; k++)
+        {
+            $rootScope.barraNavegacionOpciones[2].elemento[k].show = false;
+        }
     }
 
     for(var k=0; k<usuario.Permiso.length; k++)
     {
         if(perfil.nombre == "Administrador")
         {
+            /*cocinas K*/
             if(usuario.Permiso[k] == "AdmColConsultar")
             {
                 $rootScope.barraNavegacionOpciones[0].elemento[0].show = true;
@@ -130,17 +135,17 @@ function SetPerfil(perfil, $rootScope, $window, $http, CONFIG, usuario)
             {
                 $rootScope.barraNavegacionOpciones[0].elemento[3].show= true;
             }
-            
+            /*catálogos*/
             else if(usuario.Permiso[k] == "CatModConsultar")
             {
                 $rootScope.barraNavegacionOpciones[1].elemento[0].show = true;
             }
-            else if(usuario.Permiso[k] == "AdmComConsultar")
+            else if(usuario.Permiso[k] == "CatComConsultar")
             {
                 $rootScope.barraNavegacionOpciones[1].elemento[1].show = true;
             }
-            
-            else if(usuario.Permiso[k] == "ConModConfigurar")
+            /*Configurar*/
+            else if(usuario.Permiso[k] == "ConCmpConsultar" || usuario.Permiso[k] == "ConPieConsultar" || usuario.Permiso[k] == "ConCnsConsultar" || usuario.Permiso[k] == "ConTMdConsultar")
             {
                 $rootScope.barraNavegacionOpciones[2].elemento[0].show = true;
             }
@@ -148,11 +153,11 @@ function SetPerfil(perfil, $rootScope, $window, $http, CONFIG, usuario)
             {
                 $rootScope.barraNavegacionOpciones[2].elemento[1].show = true;
             }
-            else if(usuario.Permiso[k] == "ConMatConfigurar")
+            else if(usuario.Permiso[k] == "AdmMatConsultar" || usuario.Permiso[k] == "AdmTMaConsultar")
             {
                 $rootScope.barraNavegacionOpciones[2].elemento[2].show = true;
             }
-            else if(usuario.Permiso[k] == "ConPueConfigurar")
+            else if(usuario.Permiso[k] == "ConPueConsultar" || usuario.Permiso[k] == "ConMpuConsultar")
             {
                 $rootScope.barraNavegacionOpciones[2].elemento[3].show = true;
             }

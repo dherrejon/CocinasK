@@ -159,6 +159,7 @@ class Modulo
     {
         this.ModuloId = "";
         this.TipoModulo = new TipoModulo(); 
+        this.TipoModuloId = ""; 
         this.Nombre = "";
         this.Margen = "";
         this.Imagen = "";
@@ -204,6 +205,7 @@ function SetModulo(data)
     modulo.TipoModulo.Nombre = data.NombreTipoModulo;
     
     modulo.ModuloId = data.ModuloId;
+    modulo.TipoModuloId = data.TipoModuloId;
     modulo.Nombre = data.Nombre;
     modulo.Margen = parseFloat(data.Margen);
     modulo.Imagen = data.Imagen;
@@ -835,25 +837,25 @@ function GetTipoParte()
 {
     var parte = [];
     
+    parte[0] = new TipoParte();
+    parte[0].TipoParteId = "1";
+    parte[0].Nombre = "Costado Izquierdo";
+    
     parte[1] = new TipoParte();
-    parte[1].TipoParteId = "1";
-    parte[1].Nombre = "Costado Izquierdo";
+    parte[1].TipoParteId = "2";
+    parte[1].Nombre = "Costado Derecho";
     
     parte[2] = new TipoParte();
-    parte[2].TipoParteId = "2";
-    parte[2].Nombre = "Costado Derecho";
+    parte[2].TipoParteId = "3";
+    parte[2].Nombre = "Peinazo Superior";
     
     parte[3] = new TipoParte();
-    parte[3].TipoParteId = "3";
-    parte[3].Nombre = "Peinazo Superior";
+    parte[3].TipoParteId = "4";
+    parte[3].Nombre = "Peinazo Medio";
     
     parte[4] = new TipoParte();
-    parte[4].TipoParteId = "4";
-    parte[4].Nombre = "Peinazo Medio";
-    
-    parte[5] = new TipoParte();
-    parte[5].TipoParteId = "5";
-    parte[5].Nombre = "Peinazo Inferior";
+    parte[4].TipoParteId = "5";
+    parte[4].Nombre = "Peinazo Inferior";
     
     return parte;
 }

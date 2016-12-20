@@ -74,7 +74,6 @@ function AgregarPuerta()
                 $sql = "INSERT INTO ComponentePorPuerta (PuertaId, ComponenteId) VALUES";
                 $sql .= " (".$puertaId.", ".$puerta->Componente[$k]->ComponenteId.")";
             
-
                 try 
                 {
                     $stmt = $db->prepare($sql);
@@ -93,6 +92,37 @@ function AgregarPuerta()
                             if($puerta->Componente[$k]->ComponenteId == $puerta->componentePorPuerta[$i]->ComponenteId)
                             {
                                 $sql .= " (".$componentePuertaId.", ".$puerta->componentePorPuerta[$i]->PiezaId.",  ".$puerta->componentePorPuerta[$i]->Cantidad."),";
+                            }
+                        }
+
+                        $sql = rtrim($sql,",");
+
+                        try 
+                        {
+                            $stmt = $db->prepare($sql);
+                            $stmt->execute();
+                        } 
+                        catch(PDOException $e) 
+                        {
+                            echo $e;
+                            $app->status(409);
+                            echo '[{"Estatus": "Fallido"}]';
+                            $db->rollBack();
+                            $app->stop();
+                        }
+                    }
+                    
+                    $countCombinacion = count($puerta->combinacion);
+
+                    if($countCombinacion > 0)
+                    {
+                        $sql = "INSERT INTO CombinacionPorMaterialComponente (ComponentePorPuertaId, CombinacionMaterialId, MaterialId, Grueso) VALUES";
+
+                        for($i=0; $i<$countCombinacion; $i++)
+                        {
+                            if($puerta->Componente[$k]->ComponenteId == $puerta->combinacion[$i]->Componente->ComponenteId)
+                            {
+                                $sql .= " (".$componentePuertaId.", ".$puerta->combinacion[$i]->CombinacionMaterial->CombinacionMaterialId.",  ".$puerta->combinacion[$i]->Material->MaterialId.", '".$puerta->combinacion[$i]->Grueso."'),";
                             }
                         }
 
@@ -183,6 +213,22 @@ function EditarPuerta()
             }
             
             $sql = "DELETE FROM PiezaPorComponentePuerta WHERE ComponentePorPuertaId = ".$response[0]->ComponentePorPuertaId;
+            try 
+            {
+                $stmt = $db->prepare($sql); 
+                $stmt->execute(); 
+
+            } 
+            catch(PDOException $e) 
+            {
+                //echo '[ { "Estatus": "Fallo" } ]';
+                echo $e;
+                $db->rollBack();
+                $app->status(409);
+                $app->stop();
+            }
+            
+            $sql = "DELETE FROM CombinacionPorMaterialComponente WHERE ComponentePorPuertaId = ".$response[0]->ComponentePorPuertaId;
             try 
             {
                 $stmt = $db->prepare($sql); 
@@ -313,6 +359,37 @@ function EditarPuerta()
                         $app->stop();
                     }
                 }
+                
+                $countCombinacion = count($puerta->combinacion);
+
+                if($countCombinacion > 0)
+                {
+                    $sql = "INSERT INTO CombinacionPorMaterialComponente (ComponentePorPuertaId, CombinacionMaterialId, MaterialId, Grueso) VALUES";
+
+                    for($i=0; $i<$countCombinacion; $i++)
+                    {
+                        if($puerta->componenteAgregar[$k] == $puerta->combinacion[$i]->Componente->ComponenteId)
+                        {
+                            $sql .= " (".$componentePuertaId.", ".$puerta->combinacion[$i]->CombinacionMaterial->CombinacionMaterialId.",  ".$puerta->combinacion[$i]->Material->MaterialId.", '".$puerta->combinacion[$i]->Grueso."'),";
+                        }
+                    }
+
+                    $sql = rtrim($sql,",");
+
+                    try 
+                    {
+                        $stmt = $db->prepare($sql);
+                        $stmt->execute();
+                    } 
+                    catch(PDOException $e) 
+                    {
+                        echo $e;
+                        $app->status(409);
+                        echo '[{"Estatus": "Fallido"}]';
+                        $db->rollBack();
+                        $app->stop();
+                    }
+                }
             }
 
             catch(PDOException $e) 
@@ -382,6 +459,38 @@ function EditarPuerta()
                         $app->stop();
                     }
                 }
+                
+                $countCombinacion = count($puerta->combinacion);
+                
+                if($countCombinacion > 0)
+                {
+                    for($i=0; $i<$countCombinacion; $i++)
+                    {
+                        if($puerta->combinacion[$i]->Componente->ComponenteId == $puerta->componenteEditar[$k])
+                        {
+                            $sql = "UPDATE  CombinacionPorMaterialComponente  SET  
+                            MaterialId = ".$puerta->combinacion[$i]->Material->MaterialId." , Grueso = '".$puerta->combinacion[$i]->Grueso."' WHERE
+                            ComponentePorPuertaId = ".$componentePuertaId." AND CombinacionMaterialId =".$puerta->combinacion[$i]->CombinacionMaterial->CombinacionMaterialId;
+
+
+                            $sql = rtrim($sql,",");
+
+                            try 
+                            {
+                                $stmt = $db->prepare($sql);
+                                $stmt->execute();
+                            } 
+                            catch(PDOException $e) 
+                            {
+                                echo $e;
+                                $app->status(409);
+                                echo '[{"Estatus": "Fallido"}]';
+                                $db->rollBack();
+                                $app->stop();
+                            }
+                        }
+                    }
+                }
             }
 
             catch(PDOException $e) 
@@ -437,6 +546,35 @@ function GetComponentePorPuerta()
     
     
     $sql = "SELECT * FROM ComponentePorPuertaVista WHERE PuertaId='".$puertaId[0]."'";
+    
+    try 
+    {
+        $db = getConnection();
+        $stmt = $db->query($sql);
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $db = null;
+        
+        echo json_encode($response);  
+    } 
+    catch(PDOException $e) 
+    {
+        //echo $e;
+        echo '[ { "Estatus": "Fallo" } ]';
+        //$app->status(409);
+        $app->stop();
+    }
+}
+
+function GetComponentesPorPuertaComponente()
+{
+    global $app;
+    global $session_expiration_time;
+
+    $request = \Slim\Slim::getInstance()->request();
+    $puertaId = json_decode($request->getBody());
+    
+    
+    $sql = "SELECT * FROM ComponentePorPuertaCombinacionVista";
     
     try 
     {

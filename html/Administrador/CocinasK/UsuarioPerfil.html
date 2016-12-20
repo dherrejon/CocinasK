@@ -272,7 +272,7 @@
                 </div>
                 <br>
 
-                <form class="modal-body" name="usuarioForma">
+                <form class="modal-body" name="usuarioPerfilForma">
                     <div ng-show="usuarioTab == 'datosUsuario'">
                     <!-- Datos -->
                         <!-- colaborador -->
@@ -288,7 +288,7 @@
                              <!-- usuario -->
                             <div class="col-sm-6">
                                  <div class="entrada2">
-                                    <input ng-pattern="erNombreUsuario" type="text" required class="{{claseUsuario.usuario}} form-control" name="usuario" ng-model="nuevoUsuario.NombreUsuario"/>
+                                    <input ng-pattern="erNombreUsuario" type="text" required class="{{claseUsuario.usuario}} form-control minuscula" name="usuario" ng-model="nuevoUsuario.NombreUsuario"/>
                                     <label>Nombre de Usuario</label>
                                 </div>
                             </div>
@@ -322,7 +322,7 @@
                             </div>
 
                             <div class="col-xs-6">
-                                <button focus class="btn botonAvanzar btn-block" ng-click="TerminarUsuario(usuarioForma.usuario.$invalid)">Siguiente &gt;&gt;</button>
+                                <button focus class="btn botonAvanzar btn-block" ng-click="TerminarUsuario(usuarioPerfilForma.usuario.$invalid)">SIGUIENTE &gt;&gt;</button>
                             </div>
                         </div>
                         <br>

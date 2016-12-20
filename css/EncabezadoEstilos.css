@@ -20,6 +20,7 @@
 .textoPerfil /*Texto en el encabezado que indica el perfil del usuario*/
 {
     font-size: 12pt;
+    overflow: hidden;
 }
 
 .botonPerfil, .botonPerfil:disabled
@@ -30,10 +31,10 @@
     opacity: 1.0;
 }
 
-.botonPerfil:disabled
+.botonPerfil:hover:disabled
 {
     border: solid 2px white;
-    background:rgb(250, 97, 21);
+    background: transparent;
     color: white;
     opacity: 1.0;
     cursor: text;
@@ -153,4 +154,21 @@
     margin-left: -15px;
     max-height: 50px !important;
     max-width: 170 !important;
+}
+
+.mayuscula
+{
+    text-transform: uppercase;
+}
+
+.minuscula
+{
+    text-transform: lowercase;
+}
+
+.columna
+{
+    display: inline;
+    display: block;
+    background: yellow;
 }

@@ -804,7 +804,7 @@ app.controller("UtilizarUidadNegocio", function($scope, $rootScope, $http, $q, C
         {
             if($scope.operacion == "Agregar" || $scope.NuevaUnidad.UnidadNegocioId !== $scope.UnidadNegocio[k].UnidadNegocioId)
             {
-                if($rootScope.UnidadNegocio[k].Nombre == $scope.NuevaUnidad.Nombre)
+                if($rootScope.UnidadNegocio[k].Nombre.toLowerCase() == $scope.NuevaUnidad.Nombre.toLowerCase())
                 {
                     if($rootScope.UnidadNegocio[k].TipoUnidadNegocio.Nombre == $scope.NuevaUnidad.TipoUnidadNegocio.Nombre)
                     {
@@ -942,20 +942,25 @@ app.controller("UtilizarUidadNegocio", function($scope, $rootScope, $http, $q, C
     {
         if($scope.usuarioLogeado.SesionIniciada)
         {
-            $scope.IdentificarPermisos();
-            if(!$scope.permisoUsuario.consultar)
+            if($scope.usuarioLogeado.PerfilSeleccionado == "Administrador")
             {
-               for(var k=0; k<$rootScope.Perfiles.length; k++)
+                $scope.IdentificarPermisos();
+                if(!$scope.permisoUsuario.consultar)
                 {
-                    if($scope.usuarioLogeado.PerfilSeleccionado == $rootScope.Perfiles[k].nombre)         //Se verifica con que perfil cuenta el usuario
-                    {
-                        $window.location = $rootScope.Perfiles[k].paginaPrincipal;
-                    }
-                } 
+                   $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
+                }
+                else
+                {
+                    $scope.GetCatalogosUnidadNegocio();           //Inicializar catálogos (CodigoPostal, responsables, tipo de unidad de negocio y empresa) 
+                }
+            }
+            else if($scope.usuarioLogeado.PerfilSeleccionado === "")
+            {
+                $window.location = "#Perfil";
             }
             else
             {
-                $scope.GetCatalogosUnidadNegocio();           //Inicializar catálogos (CodigoPostal, responsables, tipo de unidad de negocio y empresa) 
+                $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
             }
         }
         else
@@ -976,20 +981,25 @@ app.controller("UtilizarUidadNegocio", function($scope, $rootScope, $http, $q, C
         }
         else
         {
-            $scope.IdentificarPermisos();
-            if(!$scope.permisoUsuario.consultar)
+            if($scope.usuarioLogeado.PerfilSeleccionado == "Administrador")
             {
-               for(var k=0; k<$rootScope.Perfiles.length; k++)
+                $scope.IdentificarPermisos();
+                if(!$scope.permisoUsuario.consultar)
                 {
-                    if($scope.usuarioLogeado.PerfilSeleccionado == $rootScope.Perfiles[k].nombre)         //Se verifica con que perfil cuenta el usuario
-                    {
-                        $window.location = $rootScope.Perfiles[k].paginaPrincipal;
-                    }
-                } 
+                    $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
+                }
+                else
+                {
+                    $scope.GetCatalogosUnidadNegocio();           //Inicializar catálogos (CodigoPostal, responsables, tipo de unidad de negocio y empresa) 
+                }
+            }
+            else if($scope.usuarioLogeado.PerfilSeleccionado === "")
+            {
+                $window.location = "#Perfil";
             }
             else
             {
-                $scope.GetCatalogosUnidadNegocio();           //Inicializar catálogos (CodigoPostal, responsables, tipo de unidad de negocio y empresa) 
+                $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
             }
         }
     });   
@@ -1054,11 +1064,14 @@ function CopiarUnidad(unidad)
 }
 
 //Directiva para mostrar el teléfono con una mascara 
-app.directive('phoneInput', function($filter, $browser) {
+app.directive('phoneInput', function($filter, $browser) 
+{
     return {
         require: 'ngModel',
-        link: function($scope, $element, $attrs, ngModelCtrl) {
-            var listener = function() {
+        link: function($scope, $element, $attrs, ngModelCtrl) 
+        {
+            var listener = function() 
+            {
                 var value = $element.val().replace(/[^0-9]/g, '');
                 $element.val($filter('tel')(value, false));
             };
@@ -1087,7 +1100,8 @@ app.directive('phoneInput', function($filter, $browser) {
                 $browser.defer(listener); // Have to do this or changes don't get picked up properly
             });
 
-            $element.bind('paste cut', function() {
+            $element.bind('paste cut', function() 
+            {
                 $browser.defer(listener);
             });
         }
@@ -1108,7 +1122,8 @@ app.filter('tel', function () {
 
         var country, city, number;
 
-        switch (value.length) {
+        switch (value.length) 
+        {
             case 1:
             case 2:
             case 3:
@@ -1120,17 +1135,21 @@ app.filter('tel', function () {
                 number = value.slice(3);
         }
 
-        if(number){
-            if(number.length>3){
+        if(number)
+        {
+            if(number.length>3)
+            {
                 number = number.slice(0, 3) + '-' + number.slice(3,7);
             }
-            else{
+            else
+            {
                 number = number;
             }
 
             return ("(" + city + ") " + number).trim();
         }
-        else{
+        else
+        {
             return "(" + city;
         }
     };

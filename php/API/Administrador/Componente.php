@@ -35,7 +35,7 @@ function GetTodosComponente()
 
     $request = \Slim\Slim::getInstance()->request();
 
-    $sql = "SELECT * FROM Componente WHERE ComponenteId >0";
+    $sql = "SELECT * FROM Componente WHERE ComponenteId > 0 AND TipoComponenteId != 2";
 
     try 
     {

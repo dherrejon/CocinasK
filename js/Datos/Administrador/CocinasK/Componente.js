@@ -232,7 +232,7 @@ function SetPiezaPorComponente(datos)
     var piezaPorComponente = new PiezaPorComponente();
     var pieza = new Pieza();
     
-    piezaPorComponente.PiezaPorComponenteId = datos.PiezaPorComponenteId;
+    //piezaPorComponente.PiezaPorComponenteId = datos.PiezaPorComponenteId;
     piezaPorComponente.ComponenteId = datos.ComponenteId;
     piezaPorComponente.Cantidad = datos.Cantidad;
     

@@ -33,11 +33,16 @@ function AgregarMuestrario()
     $request = \Slim\Slim::getInstance()->request();
     $muestrario = json_decode($request->getBody());
     global $app;
-    $sql = "INSERT INTO Muestrario (TipoMuestrarioId, Nombre, Activo) VALUES(:TipoMuestrarioId, :Nombre, :Activo)";
-
+    $sql = "INSERT INTO Muestrario (TipoMuestrarioId, Nombre, Activo, PorDefecto) VALUES(:TipoMuestrarioId, :Nombre, :Activo, 0)";
+    
+    $db;
+    $stmt;
+    $muestrarioId;
+    
     try 
     {
         $db = getConnection();
+        $db->beginTransaction();
         $stmt = $db->prepare($sql);
 
         $stmt->bindParam("TipoMuestrarioId", $muestrario->TipoMuestrarioId);
@@ -45,13 +50,61 @@ function AgregarMuestrario()
         $stmt->bindParam("Activo", $muestrario->Activo);
 
         $stmt->execute();
-
-        $db = null;
-        echo '[{"Estatus": "Exitoso"}]';
+        
+        $muestrarioId = $db->lastInsertId();
 
     } catch(PDOException $e) 
     {
+        $db->rollBack();
         echo '[{"Estatus": "Fallido"}]';
+        echo $e;
+        $app->status(409);
+        $app->stop();
+    }
+    
+    if($muestrario->PorDefecto)
+    {
+        $sql = "UPDATE Muestrario SET PorDefecto=0  WHERE PorDefecto=1 AND TipoMuestrarioId = 1";
+    
+        try 
+        {   
+            $stmt = $db->prepare($sql);
+            $stmt->execute();
+        }
+        catch(PDOException $e) 
+        {   
+            $db->rollBack();
+            echo $e;
+            echo '[{"Estatus": "Fallido"}]';
+            $app->status(409);
+            $app->stop();
+        }
+        
+        $sql = "UPDATE Muestrario SET PorDefecto=1, Activo=1  WHERE MuestrarioId=".$muestrarioId;
+    
+        try 
+        {
+            $stmt = $db->prepare($sql);
+            $stmt->execute();
+            
+            $db->commit();
+            $db = null;
+            echo '[{"Estatus":"Exitoso"}]';
+        }
+        catch(PDOException $e) 
+        {   
+            $db->rollBack();
+            echo $e;
+            echo '[{"Estatus": "Fallido"}]';
+            $app->status(409);
+            $app->stop();
+        }
+    }
+    else
+    {
+        $db->commit();
+        $db = null;        
+        echo '[{"Estatus":"Exitoso"}]';
     }
 }
 
@@ -63,20 +116,65 @@ function EditarMuestrario()
    
     $sql = "UPDATE Muestrario SET Nombre='".$muestrario->Nombre."', TipoMuestrarioId='".$muestrario->TipoMuestrarioId."', Activo = '".$muestrario->Activo."'  WHERE MuestrarioId=".$muestrario->MuestrarioId."";
     
+    $stmt;
+    $db;
+        
     try 
     {
         $db = getConnection();
+        $db->beginTransaction();
         $stmt = $db->prepare($sql);
         $stmt->execute();
-        $db = null;
-
-        echo '[{"Estatus":"Exitoso"}]';
     }
     catch(PDOException $e) 
     {   
+        $db->rollBack();
         echo '[{"Estatus": "Fallido"}]';
         $app->status(409);
         $app->stop();
+    }
+    
+    if($muestrario->PorDefecto)
+    {
+        $sql = "UPDATE Muestrario SET PorDefecto=0  WHERE PorDefecto=1 AND TipoMuestrarioId = 1";
+    
+        try 
+        {   
+            $stmt = $db->prepare($sql);
+            $stmt->execute();
+        }
+        catch(PDOException $e) 
+        {   
+            $db->rollBack();
+            echo '[{"Estatus": "Fallido"}]';
+            $app->status(409);
+            $app->stop();
+        }
+        
+        $sql = "UPDATE Muestrario SET PorDefecto=1, Activo = 1  WHERE MuestrarioId=".$muestrario->MuestrarioId;
+    
+        try 
+        {
+            $stmt = $db->prepare($sql);
+            $stmt->execute();
+            
+            $db->commit();
+            $db = null;
+            echo '[{"Estatus":"Exitoso"}]';
+        }
+        catch(PDOException $e) 
+        {   
+            $db->rollBack();
+            echo '[{"Estatus": "Fallido"}]';
+            $app->status(409);
+            $app->stop();
+        }
+    }
+    else
+    {
+        $db->commit();
+        $db = null;        
+        echo '[{"Estatus":"Exitoso"}]';
     }
 }
 

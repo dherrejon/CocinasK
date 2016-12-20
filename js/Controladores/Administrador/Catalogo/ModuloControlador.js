@@ -2,6 +2,31 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
 {
     $rootScope.clasePrincipal = "";  //si esta en el login muestra una cocina de fondo
     
+    /*----------------verificar los permisos---------------------*/
+    $scope.permisoUsuario = {consultar:false, editar: false, activar:false, agregar:false};
+    $scope.IdentificarPermisos = function()
+    {
+        for(var k=0; k < $scope.usuarioLogeado.Permiso.length; k++)
+        {
+            if($scope.usuarioLogeado.Permiso[k] == "CatModConsultar")
+            {
+                $scope.permisoUsuario.consultar = true;
+            }
+            else if($scope.usuarioLogeado.Permiso[k] == "CatModAgregar")
+            {
+                $scope.permisoUsuario.agregar = true;
+            }
+            else if($scope.usuarioLogeado.Permiso[k] == "CatModEditar")
+            {
+                $scope.permisoUsuario.editar = true;
+            }
+            else if($scope.usuarioLogeado.Permiso[k] == "CatModActivar")
+            {
+                $scope.permisoUsuario.activar = true;
+            }
+        }
+    };
+    
     $scope.titulo = "Módulos";
     $scope.buscar = "";
     $scope.ordenarPor = "TipoModulo.Nombre";
@@ -369,7 +394,7 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
         
         for(var k=0; k<$scope.modulo.length; k++)
         {
-            if($scope.modulo[k].Nombre == $scope.nuevoModulo.Nombre && $scope.modulo[k].TipoModulo.TipoModuloId == $scope.nuevoModulo.TipoModulo.TipoModuloId && $scope.modulo[k].ModuloId != $scope.nuevoModulo.ModuloId) 
+            if($scope.modulo[k].Nombre.toLowerCase() == $scope.nuevoModulo.Nombre.toLowerCase() && $scope.modulo[k].TipoModulo.TipoModuloId == $scope.nuevoModulo.TipoModulo.TipoModuloId && $scope.modulo[k].ModuloId != $scope.nuevoModulo.ModuloId) 
             {
                 $scope.claseModulo.nombre="entradaError";
                 $scope.claseModulo.tipoModulo="dropdownListModalError";
@@ -735,6 +760,105 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
         }
     };
     
+    $scope.ValidarComponentes = function()
+    {   
+        var q = $q.defer();
+        $scope.componenteFaltante = [];
+        
+        for(var k=0; k<$scope.componenteModulo.length; k++)
+        {        
+            GetPiezaPorComponente($http, $q, CONFIG, $scope.componenteModulo[k].Componente.ComponenteId).then(function(data)
+            {   
+                for(var i=0; i<data.length; i++)
+                {
+                    $scope.ValidarComponenteFormula(data[i].Pieza.FormulaAncho);
+                    $scope.ValidarComponenteFormula(data[i].Pieza.FormulaLargo);
+                }
+                if($scope.componenteFaltante.length === 0)
+                {
+                     q.resolve(true);
+                }
+                else
+                {
+                     q.resolve(false);
+                }
+            }).catch(function(error)
+            {
+                alert("Ha ocurrido un error al obtener las piezas del componente." + error);
+                return;
+            });
+        }
+        
+        
+        return q.promise;
+    };
+    
+    
+    $scope.ValidarComponenteFormula = function(formula)
+    {
+        var nombreComponente;
+        
+        var index = formula.indexOf("[Componente]");
+        
+        while(index > -1)
+        {
+            nombreComponente = "";
+            
+            for(var j=index+13; j<formula.length; j++)
+            {
+                nombreComponente += formula[j];
+                if(formula[j+1] == "]")
+                {
+                    index = j+1;
+                    break;
+                }
+            }
+            
+            var isComponente = false;
+            
+            
+            if(nombreComponente == "Frente Modulo")
+            {
+                isComponente = true;  
+            }
+            
+            if(!isComponente)
+            {
+                for(var k=0; k<$scope.componenteModulo.length; k++)
+                {
+                    if(nombreComponente == $scope.componenteModulo[k].Componente.Nombre)
+                    {
+                        isComponente = true;
+                    }
+                }
+            }
+            
+            if(!isComponente)
+            {
+                var componenteRegistrada = false;
+                for(var k=0; k<$scope.componenteFaltante.length; k++)
+                {
+                    if($scope.componenteFaltante[k] == nombreComponente)
+                    {
+                        componenteRegistrada = true;
+                        break;
+                    }
+                }
+                if(!componenteRegistrada)
+                {
+                    $scope.componenteFaltante[$scope.componenteFaltante.length] = nombreComponente;
+                    $scope.mensajeError[$scope.mensajeError.length] = "*Falta agregar el componente \"" + nombreComponente + "\".";
+                }
+                
+            }
+            
+            var componente = "[Componente][" + nombreComponente + "]"; 
+            formula = formula.replace(componente, " ");
+
+            index = formula.indexOf("[Componente]");
+        }
+    };
+    
     $scope.SiguienteComponente = function()
     {
         $scope.mensajeError = [];
@@ -753,26 +877,37 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
         {
             return;
         }
-        
-        if($scope.nuevoModulo.NumeroSeccion != "0")
+
+        $scope.ValidarComponentes().then(function(valido)
         {
-            $scope.numeroPaso = 4;
-            $scope.pasoModulo[1].clase="pasoNoActivo";
-            $scope.pasoModulo[2].clase="pasoActivo";
-        }
-        else
-        {
-            $scope.SetDatosNuevoModulo();
+            if(!valido)
+            {
+                return;
+            }
+            else
+            {
+                if($scope.nuevoModulo.NumeroSeccion != "0")
+                {
+                    $scope.numeroPaso = 4;
+                    $scope.pasoModulo[1].clase="pasoNoActivo";
+                    $scope.pasoModulo[2].clase="pasoActivo";
+                }
+                else
+                {
+                    $scope.SetDatosNuevoModulo();
+
+                    if($scope.operacion == "Agregar")
+                    {
+                        $scope.AgregarModulo();
+                    }
+                    else if($scope.operacion == "Editar")
+                    {
+                        $scope.EditarModulo();
+                    }
+                }
+            }
+        });
         
-            if($scope.operacion == "Agregar")
-            {
-                $scope.AgregarModulo();
-            }
-            else if($scope.operacion == "Editar")
-            {
-                $scope.EditarModulo();
-            }
-        }
     };
     
      /*--------Paso 4------------*/
@@ -1665,10 +1800,13 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
     
     
     /*-------Inicializar-------*/
-    $scope.GetModulo();
-    $scope.GetConsumible();
-    $scope.GetComponente();
-    $scope.GetTipoModulo();
+    $scope.InicializarModuloModulos = function()
+    {
+        $scope.GetModulo();
+        $scope.GetConsumible();
+        $scope.GetComponente();
+        $scope.GetTipoModulo();
+    };
     
     $scope.SetDatosModulo = function(data)
     {
@@ -1688,6 +1826,76 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
         
         return modulo;
     };
+    
+    /*------------------Indentifica cuando los datos del usuario han cambiado-------------------*/
+    $scope.usuarioLogeado =  datosUsuario.getUsuario(); 
+    
+    //verifica que haya un usuario logeado
+    if($scope.usuarioLogeado !== null)
+    {
+        if($scope.usuarioLogeado.SesionIniciada)
+        {
+            if($scope.usuarioLogeado.PerfilSeleccionado == "Administrador")
+            {
+                $scope.IdentificarPermisos();
+                if(!$scope.permisoUsuario.consultar)
+                {
+                    $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
+                }
+                else
+                {
+                    $scope.InicializarModuloModulos();
+                }
+            }
+            else if($scope.usuarioLogeado.PerfilSeleccionado === "")
+            {
+                $window.location = "#Perfil";
+            }
+            else
+            {
+                $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
+            }
+        }
+        else
+        {
+            $window.location = "#Login";
+        }
+    }
+    
+    //destecta cuando los datos del usuario cambian
+    $scope.$on('cambioUsuario',function()
+    {
+        $scope.usuarioLogeado =  datosUsuario.getUsuario();
+    
+        if(!$scope.usuarioLogeado.SesionIniciada)
+        {
+            $window.location = "#Login";
+            return;
+        }
+        else
+        {
+            if($scope.usuarioLogeado.PerfilSeleccionado == "Administrador")
+            {
+                $scope.IdentificarPermisos();
+                if(!$scope.permisoUsuario.consultar)
+                {
+                   $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
+                }
+                else
+                {
+                    $scope.InicializarModuloModulos();
+                }
+            }
+            else if($scope.usuarioLogeado.PerfilSeleccionado === "")
+            {
+                $window.location = "#Perfil";
+            }
+            else
+            {
+                $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
+            }
+        }
+    });
    
 });
 

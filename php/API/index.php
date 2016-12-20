@@ -321,6 +321,8 @@
 
     $app->post('/GetCombinacionPorMaterialComponente', $seguridad, $ChecarSesion, 'GetCombinacionPorMaterialComponente');
     $app->post('/GetCombinacionPorMaterialComponentePorComponente', $seguridad, $ChecarSesion, 'GetCombinacionPorMaterialComponentePorComponente');
+    $app->post('/GetCombinacionPorMaterialComponentePorPuerta', $seguridad, $ChecarSesion, 'GetCombinacionPorMaterialComponentePorPuerta');
+    $app->post('/GetCombinacionPorMaterialComponentePorPuertaCombinacion', $seguridad, $ChecarSesion, 'GetCombinacionPorMaterialComponentePorPuertaCombinacion');
 
     /*------------------------Consumible----------------------------*/
     $app->get('/GetConsumible', $seguridad, $ChecarSesion, 'GetConsumible');
@@ -343,6 +345,7 @@
     $app->post('/ActivarDesactivarPuerta', $seguridad, $ChecarSesion, 'ActivarDesactivarPuerta');
 
     $app->post('/GetComponentePorPuerta', $seguridad, $ChecarSesion, 'GetComponentePorPuerta');
+    $app->get('/GetComponentesPorPuertaComponente', $seguridad, $ChecarSesion, 'GetComponentesPorPuertaComponente');
 
     
 

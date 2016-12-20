@@ -9,6 +9,7 @@ class Muestrario
         this.Precio = ""; 
         this.Activo = true;
         this.ActivoN = "1";
+        this.PorDefecto = false;
     }
 }
 
@@ -54,6 +55,15 @@ function SetMuestrario(data)
     else
     {
         muestrario.Activo = false;
+    }
+    
+    if(data.PorDefecto == "1")
+    {
+        muestrario.PorDefecto = true;
+    }
+    else
+    {
+        muestrario.PorDefecto = false;
     }
     
     return muestrario;

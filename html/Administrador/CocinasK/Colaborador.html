@@ -21,7 +21,7 @@
                         <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('Nombre')"><b>Nombre(s) </b><b ng-if="ordenarPor === 'Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-Nombre'" class="fa fa-arrow-down"></b></button></th>
                         <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('NombreTipoUnidadNegocio')"><b>Unidad Negocio </b><b ng-if="ordenarPor === 'NombreTipoUnidadNegocio'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-NombreTipoUnidadNegocio'" class="fa fa-arrow-down"></b></button></th>
                         <th><button class="btn botonFalso"><b>Detalles</b></button></th>
-                          <th><button class="btn botonFalso"><b>Usuario</b></button></th>
+                        <th><button class="btn botonFalso"><b>Usuario</b></button></th>
                         <th><button class="btn botonFalso"><b>Editar</b></button></th>
                         <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('ActivoN')"><b>Activo </b> <b ng-if="ordenarPor === 'ActivoN'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-ActivoN'" class="fa fa-arrow-down"></b></button></th>
                       </tr>
@@ -31,7 +31,7 @@
                         <td>{{colaborador.PrimerApellido}}</td>
                         <td>{{colaborador.SegundoApellido}}</td>
                         <td>{{colaborador.Nombre}}</td>
-                        <td>{{colaborador.NombreTipoUnidadNegocio}} - {{colaborador.NombreUnidadNegocio}}</td>
+                        <td>{{colaborador.NombreTipoUnidadNegocio}} - {{colaborador.NombreUnidadNegocio}} </td>
                         
                         <!--Detalles--->
                         <td class="text-center">
@@ -986,7 +986,7 @@
                              <!-- usuario -->
                             <div class="col-sm-6">
                                  <div class="entrada2">
-                                    <input ng-pattern="erNombreUsuario" type="text" required class="{{claseUsuario.usuario}} form-control" name="usuario" ng-model="nuevoColaborador.NombreUsuario"/>
+                                    <input ng-pattern="erNombreUsuario" type="text" required class="{{claseUsuario.usuario}} form-control minuscula" name="usuario" ng-model="nuevoColaborador.NombreUsuario"/>
                                     <label>Nombre de Usuario</label>
                                 </div>
                             </div>

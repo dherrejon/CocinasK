@@ -10,7 +10,7 @@
     </div>
     <br>
         
-    <div class="row">
+    <div class="row" ng-if="permisoUsuario.consultar">
         <div class="col-md-11 col-xs-10">
             <div class="table-responsive TablaUnidadNegocio">
                 <table class="table table-hover">
@@ -35,17 +35,16 @@
                         </td>
 
                         <td>
-                            <a  class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirModuloModal('Editar', modulo)">
+                            <a  ng-if="permisoUsuario.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirModuloModal('Editar', modulo)">
                                 <span class="fa fa-pencil fa-2x"></span>
                             </a>
-                            
-                            <!-- <span ng-if="!permisoUsuario.editar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>-->
+                            <span ng-if="!permisoUsuario.editar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
                         </td>
 
                         <td>
                             <div class="checkbox">
                                 <label>
-                                    <input ng-model="modulo.Activo" type="checkbox" value="" ng-click="CambiarEstatusActivo(modulo, 'modulo')">
+                                    <input ng-disabled="!permisoUsuario.activar" ng-model="modulo.Activo" type="checkbox" value="" ng-click="CambiarEstatusActivo(modulo, 'modulo')">
                                     <span class="cr"><i class="cr-icon fa fa-check"></i></span>
                                 </label>
                             </div>
@@ -58,7 +57,7 @@
         </div>
 
         <div class="col-xs-2 col-md-1">
-            <button class="btn btn-block botonOperacion fa fa-plus text-center" data-toggle="tooltip" data-placement="bottom" title="Agregar Combinación de Materiales" ng-click="AbrirModuloModal('Agregar', null)"></button>
+            <button ng-disabled="!permisoUsuario.agregar" class="btn btn-block botonOperacion fa fa-plus text-center" data-toggle="tooltip" data-placement="bottom" title="Agregar Combinación de Materiales" ng-click="AbrirModuloModal('Agregar', null)"></button>
             
             <br><br>
             
@@ -219,9 +218,9 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="pull-right">
-                                <button class="btn botonOperacion" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" data-placement="bottom" title="Editar Módulo"  ng-click="AbrirModuloModal('Editar', nuevoModulo)"><span class="fa fa-pencil fa-2x"></span></button>
-                                <button  ng-if="nuevoModulo.Activo" class="btn botonOperacion activo"  data-toggle="tooltip" data-placement="bottom" title="Desactivar" ng-click="CambiarEstatusActivoModal()"><span class="fa fa-power-off fa-2x"></span></button>
-                                <button  ng-if="!nuevoModulo.Activo" class="btn botonOperacion desactivo" data-toggle="tooltip" data-placement="bottom" title="Activar" ng-click="CambiarEstatusActivoModal()"><span class="fa fa-power-off fa-2x"></span></button>
+                                <button ng-disabled="!permisoUsuario.editar" class="btn botonOperacion" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" data-placement="bottom" title="Editar Módulo"  ng-click="AbrirModuloModal('Editar', nuevoModulo)"><span class="fa fa-pencil fa-2x"></span></button>
+                                <button ng-disabled="!permisoUsuario.activar" ng-if="nuevoModulo.Activo" class="btn botonOperacion activo"  data-toggle="tooltip" data-placement="bottom" title="Desactivar" ng-click="CambiarEstatusActivoModal()"><span class="fa fa-power-off fa-2x"></span></button>
+                                <button ng-disabled="!permisoUsuario.activar" ng-if="!nuevoModulo.Activo" class="btn botonOperacion desactivo" data-toggle="tooltip" data-placement="bottom" title="Activar" ng-click="CambiarEstatusActivoModal()"><span class="fa fa-power-off fa-2x"></span></button>
                             </div>
                         </div>
                     </div>

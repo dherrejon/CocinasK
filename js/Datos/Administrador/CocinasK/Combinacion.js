@@ -160,6 +160,7 @@ class CombinacionPorMaterialComponente
         this.Material = new Material();
         this.Componente = new Componente();
         this.CombinacionMaterial = new CombinacionMaterial();
+        this.Puerta = new Puerta();
         this.Grueso = "";
     }
 }
@@ -180,6 +181,14 @@ function GetCombinacionPorMaterialComponente($http, $q, CONFIG, id, modulo)    /
     {
         urlPHP ='/GetCombinacionPorMaterialComponente';
     }
+    else if(modulo == "puerta") 
+    {
+        urlPHP ='/GetCombinacionPorMaterialComponentePorPuerta';
+    }
+    else if(modulo == "puertaCombinacion") 
+    {
+        urlPHP ='/GetCombinacionPorMaterialComponentePorPuertaCombinacion';
+    }
         
 
     $http({      
@@ -194,7 +203,7 @@ function GetCombinacionPorMaterialComponente($http, $q, CONFIG, id, modulo)    /
             for(var k=0; k<data.length; k++)
             {
                 combinacionMaterialComponente[k] = new CombinacionPorMaterialComponente();
-                combinacionMaterialComponente[k] = SetCombinacionPorMaterialComponente(data[k]);
+                combinacionMaterialComponente[k] = SetCombinacionPorMaterialComponente(data[k], modulo);
             }
         
             q.resolve(combinacionMaterialComponente);   
@@ -206,7 +215,7 @@ function GetCombinacionPorMaterialComponente($http, $q, CONFIG, id, modulo)    /
 }
 
 //copia los datos de una combinacion de materiales por componente
-function SetCombinacionPorMaterialComponente(data)
+function SetCombinacionPorMaterialComponente(data, modulo)
 {
     var combinacion = new CombinacionPorMaterialComponente();
     var material = new Material();
@@ -250,6 +259,18 @@ function SetCombinacionPorMaterialComponente(data)
     combinacion.Material = material;
     combinacion.Componente = componente;
     combinacion.CombinacionMaterial = combinacionMaterial;
+    
+    if(modulo == "puerta" || modulo=="puertaCombinacion")
+    {
+        var puerta = new Puerta();
+        puerta.Nombre = data.NombrePuerta;
+        puerta.PuertaId = data.PuertaId;
+        puerta.Activo = data.ActivoPuerta;
+        puerta.ComponentePorPuertaId = data.ComponentePorPuertaId;
+        combinacion.Puerta = puerta;
+        
+        combinacion.Componente.ComponenteId = data.ComponenteId2;
+    }
     
     return combinacion;
 }

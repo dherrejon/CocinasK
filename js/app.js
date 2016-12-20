@@ -191,10 +191,10 @@ app.run(function($rootScope, $location, $window, $http, CONFIG, $q, datosUsuario
     $rootScope.erTelefono = /^(\d){10}$/;                                          //expresión regular para el teléfono   // \((\d){3}\) \d{3}-\d{4}
     $rootScope.erCP = /^(\d){5}$/;                                          //expresión regular para el código postal 
     $rootScope.erEmail = /^[_a-z0-9-]+(.[_a-z0-9-]+)*@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,4})$/;   //expresion regular para correo electronico                                       
-    $rootScope.erRFC = /^([A-Z,Ñ,&]{3,4}\-([0-9]{2})(0[1-9]|1[0-2])(0[1-9]|1[0-9]|2[0-9]|3[0-1])\-[A-Z|\d]{3})$/;   //expresion regular para RFC de una empresa
+    $rootScope.erRFC = /^(([A-Z,Ñ,&]|[a-z,ñ]){3,4}\-([0-9]{2})(0[1-9]|1[0-2])(0[1-9]|1[0-9]|2[0-9]|3[0-1])\-([A-Z]|\d|[a-z]){3})$/;   //expresion regular para RFC de una empresa
     $rootScope.erDecimal = /^[0-9]+(\.[0-9][0-9]?)?$/;   //expresion regular para RFC de una empresa
     $rootScope.erNombrePersonal = /^(([A-Z]|Ñ|[a-z]|[ñáéíóú]|[ÁÉÍÓÚ]){2,120}\s?)+$/;   //expresion regular para los apellido y el nombre de una persona
-    $rootScope.erNombreUsuario = /^([a-z]|ñ|[1-9]){4}([a-z]|ñ|[1-9])*$/;   //expresion regular para el nombre de usurio
+    $rootScope.erNombreUsuario = /^(\w|ñ){4}(\w|ñ)*$/;   //expresion regular para el nombre de usurio
     $rootScope.erNumeroDecimal = /^[0-9]+(\.[0-9][0-9]?)?$/;   //expresion regular para un número decimal
     $rootScope.erNumeroFraccion = /^((([0-9]\s)*([1-9]\/[1-9]{1,2}))|([0-9]))+$/;   //expresion regular para un número fraccional
     $rootScope.erNumeroEntero = /^[0-9]+$/;   //expresion regular para un número entero

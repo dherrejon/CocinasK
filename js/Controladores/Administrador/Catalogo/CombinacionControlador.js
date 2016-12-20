@@ -2,6 +2,31 @@ app.controller("CombinacionControlador", function($scope, $http, $q, CONFIG, dat
 {   
     $rootScope.clasePrincipal = "";  //si esta en el login muestra una cocina de fondo
     
+    /*----------------verificar los permisos---------------------*/
+    $scope.permisoUsuario = {consultar:false, editar: false, activar:false, agregar:false};
+    $scope.IdentificarPermisos = function()
+    {
+        for(var k=0; k < $scope.usuarioLogeado.Permiso.length; k++)
+        {
+            if($scope.usuarioLogeado.Permiso[k] == "CatComConsultar")
+            {
+                $scope.permisoUsuario.consultar = true;
+            }
+            else if($scope.usuarioLogeado.Permiso[k] == "CatComAgregar")
+            {
+                $scope.permisoUsuario.agregar = true;
+            }
+            else if($scope.usuarioLogeado.Permiso[k] == "CatComEditar")
+            {
+                $scope.permisoUsuario.editar = true;
+            }
+            else if($scope.usuarioLogeado.Permiso[k] == "CatComActivar")
+            {
+                $scope.permisoUsuario.activar = true;
+            }
+        }
+    };
+    
     $scope.titulo = "Combinación de Materiales para Módulos";
     $scope.buscar = "";
     
@@ -14,6 +39,10 @@ app.controller("CombinacionControlador", function($scope, $http, $q, CONFIG, dat
     
     $scope.ordenarPor = "Nombre";
     $scope.claseCombinacion = {nombre:"entrada"};
+    $scope.mostrarComponentePuerta = "";
+    $scope.combinacionPorPuerta = null;
+    $scope.componentePorPuerta = null;
+    $scope.pasoCombinacion = 1;
     
     $scope.mensajeError = [];
     
@@ -58,11 +87,72 @@ app.controller("CombinacionControlador", function($scope, $http, $q, CONFIG, dat
         });
     };
     
+    $scope.GetCombinacionPorPuerta = function(combinacionId)
+    {
+        GetCombinacionPorMaterialComponente($http, $q, CONFIG, combinacionId, "puertaCombinacion").then(function(data)
+        {
+            $scope.combinacionPorPuerta = data;
+            for(var k=0; k<data.length; k++)
+            {
+                for(var i=0; i<$scope.material.length; i++)
+                {
+                    if($scope.material[i].MaterialId == $scope.combinacionPorPuerta[k].Material.MaterialId)
+                    {
+                        $scope.combinacionPorPuerta[k].Material.Grueso = $scope.material[i].grueso;
+                        break;
+                    }
+                }
+                $scope.combinacionPorPuerta[k].clase = {tipoMaterial:"dropdownListModal", material:"dropdownListModal", grueso:"dropdownListModal"};
+            }
+        }).catch(function(error)
+        {
+            alert("Ha ocurrido un error al obtener los consumibles." + error);
+            return;
+        });
+    };
+    
     /*---------- Detalles ---------*/
     $scope.MostarDetalles = function(combinacion)
     {
         $scope.nuevaCombinacion = combinacion;
         $scope.GetCombinacionPorMaterialComponente(combinacion.CombinacionMaterialId, "detalles");
+        $scope.GetCombinacionPorPuerta(combinacion.CombinacionMaterialId);
+    };
+    
+    $scope.MostraComponentePuerta = function(puerta)
+    {
+        if(puerta != $scope.mostrarComponentePuerta)
+        {
+            $scope.mostrarComponentePuerta = puerta;
+        }
+        else
+        {
+            $scope.mostrarComponentePuerta = "";
+        }
+    };
+    
+    $scope.GetClaseDetallesPuerta = function(puerta)
+    {
+        if($scope.mostrarComponentePuerta == puerta)
+        {
+            return "opcionAcordionSeleccionado";
+        }
+        else
+        {
+            return "opcionAcordion";
+        }
+    };
+    
+    $scope.FiltarPuerta = function(componente)
+    {
+        if(componente.Puerta.Nombre == $scope.mostrarComponentePuerta)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     };
     
     /*-------- Ordenar -----------*/
@@ -84,6 +174,8 @@ app.controller("CombinacionControlador", function($scope, $http, $q, CONFIG, dat
     {
         $scope.operacion = operacion;
         
+        $scope.mostrarComponentePuerta = "";
+        
         if(operacion == "Agregar")
         {
             $scope.nuevaCombinacion = new CombinacionMaterial();
@@ -96,12 +188,30 @@ app.controller("CombinacionControlador", function($scope, $http, $q, CONFIG, dat
                 
                 $scope.combinacionMaterialComponente[k].clase = {tipoMaterial:"dropdownListModal", material:"dropdownListModal", grueso:"dropdownListModal"};
             }
+            
+            $scope.combinacionPorPuerta = [];
+            for(var k=0; k<$scope.componentePorPuerta.length; k++)
+            {
+                $scope.combinacionPorPuerta[k] = new CombinacionPorMaterialComponente();
+                
+                $scope.combinacionPorPuerta[k].Puerta.PuertaId = $scope.componentePorPuerta[k].PuertaId;
+                $scope.combinacionPorPuerta[k].Puerta.Nombre = $scope.componentePorPuerta[k].NombrePuerta;
+                $scope.combinacionPorPuerta[k].Puerta.ComponentePorPuertaId = $scope.componentePorPuerta[k].ComponentePorPuertaId;
+                $scope.combinacionPorPuerta[k].Puerta.Activo = $scope.componentePorPuerta[k].ActivoPuerta;
+                
+                $scope.combinacionPorPuerta[k].Componente.ComponenteId = $scope.componentePorPuerta[k].ComponenteId;
+                $scope.combinacionPorPuerta[k].Componente.Nombre = $scope.componentePorPuerta[k].NombreComponente;
+               
+                $scope.combinacionPorPuerta[k].clase = {tipoMaterial:"dropdownListModal", material:"dropdownListModal", grueso:"dropdownListModal"};
+                
+            }
         }
         else if(operacion == "Editar")
         {
             $scope.nuevaCombinacion = SetCombinacionMaterial(objeto); 
           
             $scope.GetCombinacionPorMaterialComponente(objeto.CombinacionMaterialId, "editar");
+            $scope.GetCombinacionPorPuerta(objeto.CombinacionMaterialId);
         }
         
         $('#combinacionMaterialModal').modal('toggle');
@@ -132,13 +242,20 @@ app.controller("CombinacionControlador", function($scope, $http, $q, CONFIG, dat
     
     $scope.CambiarMaterial = function(material, combinacion)
     {
+        if(combinacion.Material.Nombre != material.Nombre)
+        {
         combinacion.Material.Nombre = material.Nombre;
         combinacion.Material.MaterialId = material.MaterialId;
         combinacion.Material.Grueso = material.grueso;
         
-        if(material.grueso.length == 0)
-        {
-            combinacion.Grueso = 1;
+            if(material.grueso.length == 0)
+            {
+                combinacion.Grueso = 1;
+            }
+            else  
+            {
+                combinacion.Grueso = "";  
+            }
         }
     };
     
@@ -147,7 +264,7 @@ app.controller("CombinacionControlador", function($scope, $http, $q, CONFIG, dat
         combinacion.Grueso = grueso;
     };
     
-    $scope.TerminarCombinacion = function(nombreInvalido)
+    $scope.SiguienteCombinacion = function(nombreInvalido)
     {
         $scope.nuevaCombinacion.MaterialComponente = $scope.combinacionMaterialComponente
 
@@ -170,7 +287,7 @@ app.controller("CombinacionControlador", function($scope, $http, $q, CONFIG, dat
         
         for(var k=0; k<$scope.combinacion.length; k++)
         {
-            if($scope.combinacion[k].Nombre == $scope.nuevaCombinacion.Nombre && $scope.combinacion[k].CombinacionMaterialId != $scope.nuevaCombinacion.CombinacionMaterialId)
+            if($scope.combinacion[k].Nombre.toLowerCase() == $scope.nuevaCombinacion.Nombre.toLowerCase() && $scope.combinacion[k].CombinacionMaterialId != $scope.nuevaCombinacion.CombinacionMaterialId)
             {
                 $scope.claseCombinacion.nombre = "entradaError";
                 $scope.mensajeError[$scope.mensajeError.length] = "*La combinación " + $scope.nuevaCombinacion.Nombre + " ya existe."; 
@@ -224,6 +341,73 @@ app.controller("CombinacionControlador", function($scope, $http, $q, CONFIG, dat
             return;
         }
                 
+        $scope.pasoCombinacion++;
+    };
+    
+    $scope.ValidarCombinacionPaso2 = function()
+    {
+        $scope.mensajeError = [];
+       
+        var datosIncompletos = false;
+        
+        for(var k=0; k<$scope.combinacionPorPuerta.length; k++)
+        {
+            if($scope.combinacionPorPuerta[k].Puerta.Activo === false || $scope.combinacionPorPuerta[k].Puerta.Activo == "0")
+            {
+                $scope.CambiarTipoMaterial('No Aplica', $scope.combinacionPorPuerta[k]);
+            }
+            else
+            {
+                if($scope.combinacionPorPuerta[k].Material.TipoMaterial.Nombre.length === 0)
+                {
+                    datosIncompletos = true;
+                    $scope.combinacionPorPuerta[k].clase.tipoMaterial = "dropdownListModalError";
+                }
+                else
+                {
+                  $scope.combinacionPorPuerta[k].clase.tipoMaterial = "dropdownListModal";  
+                }
+                if($scope.combinacionPorPuerta[k].Material.Nombre.length === 0)
+                {
+                    datosIncompletos = true;
+                    $scope.combinacionPorPuerta[k].clase.material = "dropdownListModalError";
+                }
+                else
+                {
+                  $scope.combinacionPorPuerta[k].clase.material = "dropdownListModal";  
+                }
+                if($scope.combinacionPorPuerta[k].Grueso.length === 0)
+                {
+                    $scope.combinacionPorPuerta[k].clase.grueso = "dropdownListModalError";
+                    datosIncompletos = true;
+                }
+                else
+                {
+                    $scope.combinacionPorPuerta[k].clase.grueso = "dropdownListModal";  
+                }
+            }
+        }
+        
+        if(datosIncompletos)
+        {
+            $scope.mensajeError[$scope.mensajeError.length] = "*Completa todos los datos."; 
+            return false;
+        }
+        else
+        {
+            return true;        
+        }
+    };
+    
+    $scope.TerminarCombinacion = function()
+    {
+        if(!$scope.ValidarCombinacionPaso2())
+        {
+            return;
+        }
+        
+        $scope.nuevaCombinacion.puerta = $scope.combinacionPorPuerta;
+        
         if($scope.operacion == "Agregar")
         {
             $scope.AgregarCombinacionMaterial();
@@ -232,6 +416,12 @@ app.controller("CombinacionControlador", function($scope, $http, $q, CONFIG, dat
         {
             $scope.EditarCombinacionMaterial();
         }
+    };
+    
+    $scope.AnteriorPuerta = function()
+    {
+        $scope.pasoCombinacion--;
+        $scope.mensajeError = [];
     };
     
     $scope.AgregarCombinacionMaterial = function()
@@ -284,6 +474,8 @@ app.controller("CombinacionControlador", function($scope, $http, $q, CONFIG, dat
     
     $scope.CerrarCombinacionMaterialModal = function()
     {
+        $scope.pasoCombinacion = 1;
+        $scope.mostrarComponentePuerta = "";
         $scope.mensajeError = [];
         $scope.claseCombinacion.nombre = "entrada";
     };
@@ -354,6 +546,17 @@ app.controller("CombinacionControlador", function($scope, $http, $q, CONFIG, dat
     
     
     /*------Catálogos auxiliares------*/
+    $scope.GetComponentesPorPuertaComponente = function()      
+    {
+        GetComponentesPorPuertaComponente($http, $q, CONFIG).then(function(data)
+        {
+            $scope.componentePorPuerta = data;
+        }).catch(function(error)
+        {
+            alert(error);
+        });
+    };
+    
     $scope.GetComponente = function()      
     {
         GetTodosComponente($http, $q, CONFIG).then(function(data)
@@ -428,11 +631,76 @@ app.controller("CombinacionControlador", function($scope, $http, $q, CONFIG, dat
     };
     
     //--------Inicializar--------
-    $scope.GetCombinacionMaterial();  
+    $scope.InicializarModuloCombinacion = function()
+    {
+        $scope.GetCombinacionMaterial();  
+
+        $scope.GetComponente();
+        $scope.GetTipoMaterial();
+        $scope.GetMaterial();
+        $scope.GetGruesoMaterial();
+        
+        $scope.GetComponentesPorPuertaComponente();
+    };
     
-    $scope.GetComponente();
-    $scope.GetTipoMaterial();
-    $scope.GetMaterial();
-    $scope.GetGruesoMaterial();
+    /*------------------Indentifica cuando los datos del usuario han cambiado-------------------*/
+    $scope.usuarioLogeado =  datosUsuario.getUsuario(); 
+    
+    //verifica que haya un usuario logeado
+    if($scope.usuarioLogeado !== null)
+    {
+        if($scope.usuarioLogeado.SesionIniciada)
+        {
+            $scope.IdentificarPermisos();
+            if(!$scope.permisoUsuario.consultar)
+            {
+               for(var k=0; k<$rootScope.Perfiles.length; k++)
+                {
+                    if($scope.usuarioLogeado.PerfilSeleccionado == $rootScope.Perfiles[k].nombre)         //Se verifica con que perfil cuenta el usuario
+                    {
+                        $window.location = $rootScope.Perfiles[k].paginaPrincipal;
+                    }
+                } 
+            }
+            else
+            {
+                $scope.InicializarModuloCombinacion();
+            }
+        }
+        else
+        {
+            $window.location = "#Login";
+        }
+    }
+    
+    //destecta cuando los datos del usuario cambian
+    $scope.$on('cambioUsuario',function()
+    {
+        $scope.usuarioLogeado =  datosUsuario.getUsuario();
+    
+        if(!$scope.usuarioLogeado.SesionIniciada)
+        {
+            $window.location = "#Login";
+            return;
+        }
+        else
+        {
+            $scope.IdentificarPermisos();
+            if(!$scope.permisoUsuario.consultar)
+            {
+               for(var k=0; k<$rootScope.Perfiles.length; k++)
+                {
+                    if($scope.usuarioLogeado.PerfilSeleccionado == $rootScope.Perfiles[k].nombre)         //Se verifica con que perfil cuenta el usuario
+                    {
+                        $window.location = $rootScope.Perfiles[k].paginaPrincipal;
+                    }
+                } 
+            }
+            else
+            {
+                $scope.InicializarModuloCombinacion();
+            }
+        }
+    });
    
 });

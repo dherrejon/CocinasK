@@ -255,7 +255,7 @@ app.controller("TerritorioControlador", function($scope, $http, $q, CONFIG, $roo
         
         for(var k=0; k<$scope.territorio.length; k++)
         {
-            if($scope.territorio[k].Nombre == $scope.nuevoTerritorio.Nombre  && $scope.territorio[k].TerritorioId !== $scope.nuevoTerritorio.TerritorioId)
+            if($scope.territorio[k].Nombre.toLowerCase() == $scope.nuevoTerritorio.Nombre.toLowerCase()  && $scope.territorio[k].TerritorioId !== $scope.nuevoTerritorio.TerritorioId)
             {
                 $scope.mensajeError[$scope.mensajeError.length] = "*El territorio " +  $scope.nuevoTerritorio.Nombre + " ya existe";
                 $scope.clase.nombre = "entradaError";
@@ -357,24 +357,28 @@ app.controller("TerritorioControlador", function($scope, $http, $q, CONFIG, $roo
         $scope.usuarioLogeado =  datosUsuario.getUsuario(); 
         if($scope.usuarioLogeado.SesionIniciada)
         {
-            $scope.IdentificarPermisos();
-            
-            if(!$scope.permisoUsuario.consultar)
+            if($scope.usuarioLogeado.PerfilSeleccionado == "Administrador")
             {
-               for(var k=0; k<$rootScope.Perfiles.length; k++)
+                $scope.IdentificarPermisos();
+
+                if(!$scope.permisoUsuario.consultar)
                 {
-                    if($scope.usuarioLogeado.PerfilSeleccionado == $rootScope.Perfiles[k].nombre)         //Se verifica con que perfil cuenta el usuario
-                    {
-                        $window.location = $rootScope.Perfiles[k].paginaPrincipal;
-                    }
-                } 
+                    $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
+                }
+
+                else
+                {
+                    $scope.GetTerritorio();
+                }
             }
-            
+            else if($scope.usuarioLogeado.PerfilSeleccionado === "")
+            {
+                $window.location = "#Perfil";
+            }
             else
             {
-                $scope.GetTerritorio();
+                $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
             }
-            
         }
         else
         {
@@ -394,22 +398,27 @@ app.controller("TerritorioControlador", function($scope, $http, $q, CONFIG, $roo
         }
         else
         {
-            $scope.IdentificarPermisos();
-            
-            if(!$scope.permisoUsuario.consultar)
+            if($scope.usuarioLogeado.PerfilSeleccionado == "Administrador")
             {
-               for(var k=0; k<$rootScope.Perfiles.length; k++)
+                $scope.IdentificarPermisos();
+
+                if(!$scope.permisoUsuario.consultar)
                 {
-                    if($scope.usuarioLogeado.PerfilSeleccionado == $rootScope.Perfiles[k].nombre)         //Se verifica con que perfil cuenta el usuario
-                    {
-                        $window.location = $rootScope.Perfiles[k].paginaPrincipal;
-                    }
-                } 
+                   $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
+                }
+
+                else
+                {
+                    $scope.GetTerritorio();
+                }
             }
-            
+            else if($scope.usuarioLogeado.PerfilSeleccionado === "")
+            {
+                $window.location = "#Perfil";
+            }
             else
             {
-                $scope.GetTerritorio();
+                $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
             }
         }
     });

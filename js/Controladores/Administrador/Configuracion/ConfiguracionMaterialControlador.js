@@ -1,5 +1,48 @@
 app.controller("ConfiguaracionMaterial", function($scope, $http, $q, CONFIG, $rootScope, datosUsuario, $window, $filter)
 {   
+    $scope.permisoUsuario = {
+                            material:{consultar:false, agregar:false, editar:false, activar:false}, 
+                            tipoMaterial:{consultar:false, agregar:false, editar:false, activar:false}
+                            };
+    $scope.IdentificarPermisos = function()
+    {
+        for(var k=0; k < $scope.usuarioLogeado.Permiso.length; k++)
+        {
+            if($scope.usuarioLogeado.Permiso[k] == "AdmMatConsultar")
+            {
+                $scope.permisoUsuario.material.consultar = true;
+            }
+            else if($scope.usuarioLogeado.Permiso[k] == "AdmMatAgregar")
+            {
+                $scope.permisoUsuario.material.agregar= true;
+            }
+            else if($scope.usuarioLogeado.Permiso[k] == "AdmMatEditar")
+            {
+                $scope.permisoUsuario.material.editar = true;
+            }
+            else if($scope.usuarioLogeado.Permiso[k] == "AdmMatActivar")
+            {
+                $scope.permisoUsuario.material.activar= true;
+            }
+            else if($scope.usuarioLogeado.Permiso[k] == "AdmTMaConsultar")
+            {
+                $scope.permisoUsuario.tipoMaterial.consultar= true;
+            }
+            else if($scope.usuarioLogeado.Permiso[k] == "AdmTMaAgregar")
+            {
+                $scope.permisoUsuario.tipoMaterial.agregar= true;
+            }
+            else if($scope.usuarioLogeado.Permiso[k] == "AdmTMaEditar")
+            {
+                $scope.permisoUsuario.tipoMaterial.editar = true;
+            }
+            else if($scope.usuarioLogeado.Permiso[k] == "AdmTMaActivar")
+            {
+                $scope.permisoUsuario.tipoMaterial.activar = true;
+            }
+        }
+    };
+    
     $scope.titulo = "Tipo Material";
     $scope.tabs = tabMaterial;
     $scope.tipoMaterial = null;
@@ -188,7 +231,7 @@ app.controller("ConfiguaracionMaterial", function($scope, $http, $q, CONFIG, $ro
         
         for(var k=0; k<$scope.tipoMaterial.length; k++)
         {
-            if($scope.tipoMaterial[k].Nombre == $scope.nuevoTipoMaterial.Nombre && $scope.tipoMaterial[k].TipoMaterialId != $scope.nuevoTipoMaterial.TipoMaterialId && $scope.tipoMaterial[k].MaterialParaId == $scope.nuevoTipoMaterial.MaterialParaId)
+            if($scope.tipoMaterial[k].Nombre.toLowerCase() == $scope.nuevoTipoMaterial.Nombre.toLowerCase() && $scope.tipoMaterial[k].TipoMaterialId != $scope.nuevoTipoMaterial.TipoMaterialId)
             {
                 $scope.mensajeError[$scope.mensajeError.length] = "El tipo de material " + $scope.nuevoTipoMaterial.Nombre + " ya existe.";
                 return;
@@ -450,7 +493,7 @@ app.controller("ConfiguaracionMaterial", function($scope, $http, $q, CONFIG, $ro
         
         for(var k=0; k<$scope.material.length; k++)
         {
-            if($scope.material[k].Nombre == $scope.nuevoMaterial.Nombre && $scope.material[k].MaterialId != $scope.nuevoMaterial.MaterialId && $scope.material[k].TipoMaterial.TipoMaterialId == $scope.nuevoMaterial.TipoMaterial.TipoMaterialId)
+            if($scope.material[k].Nombre.toLowerCase() == $scope.nuevoMaterial.Nombre.toLowerCase() && $scope.material[k].MaterialId != $scope.nuevoMaterial.MaterialId && $scope.material[k].TipoMaterial.TipoMaterialId == $scope.nuevoMaterial.TipoMaterial.TipoMaterialId)
             {
                 $scope.claseMaterial.nombre = "entradaError";
                 $scope.mensajeError[$scope.mensajeError.length] = "*El material " + $scope.nuevoMaterial.TipoMaterial.Nombre + " - " + $scope.nuevoMaterial.Nombre + " ya existe.";
@@ -687,11 +730,85 @@ app.controller("ConfiguaracionMaterial", function($scope, $http, $q, CONFIG, $ro
         }
     };
     
-    /*--------- Inicializar -------------*/
-    $scope.GetTipoMaterial();
-    $scope.GetMaterialPara (); 
-    $scope.GetMaterial();
-    $scope.GetGruesoMaterial();
+    /*------------------Indentifica cuando los datos del usuario han cambiado-------------------*/
+    $scope.usuarioLogeado =  datosUsuario.getUsuario(); 
+    
+    if($scope.usuarioLogeado !== null)
+    {
+        if($scope.usuarioLogeado.SesionIniciada)
+        {
+            $scope.IdentificarPermisos();
+            if(!$scope.permisoUsuario.material.consultar && !$scope.permisoUsuario.tipoMaterial.consultar)
+            {
+               for(var k=0; k<$rootScope.Perfiles.length; k++)
+                {
+                    if($scope.usuarioLogeado.PerfilSeleccionado == $rootScope.Perfiles[k].nombre)         //Se verifica con que perfil cuenta el usuario
+                    {
+                        $window.location = $rootScope.Perfiles[k].paginaPrincipal;
+                    }
+                } 
+            }
+            else
+            {
+                $scope.GetTipoMaterial();
+                if($scope.permisoUsuario.material.consultar)
+                {   
+                    
+                    $scope.GetMaterial();
+                    $scope.GetGruesoMaterial();
+                }
+                if($scope.permisoUsuario.tipoMaterial.consultar)
+                {
+                    $scope.GetMaterialPara(); 
+                }
+            }
+        }
+        else
+        {
+            $window.location = "#Login";
+        }
+    }
+    
+    //Se manda a llamar cada ves que los datos del usuario cambian
+    //verifica que el usuario este logeado y que tenga los permisos correspondientes
+    $scope.$on('cambioUsuario',function()
+    {
+        $scope.usuarioLogeado =  datosUsuario.getUsuario();
+    
+        if(!$scope.usuarioLogeado.SesionIniciada)
+        {
+            $window.location = "#Login";
+            return;
+        }
+        else
+        {
+            $scope.IdentificarPermisos();
+            if(!$scope.permisoUsuario.material.consultar && !$scope.permisoUsuario.tipoMaterial.consultar)
+            {
+               for(var k=0; k<$rootScope.Perfiles.length; k++)
+                {
+                    if($scope.usuarioLogeado.PerfilSeleccionado == $rootScope.Perfiles[k].nombre)         //Se verifica con que perfil cuenta el usuario
+                    {
+                        $window.location = $rootScope.Perfiles[k].paginaPrincipal;
+                    }
+                } 
+            }
+            else
+            {
+                $scope.GetTipoMaterial();
+                if($scope.permisoUsuario.material.consultar)
+                {   
+                    
+                    $scope.GetMaterial();
+                    $scope.GetGruesoMaterial();
+                }
+                if($scope.permisoUsuario.tipoMaterial.consultar)
+                {
+                    $scope.GetMaterialPara(); 
+                }
+            }
+        }
+    });
     
 });
 

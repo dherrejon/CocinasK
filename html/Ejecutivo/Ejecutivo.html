@@ -1,28 +1,240 @@
 <div ng-controller="EjecutivoControlador as ejecutivo" class="container-fluid">
 
-   <div class="row">
+    <br>
+    <div class="row">
         <div class="col-xs-12">
-             {{titulo}}
-            
+            <b> Prueba de Costos</b><br><br>
+    
+            Selecciona un módulo y sus medidas:
+        </div>
+    </div>
+    <br>
+    
+    <div class="row">
+        <!-- Tipo de módulo -->
+        <div class="col-sm-6 etiquetaDropdownList">
+             <label>Tipo de Módulo</label>
+             <div class="dropdown">
 
-             {{titulo}} {{titulo}} {{titulo}}
+                <button class="dropdown-toggle dropdownListModal" data-toggle="dropdown">
+                    <span>{{moduloSeleccionado.tipoModulo.Nombre}}</span>
+                    <span class="caret"></span>
+                </button>
 
-            {{titulo}} {{titulo}} {{titulo}} {{titulo}} {{titulo}}
+                <ul class="dropdown-menu elemetosDropdownListModal">
+                    <li ng-repeat="tipo in tipoModulo | orderBy:'Nombre'" ng-show="tipo.Activo">
+                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarTipoModulo(tipo)">
+                            <span>{{tipo.Nombre}}</span>
+                        </a>
+                    </li>
+                </ul>
 
-            {{titulo}} {{titulo}} {{titulo}} {{titulo}} {{titulo}} {{titulo}}
+            </div>
+        </div>
+        <br class="hidden-sm hidden-md hidden-lg">
+        <!-- modulo -->
+        <div class="col-sm-6 etiquetaDropdownList">
+             <label>Módulo</label>
+             <div class="dropdown">
 
-            {{titulo}} {{titulo}} {{titulo}}{{titulo}} {{titulo}} {{titulo}}{{titulo}}
+                <button class="dropdown-toggle dropdownListModal" data-toggle="dropdown">
+                    <span>{{moduloSeleccionado.modulo}}</span>
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu elemetosDropdownListModal">
+                    <li ng-repeat="modulo in modulo | orderBy:'Nombre' | filter:{TipoModuloId:moduloSeleccionado.tipoModulo.TipoModuloId}" ng-show="modulo.Activo">
+                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarModulo(modulo)">
+                            <span>{{modulo.Nombre}}</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <br>
+   <div class="row">
+        <!-- Ancho -->
+        <div class="col-sm-4 etiquetaDropdownList">
+             <label>Ancho</label>
+             <div class="dropdown">
 
-            {{titulo}} {{titulo}} {{titulo}}{{titulo}} {{titulo}}{{titulo}} {{titulo}} {{titulo}}
+                <button class="dropdown-toggle dropdownListModal" data-toggle="dropdown">
+                    <span>{{moduloSeleccionado.ancho}}</span>
+                    <span class="caret"></span>
+                </button>
 
-            {{titulo}} {{titulo}} {{titulo}} {{titulo}} {{titulo}} {{titulo}} {{titulo}} {{titulo}} {{titulo}}
+                <ul class="dropdown-menu elemetosDropdownListModal">
+                    <li ng-repeat="ancho in medidaModulo | orderBy:'Ancho' | unique: 'Ancho'">
+                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarAncho(ancho.Ancho)">
+                            <span>{{ancho.Ancho}}</span>
+                        </a>
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+
+        <!-- Alto -->
+        <div class="col-sm-4 etiquetaDropdownList">
+             <label>Alto</label>
+             <div class="dropdown">
+
+                <button class="dropdown-toggle dropdownListModal" data-toggle="dropdown">
+                    <span>{{moduloSeleccionado.alto}}</span>
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu elemetosDropdownListModal">
+                    <li ng-repeat="alto in medidaModulo | orderBy:'Nombre' | filter:{Ancho:moduloSeleccionado.ancho} | unique: 'Alto'">
+                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarAlto(alto.Alto)">
+                            <span>{{alto.Alto}}</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Profundo -->
+        <div class="col-sm-4 etiquetaDropdownList">
+             <label>Profundo</label>
+             <div class="dropdown">
+
+                <button class="dropdown-toggle dropdownListModal" data-toggle="dropdown">
+                    <span>{{moduloSeleccionado.profundo}}</span>
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu elemetosDropdownListModal">
+                    <li ng-repeat="profundo in medidaModulo | orderBy:'Nombre' | filter:{Ancho:moduloSeleccionado.ancho, Alto:moduloSeleccionado.alto} | unique: 'Profundo'">
+                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarProfundo(profundo.Profundo)">
+                            <span>{{profundo.Profundo}}</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
     
-            <div class="col-xs-12">
-			<div  ng-include="  adminName "></div>
-		</div>
+    <br>
+    <div class="row">
+        <div class="col-xs-6">
+            <button class="btn botonOperacion" ng-click="CalcularCosto()">Calcular Costo</button> 
+        </div>
+    </div>
+    <br>
+    
+    <div class="row">
+        <div class="col-md-11 col-xs-10">
+            <div class="table-responsive TablaUnidadNegocio">
+            
+                    <table class="table table-hover">
+                        <thead class="TituloTabla">
+                          <tr>
+                            <th><button class="btn botonFalso"><b>combinacion</b></button></th>
+                            <th><button class="btn botonFalso"><b>Costo</b></button></th>
+                          </tr>
+                        </thead>
 
+                        <tbody ng-repeat="combinacion in combinacion | orderBy:'costoTotal'" ng-if="combinacion.CombinacionMaterial.Activo">
+                          <tr>
+                            <td>{{combinacion.CombinacionMaterial.Nombre}}</td>
+                            <td>${{combinacion.costoTotal}} </td>
+                          </tr>
+                        </tbody>
+                    </table>
+            </div>
+        </div>
+    </div>
+    <br>
+    
+    <div class="row">
+        <div class="col-md-11 col-xs-10">
+            <div class="table-responsive TablaUnidadNegocio">
+               
+               <div ng-repeat="componente in componenteModulo">
+               
+                   {{componente.Componente.Nombre}} <br>
+                   {{componente.consumo}}
+                    <table class="table table-hover">
+                        <thead class="TituloTabla">
+                          <tr>
+                            <th><button class="btn botonFalso"><b>combinacion</b></button></th>
+                            <th><button class="btn botonFalso"><b>Consumo</b></button></th>
+                            <th><button class="btn botonFalso"><b>Costo</b></button></th>
+                          </tr>
+                        </thead>
+
+                        <tbody ng-repeat="combinacion in componente.Combinacion | orderBy:'Nombre'" ng-if="combinacion.CombinacionMaterial.Activo">
+                          <tr>
+                            <td>{{combinacion.CombinacionMaterial.Nombre}}</td>
+                            <td>{{combinacion.consumo}} pie2</td>
+                            <td>${{combinacion.costo}}</td>
+                          </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-11 col-xs-10">
+            <div class="table-responsive TablaUnidadNegocio">
+               
+               <div >
+               
+                   Frente Modulo<br>
+                    <table class="table table-hover">
+                        <thead class="TituloTabla">
+                          <tr>
+                            <th><button class="btn botonFalso"><b>combinacion</b></button></th>
+                            <th><button class="btn botonFalso"><b>Consumo</b></button></th>
+                            <th><button class="btn botonFalso"><b>Costo</b></button></th>
+                          </tr>
+                        </thead>
+
+                        <tbody ng-repeat="combinacion in combinacion | orderBy:'Nombre'" ng-if="combinacion.CombinacionMaterial.Activo">
+                          <tr>
+                            <td>{{combinacion.CombinacionMaterial.Nombre}}</td>
+                            <td>{{combinacion.consumoFrenteModulo}} pie2</td>
+                            <td>${{combinacion.costoFrente}}</td>
+                          </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-11 col-xs-10">
+            <div class="table-responsive TablaUnidadNegocio">
+               
+               <div ng-repeat="componente in componenteModulo">
+               
+                   {{componente.Componente.Nombre}} <br>
+                    <div ng-repeat="combinacion in componente.Combinacion">
+                       {{combinacion.CombinacionMaterial.Nombre}}
+                       
+                        <table class="table table-hover">
+                            <thead class="TituloTabla">
+                              <tr>
+                                <th><button class="btn botonFalso"><b>Pieza</b></button></th>
+                                <th><button class="btn botonFalso"><b>Consumo</b></button></th>
+                              </tr>
+                            </thead>
+
+                            <tbody ng-repeat="pieza in combinacion.Pieza | orderBy:'Nombre'">
+                              <tr>
+                                <td>{{pieza.nombre}}</td>
+                                <td>{{pieza.consumo}} pulg</td>
+                              </tr>
+                            </tbody>
+                        </table>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     
 </div>
 

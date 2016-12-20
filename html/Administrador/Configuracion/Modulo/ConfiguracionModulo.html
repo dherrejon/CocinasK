@@ -41,7 +41,7 @@
                 <!-- Contenido -->
                 <div class="tab-content">
                     <!-- Componentes -->
-                    <div role="tabpanel" class="tab-pane" id="Componente">
+                    <div role="tabpanel" class="tab-pane in active" id="Componente" ng-if="permisoUsuario.componente.consultar">
                         <br>
                         <div class="row">
                             <div class="col-md-11 col-xs-10">
@@ -63,20 +63,20 @@
                                                 <a class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirDetallesComponenteForma(componente)">
                                                     <span class="fa fa-eye fa-2x"></span>
                                                 </a>
-                                                
-                                                <!--<span ng-if="!permisoUsuario.editarTipoUnidad" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>-->
                                             </td>
                                              
                                              <td>
-                                                <a class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirComponenteForma('Editar', componente)">
+                                                <a ng-if="permisoUsuario.componente.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirComponenteForma('Editar', componente)">
                                                     <span class="fa fa-pencil fa-2x"></span>
                                                 </a>
+                                                
+                                                <span ng-if="!permisoUsuario.componente.editar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
                                             </td>
                                               
                                             <td>
                                                 <div class="checkbox">
                                                     <label>
-                                                        <input ng-model="componente.Activo" type="checkbox" value="" ng-click="CambiarEstatusActivo('componente', componente)">
+                                                        <input ng-disabled="!permisoUsuario.componente.activar" ng-model="componente.Activo" type="checkbox" value="" ng-click="CambiarEstatusActivo('componente', componente)">
                                                         <span class="cr"><i class="cr-icon fa fa-check"></i></span>
                                                     </label>
                                                 </div>
@@ -89,13 +89,13 @@
                             </div>
 
                             <div class="col-xs-2 col-md-1">
-                                 <button  class="btn btn-block botonOperacion fa fa-plus text-center" data-toggle="tooltip" data-placement="bottom" title="Agregar Tipo Módulo" ng-click="AbrirComponenteForma('Agregar', null)"></button>
+                                 <button ng-disabled="!permisoUsuario.componente.agregar"  class="btn btn-block botonOperacion fa fa-plus text-center" data-toggle="tooltip" data-placement="bottom" title="Agregar Tipo Módulo" ng-click="AbrirComponenteForma('Agregar', null)"></button>
                             </div>
                         </div>
                     </div>
                     
                     <!--- Pieza -->
-                    <div role="tabpanel" class="tab-pane in active" id="Pieza">
+                    <div role="tabpanel" class="tab-pane" id="Pieza" ng-if="permisoUsuario.pieza.consultar">
                         <br>
                         <div class="row">
                             <div class="col-md-11 col-xs-10">
@@ -117,17 +117,17 @@
                                             <td>{{pieza.FormulaLargo}}</td>-->
 
                                             <td>
-                                                <a class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirPiezaForma('Editar', pieza)">
+                                                <a ng-if="permisoUsuario.pieza.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirPiezaForma('Editar', pieza)">
                                                     <span class="fa fa-pencil fa-2x"></span>
                                                 </a>
                                                 
-                                                <!--<span ng-if="!permisoUsuario.editarTipoUnidad" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>-->
+                                                <span ng-if="!permisoUsuario.pieza.editar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
                                             </td>
                                               
                                             <td>
                                                 <div class="checkbox">
                                                     <label>
-                                                        <input ng-model="pieza.Activo" type="checkbox" value="" ng-click="CambiarEstatusActivo('pieza', pieza)">
+                                                        <input ng-disabled="!permisoUsuario.pieza.activar" ng-model="pieza.Activo" type="checkbox" value="" ng-click="CambiarEstatusActivo('pieza', pieza)">
                                                         <span class="cr"><i class="cr-icon fa fa-check"></i></span>
                                                     </label>
                                                 </div>
@@ -140,13 +140,13 @@
                             </div>
 
                             <div class="col-xs-2 col-md-1">
-                                 <button  class="btn btn-block botonOperacion fa fa-plus text-center" data-toggle="tooltip" data-placement="bottom" title="Agregar Tipo Módulo" ng-click="AbrirPiezaForma('Agregar', null)"></button>
+                                 <button ng-disabled="!permisoUsuario.pieza.agregar" class="btn btn-block botonOperacion fa fa-plus text-center" data-toggle="tooltip" data-placement="bottom" title="Agregar Tipo Módulo" ng-click="AbrirPiezaForma('Agregar', null)"></button>
                             </div>
                         </div>
                     </div>
                     
                     <!--- Tipo Modulo -->
-                    <div role="tabpanel" class="tab-pane" id="TipoModulo">
+                    <div role="tabpanel" class="tab-pane" id="TipoModulo" ng-if="permisoUsuario.tipoModulo.consultar">
                         <br>
                         <div class="row">
                             <div class="col-md-11 col-xs-10">
@@ -164,17 +164,17 @@
                                             <td>{{tipo.Nombre}}</td>
 
                                             <td>
-                                                <a class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirTipoModuloForma('Editar', tipo)">
+                                                <a ng-if="permisoUsuario.tipoModulo.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirTipoModuloForma('Editar', tipo)">
                                                     <span class="fa fa-pencil fa-2x"></span>
                                                 </a>
                                                 
-                                                <!--<span ng-if="!permisoUsuario.editarTipoUnidad" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>-->
+                                                <span  ng-if="!permisoUsuario.tipoModulo.editar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
                                             </td>
                                               
                                             <td>
                                                 <div class="checkbox">
                                                     <label>
-                                                        <input ng-model="tipo.Activo" type="checkbox" value="" ng-click="CambiarEstatusActivo('tipoModulo', tipo)">
+                                                        <input ng-disabled="!permisoUsuario.tipoModulo.activar" ng-model="tipo.Activo" type="checkbox" value="" ng-click="CambiarEstatusActivo('tipoModulo', tipo)">
                                                         <span class="cr"><i class="cr-icon fa fa-check"></i></span>
                                                     </label>
                                                 </div>
@@ -187,13 +187,13 @@
                             </div>
 
                             <div class="col-xs-2 col-md-1">
-                                 <button  class="btn btn-block botonOperacion fa fa-plus text-center" data-toggle="tooltip" data-placement="bottom" title="Agregar Tipo Módulo" ng-click="AbrirTipoModuloForma('Agregar', null)"></button>
+                                 <button ng-disabled="!permisoUsuario.tipoModulo.agregar"  class="btn btn-block botonOperacion fa fa-plus text-center" data-toggle="tooltip" data-placement="bottom" title="Agregar Tipo Módulo" ng-click="AbrirTipoModuloForma('Agregar', null)"></button>
                             </div>
                         </div>
                     </div>
                     
                     <!--- Consumible -->
-                    <div role="tabpanel" class="tab-pane" id="Consumible">
+                    <div role="tabpanel" class="tab-pane" id="Consumible" ng-if="permisoUsuario.consumible.consultar">
                         <br>
                         <div class="row">
                             <div class="col-md-11 col-xs-10">
@@ -213,17 +213,17 @@
                                             <td>{{consumible.Costo}}</td>
 
                                             <td>
-                                                <a class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirConsumibleForma('Editar', consumible)">
+                                                <a ng-if="permisoUsuario.consumible.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirConsumibleForma('Editar', consumible)">
                                                     <span class="fa fa-pencil fa-2x"></span>
                                                 </a>
                                                 
-                                                <!--<span ng-if="!permisoUsuario.editarTipoUnidad" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>-->
+                                                <span ng-if="!permisoUsuario.consumible.consultar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
                                             </td>
                                               
                                             <td>
                                                 <div class="checkbox">
                                                     <label>
-                                                        <input ng-model="consumible.Activo" type="checkbox" value="" ng-click="CambiarEstatusActivo('consumible', consumible)">
+                                                        <input ng-disabled="!permisoUsuario.consumible.activar" ng-model="consumible.Activo" type="checkbox" value="" ng-click="CambiarEstatusActivo('consumible', consumible)">
                                                         <span class="cr"><i class="cr-icon fa fa-check"></i></span>
                                                     </label>
                                                 </div>
@@ -236,7 +236,7 @@
                             </div>
 
                             <div class="col-xs-2 col-md-1">
-                                 <button  class="btn btn-block botonOperacion fa fa-plus text-center" data-toggle="tooltip" data-placement="bottom" title="Agregar Tipo Módulo" ng-click="AbrirConsumibleForma('Agregar', null)"></button>
+                                 <button ng-disabled="!permisoUsuario.consumible.agregar" class="btn btn-block botonOperacion fa fa-plus text-center" data-toggle="tooltip" data-placement="bottom" title="Agregar Tipo Módulo" ng-click="AbrirConsumibleForma('Agregar', null)"></button>
                             </div>
                         </div>
                     </div>
@@ -461,7 +461,7 @@
                         <!-------- mensaje de error ---->
                         <div class="row">
                             <div class="col-xs-12">
-                                <div ng-repeat="error in mensajeError">
+                                <div ng-repeat="error in mensajeError track by $index">
                                     <span class="textoError">{{error}}</span>
                                 </div>
                             </div>
@@ -740,8 +740,6 @@
                                 <button ng-disabled="(valorFormula=='valor' && operador.tipo == 'operador') " class="btn botonOperacion " ng-click="SetOperador(operador.operador)">{{operador.operador}}</button>
                             </span>
                             
-                            <button ng-disabled="valorFormula=='valor'" class="btn botonOperacion" ng-click="GuardarFormula()">Guardar</button>
-                            
                         </div>
                     </div>
                     <br>
@@ -914,7 +912,18 @@
                             </div>
                         </div>
                     </div>
-
+                    <br>
+                    
+                    <!---- botones de operacion --->
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <button class="btn botonCancelar btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarFormulaForma()">CANCELAR</button>
+                        </div>
+                        
+                        <div class="col-xs-6">
+                            <button ng-disabled="valorFormula=='valor'" class="btn botonAvanzar btn-block" ng-click="GuardarFormula()">GUARDAR</button>
+                        </div>
+                    </div>
                     
                 </form>
             </div>

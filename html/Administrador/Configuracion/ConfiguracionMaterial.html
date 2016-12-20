@@ -41,7 +41,7 @@
                 <!-- Contenido -->
                 <div class="tab-content">
                     <!-- TipoMaterial -->
-                    <div role="tabpanel" class="tab-pane in active" id="TipoMaterial">
+                    <div role="tabpanel" class="tab-pane in active" id="TipoMaterial" ng-if="permisoUsuario.tipoMaterial.consultar">
                       <br>  
                         <div class="row">
                             <div class="col-md-11 col-xs-10">
@@ -61,17 +61,17 @@
                                             <td>{{tipo.NombreMaterialPara}}</td>
 
                                             <td>
-                                                <a class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirTipoMaterialForma('Editar', tipo)">
+                                                <a ng-if="permisoUsuario.tipoMaterial.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirTipoMaterialForma('Editar', tipo)">
                                                     <span class="fa fa-pencil fa-2x"></span>
                                                 </a>
                                                 
-                                                <!--<span ng-if="!permisoUsuario.editarTipoUnidad" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>-->
+                                                <span ng-if="!permisoUsuario.tipoMaterial.editar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
                                             </td>
                                               
                                             <td>
                                                 <div class="checkbox">
                                                     <label>
-                                                        <input ng-model="tipo.Activo" type="checkbox" value="" ng-click="CambiarEstatusActivo('tipoMaterial', tipo)">
+                                                        <input ng-disabled="!permisoUsuario.tipoMaterial.activar" ng-model="tipo.Activo" type="checkbox" value="" ng-click="CambiarEstatusActivo('tipoMaterial', tipo)">
                                                         <span class="cr"><i class="cr-icon fa fa-check"></i></span>
                                                     </label>
                                                 </div>
@@ -84,13 +84,13 @@
                             </div>
 
                             <div class="col-xs-2 col-md-1">
-                                 <button  class="btn btn-block botonOperacion fa fa-plus text-center" data-toggle="tooltip" data-placement="bottom" title="Agregar Tipo Módulo" ng-click="AbrirTipoMaterialForma('Agregar', null)"></button>
+                                 <button ng-disabled="!permisoUsuario.tipoMaterial.agregar"  class="btn btn-block botonOperacion fa fa-plus text-center" data-toggle="tooltip" data-placement="bottom" title="Agregar Tipo Módulo" ng-click="AbrirTipoMaterialForma('Agregar', null)"></button>
                             </div>
                         </div>
                     </div>
                     
                     <!--- Material -->
-                    <div role="tabpanel" class="tab-pane" id="Material">
+                    <div role="tabpanel" class="tab-pane" id="Material" ng-if="permisoUsuario.material.consultar">
                         <br>
                         <div class="row">
                             <div class="col-md-11 col-xs-10">
@@ -118,17 +118,17 @@
                                             </td>
                         
                                             <td>
-                                                <a class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirMaterialForma('Editar', material)">
+                                                <a ng-if="permisoUsuario.material.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirMaterialForma('Editar', material)">
                                                     <span class="fa fa-pencil fa-2x"></span>
                                                 </a>
                                                 
-                                                <!--<span ng-if="!permisoUsuario.editarTipoUnidad" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>-->
+                                                <span ng-if="!permisoUsuario.material.editar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
                                             </td>
                                               
                                             <td>
                                                 <div class="checkbox">
                                                     <label>
-                                                        <input ng-model="material.Activo" type="checkbox" value="" ng-click="CambiarEstatusActivo('material', material)">
+                                                        <input ng-disabled="!permisoUsuario.material.activar" ng-model="material.Activo" type="checkbox" value="" ng-click="CambiarEstatusActivo('material', material)">
                                                         <span class="cr"><i class="cr-icon fa fa-check"></i></span>
                                                     </label>
                                                 </div>
@@ -143,7 +143,7 @@
                             <div class="col-xs-2 col-md-1">
                                 
                                 <!-- Botón Agregar -->
-                                <button  class="btn btn-block botonOperacion fa fa-plus text-center" data-toggle="tooltip" data-placement="bottom" title="Agregar Tipo Módulo" ng-click="AbrirMaterialForma('Agregar', null)"></button>
+                                <button  ng-disabled="!permisoUsuario.material.agregar" class="btn btn-block botonOperacion fa fa-plus text-center" data-toggle="tooltip" data-placement="bottom" title="Agregar Tipo Módulo" ng-click="AbrirMaterialForma('Agregar', null)"></button>
                                 <br><br>
                                 
                                 <!-- Boton filtrar -->

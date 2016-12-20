@@ -176,3 +176,21 @@ function GetComponentePorPuerta($http, $q, CONFIG, id)
     
     return q.promise;
 }
+
+function GetComponentesPorPuertaComponente($http, $q, CONFIG)
+{
+    var q = $q.defer();
+
+    $http({      
+          method: 'GET',
+          url: CONFIG.APIURL + '/GetComponentesPorPuertaComponente',
+
+      }).success(function(data)
+        {
+            q.resolve(data);
+        }).error(function(data){
+            q.resolve(data);
+     }); 
+    
+    return q.promise;
+}

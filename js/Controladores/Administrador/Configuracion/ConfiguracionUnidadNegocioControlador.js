@@ -205,7 +205,7 @@ app.controller("ConfiguaracionUnidadNegocioControlador", function($scope, $http,
             {
                 if($scope.operacion == "Agregar" || $scope.moduloActualizar.TipoUnidadNegocioId !== $scope.tipoUnidad[k].TipoUnidadNegocioId)
                 {
-                    if($scope.moduloActualizar.Nombre == $scope.tipoUnidad[k].Nombre)
+                    if($scope.moduloActualizar.Nombre.toLowerCase() == $scope.tipoUnidad[k].Nombre.toLowerCase())
                     {
                         $scope.mensajeError[$scope.mensajeError.length] = "*" + $scope.moduloActualizar.Nombre + " ya existe.";
                         $scope.clase[1].nombre = "entradaError";
@@ -313,7 +313,7 @@ app.controller("ConfiguaracionUnidadNegocioControlador", function($scope, $http,
     //Verfica que los datos sean validos
     //Si los datos son validos llama al método para realizar la operación
     $scope.TerminarEmpresa = function(nombreInvalido, rfcInvalido, emailInvalido, domicilioInvalido, codigoInvalido, coloniaInvalida)
-    {
+    {   
         $scope.mensajeError = [];
         
         if(nombreInvalido)
@@ -328,7 +328,7 @@ app.controller("ConfiguaracionUnidadNegocioControlador", function($scope, $http,
         
         if(rfcInvalido)
         {
-            $scope.mensajeError[$scope.mensajeError.length] = "*Escribe un RFC valido. Ejemplo: ABC-AAMMDD-A1B";
+            $scope.mensajeError[$scope.mensajeError.length] = "*Escribe un RFC válido. Ejemplo: ABC-AAMMDD-A1B.";
             $scope.clase[0].rfc = "entradaError";
         }
         else
@@ -337,7 +337,7 @@ app.controller("ConfiguaracionUnidadNegocioControlador", function($scope, $http,
         }
         if(emailInvalido)
         {
-            $scope.mensajeError[$scope.mensajeError.length] = "*Escribe un correo electrónico valido.";
+            $scope.mensajeError[$scope.mensajeError.length] = "*Escribe un correo electrónico válido.";
             $scope.clase[0].email = "entradaError";
         }
         else
@@ -411,6 +411,17 @@ app.controller("ConfiguaracionUnidadNegocioControlador", function($scope, $http,
         {
             return;
         }
+        
+        for(var k=0; k<$scope.empresa.length; k++)
+        {
+            if($scope.moduloActualizar.Nombre.toLowerCase() == $scope.empresa[k].Nombre.toLowerCase() && $scope.moduloActualizar.EmpresaId != $scope.empresa[k].EmpresaId)
+            {
+                $scope.mensajeError[$scope.mensajeError.length] = "*La empresa " + $scope.moduloActualizar.Nombre + " ya existe.";
+                return;
+            }
+        }
+        
+        $scope.moduloActualizar.RFC = $scope.moduloActualizar.RFC.toUpperCase();
         
         if($scope.operacion == "Agregar")
         {

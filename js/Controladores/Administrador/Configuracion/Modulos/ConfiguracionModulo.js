@@ -1,340 +1,85 @@
 app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $rootScope, datosUsuario, $window, $filter)
 {   
-    
-    var str = {ancho:"m.alto + (m.ancho/2)"};
-    m = {alto: 5, ancho: 6};
-    
-    var u = "[Modulo]";
-    u =+ "[Alto]";
-    
-    var v = "[Modulo][Alto] + [Modulo][Ancho]";
-    
-    v = v.replace("[Modulo][Alto]", 5);
-    console.log(v);
-   
-    var res = str.ancho.replace("m.alto", m.alto);
-    res = res.replace("m.ancho", m.ancho);
-    res = eval(res);
-    console.log(res);
-    
-    var t = "gabriel gabriel";
-    
-    var q = t.indexOf("bri");
-    var w = t.indexOf("alan");
-    
-    console.log(q + " " + (q+3));
-    console.log(w);
-    
-    
-    var pieza =
-                [
-                    {nombre: "pieza1", anchoFormula:"[Modulo][Ancho]+([Pieza][pieza3][largo]/2)", largoFormula:"([Modulo][Alto]-4)+([Pieza][pieza2][ancho]*2)", cantidad: 2, ancho:-1, largo:-1},
-                    {nombre: "pieza2", anchoFormula:"[Pieza][pieza3][ancho]+[Pieza][pieza1][ancho]", largoFormula:"2*[Modulo][Profundo]+[Pieza][pieza3][ancho]", cantidad: 1, ancho:-1, largo:-1},
-                    {nombre: "pieza3", anchoFormula:"[Modulo][Profundo]+[Modulo][Alto]", largoFormula:"([Pieza][pieza2][largo]/2)*([Modulo][Alto]/2)", cantidad:2, ancho:-1, largo:-1}
-                ];
-    
-    var modulo = 
-                [
-                    {id:"1", ancho:"21", alto:"30", profundo:"24"},
-                    //{id:"2", ancho:"18", alto:"30", profundo:"24"},
-                    //{id:"3", ancho:"15", alto:"30", profundo:"24"}
-                ];
-    
-    for(var k=0; k<modulo.length; k++)
-    {        
-        for(var i=0; i<pieza.length; i++)
-        {
-            pieza[i].ancho = -1;
-            pieza[i].largo = -1;
-        }
-        
-        for(var i=0; i<pieza.length; i++)
-        {
-            if(pieza[i].ancho < 0)
-            {            
-                pieza[i].ancho = CalcularMedida(pieza[i].anchoFormula, modulo[k].ancho, modulo[k].alto, modulo[k].profundo);
-            }
-            
-            if(pieza[i].largo < 0)
-            {                
-                pieza[i].largo = CalcularMedida(pieza[i].largoFormula, modulo[k].ancho, modulo[k].alto, modulo[k].profundo);
-            }
-                
-            
-            //pieza[i].ancho = eval(ancho);
-            //pieza[i].largo = eval(largo);
-            //console.log((i+1) + ": " + ancho + " = " + pieza[i].ancho);
-            //console.log((i+1) + ": " + largo + " = " + pieza[i].largo);
-            console.log(i + ": " + pieza[i].ancho);
-            console.log(i + ": " + pieza[i].largo);
-        }
-    }
-    
-    function CalcularMedida(formula, moduloAncho, moduloAlto, moduloProfundo)
-    {
-        //console.log("Nueva");
-        //console.log(formula);
-        formula = formula.replace("[Modulo][Ancho]", moduloAncho);
-        formula = formula.replace("[Modulo][Alto]", moduloAlto);
-        formula = formula.replace("[Modulo][Profundo]", moduloProfundo);
-        
-       
-        var nombrePieza;
-        var medidaPieza;
-        
-        var index = formula.indexOf("[Pieza]");
-        
-        while(index > -1)
-        {
-            nombrePieza = "";
-            medidaPieza = "";
-            
-            for(var j=index+8; j<formula.length; j++)
-            {
-                nombrePieza += formula[j];
-                if(formula[j+1] == "]")
-                {
-                    index = j+1;
-                    break;
-                }
-            }
-
-            for(var j=index+2; j<formula.length; j++)
-            {
-                medidaPieza += formula[j];
-                if(formula[j+1] == "]")
-                {
-                    break;
-                }
-            }
-
-            //console.log(nombrePieza);
-            //console.log(medidaPieza);
-
-            for(var j=0; j<pieza.length; j++)
-            {
-                if(pieza[j].nombre == nombrePieza)
-                {
-                    var medida = "[Pieza][" + nombrePieza + "][" + medidaPieza + "]";
-
-                    //console.log(medida);
-                    //console.log(formula);
-
-                    if(medidaPieza == "largo")
-                    {
-                        if(pieza[j].largo > -1)
-                        {
-                            formula = formula.replace(medida, pieza[j].largo);
-                        }
-                        else
-                        {
-                            pieza[j].largo = CalcularMedida(pieza[j].largoFormula, moduloAncho, moduloAlto, moduloProfundo);
-                            formula = formula.replace(medida, pieza[j].largo);
-                        }
-                    }
-                    else if(medidaPieza == "ancho")
-                    {
-                        if(pieza[j].ancho > -1)
-                        {
-                            formula = formula.replace(medida, pieza[j].ancho);
-                        }
-                        else
-                        {
-                            pieza[j].ancho = CalcularMedida(pieza[j].anchoFormula, moduloAncho, moduloAlto, moduloProfundo);
-                            formula = formula.replace(medida, pieza[j].ancho);
-                        }
-                    }
-
-                    break;
-                }
-            }
-
-            index = formula.indexOf("[Pieza]");
-            
-            //console.log(ancho);
-            //console.log(index);
-        }
-        
-        //console.log(  formula + " = " + eval(formula));
-        return eval(formula);
-    }
-        
-    
-    /*for(var k=0; k<modulo.length; k++)
-    {
-        for(var i=0; i<pieza.length; i++)
-        {
-            var ancho = pieza[i].anchoFormula.replace("[Modulo][Ancho]", modulo[k].ancho);
-            ancho = ancho.replace("[Modulo][Alto]", modulo[k].alto);
-            ancho = ancho.replace("[Modulo][Profundo]", modulo[k].profundo);
-            
-            var largo = pieza[i].largoFormula.replace("[Modulo][Ancho]", modulo[k].ancho);
-            largo = largo.replace("[Modulo][Alto]", modulo[k].alto);
-            largo = largo.replace("[Modulo][Profundo]", modulo[k].profundo);
-            
-            var index = ancho.indexOf("[Pieza]");
-            while(index > -1)
-            {
-                var nombrePieza = "";
-                for(var j=index+8; j<ancho.length; j++)
-                {
-                    nombrePieza += ancho[j];
-                    if(ancho[j+1] == "]")
-                    {
-                        index = j+1;
-                        break;
-                    }
-                }
-                 
-                var medidaPieza = "";
-                for(var j=index+2; j<ancho.length; j++)
-                {
-                    medidaPieza += ancho[j];
-                    if(ancho[j+1] == "]")
-                    {
-                        break;
-                    }
-                }
-                
-                //console.log(nombrePieza);
-                //console.log(medidaPieza);
-                
-                for(var j=0; j<pieza.length; j++)
-                {
-                    if(pieza[j].nombre == nombrePieza)
-                    {
-                        var medida = "[Pieza][" + nombrePieza + "][" + medidaPieza + "]";
-                        
-                        //console.log(medida);
-                        //console.log(ancho);
-                        
-                        if(medidaPieza == "largo")
-                        {
-                            ancho = ancho.replace(medida, pieza[j].largo);
-                        }
-                        else if(medidaPieza == "ancho")
-                        {
-                            ancho = ancho.replace(medida, pieza[j].ancho);
-                        }
-                
-                        break;
-                    }
-                }
-                
-                index = ancho.indexOf("[Pieza]");
-                
-                //console.log(ancho);
-                //console.log(index);
-            }
-            
-            //console.log("largo");
-            var index = largo.indexOf("[Pieza]");
-            while(index > -1)
-            {
-                var nombrePieza = "";
-                for(var j=index+8; j<largo.length; j++)
-                {
-                    nombrePieza += largo[j];
-                    if(largo[j+1] == "]")
-                    {
-                        index = j+1;
-                        break;
-                    }
-                }
-                 
-                var medidaPieza = "";
-                for(var j=index+2; j<largo.length; j++)
-                {
-                    medidaPieza += largo[j];
-                    if(largo[j+1] == "]")
-                    {
-                        break;
-                    }
-                }
-                
-                //console.log(nombrePieza);
-                //console.log(medidaPieza);
-                
-                for(var j=0; j<pieza.length; j++)
-                {
-                    if(pieza[j].nombre == nombrePieza)
-                    {
-                        var medida = "[Pieza][" + nombrePieza + "][" + medidaPieza + "]";
-                        
-                        //console.log(medida);
-                        //console.log(largo);
-                        
-                        if(medidaPieza == "largo")
-                        {
-                            largo = largo.replace(medida, pieza[j].largo);
-                        }
-                        else if(medidaPieza == "ancho")
-                        {
-                            largo = largo.replace(medida, pieza[j].ancho);
-                        }
-                
-                        break;
-                    }
-                }
-                
-                index = largo.indexOf("[Pieza]");
-                
-                //console.log(largo);
-                //console.log(index);
-            }
-            
-            pieza[i].ancho = eval(ancho);
-            pieza[i].largo = eval(largo);
-            console.log((i+1) + ": " + ancho + " = " + pieza[i].ancho);
-            console.log((i+1) + ": " + largo + " = " + pieza[i].largo);
-            //console.log(largo);
-        }
-    }*/
-    
-    /*for(var k=0; k<modulo.length; k++)
-    {
-        var m = {ancho:0, alto:0, profundo: 0};
-        
-        m.ancho = modulo[k].ancho;
-        m.alto = modulo[k].alto;
-        m.profundo = modulo[k].profundo;
-        
-        for(var i=0; i<pieza.length; i++)
-        {
-            //var pancho = eval(pieza[i].ancho);
-            //var plargo = eval(pieza[i].largo);
-            
-            var largo = pieza[i].largo.replace("m.ancho", m.ancho);
-            //console.log(largo);
-            largo = largo.replace("m.alto", m.alto);
-            //console.log( largo);
-            largo = eval(largo);
-            
-            console.log(i + ": " + largo);
-            
-           /*pieza[i] = pieza[i].largo.replace("m.alto", m.alto);
-            console.log(pieza[i].largo);
-            var plargo = eval(pieza[i].largo);
-            
-            console.log(pancho + " " + plargo);
-            
-        }
-    }*/
-    
-    /*var str = "[]+ modulo [] + [] + [] + ]";
-    
-    console.log(str.split("modulo").length-1);
-    console.log(str);
-    
-    var studentTypes = new Array();
-
-    studentTypes["NAME"] = "TEXT";
-    studentTypes["MARKS"] = "NUMBER";
-    studentTypes["DOB"] = "DATE";
-    
-    console.log(studentTypes["DOB"]);*/
-    
     $rootScope.clasePrincipal = "";
+    $scope.permisoUsuario = {
+                            componente:{consultar:false, agregar:false, editar:false, activar:false}, 
+                            pieza:{consultar:false, agregar:false, editar:false, activar:false},
+                            consumible:{consultar:false, agregar:false, editar:false, activar:false},
+                            tipoModulo:{consultar:false, agregar:false, editar:false, activar:false},
+                            };
+    $scope.IdentificarPermisos = function()
+    {
+        for(var k=0; k < $scope.usuarioLogeado.Permiso.length; k++)
+        {
+            if($scope.usuarioLogeado.Permiso[k] == "ConCmpConsultar")
+            {
+                $scope.permisoUsuario.componente.consultar = true;
+            }
+            else if($scope.usuarioLogeado.Permiso[k] == "ConCmpAgregar")
+            {
+                $scope.permisoUsuario.componente.agregar= true;
+            }
+            else if($scope.usuarioLogeado.Permiso[k] == "ConCmpEditar")
+            {
+                $scope.permisoUsuario.componente.editar = true;
+            }
+            else if($scope.usuarioLogeado.Permiso[k] == "ConCmpActivar")
+            {
+                $scope.permisoUsuario.componente.activar= true;
+            }
+            
+            else if($scope.usuarioLogeado.Permiso[k] == "ConPieConsultar")
+            {
+                $scope.permisoUsuario.pieza.consultar= true;
+            }
+            else if($scope.usuarioLogeado.Permiso[k] == "ConPieAgregar")
+            {
+                $scope.permisoUsuario.pieza.agregar= true;
+            }
+            else if($scope.usuarioLogeado.Permiso[k] == "ConPieEditar")
+            {
+                $scope.permisoUsuario.pieza.editar = true;
+            }
+            else if($scope.usuarioLogeado.Permiso[k] == "ConPieActivar")
+            {
+                $scope.permisoUsuario.pieza.activar = true;
+            }
+            
+            else if($scope.usuarioLogeado.Permiso[k] == "ConCnsConsultar")
+            {
+                $scope.permisoUsuario.consumible.consultar= true;
+            }
+            else if($scope.usuarioLogeado.Permiso[k] == "ConCnsAgregar")
+            {
+                $scope.permisoUsuario.consumible.agregar= true;
+            }
+            else if($scope.usuarioLogeado.Permiso[k] == "ConCnsEditar")
+            {
+                $scope.permisoUsuario.consumible.editar = true;
+            }
+            else if($scope.usuarioLogeado.Permiso[k] == "ConCnsActivar")
+            {
+                $scope.permisoUsuario.consumible.activar = true;
+            }
+            
+            else if($scope.usuarioLogeado.Permiso[k] == "ConTMdConsultar")
+            {
+                $scope.permisoUsuario.tipoModulo.consultar= true;
+            }
+            else if($scope.usuarioLogeado.Permiso[k] == "ConTMdAgregar")
+            {
+                $scope.permisoUsuario.tipoModulo.agregar= true;
+            }
+            else if($scope.usuarioLogeado.Permiso[k] == "ConTMdEditar")
+            {
+                $scope.permisoUsuario.tipoModulo.editar = true;
+            }
+            else if($scope.usuarioLogeado.Permiso[k] == "ConTmdActivar")
+            {
+                $scope.permisoUsuario.tipoModulo.activar = true;
+            }
+        }
+    };
 
     $scope.titulo = "Componente";
     $scope.tabs = tabConModulo;
@@ -449,9 +194,14 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
             $scope.botonPieza.texto = ">>";
             $scope.GetPiezaPorComponente(objeto.ComponenteId);
             
-            $scope.nuevoComponente = SetComponente(objeto)
+            $scope.nuevoComponente = SetComponente(objeto);
            
             $scope.GetCombinacionPorMaterialComponente(objeto.ComponenteId, "editar");
+        }
+        
+        if($scope.tipoParte === null)
+        {
+            $scope.GetTipoParte();
         }
         
         $('#componenteForma').modal('toggle');
@@ -482,19 +232,113 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
     
     $scope.CambiarMaterial = function(material, componente)
     {
-        componente.Material.Nombre = material.Nombre;
-        componente.Material.MaterialId = material.MaterialId;
-        componente.Material.Grueso = material.grueso;
-        
-        if(material.grueso.length == 0)
+        if(componente.Material.Grueso != material.grueso)
         {
-            componente.Grueso = 1;
+            componente.Material.Nombre = material.Nombre;
+            componente.Material.MaterialId = material.MaterialId;
+            componente.Material.Grueso = material.grueso;
+
+            if(material.grueso.length == 0)
+            {
+                componente.Grueso = 1;
+            }
+            else
+            {
+                componente.Grueso = "";
+            }
         }
+        
     };
     
     $scope.CambiarGrueso = function(grueso, componente)
     {
         componente.Grueso = grueso;
+    };
+    
+    $scope.ValidarPiezas = function()
+    {
+        $scope.piezaFaltante = [];
+        for(var k=0; k<$scope.piezaPorComponente.length; k++)
+        {
+            $scope.ValidarPiezaFormula($scope.piezaPorComponente[k].Pieza.FormulaAncho);
+            $scope.ValidarPiezaFormula($scope.piezaPorComponente[k].Pieza.FormulaLargo);
+        }
+        
+        if($scope.piezaFaltante.length >0)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    };
+    
+    $scope.ValidarPiezaFormula = function(formula)
+    {
+        var nombrePieza;
+        
+        var index = formula.indexOf("[Pieza]");
+        
+        while(index > -1)
+        {
+            nombrePieza = "";
+            
+            for(var k=index+8; k<formula.length; k++)
+            {
+                nombrePieza += formula[k];
+                if(formula[k+1] == "]")
+                {
+                    break;
+                }
+            }
+            
+            var isPieza = false;
+            
+            
+            for(var k=0; k<$scope.tipoParte.length; k++)
+            {
+                if(nombrePieza == $scope.tipoParte[k].Nombre)
+                {
+                    isPieza = true;
+                }
+            }
+            
+            if(!isPieza)
+            {
+                for(var k=0; k<$scope.piezaPorComponente.length; k++)
+                {
+                    if(nombrePieza == $scope.piezaPorComponente[k].Pieza.Nombre)
+                    {
+                        isPieza = true;
+                    }
+                }
+            }
+            
+            if(!isPieza)
+            {
+                var piezaRegistrada = false;
+                for(var k=0; k<$scope.piezaFaltante.length; k++)
+                {
+                    if($scope.piezaFaltante[k] == nombrePieza)
+                    {
+                        piezaRegistrada = true;
+                        break;
+                    }
+                }
+                if(!piezaRegistrada)
+                {
+                    $scope.piezaFaltante[$scope.piezaFaltante.length] = nombrePieza;
+                    $scope.mensajeError[$scope.mensajeError.length] = "*Falta agregar la pieza \"" + nombrePieza + "\".";
+                }
+                
+            }
+            
+            var pieza = "[Pieza][" + nombrePieza + "]"; 
+            formula = formula.replace(pieza, " ");
+            
+            index = formula.indexOf("[Pieza]");
+        }
     };
     
     $scope.SiguienteComponente = function(nombreInvalido)
@@ -526,9 +370,14 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
             return;
         }
         
+        if(!$scope.ValidarPiezas())
+        {
+            return;
+        }
+        
         for(var k=0; k<$scope.componente.length; k++)
         {
-            if($scope.componente[k].Nombre == $scope.nuevoComponente.Nombre && $scope.componente[k].ComponenteId != $scope.nuevoComponente.ComponenteId)
+            if($scope.componente[k].Nombre.toLowerCase() == $scope.nuevoComponente.Nombre.toLowerCase() && $scope.componente[k].ComponenteId != $scope.nuevoComponente.ComponenteId)
             {
                 $scope.claseComponente.nombre = "entradaError";
                 $scope.mensajeError[$scope.mensajeError.length] = "*El componente " + $scope.nuevoComponente.Nombre + " ya existe.";
@@ -873,7 +722,7 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
         
         for(var k=0; k<$scope.pieza.length; k++)
         {
-            if($scope.pieza[k].Nombre == $scope.nuevaPieza.Nombre && $scope.pieza[k].PiezaId != $scope.nuevaPieza.PiezaId )
+            if($scope.pieza[k].Nombre.toLowerCase() == $scope.nuevaPieza.Nombre.toLowerCase() && $scope.pieza[k].PiezaId != $scope.nuevaPieza.PiezaId )
             {
                 $scope.mensajeError[$scope.mensajeError.length] = "*La pieza " + $scope.nuevaPieza.Nombre + " ya existe.";
                 $scope.clasePieza.nombre = "entradaError";
@@ -1015,7 +864,6 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
     
     $scope.SetConstanteValor = function(constanteInvalida)
     {
-        console.log(constanteInvalida);
         if(constanteInvalida)
         {
             $scope.contanteFormula.clase = "entradaError";
@@ -1082,65 +930,68 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
     {
         var index = $scope.nuevaFormula.length-1;
         var caracter = $scope.nuevaFormula[index];
-        
-        if(caracter == "]")
+    
+        if(index > 0)
         {
-            var letra = true;
-            do
+            if(caracter == "]")
             {
-                $scope.nuevaFormula  = $scope.nuevaFormula.substr(0, index);
-                
-                if(index > 0)
-                {
-                    index = $scope.nuevaFormula.length-1;
-                    caracter = $scope.nuevaFormula[index];
-
-
-
-                    for(var k=0; k<$scope.tabOperador.length; k++)
-                    {
-                        if($scope.tabOperador[k].operador == caracter)
-                        {
-                            letra = false;
-                            break;
-                        }
-                    }
-                }
-                else
-                {
-                    letra = false;
-                }
-            }while(letra);
-           $scope.valorFormula = "valor"; 
-        }
-        else
-        {
-            if($scope.IsNumero(caracter))
-            {
+                var letra = true;
                 do
                 {
                     $scope.nuevaFormula  = $scope.nuevaFormula.substr(0, index);
-                    index = $scope.nuevaFormula.length-1;
-                    
-                    if(index >= 0)
+
+                    if(index > 0)
                     {
+                        index = $scope.nuevaFormula.length-1;
                         caracter = $scope.nuevaFormula[index];
+
+
+
+                        for(var k=0; k<$scope.tabOperador.length; k++)
+                        {
+                            if($scope.tabOperador[k].operador == caracter)
+                            {
+                                letra = false;
+                                break;
+                            }
+                        }
                     }
-                    
-                }while(($scope.IsNumero(caracter) || caracter==".") && index>=0);
-                
-                $scope.valorFormula = "valor";
+                    else
+                    {
+                        letra = false;
+                    }
+                }while(letra);
+               $scope.valorFormula = "valor"; 
             }
             else
             {
-                $scope.nuevaFormula  = $scope.nuevaFormula.substr(0, index);
-                if(caracter == "(")
+                if($scope.IsNumero(caracter))
                 {
+                    do
+                    {
+                        $scope.nuevaFormula  = $scope.nuevaFormula.substr(0, index);
+                        index = $scope.nuevaFormula.length-1;
+
+                        if(index >= 0)
+                        {
+                            caracter = $scope.nuevaFormula[index];
+                        }
+
+                    }while(($scope.IsNumero(caracter) || caracter==".") && index>=0);
+
                     $scope.valorFormula = "valor";
                 }
                 else
                 {
-                    $scope.valorFormula = "operador";
+                    $scope.nuevaFormula  = $scope.nuevaFormula.substr(0, index);
+                    if(caracter == "(")
+                    {
+                        $scope.valorFormula = "valor";
+                    }
+                    else
+                    {
+                        $scope.valorFormula = "operador";
+                    }
                 }
             }
         }
@@ -1268,7 +1119,7 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
         
         for(var k=0; k<$scope.tipoModulo.length; k++)
         {
-            if($scope.tipoModulo[k].Nombre == $scope.nuevoTipoModulo.Nombre && $scope.tipoModulo[k].TipoModuloId != $scope.nuevoTipoModulo.TipoModuloId)
+            if($scope.tipoModulo[k].Nombre.toLowerCase() == $scope.nuevoTipoModulo.Nombre.toLowerCase() && $scope.tipoModulo[k].TipoModuloId != $scope.nuevoTipoModulo.TipoModuloId)
             {
                 $scope.claseTipoModulo.nombre = "entradaError";
                 $scope.mensajeError[$scope.mensajeError.length] = "El tipo de módulo \"" + $scope.nuevoTipoModulo.Nombre + "\" ya existe.";
@@ -1406,7 +1257,7 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
         
         for(var k=0; k<$scope.consumible.length; k++)
         {
-            if($scope.consumible[k].Nombre == $scope.nuevoConsumible.Nombre && $scope.consumible[k].ConsumibleId != $scope.nuevoConsumible.ConsumibleId)
+            if($scope.consumible[k].Nombre.toLowerCase() == $scope.nuevoConsumible.Nombre.toLowerCase() && $scope.consumible[k].ConsumibleId != $scope.nuevoConsumible.ConsumibleId)
             {
                 $scope.claseConsumible.nombre = "entradaError";
                 $scope.mensajeError[$scope.mensajeError.length] = "*El consumible " + $scope.nuevoConsumible.Nombre + " ya exite."; 
@@ -1650,19 +1501,22 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
             {
                 $scope.combinacionMaterialComponente = data;
                 if(operacion == "editar")
-                for(var k=0; k<data.length; k++)
                 {
-                    for(var i=0; i<$scope.material.length; i++)
+                    for(var k=0; k<data.length; k++)
                     {
-                        if($scope.material[i].MaterialId == $scope.combinacionMaterialComponente[k].Material.MaterialId)
+                        for(var i=0; i<$scope.material.length; i++)
                         {
-                            $scope.combinacionMaterialComponente[k].Material.Grueso = $scope.material[i].grueso;
+                            if($scope.material[i].MaterialId == $scope.combinacionMaterialComponente[k].Material.MaterialId)
+                            {
+                                $scope.combinacionMaterialComponente[k].Material.Grueso = $scope.material[i].grueso;
+                                break;
+                            }
                         }
-                    }
 
-                    $scope.combinacionMaterialComponente[k].claseTipoMaterial = "dropdownListModal";
-                    $scope.combinacionMaterialComponente[k].claseMaterial = "dropdownListModal";
-                    $scope.combinacionMaterialComponente[k].claseGrueso = "dropdownListModal";
+                        $scope.combinacionMaterialComponente[k].claseTipoMaterial = "dropdownListModal";
+                        $scope.combinacionMaterialComponente[k].claseMaterial = "dropdownListModal";
+                        $scope.combinacionMaterialComponente[k].claseGrueso = "dropdownListModal";
+                    }
                 }
             }
         }).catch(function(error)
@@ -1754,23 +1608,86 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
     };
     
     //-------------Inicializar-----------------------
-    $scope.GetTipoModulo();
-    $scope.GetPieza();
-    $scope.GetComponente();
-    $scope.GetConsumible();
+    $scope.InicializarModuloModulo = function()
+    {
+        $scope.GetTipoModulo();
+        $scope.GetPieza();
+        $scope.GetComponente();
+        $scope.GetConsumible();
+
+        $scope.GetCombinacionMaterial();
+        $scope.GetTipoMaterial();
+        $scope.GetMaterial();
+        $scope.GetGruesoMaterial();
+    };
+
+    /*------------------Indentifica cuando los datos del usuario han cambiado-------------------*/
+    $scope.usuarioLogeado =  datosUsuario.getUsuario(); 
     
-    $scope.GetCombinacionMaterial();
-    $scope.GetTipoMaterial();
-    $scope.GetMaterial();
-    $scope.GetGruesoMaterial();
+    if($scope.usuarioLogeado !== null)
+    {
+        if($scope.usuarioLogeado.SesionIniciada)
+        {
+            $scope.IdentificarPermisos();
+            if(!$scope.permisoUsuario.componente.consultar && !$scope.permisoUsuario.pieza.consultar && !$scope.permisoUsuario.consumible.consultar && !$scope.permisoUsuario.tipoModulo.consultar)
+            {
+               for(var k=0; k<$rootScope.Perfiles.length; k++)
+                {
+                    if($scope.usuarioLogeado.PerfilSeleccionado == $rootScope.Perfiles[k].nombre)         //Se verifica con que perfil cuenta el usuario
+                    {
+                        $window.location = $rootScope.Perfiles[k].paginaPrincipal;
+                    }
+                } 
+            }
+            else
+            {
+                $scope.InicializarModuloModulo();
+            }
+        }
+        else
+        {
+            $window.location = "#Login";
+        }
+    }
+    
+    //Se manda a llamar cada ves que los datos del usuario cambian
+    //verifica que el usuario este logeado y que tenga los permisos correspondientes
+    $scope.$on('cambioUsuario',function()
+    {
+        $scope.usuarioLogeado =  datosUsuario.getUsuario();
+    
+        if(!$scope.usuarioLogeado.SesionIniciada)
+        {
+            $window.location = "#Login";
+            return;
+        }
+        else
+        {
+            $scope.IdentificarPermisos();
+            if(!$scope.permisoUsuario.componente.consultar && !$scope.permisoUsuario.pieza.consultar && !$scope.permisoUsuario.consumible.consultar && !$scope.permisoUsuario.tipoModulo.consultar)
+            {
+               for(var k=0; k<$rootScope.Perfiles.length; k++)
+                {
+                    if($scope.usuarioLogeado.PerfilSeleccionado == $rootScope.Perfiles[k].nombre)         //Se verifica con que perfil cuenta el usuario
+                    {
+                        $window.location = $rootScope.Perfiles[k].paginaPrincipal;
+                    }
+                } 
+            }
+            else
+            {
+                $scope.InicializarModuloModulo();
+            }
+        }
+    });
 
 });
 
 //Pestañas
 var tabConModulo = 
     [
-        {titulo:"Componente", referencia: "#Componente", clase:"", area:"componente"},
-        {titulo:"Pieza", referencia: "#Pieza", clase:"active", area:"pieza"},
+        {titulo:"Componente", referencia: "#Componente", clase:"active", area:"componente"},
+        {titulo:"Pieza", referencia: "#Pieza", clase:"", area:"pieza"},
         {titulo:"Tipo Módulo", referencia: "#TipoModulo", clase:"", area:"tipoModulo"},
         {titulo:"Consumible", referencia: "#Consumible", clase:"", area:"consumible"}
     ];
