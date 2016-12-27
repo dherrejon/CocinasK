@@ -1762,9 +1762,7 @@ app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, dat
         {
             if($scope.usuarioLogeado.PerfilSeleccionado == "Administrador")
             {
-                $scope.IdentificarPermisos();
-
-                $scope.usuarioLogeado =  datosUsuario.getUsuario(); 
+                $scope.IdentificarPermisos(); 
 
                 if(!$scope.permisoUsuario.consultar)
                 {

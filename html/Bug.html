@@ -1,0 +1,421 @@
+<div  class="container-fluid " ng-controller="BugControlador">
+<br><br>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="tituloModulo">
+                <span>Reporte de Errores</span>
+            </div>
+        </div>
+    </div>
+    <br>
+   
+    <div class="row" ng-if="permisoUsuario.consultar">
+        <div class="col-md-11 col-xs-10">
+            <div class="table-responsive TablaUnidadNegocio">
+                <table class="table table-hover">
+                    <thead class="TituloTabla">
+                      <tr>
+                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('Nombre')"><b>Reportado por </b><b ng-if="ordenarPor === 'Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-Nombre'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('Modulo')"><b>Módulo </b><b ng-if="ordenarPor === 'Modulo'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-Modulo'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('Seccion')"><b>Sección </b><b ng-if="ordenarPor === 'Seccion'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-Seccion'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('Fecha')"><b>Fecha </b><b ng-if="ordenarPor === 'Fecha'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-Fecha'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonFalso"><b>Detalles</b></button></th>
+                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('Resuelto')"><b>Resuelto</b> <b ng-if="ordenarPor === 'Resuelto'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-Resuelto'" class="fa fa-arrow-down"></b></button></th>
+                      </tr>
+                    </thead>
+                    <tbody ng-repeat="bug in bug  | filter:FiltrarBug | filter:buscar | orderBy:[ordenarPor]">
+                      <tr>
+                        <td>{{bug.Nombre}}</td>
+                        <td>{{bug.Modulo}}</td>
+                        <td>{{bug.Seccion}}</td>
+                        <td>{{bug.Fecha}}</td>
+                        
+                        <td class="text-center">
+                            <a  class="BotonOperacion" href="" data-toggle="modal" data-target="#DetallePlaza" ng-click="MostarDetalles(bug)">
+                                <span class="fa fa-eye fa-2x"></span>
+                            </a>
+                        </td>
+                        
+                        <td class="text-center" ng-if="bug.Resuelto == '1'">
+                            <div class="checkbox">
+                                <label>
+                                    <input ng-disabled="true" type="checkbox" value="true" checked>
+                                    <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+                                </label>
+                            </div>
+                        </td>
+                        
+                        <td class="text-center" ng-if="bug.Resuelto == '0'">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" value="false" ng-click="ResolverBug(bug)" ng-model="bug.resultoCheck">
+                                    <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+                                </label>
+                            </div>
+                        </td>
+
+                      </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-xs-2 col-md-1">
+            
+            <!-- Boton filtrar -->
+            <div class="dropdown">
+                
+                <button class="btn btn btn-block botonOperacion fa fa-filter text-center" data-toggle="dropdown" ></button>
+                    
+                <ul class="dropdown-menu dropdown-menu-right operacionPanel">
+                    
+                    <div  class="row ">
+                        <div class="col-xs-9"> 
+                            <li  class="dropdown-header tituloOpcionLateral">FILTRAR</li>
+                        </div>
+                        <div class="col-xs-3">
+                            <li> <button class="btn botonOperacion fa fa-ban" data-toggle="tooltip" data-placement="bottom" title="Limpiar filtro" ng-click="LimpiarFiltro()"></button></li>
+                        </div>
+                    </div>
+                    <li role="separator" class="divider"></li>
+
+                    <li style="width: 275px;">
+
+                        <form role="filtro">
+                            <!------ Módulos ------>
+                            <button class="btn btn-block botonFiltro" ng-click="MostrarFiltros('modulo')">Módulo</button>
+                            
+                            <div class="row" ng-show="mostrarFiltro.modulo">
+                                <div class="col-xs-12" >
+                                    <div class="opcionFiltro">
+                                        <div  ng-repeat="modulo in bug | orderBy:'Modulo' | unique: 'Modulo' track by $index">
+                                            <label class="checkBoxActivoFiltro">
+                                                <input type="checkbox" class="badgebox" ng-model="filtro.modulo[$index]" ng-click="setFilter('modulo', modulo.Modulo)"><span class="badge">&check;</span>
+                                                {{modulo.Modulo}}
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                        
+                            <!------ Sección ------>
+                            <button class="btn btn-block botonFiltro" ng-click="MostrarFiltros('seccion')">Sección</button>
+                            
+                            <div class="row" ng-show="mostrarFiltro.seccion">
+                                <div class="col-xs-12" >
+                                    <div class="opcionFiltro">
+                                        <div  ng-repeat="seccion in bug | orderBy:'Seccion' | unique: 'Seccion' track by $index">
+                                            <label class="checkBoxActivoFiltro">
+                                                <input type="checkbox" class="badgebox" ng-model="filtro.seccion[$index]" ng-click="setFilter('seccion', seccion.Seccion)"><span class="badge">&check;</span>
+                                                {{seccion.Seccion}}
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            
+                            <!------ Resuelto ------>
+                            <button class="btn btn-block botonFiltro" ng-click="MostrarFiltros('resuelto')">Resuelto</button>
+                            
+                            <div class="row" ng-show="mostrarFiltro.resuelto">
+                                <div class="col-xs-12" >
+                                    <div class="opcionFiltro">
+                                        <div>
+                                            <label class="checkBoxActivoFiltro">
+                                                <input type="checkbox" class="badgebox" ng-model="filtroResuelto.resuelto"><span class="badge">&check;</span>
+                                                Errores Resueltos
+                                            </label>
+                                            
+                                            <label class="checkBoxActivoFiltro">
+                                                <input type="checkbox" class="badgebox" ng-model="filtroResuelto.noResuelto"><span class="badge">&check;</span>
+                                                Errores No Resueltos
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            
+                        </form>
+                    </li>
+                </ul>
+                
+            </div>
+            
+            <br>
+            <!-- Boton buscar -->
+            <div class="dropdown">
+                
+                <button class="btn btn btn-block botonOperacion fa fa-search text-center" data-toggle="dropdown" ></button>
+                    
+                <ul class="dropdown-menu dropdown-menu-right operacionPanel">
+
+                    <li style="width: 225px; height: 35px !important;">
+
+                        <form role="buscar" style="max-width: 200px; height: 25px !important;">
+                            <div class="input-group" >
+                              <input  type="text" class="form-control operacionPanelEntrada" placeholder="Buscar" style="margin-left: 5px; width: 175px;" ng-model="buscar">
+                              <span class="input-group-btn" style="width: 25px;">
+                                <button class="btn operacionPanelBoton" type="button">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                              </span>
+                            </div>
+                        </form>
+                    </li>
+                </ul>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+    <!-------- Modals ---------------->
+    
+    <!--- Modal para Detalles del bug --->
+    <div class="modal fade " id="DetalleBug"  >
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <!-- encabezado del modal -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center">Detalles del error</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- cuerpo del modal -->
+                <div class="modal-body">
+                    <!-- Opciones de unidad de negocio -->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="pull-right">
+                                <button ng-if="bugDetalle.Resuelto == '0'" data-dismiss="modal" aria-label="Close" class="btn botonOperacion" data-toggle="tooltip" data-placement="bottom" title="Marcar como error resuelto" ng-click="ResolverBug(bugDetalle)"><span class="fa fa-check fa-2x"></span></button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Módulo y sección -->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="subrayado">
+                            <label>Reportado Por: </label><br>
+                            <span class="textoModal">{{bugDetalle.Nombre}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!-- Módulo y sección -->
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="subrayado">
+                            <label>Módulo</label><br>
+                            <span class="textoModal">{{bugDetalle.Modulo}}</span>
+                            </div>
+                        </div>
+                        <br class="hidden-sm hidden-md hidden-lg">
+                        <div class="col-sm-6">
+                            <div class="subrayado">
+                            <label>Sección</label><br>
+                            <span class="textoModal">{{bugDetalle.Seccion}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!-- Operacion -->
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="subrayado">
+                            <label>Operacion</label><br>
+                            <span class="textoModal">{{bugDetalle.Operacion}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!-- Fechas  -->
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="subrayado">
+                            <label>Fecha de reporte</label><br>
+                            <span class="textoModal">{{bugDetalle.Fecha}}</span>
+                            </div>
+                        </div>
+                        <br class="hidden-sm hidden-md hidden-lg">
+                        <div class="col-sm-6" ng-if="bugDetalle.Resuelto == '1'">
+                            <div class="subrayado">
+                            <label>Fecha Corregido</label><br>
+                            <span class="textoModal">{{bugDetalle.FechaResuelto}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!--  Descripcion del error -->
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="bordeBug">
+                            <label>Descripción del error</label><br>
+                            <span>{{bugDetalle.Descripcion}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!--  Observación de resuelto -->
+                    <div class="row" ng-if="bugDetalle.Resuelto == '1'">
+                        <div class="col-sm-12">
+                            <div class="bordeBug">
+                            <label>Observación de corrección</label><br>
+                            <span>{{bugDetalle.Observacion}}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!--- Resolver Error --->
+    <div class="modal fade " id="ResolverBug" data-keyboard="false" data-backdrop="static">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <!-- encabezado del modal -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarReportarError()"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center">Marcar Error como Resuelto</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- cuerpo del modal -->
+                <div class="modal-body">
+                    <!-- Opciones de unidad de negocio -->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="pull-right">
+                                <button ng-if="bugDetalle.Resuelto == '0'" class="btn botonOperacion" data-toggle="tooltip" data-placement="bottom" title="Marcar como error resuelto" ng-click="CambiarActivoModal()"><span class="fa fa-check fa-2x"></span></button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Módulo y sección -->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="subrayado">
+                            <label>Reportado Por: </label><br>
+                            <span class="textoModal">{{resolverBug.Nombre}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!-- Módulo y sección -->
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="subrayado">
+                            <label>Módulo</label><br>
+                            <span class="textoModal">{{resolverBug.Modulo}}</span>
+                            </div>
+                        </div>
+                        <br class="hidden-sm hidden-md hidden-lg">
+                        <div class="col-sm-6">
+                            <div class="subrayado">
+                            <label>Sección</label><br>
+                            <span class="textoModal">{{resolverBug.Seccion}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!-- Operacion -->
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="subrayado">
+                            <label>Operacion</label><br>
+                            <span class="textoModal">{{resolverBug.Operacion}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!--  Descripcion del error -->
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="bordeBug">
+                            <label>Descripción del error</label><br>
+                            <span>{{resolverBug.Descripcion}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!--  Observación de resuelto -->
+                    <!-- Descripcion -->
+                    <div class="row">
+                        <div class="col-sm-12">
+                             <div class="">
+                                <label>Observasión</label>
+                                <textarea type="text" style="border:solid 2px #262626; max-width:100%" class="form-control" name="descripcion" ng-model="resolverBug.Observacion"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <br><br>
+        
+                    <!-------- mensaje de error ---->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div ng-repeat="error in mensajeError">
+                                <span class="textoError">{{error}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!---- botones de operacion --->
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <button class="btn botonCancelar btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarReportarError()">CANCELAR</button>
+                        </div>
+                        
+                        <div class="col-xs-6">
+                            <button focus class="btn botonAvanzar btn-block" ng-click="TerminarResolverBug()">TERMINAR</button>
+                        </div>
+                    </div>
+                    <br> 
+
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal para mensajes -->
+    <div class="modal fade" id="mensajeBug">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                
+                <div class="modal-body">
+                    <div class="panel panel-default modalMensaje">
+                        <br>
+                        <b>{{mensaje}}</b>
+
+                        <br><br>
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <button class="btn  botonAvanzar" data-dismiss="modal" aria-label="Close">Aceptar</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div> 
+</div>

@@ -345,7 +345,6 @@ function ActivarDesactivarComponente()
     }
 }
 
-
 function GetPiezaPorComponente()
 {
     global $app;

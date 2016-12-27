@@ -58,6 +58,7 @@
     margin-top: 0px;
     margin-bottom: 0px;
     border-radius: 0px;
+    position: relative;
 }
 
 .barraNavegacionBoton  /*Boton de hamburguesa de la barra de navegacion en xs*/
@@ -171,4 +172,68 @@
     display: inline;
     display: block;
     background: yellow;
+}
+
+.encabezadoArriba
+{
+    padding-right: 25px;
+    padding-left: 10px;
+    position:fixed;
+    top: 0;
+    z-index:  100000000000;
+    width: 100%;
+}
+
+/*-----Reportar bug--------*/
+.BugButton
+{
+    position: absolute;
+    top: 400px;
+    right: 0px !important;
+    height: 30px !important;
+
+    -ms-transform: rotate(-90deg); /* IE 9 */
+    -ms-transform-origin: right bottom; /* IE 9 */
+    -webkit-transform: rotate(-90deg); /* Chrome, Safari, Opera */
+    -webkit-transform-origin: right bottom; /* Chrome, Safari, Opera */
+    transform: rotate(-90deg);
+    transform-origin: right bottom;
+
+    /*
+    -moz-transform: rotate(-90deg);
+    -o-transform: rotate(-90deg);
+    */
+    z-index: 10000;
+}
+
+.AddonBugButton
+{
+    background-color: #01DF01;
+    color: #B40404 !important;
+    font-weight: bold;
+    font-size:14px;
+}
+
+.BtnBugButton
+{
+    background-color: #B40404; 
+    color: #01DF01 !important; 
+    font-weight: bold;  
+    font-size:14px;
+}
+
+.renglonBug
+{
+    background: rgba(180, 4, 4, 0.2);
+}
+
+.renglonBug:hover
+{
+    background: rgba(180, 4, 4, 0.2) !important;
+}
+
+.bordeBug
+{
+    border: solid 2px #262626;
+    padding: 5px;
 }

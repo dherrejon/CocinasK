@@ -9,12 +9,12 @@
         </div>
     </div>
     <br>
-        
+
     <div class="row" ng-if="permisoUsuario.consultar">
         <div class="col-md-11 col-xs-10">
             <div class="table-responsive TablaUnidadNegocio">
                 <table class="table table-hover">
-                    <thead class="TituloTabla">
+                    <thead class="TituloTabla ">
                       <tr>
                         <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('TipoModulo.Nombre')"><b>Tipo Módulo </b><b ng-if="ordenarPor === 'TipoModulo.Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-TipoModulo.Nombre'" class="fa fa-arrow-down"></b></button></th>
                         <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('Nombre')"><b>Nombre </b><b ng-if="ordenarPor === 'Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-Nombre'" class="fa fa-arrow-down"></b></button></th>
@@ -23,8 +23,8 @@
                         <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('ActivoN')"><b>Activo</b> <b ng-if="ordenarPor === 'ActivoN'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-ActivoN'" class="fa fa-arrow-down"></b></button></th>
                       </tr>
                     </thead>
-                    <tbody ng-repeat="modulo in modulo | filter:buscar | filter:FiltrarModulo | orderBy:[ordenarPor, 'Nombre']">
-                      <tr>
+                    <tbody>
+                      <tr ng-repeat="modulo in modulo | filter:buscar | filter:FiltrarModulo | orderBy:[ordenarPor, 'Nombre']">
                         <td>{{modulo.TipoModulo.Nombre}}</td>
                         <td>{{modulo.Nombre}}</td>
                           
@@ -833,7 +833,7 @@
                                             <thead class="TituloTabla">
                                               <tr>
                                                 <th><button class="btn botonFalso"><b>Consumible</b></button></th>
-                                                <th><button class="btn botonFalso"><b>Cantidad</b></button></th>
+                                                <th class="cantidadColumna"><button class="btn botonFalso"><b>Cantidad</b></button></th>
                                                 <th><button class="btn botonFalso"><b>Total</b></button></th>
                                                 <th><button class="btn botonFalso"><b>Quitar</b></button></th>
                                               </tr>
@@ -951,7 +951,7 @@
                                             <thead class="TituloTabla">
                                               <tr>
                                                 <th><button class="btn botonFalso"><b>Componente</b></button></th>
-                                                <th><button class="btn botonFalso"><b>Cantidad</b></button></th>
+                                                <th class="cantidadColumna"><button class="btn botonFalso"><b>Cantidad</b></button></th>
                                                 <th><button class="btn botonFalso"><b>Quitar</b></button></th>
                                               </tr>
                                             </thead>

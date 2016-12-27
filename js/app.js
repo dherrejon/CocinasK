@@ -79,6 +79,16 @@ app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpPro
     when('/Perfil',{
         templateUrl: 'html/Perfil.html'
     }).
+    when('/Home',{
+        templateUrl: 'html/Home.html'
+    }).
+    when('/ReporteBug',{
+        templateUrl: 'html/Bug.html'
+    }).
+    when('/RecuperarPassword/:usuarioId/:codigo',{
+        templateUrl: 'html/RecuperarPassword.html'
+    }).
+    
     when('/UnidadNegocio',{
         templateUrl: 'html/Administrador/CocinasK/UnidadNegocio.html'
     }).
@@ -198,27 +208,19 @@ app.run(function($rootScope, $location, $window, $http, CONFIG, $q, datosUsuario
     $rootScope.erNumeroDecimal = /^[0-9]+(\.[0-9][0-9]?)?$/;   //expresion regular para un número decimal
     $rootScope.erNumeroFraccion = /^((([0-9]\s)*([1-9]\/[1-9]{1,2}))|([0-9]))+$/;   //expresion regular para un número fraccional
     $rootScope.erNumeroEntero = /^[0-9]+$/;   //expresion regular para un número entero
+    $rootScope.erPassword = /^(\w){6}(\w)*$/;   //expresion regular para un número entero
     
     /*---------------------------------- Mantener la barra de navegacion visible-----------------------*/
     /*$window.onscroll = function ()
     {
-        var maxScrollY = 0;
-        if($window.innerWidth < 767)
-            maxScrollY = 78;
-        else
-            maxScrollY = 63;
-        
-        if ( $window.scrollY >  maxScrollY)
+        if($(this).scrollTop()>62)
         {
-            $rootScope.barraNavArriba = "navbar navbar-fixed-top";
-            $rootScope.$apply();
+            $('#barraNavegacion').addClass('encabezadoArriba');
         }
         else
         {
-            $rootScope.barraNavArriba = "navbar";
-            $rootScope.$apply();
-            
-        }        
+            $('#barraNavegacion').removeClass('encabezadoArriba');
+        }
     };*/
     
     /*-----tamaño de la pantalla -----------*/

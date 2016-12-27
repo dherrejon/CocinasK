@@ -56,7 +56,7 @@ app.controller("ConfiguracionPuertaControlador", function($scope, $http, $q, CON
     $scope.componenteOriginal = null;
     $scope.componentePorPuertaOriginal = [];
     $scope.combinacionPorPuerta = null;
-    $scope.combinacion = null;
+    $scope.combinacion = [];
     $scope.gruesoMaterial = null;
     $scope.material = null;
     $scope.pasoPuerta = 1;
@@ -1345,20 +1345,25 @@ app.controller("ConfiguracionPuertaControlador", function($scope, $http, $q, CON
     {
         if($scope.usuarioLogeado.SesionIniciada)
         {
-            $scope.IdentificarPermisos();
-            if(!$scope.permisoUsuario.puerta.consultar && !$scope.permisoUsuario.muestrario.consultar)
+            if($scope.usuarioLogeado.PerfilSeleccionado == "Administrador")
             {
-               for(var k=0; k<$rootScope.Perfiles.length; k++)
+                $scope.IdentificarPermisos();
+                if(!$scope.permisoUsuario.puerta.consultar && !$scope.permisoUsuario.muestrario.consultar)
                 {
-                    if($scope.usuarioLogeado.PerfilSeleccionado == $rootScope.Perfiles[k].nombre)         //Se verifica con que perfil cuenta el usuario
-                    {
-                        $window.location = $rootScope.Perfiles[k].paginaPrincipal;
-                    }
-                } 
+                    $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado); 
+                }
+                else
+                {
+                    $scope.InicializarPuerta();
+                }
+            }
+            else if($scope.usuarioLogeado.PerfilSeleccionado === "")
+            {
+                $window.location = "#Perfil";
             }
             else
             {
-                $scope.InicializarPuerta();
+                $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
             }
         }
         else
@@ -1380,20 +1385,25 @@ app.controller("ConfiguracionPuertaControlador", function($scope, $http, $q, CON
         }
         else
         {
-            $scope.IdentificarPermisos();
-            if(!$scope.permisoUsuario.puerta.consultar && !$scope.permisoUsuario.muestrario.consultar)
+            if($scope.usuarioLogeado.PerfilSeleccionado == "Administrador")
             {
-               for(var k=0; k<$rootScope.Perfiles.length; k++)
+                $scope.IdentificarPermisos();
+                if(!$scope.permisoUsuario.puerta.consultar && !$scope.permisoUsuario.muestrario.consultar)
                 {
-                    if($scope.usuarioLogeado.PerfilSeleccionado == $rootScope.Perfiles[k].nombre)         //Se verifica con que perfil cuenta el usuario
-                    {
-                        $window.location = $rootScope.Perfiles[k].paginaPrincipal;
-                    }
-                } 
+                    $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
+                }
+                else
+                {
+                    $scope.InicializarPuerta();
+                }
+            }
+            else if($scope.usuarioLogeado.PerfilSeleccionado === "")
+            {
+                $window.location = "#Perfil";
             }
             else
             {
-                $scope.InicializarPuerta();
+                $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
             }
         }
     });

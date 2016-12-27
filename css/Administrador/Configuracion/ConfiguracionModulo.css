@@ -84,7 +84,10 @@
     color: white;
 }
 
-
+.cantidadColumna
+{
+    min-width: 140px;
+}
 
 .botonPieza:hover
 {

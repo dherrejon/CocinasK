@@ -3,6 +3,8 @@ app.controller("EjecutivoControlador", function($scope, $http, $q, CONFIG, datos
     $scope.modulo = null;
     $scope.tipoModulo = null;
     $scope.medidaModulo = null;
+    $scope.material = null;
+    $scope.gruesoMaterial = null;
     
     $scope.moduloSeleccionado = {};
     
@@ -655,8 +657,7 @@ app.controller("EjecutivoControlador", function($scope, $http, $q, CONFIG, datos
         });
     };
     
-    $scope.GetModulo();
-    $scope.GetTipoModulo();
+    
     
     $scope.combinacion = [];
     
@@ -716,9 +717,43 @@ app.controller("EjecutivoControlador", function($scope, $http, $q, CONFIG, datos
         }
     };
     
-    $scope.material = null;
-    $scope.gruesoMaterial = null;
+    $scope.InicializarCosto = function()
+    {
+        $scope.GetMaterial();
+        $scope.GetGruesoMaterial();
+        $scope.GetModulo();
+        $scope.GetTipoModulo();
+    };
     
-    $scope.GetMaterial();
-    $scope.GetGruesoMaterial();
+    
+    $scope.usuarioLogeado =  datosUsuario.getUsuario(); 
+    
+    if($scope.usuarioLogeado !== null)
+    {
+        if($scope.usuarioLogeado.SesionIniciada)
+        {
+            $scope.InicializarCosto();
+        }
+        else
+        {
+            $window.location = "#Login";
+        }
+    }
+    
+    //Se manda a llamar cada ves que los datos del usuario cambian
+    //verifica que el usuario este logeado y que tenga los permisos correspondientes
+    $scope.$on('cambioUsuario',function()
+    {
+        $scope.usuarioLogeado =  datosUsuario.getUsuario();
+    
+        if(!$scope.usuarioLogeado.SesionIniciada)
+        {
+            $window.location = "#Login";
+            return;
+        }
+        else
+        {
+            $scope.InicializarCosto();  
+        }
+    });
 });

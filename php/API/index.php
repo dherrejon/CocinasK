@@ -21,6 +21,7 @@
     require 'General/Direccion.php';
     require 'General/Sesion.php';
     require 'General/MedioContacto.php';
+    require 'General/Bug.php';
 
     /*-----Seguridad-----*/
     require 'PHP-JWT/Authentication/JWT.php';
@@ -246,6 +247,11 @@
 
     $app->post('/GetPerfilPorUsuario', $seguridad, $ChecarSesion, 'GetPerfilPorUsuario');
     $app->post('/GetPermisoPorUsuario', $seguridad, $ChecarSesion, 'GetPermisoPorUsuario');
+    $app->put('/CambiarPasswordPorUsuario', $seguridad, $ChecarSesion, 'CambiarPasswordPorUsuario');
+
+    $app->put('/RecuperarPassword', $seguridad, $ChecarSesion, 'RecuperarPassword');
+    $app->post('/ValidarRecuperarPassword', $seguridad, $ChecarSesion, 'ValidarRecuperarPassword');
+    $app->put('/ReiniciarPassword', $seguridad, $ChecarSesion, 'ReiniciarPassword');
 
     /*--------------Medio Contacto-------------------------------*/
     $app->get('/GetTipoMedioContacto', $seguridad, $ChecarSesion, 'GetTipoMedioContacto');
@@ -346,7 +352,11 @@
 
     $app->post('/GetComponentePorPuerta', $seguridad, $ChecarSesion, 'GetComponentePorPuerta');
     $app->get('/GetComponentesPorPuertaComponente', $seguridad, $ChecarSesion, 'GetComponentesPorPuertaComponente');
-
+    
+    /*----------------------Bug-------------------------------*/
+    $app->get('/GetBug', $seguridad, $ChecarSesion, 'GetBug');
+    $app->post('/AgregarBug', $seguridad, $ChecarSesion, 'AgregarBug');
+    $app->put('/ResolverBug', $seguridad, $ChecarSesion, 'ResolverBug');
     
 
     $app->run(); 

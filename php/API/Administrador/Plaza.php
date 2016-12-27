@@ -31,31 +31,31 @@ function GetPlaza()
 function AgregarPlaza()
 {
     $request = \Slim\Slim::getInstance()->request();
-        $nuevaPlaza = json_decode($request->getBody());
-        global $app;
-        $sql = "INSERT INTO Plaza (UnidadNegocioId, TerritorioId, Estado, Municipio, Ciudad, Activo) 
-                            VALUES(:UnidadNegocioId, :TerritorioId, :Estado, :Municipio, :Ciudad, 1)";
- 
-        try 
-        {
-            $db = getConnection();
-            $stmt = $db->prepare($sql);
+    $nuevaPlaza = json_decode($request->getBody());
+    global $app;
+    $sql = "INSERT INTO Plaza (UnidadNegocioId, TerritorioId, Estado, Municipio, Ciudad, Activo) 
+                        VALUES(:UnidadNegocioId, :TerritorioId, :Estado, :Municipio, :Ciudad, 1)";
 
-            $stmt->bindParam("UnidadNegocioId", $nuevaPlaza->UnidadNegocioId);
-            $stmt->bindParam("TerritorioId", $nuevaPlaza->TerritorioId);
-            $stmt->bindParam("Estado", $nuevaPlaza->Estado);
-            $stmt->bindParam("Municipio", $nuevaPlaza->Municipio);
-            $stmt->bindParam("Ciudad", $nuevaPlaza->Ciudad);
-            
-            $stmt->execute();
-            
-            $db = null;
-            echo '[{"Estatus": "Exitoso"}]';
-            
-        } catch(PDOException $e) 
-        {
-            echo '[{"Estatus": "Fallido"}]';
-        }
+    try 
+    {
+        $db = getConnection();
+        $stmt = $db->prepare($sql);
+
+        $stmt->bindParam("UnidadNegocioId", $nuevaPlaza->UnidadNegocioId);
+        $stmt->bindParam("TerritorioId", $nuevaPlaza->TerritorioId);
+        $stmt->bindParam("Estado", $nuevaPlaza->Estado);
+        $stmt->bindParam("Municipio", $nuevaPlaza->Municipio);
+        $stmt->bindParam("Ciudad", $nuevaPlaza->Ciudad);
+
+        $stmt->execute();
+
+        $db = null;
+        echo '[{"Estatus": "Exitoso"}]';
+
+    } catch(PDOException $e) 
+    {
+        echo '[{"Estatus": "Fallido"}]';
+    }
 }
 
 function EditarPlaza()

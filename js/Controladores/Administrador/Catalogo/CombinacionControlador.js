@@ -30,7 +30,7 @@ app.controller("CombinacionControlador", function($scope, $http, $q, CONFIG, dat
     $scope.titulo = "Combinación de Materiales para Módulos";
     $scope.buscar = "";
     
-    $scope.combinacion = null;
+    $scope.combinacion = [];
     $scope.combinacionMaterialComponente = null;
     $scope.componente = null;
     $scope.material = null;
@@ -433,6 +433,7 @@ app.controller("CombinacionControlador", function($scope, $http, $q, CONFIG, dat
                 $scope.GetCombinacionMaterial();
                 $scope.GetCombinacionPorMaterialComponente();  
                
+                $scope.CerrarCombinacionMaterialModal();
                 $('#combinacionMaterialModal').modal('toggle');
                 $scope.mensaje = "La combinación de materiales se ha agregado.";
             }
@@ -457,6 +458,7 @@ app.controller("CombinacionControlador", function($scope, $http, $q, CONFIG, dat
                 $scope.GetCombinacionMaterial();
                 $scope.GetCombinacionPorMaterialComponente();
                 
+                $scope.CerrarCombinacionMaterialModal();
                 $('#combinacionMaterialModal').modal('toggle');
                 $scope.mensaje = "La combinación de materiales se ha editado.";
             }
@@ -651,20 +653,25 @@ app.controller("CombinacionControlador", function($scope, $http, $q, CONFIG, dat
     {
         if($scope.usuarioLogeado.SesionIniciada)
         {
-            $scope.IdentificarPermisos();
-            if(!$scope.permisoUsuario.consultar)
+            if($scope.usuarioLogeado.PerfilSeleccionado == "Administrador")
             {
-               for(var k=0; k<$rootScope.Perfiles.length; k++)
+                $scope.IdentificarPermisos();
+                if(!$scope.permisoUsuario.consultar)
                 {
-                    if($scope.usuarioLogeado.PerfilSeleccionado == $rootScope.Perfiles[k].nombre)         //Se verifica con que perfil cuenta el usuario
-                    {
-                        $window.location = $rootScope.Perfiles[k].paginaPrincipal;
-                    }
-                } 
+                    $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
+                }
+                else
+                {
+                    $scope.InicializarModuloCombinacion();
+                }
+            }
+            else if($scope.usuarioLogeado.PerfilSeleccionado === "")
+            {
+                $window.location = "#Perfil";
             }
             else
             {
-                $scope.InicializarModuloCombinacion();
+                $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
             }
         }
         else
@@ -685,20 +692,25 @@ app.controller("CombinacionControlador", function($scope, $http, $q, CONFIG, dat
         }
         else
         {
-            $scope.IdentificarPermisos();
-            if(!$scope.permisoUsuario.consultar)
+            if($scope.usuarioLogeado.PerfilSeleccionado == "Administrador")
             {
-               for(var k=0; k<$rootScope.Perfiles.length; k++)
+                $scope.IdentificarPermisos();
+                if(!$scope.permisoUsuario.consultar)
                 {
-                    if($scope.usuarioLogeado.PerfilSeleccionado == $rootScope.Perfiles[k].nombre)         //Se verifica con que perfil cuenta el usuario
-                    {
-                        $window.location = $rootScope.Perfiles[k].paginaPrincipal;
-                    }
-                } 
+                   $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
+                }
+                else
+                {
+                    $scope.InicializarModuloCombinacion();
+                }
+            }
+            else if($scope.usuarioLogeado.PerfilSeleccionado === "")
+            {
+                $window.location = "#Perfil";
             }
             else
             {
-                $scope.InicializarModuloCombinacion();
+                $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
             }
         }
     });

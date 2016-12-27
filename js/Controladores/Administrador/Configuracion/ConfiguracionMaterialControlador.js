@@ -737,30 +737,35 @@ app.controller("ConfiguaracionMaterial", function($scope, $http, $q, CONFIG, $ro
     {
         if($scope.usuarioLogeado.SesionIniciada)
         {
-            $scope.IdentificarPermisos();
-            if(!$scope.permisoUsuario.material.consultar && !$scope.permisoUsuario.tipoMaterial.consultar)
+            if($scope.usuarioLogeado.PerfilSeleccionado == "Administrador")
             {
-               for(var k=0; k<$rootScope.Perfiles.length; k++)
+                $scope.IdentificarPermisos();
+                if(!$scope.permisoUsuario.material.consultar && !$scope.permisoUsuario.tipoMaterial.consultar)
                 {
-                    if($scope.usuarioLogeado.PerfilSeleccionado == $rootScope.Perfiles[k].nombre)         //Se verifica con que perfil cuenta el usuario
-                    {
-                        $window.location = $rootScope.Perfiles[k].paginaPrincipal;
+                   $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
+                }
+                else
+                {
+                    $scope.GetTipoMaterial();
+                    if($scope.permisoUsuario.material.consultar)
+                    {   
+
+                        $scope.GetMaterial();
+                        $scope.GetGruesoMaterial();
                     }
-                } 
+                    if($scope.permisoUsuario.tipoMaterial.consultar)
+                    {
+                        $scope.GetMaterialPara(); 
+                    }
+                }
+            }
+            else if($scope.usuarioLogeado.PerfilSeleccionado === "")
+            {
+                $window.location = "#Perfil";
             }
             else
             {
-                $scope.GetTipoMaterial();
-                if($scope.permisoUsuario.material.consultar)
-                {   
-                    
-                    $scope.GetMaterial();
-                    $scope.GetGruesoMaterial();
-                }
-                if($scope.permisoUsuario.tipoMaterial.consultar)
-                {
-                    $scope.GetMaterialPara(); 
-                }
+                $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
             }
         }
         else
@@ -782,30 +787,35 @@ app.controller("ConfiguaracionMaterial", function($scope, $http, $q, CONFIG, $ro
         }
         else
         {
-            $scope.IdentificarPermisos();
-            if(!$scope.permisoUsuario.material.consultar && !$scope.permisoUsuario.tipoMaterial.consultar)
+            if($scope.usuarioLogeado.PerfilSeleccionado == "Administrador")
             {
-               for(var k=0; k<$rootScope.Perfiles.length; k++)
+                $scope.IdentificarPermisos();
+                if(!$scope.permisoUsuario.material.consultar && !$scope.permisoUsuario.tipoMaterial.consultar)
                 {
-                    if($scope.usuarioLogeado.PerfilSeleccionado == $rootScope.Perfiles[k].nombre)         //Se verifica con que perfil cuenta el usuario
-                    {
-                        $window.location = $rootScope.Perfiles[k].paginaPrincipal;
+                   $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
+                }
+                else
+                {
+                    $scope.GetTipoMaterial();
+                    if($scope.permisoUsuario.material.consultar)
+                    {   
+
+                        $scope.GetMaterial();
+                        $scope.GetGruesoMaterial();
                     }
-                } 
+                    if($scope.permisoUsuario.tipoMaterial.consultar)
+                    {
+                        $scope.GetMaterialPara(); 
+                    }
+                }
+            }
+            else if($scope.usuarioLogeado.PerfilSeleccionado === "")
+            {
+                $window.location = "#Perfil";
             }
             else
             {
-                $scope.GetTipoMaterial();
-                if($scope.permisoUsuario.material.consultar)
-                {   
-                    
-                    $scope.GetMaterial();
-                    $scope.GetGruesoMaterial();
-                }
-                if($scope.permisoUsuario.tipoMaterial.consultar)
-                {
-                    $scope.GetMaterialPara(); 
-                }
+                $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
             }
         }
     });

@@ -470,7 +470,12 @@
                         <div class="col-xs-12 subtituloModal">
                             <b>Combinaciones de Materiales</b>
                         </div>
-                        <br><br>  
+                        <br><br>
+                        
+                        <div class="col-xs-12 subtituloModal" ng-if="combinacion.length == 0">
+                            <span class="recuperarPassword">No hay combinaciones dadas de alta</span>
+                        </div>
+                        
                         <div class="col-xs-12">
                             <div ng-repeat="combinacion in combinacionPorPuerta | unique: 'CombinacionMaterial.Nombre' | orderBy:'CombinacionMaterial.Nombre'" ng-if="combinacion.CombinacionMaterial.Activo">
                                 <button class="btn btn-block" ng-class="GetClaseDetallesCombinacion(combinacion.CombinacionMaterial.Nombre)" ng-click="MostraCominacionPorPuerta(combinacion.CombinacionMaterial.Nombre)">{{combinacion.CombinacionMaterial.Nombre}}</button>

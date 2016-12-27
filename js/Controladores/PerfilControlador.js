@@ -78,7 +78,7 @@ app.controller("PerfilControlador", function($scope, $window, $rootScope, $http,
         }
         else
         {
-            
+            $scope.HabilitarPerfiles();
         }
     });
     

@@ -698,23 +698,32 @@ app.controller("ConfiguaracionUnidadNegocioControlador", function($scope, $http,
     {
         if($scope.usuarioLogeado.SesionIniciada)
         {
-            $scope.IdentificarPermisos();
-            if(!$scope.permisoUsuario.consultarEmpresa && !$scope.permisoUsuario.consultarTipoUnidad)
+            if($scope.usuarioLogeado.PerfilSeleccionado == "Administrador")
             {
-               for(var k=0; k<$rootScope.Perfiles.length; k++)
+                $scope.IdentificarPermisos();
+                if(!$scope.permisoUsuario.consultarEmpresa && !$scope.permisoUsuario.consultarTipoUnidad)
                 {
-                    if($scope.usuarioLogeado.PerfilSeleccionado == $rootScope.Perfiles[k].nombre)         //Se verifica con que perfil cuenta el usuario
+                   $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado); 
+                }
+                else
+                {
+                    if($scope.permisoUsuario.consultarEmpresa)
                     {
-                        $window.location = $rootScope.Perfiles[k].paginaPrincipal;
+                        $scope.GetEmpresa();
                     }
-                } 
+                    if($scope.permisoUsuario.consultarTipoUnidad)
+                    {
+                        $scope.GetTipoUnidadNegocio();
+                    }
+                }
+            }
+            else if($scope.usuarioLogeado.PerfilSeleccionado === "")
+            {
+                $window.location = "#Perfil";
             }
             else
             {
-                if($scope.permisoUsuario.consultarEmpresa)
-                    $scope.GetEmpresa();
-                if($scope.permisoUsuario.consultarTipoUnidad)
-                    $scope.GetTipoUnidadNegocio();
+                $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
             }
         }
         else
@@ -736,23 +745,33 @@ app.controller("ConfiguaracionUnidadNegocioControlador", function($scope, $http,
         }
         else
         {
-            $scope.IdentificarPermisos();
-            if(!$scope.permisoUsuario.consultarEmpresa && !$scope.permisoUsuario.consultarTipoUnidad)
+            if($scope.usuarioLogeado.PerfilSeleccionado == "Administrador")
             {
-               for(var k=0; k<$rootScope.Perfiles.length; k++)
+                $scope.IdentificarPermisos();
+                if(!$scope.permisoUsuario.consultarEmpresa && !$scope.permisoUsuario.consultarTipoUnidad)
                 {
-                    if($scope.usuarioLogeado.PerfilSeleccionado == $rootScope.Perfiles[k].nombre)         //Se verifica con que perfil cuenta el usuario
+                    $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
+                }
+                else
+                {
+                    if($scope.permisoUsuario.consultarEmpresa)
                     {
-                        $window.location = $rootScope.Perfiles[k].paginaPrincipal;
+                        $scope.GetEmpresa();
                     }
-                } 
+                    if($scope.permisoUsuario.consultarTipoUnidad)
+                    {
+                        $scope.GetTipoUnidadNegocio();
+                    }
+
+                }
+            }
+            else if($scope.usuarioLogeado.PerfilSeleccionado === "")
+            {
+                $window.location = "#Perfil";
             }
             else
             {
-                if($scope.permisoUsuario.consultarEmpresa)
-                    $scope.GetEmpresa();
-                if($scope.permisoUsuario.consultarTipoUnidad)
-                    $scope.GetTipoUnidadNegocio();
+                $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
             }
         }
     });

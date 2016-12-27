@@ -347,6 +347,10 @@
                             <b>Materiales de Puertas</b>
                         </div>
                         <br><br>  
+                        <div class="col-xs-12 subtituloModal" ng-if="combinacionPorPuerta.length == 0">
+                            <span class="recuperarPassword">No hay puertas dadas de alta</span>
+                        </div>
+                        
                         <div class="col-xs-12">
                             <div ng-repeat="puerta in combinacionPorPuerta | unique: 'Puerta.Nombre' | orderBy:'Puerta.Nombre'" ng-if="puerta.Puerta.Activo == true || puerta.Puerta.Activo=='1'">
                                  <button class="btn btn-block" ng-class="GetClaseDetallesPuerta(puerta.Puerta.Nombre)" ng-click="MostraComponentePuerta(puerta.Puerta.Nombre)">{{puerta.Puerta.Nombre}}</button>

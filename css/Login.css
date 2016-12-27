@@ -128,5 +128,23 @@
     font-weight: bold;
 }
 
+/*-------Recuperar password*/
+.recuperarPassword
+{
+    color: #848484 !important;
+    text-align: center;
+}
+
+.recuperarPassword:hover
+{
+    text-decoration: underline;
+}
+
+.margenNegro
+{
+    border: solid 3px rgb(36,36,36);
+    border-radius: 3px;
+    padding: 20px;
+}
 
 

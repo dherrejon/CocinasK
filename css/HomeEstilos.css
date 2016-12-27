@@ -1,0 +1,25 @@
+.textoPerfilHome
+{
+    color: #848484;
+    font-size: 20pt;
+}
+
+.textoUsuario
+{
+    color: #848484;
+    font-size: 24pt;
+}
+
+.panelHome
+{
+    border: solid 4px rgba(232,153,21,1);
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.panelHome2
+{
+    border: solid 2px rgba(232,153,21,1);
+    padding: 15px;
+    border-radius: 5px;
+}
