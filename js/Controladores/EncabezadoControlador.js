@@ -348,7 +348,7 @@ function SetPerfilNombre($rootScope, usuario)
             {
                 $rootScope.barraNavegacionOpciones[2].elemento[0].show = true;
             }
-            else if(usuario.Permiso[k] == "ConEmpConsultar" || usuario.Permiso[k] == "ConTUNConsultar")
+            else if(usuario.Permiso[k] == "AdmEmpConsultar" || usuario.Permiso[k] == "AdmTUNConsultar")
             {
                 $rootScope.barraNavegacionOpciones[2].elemento[1].show = true;
             }
@@ -408,8 +408,8 @@ var OpcionOperativo =
    { 
         Opcion: {texto:"Usuario", id:"usuario"},
         elemento: [ 
-                        { texto:"Cerrar Sesión", funcion:"CerrarSesion()", nuevaPagina:false, show:true},
-                        { referencia: "#UsuarioPreferencia", texto:"Cambiar datos", nuevaPagina:true, show:true},
+                        { texto:"Cambiar Contraseña", funcion:"CambiarContraseña", nuevaPagina:false, show:true},
+                        { texto:"Cerrar Sesión", funcion:"CerrarSesion", nuevaPagina:false, show:true}
                   ]                      
     }
 ];
@@ -419,8 +419,8 @@ var OpcionEjecutivo =
    { 
         Opcion: {texto:"Usuario", id:"usuario"},
         elemento: [ 
-                        { texto:"Cerrar Sesión", funcion:"CerrarSesion()", nuevaPagina:false, show:true},
-                        { referencia: "#UsuarioPreferencia", texto:"Cambiar datos", nuevaPagina:true, show:true},
+                        { texto:"Cambiar Contraseña", funcion:"CambiarContraseña", nuevaPagina:false, show:true},
+                        { texto:"Cerrar Sesión", funcion:"CerrarSesion", nuevaPagina:false, show:true}
                   ]                      
     } 
 ];

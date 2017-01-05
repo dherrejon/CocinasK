@@ -1,4 +1,4 @@
-app.controller("UnidadNegocioControlador", function($scope, $http, $q, CONFIG, datosUsarUnidad, $rootScope, datosUnidadNegocio, datosUsuario, $window)
+app.controller("UnidadNegocioControlador", function($scope, $http, $q, CONFIG, datosUsarUnidad, $rootScope, datosUnidadNegocio, datosUsuario, $window, $location)
 {    
     $rootScope.clasePrincipal = "";
 
@@ -27,7 +27,7 @@ app.controller("UnidadNegocioControlador", function($scope, $http, $q, CONFIG, d
         }
     };
     
-    $rootScope.UnidadNegocio = new UnidadNegocio();
+    $rootScope.UnidadNegocio = [];
     $rootScope.clasePrincipal = "";
     
     $scope.ordenarPor = "Nombre";
@@ -41,7 +41,7 @@ app.controller("UnidadNegocioControlador", function($scope, $http, $q, CONFIG, d
             $rootScope.UnidadNegocio = data;
         }).catch(function(error)
         {
-            $rootScope.UnidadNegocio = new UnidadNegocio();
+            $rootScope.UnidadNegocio = [];
             alert(error);
         });
     };
@@ -965,7 +965,7 @@ app.controller("UtilizarUidadNegocio", function($scope, $rootScope, $http, $q, C
         }
         else
         {
-            $window.location = "#Login";
+            $location.path('/Login');
         }
     }
     
@@ -976,7 +976,7 @@ app.controller("UtilizarUidadNegocio", function($scope, $rootScope, $http, $q, C
     
         if(!$scope.usuarioLogeado.SesionIniciada)
         {
-            $window.location = "#Login";
+            $location.path('/Login');
             return;
         }
         else

@@ -1,4 +1,4 @@
-app.controller("ConfiguracionPuertaControlador", function($scope, $http, $q, CONFIG, $rootScope, datosUsuario, $window, $filter)
+app.controller("ConfiguracionPuertaControlador", function($scope, $http, $q, CONFIG, $rootScope, datosUsuario, $window, $filter, $location)
 {   
     $scope.permisoUsuario = {
                             puerta:{consultar:false, agregar:false, editar:false, activar:false}, 
@@ -879,12 +879,12 @@ app.controller("ConfiguracionPuertaControlador", function($scope, $http, $q, CON
             {
                 $scope.mensaje = "Ha ocurrido un error. Intente más tarde";
             }
+            $('#mensajeConfigurarPuerta').modal('toggle');
         }).catch(function(error)
         {
             $scope.mensaje = "Ha ocurrido un error. Intente más tarde. Error: " +error;
+            $('#mensajeConfigurarPuerta').modal('toggle');
         });
-        
-        $('#mensajeConfigurarPuerta').modal('toggle');
     };
     
     $scope.EditarPuerta = function()
@@ -903,12 +903,12 @@ app.controller("ConfiguracionPuertaControlador", function($scope, $http, $q, CON
             {
                 $scope.mensaje = "Ha ocurrido un error. Intente más tarde";
             }
+            $('#mensajeConfigurarPuerta').modal('toggle');
         }).catch(function(error)
         {
             $scope.mensaje = "Ha ocurrido un error. Intente más tarde. Error: " +error;
+            $('#mensajeConfigurarPuerta').modal('toggle');
         });
-        
-        $('#mensajeConfigurarPuerta').modal('toggle');
     };
     
     $scope.AnteriorPuerta = function()
@@ -1018,21 +1018,20 @@ app.controller("ConfiguracionPuertaControlador", function($scope, $http, $q, CON
         {
             if(data == "Exitoso")
             {
-                $scope.GetMuestrarioPuerta();
-                
                 $('#muestrarioModal').modal('toggle');
                 $scope.mensaje = "El muestrario se ha agregado.";
+                $scope.GetMuestrarioPuerta();
             }
             else
             {
                 $scope.mensaje = "Ha ocurrido un error. Intente más tarde";
             }
+            $('#mensajeConfigurarPuerta').modal('toggle');
         }).catch(function(error)
         {
             $scope.mensaje = "Ha ocurrido un error. Intente más tarde. Error: " +error;
+            $('#mensajeConfigurarPuerta').modal('toggle');
         });
-        
-        $('#mensajeConfigurarPuerta').modal('toggle');
     };
     
     $scope.EditarMuestrario = function()
@@ -1368,7 +1367,7 @@ app.controller("ConfiguracionPuertaControlador", function($scope, $http, $q, CON
         }
         else
         {
-            $window.location = "#Login";
+            $location.path('/Login');
         }
     }
     
@@ -1380,7 +1379,7 @@ app.controller("ConfiguracionPuertaControlador", function($scope, $http, $q, CON
     
         if(!$scope.usuarioLogeado.SesionIniciada)
         {
-            $window.location = "#Login";
+            $location.path('/Login');
             return;
         }
         else

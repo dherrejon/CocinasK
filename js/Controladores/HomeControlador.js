@@ -1,4 +1,4 @@
-app.controller("HomeControlador", function($scope, $rootScope, $http, CONFIG, $q, $window, datosUsuario, datosPerfil)
+app.controller("HomeControlador", function($scope, $rootScope, $http, CONFIG, $q, $window, datosUsuario, datosPerfil, $location)
 {   
     $rootScope.clasePrincipal = "";
     
@@ -29,14 +29,14 @@ app.controller("HomeControlador", function($scope, $rootScope, $http, CONFIG, $q
     
         if(!$scope.usuarioLogeado.SesionIniciada)
         {
-            $window.location = "#Login";
+            $location.path('/Login');
             return;
         }
         else
         {
             if($scope.usuarioLogeado.PerfilSeleccionado === "")
             {
-                $window.location = "#Perfil";
+                $location.path('/Login');
             }
         }
     });

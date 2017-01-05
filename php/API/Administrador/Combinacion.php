@@ -84,6 +84,7 @@ function AgregarCombinacionMaterial()
         catch(PDOException $e) 
         {
             echo '[{"Estatus": "Fallido"}]';
+            echo $e;
             $db->rollBack();
             $app->status(409);
             $app->stop();
@@ -116,6 +117,7 @@ function AgregarCombinacionMaterial()
         catch(PDOException $e) 
         {
             echo '[{"Estatus": "Fallido"}]';
+            echo $e;
             $db->rollBack();
             $app->status(409);
             $app->stop();

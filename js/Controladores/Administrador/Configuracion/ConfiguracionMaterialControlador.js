@@ -1,4 +1,4 @@
-app.controller("ConfiguaracionMaterial", function($scope, $http, $q, CONFIG, $rootScope, datosUsuario, $window, $filter)
+app.controller("ConfiguaracionMaterial", function($scope, $http, $q, CONFIG, $rootScope, datosUsuario, $window, $filter, $location)
 {   
     $scope.permisoUsuario = {
                             material:{consultar:false, agregar:false, editar:false, activar:false}, 
@@ -544,22 +544,23 @@ app.controller("ConfiguaracionMaterial", function($scope, $http, $q, CONFIG, $ro
         {
             if(data == "Exitoso")
             {
+                $('#MaterialForma').modal('toggle');
                 $scope.GetMaterial();
                 $scope.GetGruesoMaterial();
                 $scope.cerrarMaterialForma();
-                $('#MaterialForma').modal('toggle');
                 $scope.mensaje = "El material se ha agregado.";
             }
             else
             {
                 $scope.mensaje = "Ha ocurrido un error. Intente más tarde";
             }
+            $('#mensajeConfigurarMaterial').modal('toggle');
         }).catch(function(error)
         {
             $scope.mensaje = "Ha ocurrido un error. Intente más tarde. Error: " +error;
+            $('#mensajeConfigurarMaterial').modal('toggle');
         });
         
-        $('#mensajeConfigurarMaterial').modal('toggle');
     };
     
     $scope.EditarMaterial = function()
@@ -568,22 +569,24 @@ app.controller("ConfiguaracionMaterial", function($scope, $http, $q, CONFIG, $ro
         {
             if(data == "Exitoso")
             {
+                $('#MaterialForma').modal('toggle');
                 $scope.GetMaterial();
                 $scope.GetGruesoMaterial();
                 $scope.cerrarMaterialForma();
-                $('#MaterialForma').modal('toggle');
                 $scope.mensaje = "El material se ha editado.";
             }
             else
             {
                 $scope.mensaje = "Ha ocurrido un error. Intente más tarde";
             }
+            $('#mensajeConfigurarMaterial').modal('toggle');
         }).catch(function(error)
         {
             $scope.mensaje = "Ha ocurrido un error. Intente más tarde. Error: " +error;
+            $('#mensajeConfigurarMaterial').modal('toggle');
         });
         
-        $('#mensajeConfigurarMaterial').modal('toggle');
+        
     };
     
     $scope.cerrarMaterialForma = function()
@@ -770,7 +773,7 @@ app.controller("ConfiguaracionMaterial", function($scope, $http, $q, CONFIG, $ro
         }
         else
         {
-            $window.location = "#Login";
+            $location.path('/Login');
         }
     }
     
@@ -782,7 +785,7 @@ app.controller("ConfiguaracionMaterial", function($scope, $http, $q, CONFIG, $ro
     
         if(!$scope.usuarioLogeado.SesionIniciada)
         {
-            $window.location = "#Login";
+            $location.path('/Login');
             return;
         }
         else

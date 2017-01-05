@@ -1,4 +1,4 @@
-app.controller("BugControlador", function($scope, $window, $rootScope, $http, CONFIG, datosUsuario, datosPerfil, $q)
+app.controller("BugControlador", function($scope, $window, $rootScope, $http, CONFIG, datosUsuario, datosPerfil, $q, $location)
 {   
     $rootScope.clasePrincipal = "";
     /*----------------verificar los permisos---------------------*/
@@ -257,7 +257,7 @@ app.controller("BugControlador", function($scope, $window, $rootScope, $http, CO
         }
         else
         {
-            $window.location = "#Login";
+            $location.path('/Login');
         }
     }
     
@@ -267,7 +267,7 @@ app.controller("BugControlador", function($scope, $window, $rootScope, $http, CO
     
         if(!$scope.usuarioLogeado.SesionIniciada)
         {
-            $window.location = "#Login";
+            $location.path('/Login');
             return;
         }
         else

@@ -2,6 +2,8 @@
 
     require 'Slim/Slim.php';
     require 'configuration.php';
+
+    require("sendgrid-php/sendgrid-php.php");
     
     /*-----Funciones-----*/
     require 'Administrador/UnidadNegocio.php';

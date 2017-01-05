@@ -1,4 +1,4 @@
-app.controller("ConfiguaracionUnidadNegocioControlador", function($scope, $http, $q, CONFIG, $rootScope, datosUsuario, $window, $filter)
+app.controller("ConfiguaracionUnidadNegocioControlador", function($scope, $http, $q, CONFIG, $rootScope, datosUsuario, $window, $filter, $location)
 {   
     $rootScope.clasePrincipal = "";
 
@@ -8,35 +8,35 @@ app.controller("ConfiguaracionUnidadNegocioControlador", function($scope, $http,
     {
         for(var k=0; k < $scope.usuarioLogeado.Permiso.length; k++)
         {
-            if($scope.usuarioLogeado.Permiso[k] == "ConEmpConsultar")
+            if($scope.usuarioLogeado.Permiso[k] == "AdmEmpConsultar")
             {
                 $scope.permisoUsuario.consultarEmpresa = true;
             }
-            else if($scope.usuarioLogeado.Permiso[k] == "ConEmpAgregar")
+            else if($scope.usuarioLogeado.Permiso[k] == "AdmEmpAgregar")
             {
                 $scope.permisoUsuario.agregarEmpresa = true;
             }
-            else if($scope.usuarioLogeado.Permiso[k] == "ConEmpEditar")
+            else if($scope.usuarioLogeado.Permiso[k] == "AdmEmpEditar")
             {
                 $scope.permisoUsuario.editarEmpresa = true;
             }
-            else if($scope.usuarioLogeado.Permiso[k] == "ConEmpActivar")
+            else if($scope.usuarioLogeado.Permiso[k] == "AdmEmpActivar")
             {
                 $scope.permisoUsuario.activarEmpresa = true;
             }
-            else if($scope.usuarioLogeado.Permiso[k] == "ConTUNConsultar")
+            else if($scope.usuarioLogeado.Permiso[k] == "AdmTUNConsultar")
             {
                 $scope.permisoUsuario.consultarTipoUnidad = true;
             }
-            else if($scope.usuarioLogeado.Permiso[k] == "ConTUNAgregar")
+            else if($scope.usuarioLogeado.Permiso[k] == "AdmTUNAgregar")
             {
                 $scope.permisoUsuario.agregarTipoUnidad = true;
             }
-            else if($scope.usuarioLogeado.Permiso[k] == "ConTUNEditar")
+            else if($scope.usuarioLogeado.Permiso[k] == "AdmTUNEditar")
             {
                 $scope.permisoUsuario.editarTipoUnidad = true;
             }
-            else if($scope.usuarioLogeado.Permiso[k] == "ConTUNActivar")
+            else if($scope.usuarioLogeado.Permiso[k] == "AdmTUNActivar")
             {
                 $scope.permisoUsuario.activarTipoUnidad = true;
             }
@@ -728,7 +728,7 @@ app.controller("ConfiguaracionUnidadNegocioControlador", function($scope, $http,
         }
         else
         {
-            $window.location = "#Login";
+            $location.path('/Login');
         }
     }
     
@@ -740,7 +740,7 @@ app.controller("ConfiguaracionUnidadNegocioControlador", function($scope, $http,
     
         if(!$scope.usuarioLogeado.SesionIniciada)
         {
-            $window.location = "#Login";
+            $location.path('/Login');
             return;
         }
         else

@@ -1,4 +1,4 @@
-app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsuarioPerfil, md5, $rootScope, datosUsuario, $window)
+app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsuarioPerfil, md5, $rootScope, datosUsuario, $window, $location)
 {
     $rootScope.clasePrincipal = "";  //si esta en el login muestra una cocina de fondo
     
@@ -31,17 +31,17 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
     $scope.buscar = "";
     $scope.ordenarPor = "TipoModulo.Nombre";
     
-    $scope.modulo = null;
-    $scope.medidaModulo = null;
-    $scope.consumibleModulo = null;
-    $scope.componenteModulo = null;
-    $scope.parteModulo = null;
-    $scope.seccionModulo = null;
+    $scope.modulo = [];
+    $scope.medidaModulo = [];
+    $scope.consumibleModulo = [];
+    $scope.componenteModulo = [];
+    $scope.parteModulo = [];
+    $scope.seccionModulo = [];
     
-    $scope.tipoModulo = null;
-    $scope.consumible = null;
-    $scope.componente = null; 
-    $scope.tipoSeccion = null;
+    $scope.tipoModulo = [];
+    $scope.consumible = [];
+    $scope.componente = []; 
+    $scope.tipoSeccion = [];
     
     $scope.mostrarDato = "medida";
     $scope.altoLuz = "";
@@ -1453,6 +1453,9 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
         $scope.pasoModulo[1].clase="pasoNoActivo";
         $scope.pasoModulo[2].clase="pasoNoActivo";
         
+        $scope.imagen = [];
+        $scope.imagenSeleccionada = false;
+        
         $scope.claseModulo = {nombre:"entrada", seccion:"entrada", margen:"entrada", tipoModulo:"dropdownListModal", desperdicio:"entrada", consumible:"botonOperacion", componente:"botonOperacion"};
         
         $scope.editarMedida = false;
@@ -1806,6 +1809,7 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
         $scope.GetConsumible();
         $scope.GetComponente();
         $scope.GetTipoModulo();
+        $scope.GetTipoSeccion();
     };
     
     $scope.SetDatosModulo = function(data)
@@ -1858,7 +1862,7 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
         }
         else
         {
-            $window.location = "#Login";
+            $location.path('/Login');
         }
     }
     
@@ -1869,7 +1873,7 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
     
         if(!$scope.usuarioLogeado.SesionIniciada)
         {
-            $window.location = "#Login";
+            $location.path('/Login');
             return;
         }
         else

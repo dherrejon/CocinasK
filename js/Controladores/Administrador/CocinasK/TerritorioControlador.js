@@ -1,4 +1,4 @@
-app.controller("TerritorioControlador", function($scope, $http, $q, CONFIG, $rootScope, datosUsuario, $window)
+app.controller("TerritorioControlador", function($scope, $http, $q, CONFIG, $rootScope, datosUsuario, $window, $location)
 {   
     $rootScope.clasePrincipal = "";
 
@@ -350,7 +350,7 @@ app.controller("TerritorioControlador", function($scope, $http, $q, CONFIG, $roo
     /*------------------Indentifica cuando los datos del usuario han cambiado-------------------*/
     $scope.usuarioLogeado =  datosUsuario.getUsuario();
     
-    
+    $scope.contador = 0;
     //Verifica que un usuario este logeado
     if($scope.usuarioLogeado !== null)
     {
@@ -382,7 +382,7 @@ app.controller("TerritorioControlador", function($scope, $http, $q, CONFIG, $roo
         }
         else
         {
-            $window.location = "#Login";
+            $location.path('/Login');
         }
     }
     
@@ -390,10 +390,9 @@ app.controller("TerritorioControlador", function($scope, $http, $q, CONFIG, $roo
     $scope.$on('cambioUsuario',function()
     {
         $scope.usuarioLogeado =  datosUsuario.getUsuario();
-    
         if(!$scope.usuarioLogeado.SesionIniciada)
         {
-            $window.location = "#Login";
+            $location.path('/Login');
             return;
         }
         else

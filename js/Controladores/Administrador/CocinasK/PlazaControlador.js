@@ -1,4 +1,4 @@
-app.controller("PlazaControlador", function($scope, $http, $q, CONFIG, $rootScope, $window, datosUsuario)
+app.controller("PlazaControlador", function($scope, $http, $q, CONFIG, $rootScope, $window, datosUsuario, $location)
 {   
     $rootScope.clasePrincipal = "";
    
@@ -682,7 +682,7 @@ app.controller("PlazaControlador", function($scope, $http, $q, CONFIG, $rootScop
         }
         else
         {
-            $window.location = "#Login";
+            $location.path('/Login');
         }
     }
     
@@ -693,7 +693,7 @@ app.controller("PlazaControlador", function($scope, $http, $q, CONFIG, $rootScop
     
         if(!$scope.usuarioLogeado.SesionIniciada)
         {
-            $window.location = "#Login";
+            $location.path('/Login');
             return;
         }
         else

@@ -1,4 +1,4 @@
-app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $rootScope, datosUsuario, $window, $filter)
+app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $rootScope, datosUsuario, $window, $filter, $location)
 {   
     $rootScope.clasePrincipal = "";
     $scope.permisoUsuario = {
@@ -87,9 +87,12 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
     $scope.pieza = null;
     $scope.componente = null;
     $scope.consumible = null;
+        
+    $scope.buscarPiezaVista = "";
+    $scope.buscarComponente = "";
     
-    $scope.combinacion = null;
-    $scope.combinacionMaterialComponente = null;
+    $scope.combinacion = [];
+    $scope.combinacionMaterialComponente = [];
     $scope.material = null;
     $scope.tipoMaterial = null;
     $scope.gruesoMaterial = null;
@@ -485,12 +488,12 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
             {
                 $scope.mensaje = "Ha ocurrido un error. Intente más tarde";
             }
+            $('#mensajeConfigurarModulo').modal('toggle');
         }).catch(function(error)
         {
             $scope.mensaje = "Ha ocurrido un error. Intente más tarde. Error: " +error;
+            $('#mensajeConfigurarModulo').modal('toggle');
         });
-        
-        $('#mensajeConfigurarModulo').modal('toggle');
     };
     
     $scope.EditarComponente = function(datos)
@@ -510,12 +513,12 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
             {
                 $scope.mensaje = "Ha ocurrido un error. Intente más tarde";
             }
+            $('#mensajeConfigurarModulo').modal('toggle');
         }).catch(function(error)
         {
             $scope.mensaje = "Ha ocurrido un error. Intente más tarde. Error: " +error;
+            $('#mensajeConfigurarModulo').modal('toggle');
         });
-        
-        $('#mensajeConfigurarModulo').modal('toggle');
     };
     
     /*----- Agregar componente vista --*/
@@ -931,7 +934,7 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
         var index = $scope.nuevaFormula.length-1;
         var caracter = $scope.nuevaFormula[index];
     
-        if(index > 0)
+        if(index >= 0)
         {
             if(caracter == "]")
             {
@@ -1651,7 +1654,7 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
         }
         else
         {
-            $window.location = "#Login";
+            $location.path('/Login');
         }
     }
     
@@ -1663,7 +1666,7 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
     
         if(!$scope.usuarioLogeado.SesionIniciada)
         {
-            $window.location = "#Login";
+            $location.path('/Login');
             return;
         }
         else

@@ -1,4 +1,4 @@
-app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, datosUsuarioPerfil, md5, $rootScope, datosUsuario, $window)
+app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, datosUsuarioPerfil, md5, $rootScope, datosUsuario, $window, $location)
 {   
     $rootScope.clasePrincipal = "";  //si esta en el login muestra una cocina de fondo
     
@@ -1727,7 +1727,6 @@ app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, dat
                 {
                    $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
                 }
-
                 else
                 {
                     $scope.GetColaboradores();
@@ -1744,7 +1743,7 @@ app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, dat
         }
         else
         {
-            $window.location = "#Login";
+            $location.path('/Login');
         }
     }
     
@@ -1755,7 +1754,7 @@ app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, dat
     
         if(!$scope.usuarioLogeado.SesionIniciada)
         {
-            $window.location = "#Login";
+           $location.path('/Login');
             return;
         }
         else

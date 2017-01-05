@@ -376,7 +376,7 @@ function CambiarPassword()
         $stmt->execute();
         $db = null;
         //if($stmt->rowCount() == 1)
-        echo '[{"Estatus":"Exitoso"}]';
+        //echo '[{"Estatus":"Exitoso"}]';
     }
     catch(PDOException $e) {
         echo ($e);
@@ -391,16 +391,33 @@ function CambiarPassword()
     {
         if($nuevoUsuario->contacto[$k]->NombreMedioContacto == "Correo Electrónico")
         {
-            $to= $nuevoUsuario->contacto[$k]->Contacto;
-            $subject_message = "Cocinas K: ". utf8_decode("contraseña"). " Reestablecida";
-            $body_message = "Tu ". utf8_decode("contraseña"). " fue cambiada. Accede al Sistema Integral de Cococians K y cambia tu ". utf8_decode("contraseña")." inmediatamente.";
-            $body_message .= "\n\n";
-            $body_message .="Nueva ". utf8_decode("contraseña"). ":";
-            $body_message .= base64_decode($nuevoUsuario->usuario->Correo);
+            
+            /*$from = new SendGrid\Email("azure_eebb7f37323fd82c6794e824362b3679@azure.com", "cocinask@outlook.com");
+            $subject = "Cambio de contraseña";
+            $to = new SendGrid\Email("Example User", $nuevoUsuario->contacto[$k]->Contacto);
+            $content = new SendGrid\Content("text/plain", "and easy to do anywhere, even with PHP");
+            $mail = new SendGrid\Mail($from, $subject, $to, $content);
+            $apiKey = getenv('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');
+            $sg = new \SendGrid($apiKey);
+            $response = $sg->client->mail()->send()->post($mail);
+            echo json_decode($response->statusCode());
+            /*echo json_decode($response->headers());
+            echo json_decode($response->body());*/
+            
+            $from = new SendGrid\Email(null, "test@example.com");
+            $subject = "Hello World from the SendGrid PHP Library!";
+            $to = new SendGrid\Email(null, "test@example.com");
+            $content = new SendGrid\Content("text/plain", "Hello, Email!");
+            $mail = new SendGrid\Mail($from, $subject, $to, $content);
 
-            $header = "De: Cocinas K\r\n";
+            $apiKey = getenv('yV4Xx0mlTxib92kxohvZiQ');
+            $sg = new \SendGrid($apiKey);
 
-            $bool = mail($to,$subject_message,$body_message,$header);
+            $response = $sg->client->mail()->send()->post($mail);
+            echo $response->statusCode();
+            //echo $response->headers();
+            //echo $response->body();
+
         }
     }
 }

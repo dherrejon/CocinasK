@@ -115,6 +115,27 @@
     
     <br>
     <div class="row">
+        <!-- Puerta -->
+        <div class="col-sm-4 etiquetaDropdownList">
+             <label>Puerta</label>
+             <div class="dropdown">
+
+                <button class="dropdown-toggle dropdownListModal" data-toggle="dropdown">
+                    <span>{{puertaSeleccionada.Nombre}}</span>
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu elemetosDropdownListModal">
+                    <li ng-repeat="puerta in puerta | orderBy:'Nombre'">
+                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarPuerta(puerta)">
+                            <span>{{puerta.Nombre}}</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row">
         <div class="col-xs-6">
             <button class="btn botonOperacion" ng-click="CalcularCosto()">Calcular Costo</button> 
         </div>
@@ -145,7 +166,7 @@
     </div>
     <br>
     
-    <div class="row">
+    <!--<div class="row">
         <div class="col-md-11 col-xs-10">
             <div class="table-responsive TablaUnidadNegocio">
                
@@ -234,7 +255,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>-->
     
 </div>
 

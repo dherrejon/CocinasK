@@ -1,4 +1,4 @@
-app.controller("PerfilControlador", function($scope, $window, $rootScope, $http, CONFIG, datosUsuario, datosPerfil)
+app.controller("PerfilControlador", function($scope, $window, $rootScope, $http, CONFIG, datosUsuario, datosPerfil, $location)
 {   
     $rootScope.clasePrincipal = "login";
     
@@ -63,7 +63,7 @@ app.controller("PerfilControlador", function($scope, $window, $rootScope, $http,
         }
         else
         {
-            $window.location = "#Login";
+            $location.path('/Login');
         }
     }
     
@@ -73,7 +73,7 @@ app.controller("PerfilControlador", function($scope, $window, $rootScope, $http,
     
         if(!$scope.usuarioLogeado.SesionIniciada)
         {
-            $window.location = "#Login";
+            $location.path('/Login');
             return;
         }
         else
@@ -149,7 +149,7 @@ function SetPerfil(perfil, $rootScope, $window, $http, CONFIG, usuario)
             {
                 $rootScope.barraNavegacionOpciones[2].elemento[0].show = true;
             }
-            else if(usuario.Permiso[k] == "ConEmpConsultar" || usuario.Permiso[k] == "ConTUNConsultar")
+            else if(usuario.Permiso[k] == "AdmEmpConsultar" || usuario.Permiso[k] == "AdmTUNConsultar")
             {
                 $rootScope.barraNavegacionOpciones[2].elemento[1].show = true;
             }

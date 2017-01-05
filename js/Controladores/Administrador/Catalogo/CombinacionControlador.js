@@ -1,4 +1,4 @@
-app.controller("CombinacionControlador", function($scope, $http, $q, CONFIG, datosUsuarioPerfil, md5, $rootScope, datosUsuario, $window)
+app.controller("CombinacionControlador", function($scope, $http, $q, CONFIG, datosUsuarioPerfil, md5, $rootScope, datosUsuario, $window, $location)
 {   
     $rootScope.clasePrincipal = "";  //si esta en el login muestra una cocina de fondo
     
@@ -31,17 +31,17 @@ app.controller("CombinacionControlador", function($scope, $http, $q, CONFIG, dat
     $scope.buscar = "";
     
     $scope.combinacion = [];
-    $scope.combinacionMaterialComponente = null;
-    $scope.componente = null;
-    $scope.material = null;
-    $scope.tipoMaterial = null;
-    $scope.gruesoMaterial = null;
+    $scope.combinacionMaterialComponente = [];
+    $scope.componente = [];
+    $scope.material = [];
+    $scope.tipoMaterial = [];
+    $scope.gruesoMaterial = [];
     
     $scope.ordenarPor = "Nombre";
     $scope.claseCombinacion = {nombre:"entrada"};
     $scope.mostrarComponentePuerta = "";
-    $scope.combinacionPorPuerta = null;
-    $scope.componentePorPuerta = null;
+    $scope.combinacionPorPuerta = [];
+    $scope.componentePorPuerta = [];
     $scope.pasoCombinacion = 1;
     
     $scope.mensajeError = [];
@@ -441,12 +441,13 @@ app.controller("CombinacionControlador", function($scope, $http, $q, CONFIG, dat
             {
                 $scope.mensaje = "Ha ocurrido un error. Intente más tarde";
             }
+            $('#mensajeCombinacionMaterial').modal('toggle');
         }).catch(function(error)
         {
             $scope.mensaje = "Ha ocurrido un error. Intente más tarde. Error: " +error;
+            $('#mensajeCombinacionMaterial').modal('toggle');
         });
         
-        $('#mensajeCombinacionMaterial').modal('toggle');
     };
     
     $scope.EditarCombinacionMaterial = function()
@@ -466,12 +467,12 @@ app.controller("CombinacionControlador", function($scope, $http, $q, CONFIG, dat
             {
                 $scope.mensaje = "Ha ocurrido un error. Intente más tarde";
             }
+            $('#mensajeCombinacionMaterial').modal('toggle');
         }).catch(function(error)
         {
             $scope.mensaje = "Ha ocurrido un error. Intente más tarde. Error: " +error;
+            $('#mensajeCombinacionMaterial').modal('toggle');
         });
-        
-        $('#mensajeCombinacionMaterial').modal('toggle');
     };
     
     $scope.CerrarCombinacionMaterialModal = function()
@@ -676,7 +677,7 @@ app.controller("CombinacionControlador", function($scope, $http, $q, CONFIG, dat
         }
         else
         {
-            $window.location = "#Login";
+            $location.path('/Login');
         }
     }
     
@@ -687,7 +688,7 @@ app.controller("CombinacionControlador", function($scope, $http, $q, CONFIG, dat
     
         if(!$scope.usuarioLogeado.SesionIniciada)
         {
-            $window.location = "#Login";
+            $location.path('/Login');
             return;
         }
         else

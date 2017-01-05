@@ -130,8 +130,11 @@
                     <br>
                     
                     <div class="row" ng-if="combinacionMaterialComponente.length > 0">
-                        <div class="col-xs-12">
+                       <div class="col-xs-12 subtituloModal">
                             <b>Materiales por Componente</b>
+                        </div>
+                        <div class="col-xs-12">
+                            
                             <div class="table-responsive TablaModal">
                                 <table class="table table-hover">
                                     <thead class="TituloTabla">
@@ -156,10 +159,10 @@
                         </div>
                     </div>
                     
-                    <div class="row">
+                    <div class="row" ng-if="combinacionPorPuerta.length > 0">
                       
                         <div class="col-xs-12 subtituloModal">
-                            <b>Materiales por Puerta</b>
+                            <b>Materiales por Puerta {{combinacionPorPuerta.length}}</b>
                         </div>
                         <br><br>  
                         <div class="col-xs-12">
