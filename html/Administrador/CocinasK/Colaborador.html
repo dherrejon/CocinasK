@@ -462,9 +462,8 @@
                                     <span>{{tipoTelefonoSeleccionado.tipo}}</span>
                                     <span class="caret"></span>
                                 </button>
-
                                 <ul class="dropdown-menu elemetosDropdownListModal">
-                                    <li ng-repeat="tipoTelefono in tipoMedioContacto | orderBy:'Nombre' | filter:{NombreMedioContacto: 'Teléfono', Activo:'1'}">
+                                    <li ng-repeat="tipoTelefono in tipoMedioContacto | orderBy:'Nombre' | filter:{NombreMedioContacto: 'Teléfono', Activo:true}">
                                         <a  href="" class="dropdownOpcionModal" ng-click="CambiarTelefono(tipoTelefono)">
                                             <span>{{tipoTelefono.Nombre}}</span>
                                         </a>
@@ -573,7 +572,7 @@
                                 </button>
 
                                 <ul class="dropdown-menu elemetosDropdownListModal">
-                                    <li ng-repeat="tipoCorreo in tipoMedioContacto | orderBy:'Nombre' | filter:{NombreMedioContacto:'Correo Electrónico',  Activo:'1'}">
+                                    <li ng-repeat="tipoCorreo in tipoMedioContacto | orderBy:'Nombre' | filter:{NombreMedioContacto:'Correo Electrónico',  Activo:'true'}">
                                         <a  href="" class="dropdownOpcionModal" ng-click="CambiarEmail(tipoCorreo)">
                                             <span>{{tipoCorreo.Nombre}}</span>
                                         </a>

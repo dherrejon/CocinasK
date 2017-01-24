@@ -5,6 +5,7 @@ class CombinacionMaterial
         this.CombinacionMaterialId = "";
         this.Nombre = "";
         this.Activo = true;
+        this.PorDefecto = false;
         this.ActivoN = 1;
     }
 }
@@ -52,6 +53,15 @@ function SetCombinacionMaterial(data)
         combinacion.Activo = false;
     }
     
+    if(data.PorDefecto == "1")
+    {
+        combinacion.PorDefecto = true;
+    }
+    else
+    {
+        combinacion.PorDefecto = false;
+    }
+    
     return combinacion;
 }
 
@@ -67,6 +77,15 @@ function AgregarCombinacionMaterial($http, CONFIG, $q, combinacion)
     else
     {
         combinacion.Activo = "0";
+    }
+    
+    if(combinacion.PorDefecto && combinacion.Activo)
+    {
+        combinacion.PorDefecto = "1";
+    }
+    else
+    {
+        combinacion.PorDefecto = "0";
     }
 
     $http({      
@@ -97,6 +116,15 @@ function AgregarCombinacionMaterial($http, CONFIG, $q, combinacion)
 function EditarCombinacionMaterial($http, CONFIG, $q, combinacion)
 {
     var q = $q.defer();
+    
+    if(combinacion.PorDefecto && combinacion.Activo)
+    {
+        combinacion.PorDefecto = "1";
+    }
+    else
+    {
+        combinacion.PorDefecto = "0";
+    }
     
     if(combinacion.Activo)
     {

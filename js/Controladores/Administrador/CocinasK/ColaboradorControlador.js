@@ -1335,10 +1335,7 @@ app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, dat
     {
         GetUnidadNegocioSencilla($http, $q, CONFIG).then(function(data)
         {
-            if(data.length > 0)
-            {
-                $scope.unidadNegocio = data;
-            }
+            $scope.unidadNegocio = data;
         }).catch(function(error)
         {
             alert(error);
@@ -1352,13 +1349,13 @@ app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, dat
         {
             $scope.opcionUsuario.claseSi = "botonRelleno";
             $scope.opcionUsuario.claseNo = "botonOperacion";
-            $scope.opcion = "si";
+            $scope.opcionUsuario.opcion = "si";
         }
         else if(opcion == "no")
         {
             $scope.opcionUsuario.claseSi = "botonOperacion";
             $scope.opcionUsuario.claseNo = "botonRelleno";
-            $scope.opcion = "no";
+            $scope.opcionUsuario.opcion = "no";
         }
     };
     
@@ -1686,7 +1683,7 @@ app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, dat
             }
             else
             {
-                alert(data);
+                alert("Primeramente de de alta un tipo de medio de contacto");
             }
         }).catch(function(error)
         {

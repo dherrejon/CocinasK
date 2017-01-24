@@ -224,8 +224,8 @@ function EditarComponente()
     } 
     catch(PDOException $e) 
     {
-        //echo '[ { "Estatus": "Fallo" } ]';
-        echo $e;
+        echo '[ { "Estatus": "Fallo" } ]';
+        //echo $e;
         $db->rollBack();
         $app->status(409);
         $app->stop();

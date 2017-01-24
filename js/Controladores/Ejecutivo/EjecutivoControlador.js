@@ -29,7 +29,7 @@ app.controller("EjecutivoControlador", function($scope, $http, $q, CONFIG, datos
         var q = $q.defer();
         $scope.GetComponentePorModulo(modulo.moduloId).then(function(data)
         {
-            $scope.GetCombinacionPorMaterialComponente(4, $scope.frenteModulo);
+            $scope.GetCombinacionPorMaterialComponente(1, $scope.frenteModulo);
             $scope.GetPartePorModulo(modulo.moduloId).then(function(data)
             {
                 q.resolve(data);
@@ -59,7 +59,7 @@ app.controller("EjecutivoControlador", function($scope, $http, $q, CONFIG, datos
         var q = $q.defer();
         
         $scope.combinacion = [];
-        $scope.GetCombinacionPorMaterialComponente(4, $scope.combinacion).then(function(data)
+        $scope.GetCombinacionPorMaterialComponente(1, $scope.combinacion).then(function(data)
         {
             q.resolve(data);
         });

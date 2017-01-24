@@ -588,7 +588,7 @@
 
                                                 <ul class="dropdown-menu elemetosDropdownListModal">
 
-                                                    <li ng-repeat="material in material | orderBy:'Nombre' | filter:{TipoMaterial:combinacion.Material.TipoMaterial}:true" ng-if="material.Activo">
+                                                    <li ng-repeat="material in material | orderBy:'Nombre' | filter:{TipoMaterial:{TipoMaterialId:combinacion.Material.TipoMaterial.TipoMaterialId}}:true" ng-if="material.Activo">
                                                         <a  href="" class="dropdownOpcionModal" ng-click="CambiarMaterial(material, combinacion)">
                                                             <span>{{material.Nombre}}</span>
                                                         </a>

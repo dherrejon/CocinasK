@@ -1,0 +1,340 @@
+<div ng-controller="FabricacionCubiertaControlador as fabricacion">
+    <div class="row">
+        <div class="col-md-11 col-xs-10">
+            <div class="table-responsive TablaUnidadNegocio">
+                <table class="table table-hover">
+                    <thead class="TituloTabla">
+                      <tr>
+                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenarFabricacion('Nombre')"><b>Nombre </b><b ng-if="ordenarPorFabricacion === 'Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPorFabricacion === '-Nombre'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonFalso"><b>Consumibles</b></button></th>
+                        <th><button class="btn botonFalso"><b>Editar</b></button></th>
+                        <th><button class="btn botonFalso"><b>Activo</b></button></th>
+                      </tr>
+                    </thead>
+                    <tbody ng-repeat="fabricacion in fabricacion | orderBy:[ordenarPorFabricacion, 'Nombre'] | filter:{Nombre:buscarFabricacion}">
+                      <tr>
+                        <td>{{fabricacion.Nombre}}</td>
+                        
+                        <td>
+                            <a  class="BotonOperacion" href="" data-toggle="modal" data-target="#DetalleCubiertaFabricacion" ng-click="DetallesFabricion(fabricacion)">
+                                <span class="fa fa-eye fa-2x"></span>
+                            </a>
+                        </td>
+
+                        <td>
+                            <a ng-if="permisoUsuario.fabricacion.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirFabricacionCubierta('Editar', fabricacion)">
+                                <span class="fa fa-pencil fa-2x"></span>
+                            </a>
+
+                            <span ng-if="!permisoUsuario.fabricacion.editar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
+                        </td>
+
+                        <td>
+                            <div class="checkbox">
+                                <label>
+                                    <input ng-disabled="!permisoUsuario.fabricacion.activar" ng-model="fabricacion.Activo" type="checkbox" value="" ng-click="ActivarDesactivarFabricacionCubierta(fabricacion)">
+                                    <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+                                </label>
+                            </div>
+                        </td>
+
+                      </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-xs-2 col-md-1">
+             <button ng-disabled="!permisoUsuario.fabricacion.agregar"  class="btn btn-block botonOperacion fa fa-plus text-center" data-toggle="tooltip" data-placement="bottom" title="Agregar Tipo Módulo" ng-click="AbrirFabricacionCubierta('Agregar', null)"></button>
+             
+             <br><br>
+             <!-- Boton buscar -->
+            <div class="dropdown">
+                
+                <button class="btn btn btn-block botonOperacion fa fa-search text-center" data-toggle="dropdown" ></button>
+                    
+                <ul class="dropdown-menu dropdown-menu-right operacionPanel">
+
+                    <li style="width: 225px; height: 35px !important;">
+
+                        <form role="buscar" style="max-width: 200px; height: 25px !important;">
+                            <div class="input-group" >
+                              <input  type="text" class="form-control operacionPanelEntrada" placeholder="Buscar" style="margin-left: 5px; width: 175px;" ng-model="buscarFabricacion">
+                              <span class="input-group-btn" style="width: 25px;">
+                                <button class="btn operacionPanelBoton" type="button">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                              </span>
+                            </div>
+                        </form>
+                    </li>
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+                     
+     <!------------------------------------ Modales -------------------------------------------------------------------->
+                     
+    <!---- Modal para Agregar-editar fabricacion de cubiertas -->
+    <div class="modal fade" id="fabricacionCubiertaModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static" >
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <!-- encabezado del modal -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarFabricacionCubiertar()"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center" ng-if="operacion === 'Agregar'">Agregar Fabricación Cuierta</h3>
+                            <h3 class="text-center" ng-if="operacion === 'Editar'">Editar Fabricación Cuierta</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+                <br>
+
+                <form class="modal-body" name="fabricacionCubiertaForma">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6">
+                            <!-- Nombre -->
+                             <div class="entrada2">
+                                <input ng-pattern="erNombreGeneral" type="text" required class="{{claseFabricacion.nombre}} form-control" name="nombre" ng-model="nuevaFabricacion.Nombre"/>
+                                <label>Nombre</label>
+                            </div>
+                        </div>
+                            
+                        <br class="hidden-sm hidden-md hidden-lg"><br class="hidden-sm hidden-md hidden-lg">
+                        <!-- Activo -->
+                       <div class="col-xs-12 col-sm-6">
+                             <label class="btn checkBoxActivo">Fabricación Activa <input type="checkbox" class="badgebox" ng-model="nuevaFabricacion.Activo"><span class="badge">&check;</span></label>
+                        </div>
+                        <br>
+
+                    </div>
+                    <br><br>
+                    <div class="row">
+                        <div class="col-xs-12 subtituloModal">
+                            <b>¿Qué consumibles se utilizan en la fabricación?</b>
+                        </div>
+
+                        <br><br>
+                        <div class="col-xs-12">
+                            <button class="btn btn-block {{claseFabricacion.consumible}}" ng-click="CambiarMostrarConsumible()">Consumibles {{mostrarConsumible.texto}}</button>
+                        </div>
+                        <br><br><br>
+
+                        <div ng-show="mostrarConsumible.mostrar">
+                            <div class="col-xs-12">
+                               <div class="panelOculto">
+                                    <input type="text" class="buscar input-md form-control" placeholder="Buscar" ng-model="buscarConsumible"/>
+                                    <br>
+                                    <div class="panel panel-default  tablaDropdowlist" >
+                                        <table class="table table-hover table-responsive">
+                                          <tbody  style="cursor: pointer">
+                                            <tr ng-repeat="consumible in consumible | filter: { Nombre:buscarConsumible} | orderBy:'Nombre'" ng-show="consumible.Activo && consumible.mostrar">
+                                            
+                                              <td >
+                                                  {{consumible.Nombre}}
+                                              </td>
+                                              
+                                              <td >
+                                                  ${{consumible.Costo}}
+                                              </td>
+                                              
+                                              <td>
+                                                <span class="pull-right">
+                                                   <a style="margin-left:10px" class="BotonOperacion" href=""  ng-click="AgregarConsumible(consumible)">
+                                                        <span class="fa fa-plus fa-2x"></span>
+                                                    </a>
+                                                  </span>
+                                               </td>
+                                            </tr>
+                                          </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <br>
+
+                    <div class="row" ng-if="nuevaFabricacion.Consumible.length > 0">
+                        <div class="col-xs-12 subtituloModal">
+                            <b>Consumibles Agregados</b>
+                        </div>
+                        <br> <br>
+                        <div class="col-xs-12">
+                            <div class="piezaPorComponenteTabla">
+                                <table class="table table-hover">
+                                    <thead class="TituloTabla">
+                                      <tr>
+                                        <th><button class="btn botonFalso"><b>Nombre</b></button></th>
+                                        <th><button class="btn botonFalso"><b>Cantidad</b></button></th>
+                                        <th><button class="btn botonFalso"><b>Total</b></button></th>
+                                        <th><button class="btn botonFalso"><b>Quitar</b></button></th>
+                                      </tr>
+                                    </thead>
+                                    <tbody ng-repeat="consumible in nuevaFabricacion.Consumible | orderBy:'Nombre'">
+                                      <tr>
+                                         <td>{{consumible.Nombre}}</td>
+                                         <td>
+                                            <div class="cantidad">
+                                                <button class="btn btn-sm cantidadMenos fa fa-minus" ng-click="RemoverCantidadCosumible(consumible)"></button>
+                                                <input  disabled type="text" class="cantidadPieza" ng-model="consumible.Cantidad"/>
+                                                <button class="btn btn-sm cantidadMas fa fa-plus" ng-click="AgregarCantidadConsumible(consumible)"></button>
+                                            </div>
+                                        </td>
+                                         
+                                         <td>${{consumible.Cantidad * consumible.Costo}}</td>
+                                         
+                                         <td>
+                                            <a class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="QuitarConsumible(consumible)">
+                                                <span class="fa fa-times fa-2x"></span>
+                                            </a>
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                  
+                    <br>
+                    <!-------- mensaje de error ---->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div ng-repeat="error in mensajeError">
+                                <span class="textoError">{{error}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!---- botones de operacion --->
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <button class="btn botonCancelar btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarFabricacionCubiertar()">CANCELAR</button>
+                        </div>
+                        
+                        <div class="col-xs-6">
+                            <button focus class="btn botonAvanzar btn-block" ng-click="TerminarFabricacionCubierta(fabricacionCubiertaForma.nombre.$invalid)">TERMINAR</button>
+                        </div>
+                    </div>
+                    <br>
+                </form>
+            </div>
+            <br><br><br>
+        </div>
+    </div>
+                       
+    <!-------------- Detalles-------------->
+    <div class="modal fade " id="DetalleCubiertaFabricacion">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <!-- encabezado del modal -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center">Detalles de {{fabricacionActualizar.Nombre}}</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- cuerpo del modal -->
+                <div class="modal-body">
+                    <!-- Opciones de unidad de negocio -->
+                        
+                    <h4>Consumibles</h4><br>
+                    <!-- Consumibles -->
+                    <div class="row">
+                        <div class="col-sm-12">
+                            
+                            <table class="table table-hover">
+                                <thead class="TituloTabla">
+                                  <tr>
+                                    <th><button class="btn botonFalso"><b>Nombre</b></button></th>
+                                    <th><button class="btn botonFalso"><b>Cantidad</b></button></th>
+                                    <th><button class="btn botonFalso"><b>Total</b></button></th>
+                                  </tr>
+                                </thead>
+                                <tbody ng-repeat="consumible in fabricacionActualizar.Consumible | orderBy:'Nombre'">
+                                  <tr>
+                                    
+                                    <td>{{consumible.Nombre}}</td>
+                                    <td>{{consumible.Cantidad}}</td>
+                                    <td>${{consumible.Costo * consumible.Cantidad}}</td>
+
+                                  </tr>
+                                </tbody>
+                            </table>
+                            
+                        </div>
+                    </div>
+                    <br>
+                </div>
+            </div>
+        </div>
+    </div>
+             
+    <!-- Desactivar Modal -->
+    <div class="modal fade" id="modalActivarDesactivarConfigurarCubiertaFabricacion" data-keyboard="false" data-backdrop="static">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                
+                <div class="modal-body">
+                    <br>
+                    <div class="panel panel-default modalMensaje">
+                        <br>
+                        <b>{{mensajeAdvertencia}}</b>
+                        <br><br>
+
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <button class="btn botonCancelar" data-dismiss="modal" aria-label="Close" ng-click="CancelarEstatusActivoFabricacionCubierta()">No</button>
+                            </div>
+                            <div class="col-xs-6">
+                                <button class="btn botonAvanzar" data-dismiss="modal" aria-label="Close" ng-click="ConfirmarActualizarFabricacionCubierta()">Si</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div> 
+    
+    <!-- Modal para mensajes -->
+    <div class="modal fade" id="mensajeConfigurarCubiertaFabricacion">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                
+                <div class="modal-body">
+                    <div class="panel panel-default modalMensaje">
+                        <br>
+                        <b>{{mensaje}}</b>
+
+                        <br><br>
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <button class="btn  botonAvanzar" data-dismiss="modal" aria-label="Close">Aceptar</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>  
+                        
+</div>
+
+     

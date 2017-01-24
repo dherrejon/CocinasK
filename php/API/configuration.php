@@ -22,8 +22,6 @@
     $token_expiration_time = '+1 hour';
     $session_expiration_time = '+35 minute';
 
-    
-
     function getConnection() 
     {
 

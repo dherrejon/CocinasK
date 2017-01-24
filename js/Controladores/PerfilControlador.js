@@ -161,6 +161,14 @@ function SetPerfil(perfil, $rootScope, $window, $http, CONFIG, usuario)
             {
                 $rootScope.barraNavegacionOpciones[2].elemento[3].show = true;
             }
+            else if(usuario.Permiso[k] == "ConMCCConsultar" || usuario.Permiso[k] == "ConFCuConsultar" || usuario.Permiso[k] == "ConUCuConsultar")
+            {
+                $rootScope.barraNavegacionOpciones[2].elemento[4].show = true;
+            }
+            else if(usuario.Permiso[k] == "ConTMCConsultar" || usuario.Permiso[k] == "ConCloConsultar")
+            {
+                $rootScope.barraNavegacionOpciones[2].elemento[5].show = true;
+            }
         }
     }
 }

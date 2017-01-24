@@ -178,12 +178,12 @@ function AgregarUsuario()
         {
             $to= $usuario->contacto[$k]->Contacto;
             $subject_message = "Bienvenido al Sistema Integral de Cocinas K";
-            $body_message = "Ya puedes acceder al Sistema Integral de Cocinas K tu usuario y " .utf8_decode("contraseña"). " son los siguientes:";
+            $body_message = "Ya puedes acceder al Sistema Integral de Cocinas K (http://sistemack.com). Tu usuario y " .utf8_decode("contraseña"). " son los siguientes:";
             $body_message .= "\n\n";
             $body_message .="Usario: ". $usuario->colaborador->NombreUsuario;
             $body_message .= "\n  ".utf8_decode("contraseña").": ". base64_decode($usuario->colaborador->Correo);
             $body_message .= "\n\n";
-            $body_message .= "Te recomendamos entrar al sistema y cambiar tu".utf8_decode("contraseña"). " inmediatamente." ;
+            $body_message .= "Te recomendamos entrar al sistema y cambiar tu ".utf8_decode("contraseña"). " inmediatamente." ;
 
 
             $header = "De: Cocinas K\r\n";
@@ -275,10 +275,10 @@ function EditarUsuario()
 
         } catch(PDOException $e) 
         {
+            echo $e;
             $db->rollBack();
             $app->status(409);
             $app->stop();
-            echo $e;
         }
     }
 
@@ -317,10 +317,13 @@ function EditarUsuario()
             echo '[{"Estatus":"Exitoso"}]';
         } catch(PDOException $e) 
         {
+            //echo '[{"Estatus": "Fallido"}]';
+            echo $sql;
+            echo $e;
             $db->rollBack();
             $app->status(409);
             $app->stop();
-            echo '[{"Estatus": "Fallido"}]';
+            
         }
     }
     else
@@ -391,33 +394,16 @@ function CambiarPassword()
     {
         if($nuevoUsuario->contacto[$k]->NombreMedioContacto == "Correo Electrónico")
         {
-            
-            /*$from = new SendGrid\Email("azure_eebb7f37323fd82c6794e824362b3679@azure.com", "cocinask@outlook.com");
-            $subject = "Cambio de contraseña";
-            $to = new SendGrid\Email("Example User", $nuevoUsuario->contacto[$k]->Contacto);
-            $content = new SendGrid\Content("text/plain", "and easy to do anywhere, even with PHP");
-            $mail = new SendGrid\Mail($from, $subject, $to, $content);
-            $apiKey = getenv('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');
-            $sg = new \SendGrid($apiKey);
-            $response = $sg->client->mail()->send()->post($mail);
-            echo json_decode($response->statusCode());
-            /*echo json_decode($response->headers());
-            echo json_decode($response->body());*/
-            
-            $from = new SendGrid\Email(null, "test@example.com");
-            $subject = "Hello World from the SendGrid PHP Library!";
-            $to = new SendGrid\Email(null, "test@example.com");
-            $content = new SendGrid\Content("text/plain", "Hello, Email!");
-            $mail = new SendGrid\Mail($from, $subject, $to, $content);
+            $to= $nuevoUsuario->contacto[$k]->Contacto;
+            $subject_message = "Cocinas K: ". utf8_decode("Contraseña"). " Reestablecida";
+            $body_message = "Tu ". utf8_decode("contraseña"). " fue cambiada. Accede al Sistema Integral de Cococians K (http://sistemack.com) y cambia tu ". utf8_decode("contraseña")." inmediatamente.";
+            $body_message .= "\n\n";
+            $body_message .="Nueva ". utf8_decode("contraseña"). ":";
+            $body_message .= base64_decode($nuevoUsuario->usuario->Correo);
 
-            $apiKey = getenv('yV4Xx0mlTxib92kxohvZiQ');
-            $sg = new \SendGrid($apiKey);
+            $header = "De: Cocinas K\r\n";
 
-            $response = $sg->client->mail()->send()->post($mail);
-            echo $response->statusCode();
-            //echo $response->headers();
-            //echo $response->body();
-
+            $bool = mail($to,$subject_message,$body_message,$header);
         }
     }
 }
@@ -614,7 +600,7 @@ function RecuperarPassword()
        
         $to= $contacto[$k]->Contacto;
         $subject_message = "Recuperar contraseña";
-        $body_message = "Accede al siguiente enlace para que puedas reiniciar tu " .utf8_decode("contraseña");
+        $body_message = "Accede al enlace especificado para que puedas reiniciar tu " .utf8_decode("contraseña");
         $body_message .= "\n\n";
         $body_message .="Enlace: http://localhost/cocinasK/#/RecuperarPassword/".$response[0]->UsuarioId."/".$codigo;
 

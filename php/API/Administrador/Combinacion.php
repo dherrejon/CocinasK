@@ -34,8 +34,8 @@ function AgregarCombinacionMaterial()
     $combinacion = json_decode($request->getBody());
     global $app;
     
-    $sql = "INSERT INTO CombinacionMaterial (Nombre, Activo) 
-                            VALUES(:Nombre, :Activo)";
+    $sql = "INSERT INTO CombinacionMaterial (Nombre, Activo, PorDefecto) 
+                            VALUES(:Nombre, :Activo, :PorDefecto)";
 
     $db;
     $stmt;
@@ -49,6 +49,7 @@ function AgregarCombinacionMaterial()
     
         $stmt->bindParam("Nombre", $combinacion->Nombre);
         $stmt->bindParam("Activo", $combinacion->Activo);
+        $stmt->bindParam("PorDefecto", $combinacion->PorDefecto);
 
         $stmt->execute();
         
@@ -138,7 +139,7 @@ function EditarCombinacionMaterial()
     $combinacion = json_decode($request->getBody());
     global $app;
     
-    $sql = "UPDATE CombinacionMaterial SET Nombre='".$combinacion->Nombre."', Activo='".$combinacion->Activo."' WHERE CombinacionMaterialId=".$combinacion->CombinacionMaterialId."";
+    $sql = "UPDATE CombinacionMaterial SET Nombre='".$combinacion->Nombre."', Activo='".$combinacion->Activo."', PorDefecto='".$combinacion->PorDefecto."' WHERE CombinacionMaterialId=".$combinacion->CombinacionMaterialId."";
 
     $db;
     $stmt;
@@ -152,8 +153,8 @@ function EditarCombinacionMaterial()
     }
     catch(PDOException $e) 
     {
-        //echo '[ { "Estatus": "Fallo" } ]';
-        echo $e;
+        echo '[ { "Estatus": "Fallo" } ]';
+        //echo $e;
         $db->rollBack();
         $app->status(409);
         $app->stop();
@@ -250,11 +251,19 @@ function ActivarDesactivarCombinacionMaterial()
     global $app;
     $request = \Slim\Slim::getInstance()->request();
     $datos = json_decode($request->getBody());
+    
+    if($datos[0] == "1")
+    {
+        $sql = "UPDATE CombinacionMaterial SET Activo = ".$datos[0]." WHERE CombinacionMaterialId = ".$datos[1]."";
+    }
+    else
+    {
+        $sql = "UPDATE CombinacionMaterial SET Activo = ".$datos[0].", PorDefecto = '"."0"."' WHERE CombinacionMaterialId = ".$datos[1]."";
+    }
+    
     try 
     {
         $db = getConnection();
-        
-        $sql = "UPDATE CombinacionMaterial SET Activo = ".$datos[0]." WHERE CombinacionMaterialId = ".$datos[1]."";
         $stmt = $db->prepare($sql);
         $stmt->execute();
         

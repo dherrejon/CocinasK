@@ -360,6 +360,14 @@ function SetPerfilNombre($rootScope, usuario)
             {
                 $rootScope.barraNavegacionOpciones[2].elemento[3].show = true;
             }
+            else if(usuario.Permiso[k] == "ConMCCConsultar" || usuario.Permiso[k] == "ConFCuConsultar" || usuario.Permiso[k] == "ConUCuConsultar")
+            {
+                $rootScope.barraNavegacionOpciones[2].elemento[4].show = true;
+            }
+            else if(usuario.Permiso[k] == "ConTMCConsultar" || usuario.Permiso[k] == "ConCloConsultar")
+            {
+                $rootScope.barraNavegacionOpciones[2].elemento[5].show = true;
+            }
         }
     }
     
@@ -391,7 +399,9 @@ var OpcionAdministrador =
                         { referencia: "#ConfigurarModulo", texto:"Módulos", nuevaPagina:true, show:false},
                         { referencia: "#ConfigurarUnidadNegocio", texto:"Unidades de Negocio", nuevaPagina:true, show:false},
                         { referencia: "#ConfigurarMaterial", texto:"Materiales", nuevaPagina:true, show:false},
-                        { referencia: "#ConfigurarPuerta", texto:"Puertas", nuevaPagina:true, show:false}
+                        { referencia: "#ConfigurarPuerta", texto:"Puertas", nuevaPagina:true, show:false},
+                        { referencia: "#ConfigurarCubierta", texto:"Cubiertas", nuevaPagina:true, show:false},
+                        { referencia: "#ConfigurarGeneral", texto:"General", nuevaPagina:true, show:false}
                   ]                      
     },
     { 

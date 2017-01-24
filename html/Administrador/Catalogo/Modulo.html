@@ -480,7 +480,7 @@
         </div>
     </div>
     
-     <!---- Modal para Agregar-editar Módulo -->
+    <!---- Modal para Agregar-editar Módulo -->
     <div class="modal fade" id="moduloModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static" >
         <br>    <br>   <br>
         <div class="modal-dialog modal-lg">
@@ -489,7 +489,7 @@
                 <div class="row">
                     <div class="col-xs-12">
                         <div class="margenModal">
-                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarModuloForma()"><span aria-hidden="true">&times;</span></button>
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="LimpiarImagenModulo()"><span aria-hidden="true">&times;</span></button>
                             <h3 class="text-center" ng-if="operacion === 'Agregar'">Agregar Módulo</h3>
                             <h3 class="text-center" ng-if="operacion === 'Editar'">Editar Módulo</h3>
                             <hr class="separador">
@@ -1181,8 +1181,14 @@
                 </div>
                 
                 <div class="modal-body">
-                    <img ng-if="!imagenSeleccionada" class="image-responsive center-block" ng-src="data:image/PNG;base64,{{nuevoModulo.Imagen}}"/> 
-                    <span ng-if="imagenSeleccionada" id="PrevisualizarImagenDetalles"></span>
+                   
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <img ng-if="!imagenSeleccionada" class="img-responsive center-block" ng-src="data:image/PNG;base64,{{nuevoModulo.Imagen}}"/> 
+                            <span ng-if="imagenSeleccionada" id="PrevisualizarImagenDetalles"></span>
+                        </div>
+                    </div>
+                    
                 </div>
             </div>
         </div>

@@ -35,8 +35,8 @@ function AgregarMaterial()
     $material = json_decode($request->getBody());
     global $app;
     
-    $sql = "INSERT INTO Material (TipoMaterialId, Nombre, CostoUnidad, Activo) 
-                            VALUES( :TipoMaterialId, :Nombre, :CostoUnidad, :Activo)";
+    $sql = "INSERT INTO Material (TipoMaterialId, Nombre, CostoUnidad, MaterialDe, Activo) 
+                            VALUES( :TipoMaterialId, :Nombre, :CostoUnidad, :MaterialDe, :Activo)";
     $db;
     $stmt;
     $materialId;
@@ -50,6 +50,7 @@ function AgregarMaterial()
         $stmt->bindParam("TipoMaterialId", $material->TipoMaterial->TipoMaterialId);
         $stmt->bindParam("Nombre", $material->Nombre);
         $stmt->bindParam("CostoUnidad", $material->CostoUnidad);
+        $stmt->bindParam("MaterialDe", $material->MaterialDe);
         $stmt->bindParam("Activo", $material->Activo);
 
         $stmt->execute();
@@ -284,7 +285,6 @@ function GetTipoMaterial()
 
     try 
     {
-
         $db = getConnection();
         $stmt = $db->query($sql);
         $response = $stmt->fetchAll(PDO::FETCH_OBJ);
@@ -306,25 +306,56 @@ function AgregarTipoMaterial()
     $request = \Slim\Slim::getInstance()->request();
     $tipoMaterial = json_decode($request->getBody());
     global $app;
-    $sql = "INSERT INTO TipoMaterial (MaterialParaId, Nombre, Activo) VALUES(:MaterialParaId, :Nombre, :Activo)";
+    $sql = "INSERT INTO TipoMaterial (Nombre, Activo, DisponibleModulo, DisponibleCubierta) VALUES(:Nombre, :Activo, :DisponibleModulo, :DisponibleCubierta)";
 
     try 
     {
         $db = getConnection();
+        $db->beginTransaction();
         $stmt = $db->prepare($sql);
-
-        $stmt->bindParam("MaterialParaId", $tipoMaterial->MaterialParaId);
+        
         $stmt->bindParam("Nombre", $tipoMaterial->Nombre);
         $stmt->bindParam("Activo", $tipoMaterial->Activo);
+        $stmt->bindParam("DisponibleModulo", $tipoMaterial->DisponibleModulo);
+        $stmt->bindParam("DisponibleCubierta", $tipoMaterial->DisponibleCubierta);
 
         $stmt->execute();
 
-        $db = null;
-        echo '[{"Estatus": "Exitoso"}]';
+        $tipoMaterialId = $db->lastInsertId();
 
     } catch(PDOException $e) 
     {
+        $db->rollBack();
         echo '[{"Estatus": "Fallido"}]';
+        $app->status(409);
+        $app->stop();
+    }
+    
+    if($tipoMaterial->DisponibleCubierta == "1")
+    {
+        $sql = "INSERT TipoMaterialPorTipoCubierta (TipoMaterialId, TipoCubiertaId) VALUES ('".$tipoMaterialId."', '".$tipoMaterial->TipoCubierta->TipoCubiertaId."')";
+        try 
+        {
+            $stmt = $db->prepare($sql);
+            $stmt->execute();
+            
+            $db->commit();
+            $db = null;
+            echo '[{"Estatus": "Exitoso"}]';
+
+        } catch(PDOException $e) 
+        {
+            echo '[{"Estatus": "Fallido"}]';
+            $db->rollBack();
+            $app->status(409);
+            $app->stop();
+        }
+    }
+    else
+    {
+        $db->commit();
+        $db = null;
+        echo '[{"Estatus": "Exitoso"}]';
     }
 }
 
@@ -334,22 +365,103 @@ function EditarTipoMaterial()
     $request = \Slim\Slim::getInstance()->request();
     $tipoMaterial = json_decode($request->getBody());
    
-    $sql = "UPDATE TipoMaterial SET MaterialParaId='".$tipoMaterial->MaterialParaId."', Nombre='".$tipoMaterial->Nombre."', Activo = '".$tipoMaterial->Activo."'  WHERE TipoMaterialID=".$tipoMaterial->TipoMaterialId."";
+    $sql = "UPDATE TipoMaterial SET DisponibleModulo='".$tipoMaterial->DisponibleModulo."', DisponibleCubierta='".$tipoMaterial->DisponibleCubierta."', Nombre='".$tipoMaterial->Nombre."', Activo = '".$tipoMaterial->Activo."'  WHERE TipoMaterialID=".$tipoMaterial->TipoMaterialId."";
     
     try 
     {
         $db = getConnection();
+        $db->beginTransaction();
         $stmt = $db->prepare($sql);
         $stmt->execute();
-        $db = null;
-
-        echo '[{"Estatus":"Exitoso"}]';
     }
     catch(PDOException $e) 
     {    
         echo '[{"Estatus": "Fallido"}]';
+        $db->rollBack();
         $app->status(409);
         $app->stop();
+    }
+
+    if($tipoMaterial->DisponibleCubierta == "1")
+    {
+        $sql = "SELECT COUNT(*) as contador FROM TipoMaterialPorTipoCubierta WHERE TipoMaterialId = ".$tipoMaterial->TipoMaterialId;
+        try 
+        {
+            $stmt = $db->prepare($sql);
+            $stmt->execute();
+            $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+        }
+        catch(PDOException $e) 
+        {   
+            echo '[{"Estatus": "Fallido"}]';
+            $db->rollBack();
+            $app->status(409);
+            $app->stop();
+        }
+        
+        if($response[0]->contador == "0")
+        {
+            $sql = "INSERT TipoMaterialPorTipoCubierta (TipoMaterialId, TipoCubiertaId) VALUES ('".$tipoMaterial->TipoMaterialId."', '".$tipoMaterial->TipoCubierta->TipoCubiertaId."')";
+            try 
+            {
+                $stmt = $db->prepare($sql);
+                $stmt->execute();
+
+                $db->commit();
+                $db = null;
+                echo '[{"Estatus":"Exitoso"}]';
+            }
+            catch(PDOException $e) 
+            {   
+                echo '[{"Estatus": "Fallido"}]';
+                $db->rollBack();
+                $app->status(409);
+                $app->stop();
+            }
+        }
+        
+        else
+        {
+            $sql = "UPDATE TipoMaterialPorTipoCubierta SET TipoCubiertaId = '".$tipoMaterial->TipoCubierta->TipoCubiertaId."' WHERE TipoMaterialId =".$tipoMaterial->TipoMaterialId;
+            try 
+            {
+                $stmt = $db->prepare($sql);
+                $stmt->execute();
+
+                $db->commit();
+                $db = null;
+                echo '[{"Estatus":"Exitoso"}]';
+            }
+            catch(PDOException $e) 
+            {   
+                echo '[{"Estatus": "Fallido"}]';
+                $db->rollBack();
+                $app->status(409);
+                $app->stop();
+            }
+        }
+    }
+    else
+    {
+        $sql = "DELETE FROM TipoMaterialPorTipoCubierta WHERE TipoMaterialId = ".$tipoMaterial->TipoMaterialId;
+        try 
+        {            
+            $stmt = $db->prepare($sql);
+            $stmt->execute();
+            
+            $db->commit();
+            $db = null;
+
+            echo '[{"Estatus":"Exitoso"}]';
+        }
+        catch(PDOException $e) 
+        {   
+            echo $e;
+            echo '[{"Estatus": "Fallido"}]';
+            $db->rollBack();
+            $app->status(409);
+            $app->stop();
+        }
     }
 }
 
@@ -380,33 +492,6 @@ function ActivarDesactivarTipoMaterial()
 }
 
 /*---------------Material para --------*/
-function GetMaterialPara()
-{
-    global $app;
-    global $session_expiration_time;
-
-    $request = \Slim\Slim::getInstance()->request();
-
-    $sql = "SELECT * FROM MaterialPara";
-
-    try 
-    {
-
-        $db = getConnection();
-        $stmt = $db->query($sql);
-        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
-        $db = null;
-
-        
-        echo json_encode($response);  
-    } 
-    catch(PDOException $e) 
-    {
-        echo($e);
-        $app->status(409);
-        $app->stop();
-    }
-}
 
 function GetTipoMaterialParaModulo()
 {
@@ -415,7 +500,7 @@ function GetTipoMaterialParaModulo()
 
     $request = \Slim\Slim::getInstance()->request();
 
-    $sql = "SELECT * FROM TipoMaterial WHERE MaterialParaId=1 AND TipoMaterialId > 0";
+    $sql = "SELECT * FROM TipoMaterial WHERE DisponibleModulo=1 AND TipoMaterialId > 0";
 
     try 
     {

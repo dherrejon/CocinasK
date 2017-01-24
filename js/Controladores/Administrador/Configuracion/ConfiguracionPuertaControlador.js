@@ -4,6 +4,7 @@ app.controller("ConfiguracionPuertaControlador", function($scope, $http, $q, CON
                             puerta:{consultar:false, agregar:false, editar:false, activar:false}, 
                             muestrario:{consultar:false, agregar:false, editar:false, activar:false}
                             };
+    
     $scope.IdentificarPermisos = function()
     {
         for(var k=0; k < $scope.usuarioLogeado.Permiso.length; k++)

@@ -104,7 +104,7 @@ app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpPro
     when('/UsuarioPerfil',{
         templateUrl: 'html/Administrador/CocinasK/UsuarioPerfil.html'
     }).
-    
+    //Configuración
     when('/ConfigurarUnidadNegocio',{
         templateUrl: 'html/Administrador/Configuracion/ConfiguracionUnidadNegocio.html'
     }).
@@ -117,7 +117,13 @@ app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpPro
     when('/ConfigurarPuerta',{
         templateUrl: 'html/Administrador/Configuracion/ConfiguracionPuerta.html'
     }).
-    
+    when('/ConfigurarGeneral',{
+        templateUrl: 'html/Administrador/Configuracion/ConfiguracionGeneral.html'
+    }).
+    when('/ConfigurarCubierta',{
+        templateUrl: 'html/Administrador/Configuracion/ConfiguracionCubierta.html'
+    }).
+    //Catálogos
     when('/Combinacion',{
         templateUrl: 'html/Administrador/Catalogo/Combinacion.html'
     }).
@@ -197,7 +203,7 @@ app.run(function($rootScope, $location, $window, $http, CONFIG, $q, datosUsuario
     $rootScope.GetEstadoSesion();                     //Cada ves que se inicializa la aplicación verifica los datos del ususario
     
     /*-----------------Expresiones Regulares--------------------------*/
-    $rootScope.erNombreGeneral = /^(([a-z ñáéíóú]|[A-Z ÑÁÉÍÓÚ]|[0-9]|\.|\+|\-|\#) ?)+$/;   //expresión regular para nombres
+    $rootScope.erNombreGeneral = /^(([a-z ñáéíóú]|[A-Z ÑÁÉÍÓÚ]|[0-9]|\.|\+|\-|\#|\[|\]) ?)+$/;   //expresión regular para nombres
     $rootScope.erTelefono = /^(\d){10}$/;                                          //expresión regular para el teléfono   // \((\d){3}\) \d{3}-\d{4}
     $rootScope.erCP = /^(\d){5}$/;                                          //expresión regular para el código postal 
     $rootScope.erEmail = /^[_a-z0-9-]+(.[_a-z0-9-]+)*@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,4})$/;   //expresion regular para correo electronico                                       

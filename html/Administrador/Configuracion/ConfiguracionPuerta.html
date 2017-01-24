@@ -465,94 +465,94 @@
                     <!-- Combinaciones -->
                     <div ng-if="pasoPuerta == 2">
                      
-                       <div class="row">
-                      
-                        <div class="col-xs-12 subtituloModal">
-                            <b>Combinaciones de Materiales</b>
-                        </div>
-                        <br><br>
-                        
-                        <div class="col-xs-12 subtituloModal" ng-if="combinacion.length == 0">
-                            <span class="recuperarPassword">No hay combinaciones dadas de alta</span>
-                        </div>
-                        
-                        <div class="col-xs-12">
-                            <div ng-repeat="combinacion in combinacionPorPuerta | unique: 'CombinacionMaterial.Nombre' | orderBy:'CombinacionMaterial.Nombre'" ng-if="combinacion.CombinacionMaterial.Activo">
-                                <button class="btn btn-block" ng-class="GetClaseDetallesCombinacion(combinacion.CombinacionMaterial.Nombre)" ng-click="MostraCominacionPorPuerta(combinacion.CombinacionMaterial.Nombre)">{{combinacion.CombinacionMaterial.Nombre}}</button>
-                                <br>
-                                
-                                <div class="table-responsive TablaModal" ng-if="mostrarCombinacionPuerta == combinacion.CombinacionMaterial.Nombre">
-                                    <table class="table table-hover">
-                                        <thead class="TituloTabla">
-                                          <tr>
-                                            <th><button class="btn botonOrdenar"><b>Componente</b></button></th>
-                                            <th><button class="btn botonOrdenar"><b>Tipo Material</b></button></th>
-                                            <th><button class="btn botonOrdenar"><b>Material</b></button></th>
-                                            <th><button class="btn botonOrdenar"><b>Grueso</b></button></th>
-                                          </tr>
-                                        </thead>
-                                        <tbody ng-repeat="componente in combinacionPorPuerta | filter:FiltrarCombinacionPorComponentePuerta | orderBy:'Componente.Nombre' track by $index">
-                                          <tr>
-                                            <td>{{componente.Componente.Nombre}}</td>
-                                            <!--- tipo material --->
-                                            <td class="dropdown">
-                                                <button class="dropdown-toggle  {{componente.clase.tipoMaterial}}" data-toggle="dropdown">
-                                                    <span>{{componente.Material.TipoMaterial.Nombre}}</span>
-                                                    <span class="caret"></span>
-                                                </button>
+                        <div class="row">
 
-                                                <ul class="dropdown-menu elemetosDropdownListModal">
-                                                    <li>
-                                                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarTipoMaterial('No Aplica', componente)">
-                                                            <span>NO APLICA</span>
-                                                        </a>
-                                                    </li>
-                                                    <li ng-repeat="tipo in tipoMaterial | orderBy:'Nombre'" ng-if="tipo.Activo">
-                                                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarTipoMaterial(tipo, componente)">
-                                                            <span>{{tipo.Nombre}}</span>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </td>
-                                            <!--- material --->
-                                            <td class="dropdown">
-                                                <button class="dropdown-toggle  {{componente.clase.material}}" data-toggle="dropdown" ng-disabled="componente.Material.TipoMaterial.Nombre.length == 0 || componente.Material.TipoMaterial.Nombre === 'No Aplica' ">
-                                                    <span>{{componente.Material.Nombre}}</span>
-                                                    <span class="caret"></span>
-                                                </button>
+                            <div class="col-xs-12 subtituloModal">
+                                <b>Combinaciones de Materiales</b>
+                            </div>
+                            <br><br>
 
-                                                <ul class="dropdown-menu elemetosDropdownListModal">
+                            <div class="col-xs-12 subtituloModal" ng-if="combinacion.length == 0">
+                                <span class="recuperarPassword">No hay combinaciones dadas de alta</span>
+                            </div>
 
-                                                    <li ng-repeat="material in material | orderBy:'Nombre' | filter:{TipoMaterial:componente.Material.TipoMaterial}:true" ng-if="material.Activo">
-                                                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarMaterial(material, componente)">
-                                                            <span>{{material.Nombre}}</span>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </td>
-                                            <!--- grueso --->
-                                            <td class="dropdown">
-                                                <button class="dropdown-toggle  {{componente.clase.grueso}}" data-toggle="dropdown" ng-disabled="componente.Material.Nombre.length == 0 || !(componente.Material.Grueso.length > 0)">
-                                                    <span>{{componente.Grueso}}</span>
-                                                    <span class="caret"></span>
-                                                </button>
+                            <div class="col-xs-12">
+                                <div ng-repeat="combinacion in combinacionPorPuerta | unique: 'CombinacionMaterial.Nombre' | orderBy:'CombinacionMaterial.Nombre'" ng-if="combinacion.CombinacionMaterial.Activo">
+                                    <button class="btn btn-block" ng-class="GetClaseDetallesCombinacion(combinacion.CombinacionMaterial.Nombre)" ng-click="MostraCominacionPorPuerta(combinacion.CombinacionMaterial.Nombre)">{{combinacion.CombinacionMaterial.Nombre}}</button>
+                                    <br>
 
-                                                <ul class="dropdown-menu elemetosDropdownListModal">
-                                                    <li ng-repeat="grueso in componente.Material.Grueso | orderBy:'grueso' " ng-if="grueso.Activo">
-                                                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarGrueso(grueso.Grueso, componente)">
-                                                            <span>{{grueso.Grueso}}</span>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </td>
-                                          </tr>
-                                        </tbody>
-                                    </table>
+                                    <div class="table-responsive TablaModal" ng-if="mostrarCombinacionPuerta == combinacion.CombinacionMaterial.Nombre">
+                                        <table class="table table-hover">
+                                            <thead class="TituloTabla">
+                                              <tr>
+                                                <th><button class="btn botonOrdenar"><b>Componente</b></button></th>
+                                                <th><button class="btn botonOrdenar"><b>Tipo Material</b></button></th>
+                                                <th><button class="btn botonOrdenar"><b>Material</b></button></th>
+                                                <th><button class="btn botonOrdenar"><b>Grueso</b></button></th>
+                                              </tr>
+                                            </thead>
+                                            <tbody ng-repeat="componente in combinacionPorPuerta | filter:FiltrarCombinacionPorComponentePuerta | orderBy:'Componente.Nombre' track by $index">
+                                              <tr>
+                                                <td>{{componente.Componente.Nombre}}</td>
+                                                <!--- tipo material --->
+                                                <td class="dropdown">
+                                                    <button class="dropdown-toggle  {{componente.clase.tipoMaterial}}" data-toggle="dropdown">
+                                                        <span>{{componente.Material.TipoMaterial.Nombre}}</span>
+                                                        <span class="caret"></span>
+                                                    </button>
+
+                                                    <ul class="dropdown-menu elemetosDropdownListModal">
+                                                        <li>
+                                                            <a  href="" class="dropdownOpcionModal" ng-click="CambiarTipoMaterial('No Aplica', componente)">
+                                                                <span>NO APLICA</span>
+                                                            </a>
+                                                        </li>
+                                                        <li ng-repeat="tipo in tipoMaterial | orderBy:'Nombre'" ng-if="tipo.Activo">
+                                                            <a  href="" class="dropdownOpcionModal" ng-click="CambiarTipoMaterial(tipo, componente)">
+                                                                <span>{{tipo.Nombre}}</span>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </td>
+                                                <!--- material --->
+                                                <td class="dropdown">
+                                                    <button class="dropdown-toggle  {{componente.clase.material}}" data-toggle="dropdown" ng-disabled="componente.Material.TipoMaterial.Nombre.length == 0 || componente.Material.TipoMaterial.Nombre === 'No Aplica' ">
+                                                        <span>{{componente.Material.Nombre}}</span>
+                                                        <span class="caret"></span>
+                                                    </button>
+
+                                                    <ul class="dropdown-menu elemetosDropdownListModal">
+
+                                                        <li ng-repeat="material in material | orderBy:'Nombre' | filter:{TipoMaterial:{TipoMaterialId:componente.Material.TipoMaterial.TipoMaterialId}}:true" ng-if="material.Activo">
+                                                            <a  href="" class="dropdownOpcionModal" ng-click="CambiarMaterial(material, componente)">
+                                                                <span>{{material.Nombre}}</span>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </td>
+                                                <!--- grueso --->
+                                                <td class="dropdown">
+                                                    <button class="dropdown-toggle  {{componente.clase.grueso}}" data-toggle="dropdown" ng-disabled="componente.Material.Nombre.length == 0 || !(componente.Material.Grueso.length > 0)">
+                                                        <span>{{componente.Grueso}}</span>
+                                                        <span class="caret"></span>
+                                                    </button>
+
+                                                    <ul class="dropdown-menu elemetosDropdownListModal">
+                                                        <li ng-repeat="grueso in componente.Material.Grueso | orderBy:'grueso' " ng-if="grueso.Activo">
+                                                            <a  href="" class="dropdownOpcionModal" ng-click="CambiarGrueso(grueso.Grueso, componente)">
+                                                                <span>{{grueso.Grueso}}</span>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </td>
+                                              </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
                                 </div>
-                                
                             </div>
                         </div>
-                    </div>
                       
                        <br><br>
 
@@ -607,7 +607,7 @@
                         </div>
                         <br><br>  
                         <div class="col-xs-12">
-                            <div ng-repeat="componente in componentePorPuerta | unique: 'NombreComponente'">
+                            <div ng-repeat="componente in componentePorPuerta | orderBy: 'NombreComponente' | unique: 'NombreComponente'">
                                 
                                 <button class="btn btn-block" ng-class="GetClaseDetallesComponente(componente.NombreComponente)" ng-click="MostraPiezaPorComponentePieza(componente.NombreComponente)">{{componente.NombreComponente}}</button>
                                 <br>

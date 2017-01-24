@@ -531,6 +531,11 @@ app.controller("CombinacionControlador", function($scope, $http, $q, CONFIG, dat
             if(data[0].Estatus == "Exito")
             {
                 $scope.mensaje = "La combinación de material se ha actualizado correctamente.";
+                
+                if(!$scope.nuevaCombinacion.Activo)
+                {
+                    $scope.nuevaCombinacion.PorDefecto = false;
+                }
             }
             else
             {

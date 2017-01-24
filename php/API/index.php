@@ -2,8 +2,6 @@
 
     require 'Slim/Slim.php';
     require 'configuration.php';
-
-    require("sendgrid-php/sendgrid-php.php");
     
     /*-----Funciones-----*/
     require 'Administrador/UnidadNegocio.php';
@@ -19,6 +17,10 @@
     require 'Administrador/Consumible.php';
     require 'Administrador/Puerta.php';
     require 'Administrador/Muestrario.php';
+    require 'Administrador/Color.php';
+    require 'Administrador/Grupo.php';
+    require 'Administrador/UbicacionCubierta.php';
+    require 'Administrador/FabricacionCubierta.php';
 
     require 'General/Direccion.php';
     require 'General/Sesion.php';
@@ -257,6 +259,9 @@
 
     /*--------------Medio Contacto-------------------------------*/
     $app->get('/GetTipoMedioContacto', $seguridad, $ChecarSesion, 'GetTipoMedioContacto');
+    $app->post('/AgregarTipoMedioContacto', $seguridad, $ChecarSesion, 'AgregarTipoMedioContacto');
+    $app->put('/EditarTipoMedioContacto', $seguridad, $ChecarSesion, 'EditarTipoMedioContacto');
+    $app->post('/ActivarDesactivarTipoMedioContacto', $seguridad, $ChecarSesion, 'ActivarDesactivarTipoMedioContacto');
 
     /*------------------Permiso-------------------*/
     $app->get('/GetPermiso', $seguridad, $ChecarSesion, 'GetPermiso');
@@ -308,7 +313,6 @@
     $app->post('/ActivarDesactivarTipoMaterial', $seguridad, $ChecarSesion, 'ActivarDesactivarTipoMaterial');
 
     /*------------------------Material Para----------------------------*/
-    $app->get('/GetMaterialPara', $seguridad, $ChecarSesion, 'GetMaterialPara');
     $app->get('/GetTipoMaterialParaModulo', $seguridad, $ChecarSesion, 'GetTipoMaterialParaModulo');
 
     /*------------------------ Grueso Material ----------------------------*/
@@ -359,6 +363,37 @@
     $app->get('/GetBug', $seguridad, $ChecarSesion, 'GetBug');
     $app->post('/AgregarBug', $seguridad, $ChecarSesion, 'AgregarBug');
     $app->put('/ResolverBug', $seguridad, $ChecarSesion, 'ResolverBug');
+
+    /*---------------------- Color -------------------------------*/
+    $app->get('/GetColor', $seguridad, $ChecarSesion, 'GetColor');
+    $app->post('/AgregarColor', $seguridad, $ChecarSesion, 'AgregarColor');
+    $app->put('/EditarColor', $seguridad, $ChecarSesion, 'EditarColor');
+    $app->post('/ActivarDesactivarColor', $seguridad, $ChecarSesion, 'ActivarDesactivarColor');
+
+    $app->post('/GuardarImagenColor/:id', $seguridad, $ChecarSesion, 'GuardarImagenColor');
+
+    /*-------------------  Grupo ----------------------------------*/
+    $app->post('/GetGrupo', $seguridad, $ChecarSesion, 'GetGrupo');
+    $app->post('/ActivarDesactivarGrupo', $seguridad, $ChecarSesion, 'ActivarDesactivarGrupo');
+
+    $app->post('/AgregarGrupoColorCubierta', $seguridad, $ChecarSesion, 'AgregarGrupoColorCubierta');
+    $app->put('/EditarGrupoColorCubierta', $seguridad, $ChecarSesion, 'EditarGrupoColorCubierta');
+    $app->post('/GetGrupoPorColor', $seguridad, $ChecarSesion, 'GetGrupoPorColor');
+
+    /*----------------- Get Fabricacion Cubierta -----------------------------*/
+    $app->get('/GetFabricacionCubierta', $seguridad, $ChecarSesion, 'GetFabricacionCubierta');
+    $app->post('/AgregarFabricacionCubierta', $seguridad, $ChecarSesion, 'AgregarFabricacionCubierta');
+    $app->put('/EditarFabricacionCubierta', $seguridad, $ChecarSesion, 'EditarFabricacionCubierta');
+    $app->post('/ActivarDesactivarFabricacionCubierta', $seguridad, $ChecarSesion, 'ActivarDesactivarFabricacionCubierta');
+
+    $app->post('/GetConsumiblePorFabricacion', $seguridad, $ChecarSesion, 'GetConsumiblePorFabricacion');
+
+    /*----------------- Ubicación Cubierta --------------------*/
+    $app->get('/GetUbicacionCubierta', $seguridad, $ChecarSesion, 'GetUbicacionCubierta');
+    $app->post('/ActivarDesactivarUbicacionCubierta', $seguridad, $ChecarSesion, 'ActivarDesactivarUbicacionCubierta');
+
+    $app->post('/GetDatosUbicacion', $seguridad, $ChecarSesion, 'GetDatosUbicacion');
+    $app->put('/EditarUbicacionFabricacionTipoCubierta', $seguridad, $ChecarSesion, 'EditarUbicacionFabricacionTipoCubierta');
     
 
     $app->run(); 
