@@ -1,13 +1,13 @@
 <?php
 
-function GetColaborador()
+function GetCubierta()
 {
     global $app;
     global $session_expiration_time;
 
     $request = \Slim\Slim::getInstance()->request();
 
-    $sql = "SELECT * FROM ColaboradorVista";
+    $sql = "SELECT * FROM CubiertaVista";
 
     try 
     {
@@ -22,299 +22,328 @@ function GetColaborador()
     } 
     catch(PDOException $e) 
     {
-        echo($e);
+        echo '[{"Estatus": "Fallido"}]';
+        //echo($e);
         $app->status(409);
         $app->stop();
     }
 }
 
-function AgregarColaborador()
+function AgregarCubierta()
 {
     $request = \Slim\Slim::getInstance()->request();
-    $nuevoColaborador = json_decode($request->getBody());
+    $cubierta = json_decode($request->getBody());
     global $app;
-    $sql = "INSERT INTO Colaborador (Nombre, PrimerApellido, SegundoApellido, UnidadNegocioId, PaisId, Domicilio, Codigo, Estado, Municipio, Ciudad, Colonia, Activo) 
-                            VALUES(:Nombre, :PrimerApellido, :SegundoApellido, :UnidadNegocioId, :PaisId, :Domicilio, :Codigo, :Estado, :Municipio, :Ciudad, :Colonia, :Activo)";
+    
+    $db;
+    $stmt;
+    
+    $sql;
+    
+    if($cubierta->NuevoMaterial)
+    {
+        $sql = "INSERT INTO Material (TipoMaterialId, Nombre, CostoUnidad, MaterialDe, Activo) 
+                            VALUES( ".$cubierta->Material->TipoMaterial->TipoMaterialId.", '".$cubierta->Material->Nombre."', 0, 'Cubierta', ".$cubierta->Material->Activo.")";
+        try 
+        {
+            $db = getConnection();
+            $db->beginTransaction();
+            $stmt = $db->prepare($sql);
+
+            $stmt->execute();
+            
+            $cubierta->Material->MaterialId = $db->lastInsertId();
+        }
+        catch(PDOException $e) 
+        {
+            //echo $e;
+            echo '[{"Estatus": "Fallido"}]';
+            $db->rollBack();
+            $app->status(409);
+            $app->stop();
+        }
+    }
+    
+    $sql = "INSERT INTO DatosCubierta (MaterialId, TipoCubiertaId, Margen, Desperdicio) 
+                            VALUES( :MaterialId, :TipoCubiertaId, :Margen, :Desperdicio)";
+    try 
+    {
+        if(!$cubierta->NuevoMaterial)
+        {
+            $db = getConnection();
+            $db->beginTransaction();
+        }
+        $stmt = $db->prepare($sql);
+    
+        $stmt->bindParam("MaterialId", $cubierta->Material->MaterialId);
+        $stmt->bindParam("TipoCubiertaId", $cubierta->TipoCubierta->TipoCubiertaId);
+        $stmt->bindParam("Margen", $cubierta->Margen);
+        $stmt->bindParam("Desperdicio", $cubierta->Desperdicio);
+
+        $stmt->execute();
+    }
+    catch(PDOException $e) 
+    {
+        //echo $e;
+        echo '[{"Estatus": "Fallido"}]';
+        $db->rollBack();
+        $app->status(409);
+        $app->stop();
+    }
+    
+    
+    $numeroUbicacion = count($cubierta->Ubicacion);
+    if($cubierta->TipoCubierta->TipoCubiertaId == "1")
+    {
+        for($k=0; $k<$numeroUbicacion; $k++)
+        {
+            if($cubierta->Ubicacion[$k]->Activo)
+            {
+                $sql = "INSERT INTO MaterialPorUbicacion (MaterialId, UbicacionCubiertaId) VALUES
+                        (".$cubierta->Material->MaterialId.", ".$cubierta->Ubicacion[$k]->UbicacionCubiertaId.")";
+                try 
+                {
+                    $stmt = $db->prepare($sql);
+                    $stmt->execute();
+                }
+                catch(PDOException $e) 
+                {
+                    //echo $e;
+                    echo '[{"Estatus": "Fallido"}]';
+                    $db->rollBack();
+                    $app->status(409);
+                    $app->stop();
+                }
+            }
+        }
+    }
+
+    $numeroGrupo = count($cubierta->Color);
+        
+    if($numeroGrupo > 0)
+    {
+        $sql = "INSERT INTO ColorPorMaterialCubierta (MaterialId, GrupoId, CostoUnidad, PorDefecto) VALUES";
+
+        for($k=0; $k<$numeroGrupo; $k++)
+        {
+            $sql .= " (".$cubierta->Material->MaterialId.", ".$cubierta->Color[$k]->Grupo->GrupoId.",  ".$cubierta->Color[$k]->CostoUnidad.", ".$cubierta->Color[$k]->PorDefecto."),";
+        }
+
+        $sql = rtrim($sql,",");
+        
+        try 
+        {
+            $stmt = $db->prepare($sql);
+            $stmt->execute();
+            
+            $db->commit();
+            $db = null; 
+            
+            echo '[{"Estatus": "Exitoso"}]';
+        } 
+        catch(PDOException $e) 
+        {
+            //echo $e;
+            echo '[{"Estatus": "Fallido"}]';
+            $db->rollBack();
+            $app->status(409);
+            $app->stop();
+        }
+    }
+    
+    else
+    {
+        echo '[{"Estatus": "Exitoso"}]';
+        $db->commit();
+        $db = null; 
+    }
+}
+
+function EditarCubierta()
+{
+    $request = \Slim\Slim::getInstance()->request();
+    $cubierta = json_decode($request->getBody());
+    global $app;
+    
+    $sql = "UPDATE DatosCubierta SET Margen='".$cubierta->Margen."', Desperdicio='".$cubierta->Desperdicio."' WHERE MaterialId=".$cubierta->Material->MaterialId."";
 
     $db;
     $stmt;
-    $colaboradorId;
-
+    
     try 
     {
         $db = getConnection();
         $db->beginTransaction();
         $stmt = $db->prepare($sql);
-
-        $stmt->bindParam("Nombre", $nuevoColaborador->colaborador->Nombre);
-        $stmt->bindParam("PrimerApellido", $nuevoColaborador->colaborador->PrimerApellido);
-        $stmt->bindParam("SegundoApellido", $nuevoColaborador->colaborador->SegundoApellido);
-        $stmt->bindParam("UnidadNegocioId", $nuevoColaborador->colaborador->UnidadNegocioId);
-        $stmt->bindParam("PaisId", $nuevoColaborador->colaborador->PaisId);
-        $stmt->bindParam("Domicilio", $nuevoColaborador->colaborador->Domicilio);
-        $stmt->bindParam("Codigo", $nuevoColaborador->colaborador->Codigo);
-        $stmt->bindParam("Estado", $nuevoColaborador->colaborador->Estado);
-        $stmt->bindParam("Municipio", $nuevoColaborador->colaborador->Municipio);
-        $stmt->bindParam("Ciudad", $nuevoColaborador->colaborador->Ciudad);
-        $stmt->bindParam("Colonia", $nuevoColaborador->colaborador->Colonia);
-        $stmt->bindParam("Activo", $nuevoColaborador->colaborador->Activo);
-
         $stmt->execute();
-        
-        $colaboradorId = $db->lastInsertId();
-
-        //$db = null;
-        //echo '[{"Estatus": "Exitoso"}]';
-
-    } catch(PDOException $e) 
+    }
+    catch(PDOException $e) 
     {
+        echo '[ { "Estatus": "Fallo" } ]';
         //echo $e;
         $db->rollBack();
         $app->status(409);
         $app->stop();
-        echo '[{"Estatus": "Fallido"}]';
     }
-
-    $numeroContacto = count($nuevoColaborador->contacto);
     
-    if($numeroContacto > 0)
-    {
-        $sql = "INSERT INTO ContactoColaborador (TipoMedioContactoId, Contacto, ColaboradorId) VALUES";
-
-        for($k=0; $k<$numeroContacto; $k++)
-        {
-            $sql .= " (".$nuevoColaborador->contacto[$k]->TipoMedioContactoId.", '".$nuevoColaborador->contacto[$k]->Contacto."', ".$colaboradorId ."),";
-        }
-
-        $sql = rtrim($sql,",");
-
-        try 
-        {
-            $stmt = $db->prepare($sql);
-            $stmt->execute();
-
-            $db->commit();
-            $db = null; 
-
-            echo '[{"Estatus":"Exitoso"}, {"ColaboradorId":"'.$colaboradorId.'"}]';
-        } catch(PDOException $e) 
-        {
-            $db->rollBack();
-            $app->status(409);
-            $app->stop();
-            echo '[{"Estatus": "Fallido"}]';
-        }
-    }
-    else
-    {
-        $db->commit();
-        $db = null; 
-
-        echo '[{"Estatus":"Exitoso"}]';
-    }
-}
-
-function EditarColaborador()
-{
-    global $app;
-    $request = \Slim\Slim::getInstance()->request();
-    $nuevoColaborador = json_decode($request->getBody());
-   
-    $sql = "UPDATE Colaborador SET Nombre='".$nuevoColaborador->colaborador->Nombre."', PrimerApellido='".$nuevoColaborador->colaborador->PrimerApellido."', SegundoApellido='".$nuevoColaborador->colaborador->SegundoApellido."',
-    PaisId='".$nuevoColaborador->colaborador->PaisId."', Domicilio='".$nuevoColaborador->colaborador->Domicilio."', Codigo='".$nuevoColaborador->colaborador->Codigo."', Estado='".$nuevoColaborador->colaborador->Estado."', Municipio='".$nuevoColaborador->colaborador->Municipio."',
-    Ciudad='".$nuevoColaborador->colaborador->Ciudad."', Colonia='".$nuevoColaborador->colaborador->Colonia."', UnidadNegocioId='".$nuevoColaborador->colaborador->UnidadNegocioId."', Activo = '".$nuevoColaborador->colaborador->Activo."'  WHERE ColaboradorId=".$nuevoColaborador->colaborador->ColaboradorId."";
-    
-    $db;
-    $stmt;
-    
+    $sql = "DELETE FROM MaterialPorUbicacion WHERE MaterialId=".$cubierta->Material->MaterialId;
     try 
     {
-        $db = getConnection();
-        $db->beginTransaction();
-        $stmt = $db->prepare($sql);
-        $stmt->execute();
-    }
+        $stmt = $db->prepare($sql); 
+        $stmt->execute(); 
+        
+    } 
     catch(PDOException $e) 
     {
-        echo '[{"Estatus": "Fallido"}]';
+        echo '[ { "Estatus": "Fallo" } ]';
+        //echo $e;
+        $db->rollBack();
         $app->status(409);
         $app->stop();
     }
     
-    $numeroContacto = count($nuevoColaborador->contacto);
-    
-    if($numeroContacto > 0)
-    {
-        $sql = "INSERT INTO ContactoColaborador (TipoMedioContactoId, Contacto, ColaboradorId) VALUES";
-        $colaboradorId = $nuevoColaborador->colaborador->ColaboradorId;
-
-        for($k=0; $k<$numeroContacto; $k++)
-        {
-            $sql .= " (".$nuevoColaborador->contacto[$k]->TipoMedioContactoId.", '".$nuevoColaborador->contacto[$k]->Contacto."', ".$colaboradorId ."),";
-        }
-
-        $sql = rtrim($sql,",");
-
-        try 
-        {
-            $stmt = $db->prepare($sql);
-            $stmt->execute();
-
-            $db->commit();
-            $db = null; 
-
-            echo '[{"Estatus":"Exitoso"}]';
-        } catch(PDOException $e) 
-        {
-            $db->rollBack();
-            $app->status(409);
-            $app->stop();
-            echo '[{"Estatus": "Fallido"}]';
-        }
-    }
-    else
-    {
-        $db->commit();
-        $db = null; 
-
-        echo '[{"Estatus":"Exitoso"}]';
-    }
-}
-
-function ActivarDesactivarColaborador()
-{
-    global $app;
-    $request = \Slim\Slim::getInstance()->request();
-    $nuevoColaborador = json_decode($request->getBody());
-
-    $sql = "UPDATE Colaborador SET Activo ='".$nuevoColaborador[1]."' WHERE ColaboradorId='".$nuevoColaborador[0]."'";
-    $db;
-    $stmt;
+    $sql = "DELETE FROM ColorPorMaterialCubierta WHERE MaterialId=".$cubierta->Material->MaterialId;
     try 
     {
-        $db = getConnection();
-        $db->beginTransaction();
-        $stmt = $db->prepare($sql);
-        $stmt = $db->query($sql);
-        $stmt->execute();
-    }
+        $stmt = $db->prepare($sql); 
+        $stmt->execute(); 
+        
+    } 
     catch(PDOException $e) 
     {
+        echo '[ { "Estatus": "Fallo" } ]';
+        //echo $e;
+        $db->rollBack();
         $app->status(409);
         $app->stop();
     }
-    
-    if($nuevoColaborador[2] != null)
-    {
-        $sql = "UPDATE Usuario SET Activo = '".$nuevoColaborador[3]."' WHERE UsuarioId='".$nuevoColaborador[2]."'";
 
+    if($cubierta->TipoCubierta->TipoCubiertaId == "1")
+    {
+        $numeroUbicacion = count($cubierta->Ubicacion);
+        for($k=0; $k<$numeroUbicacion; $k++)
+        {
+            if($cubierta->Ubicacion[$k]->Activo)
+            {
+                $sql = "INSERT INTO MaterialPorUbicacion (MaterialId, UbicacionCubiertaId) VALUES
+                        (".$cubierta->Material->MaterialId.", ".$cubierta->Ubicacion[$k]->UbicacionCubiertaId.")";
+                try 
+                {
+                    $stmt = $db->prepare($sql);
+                    $stmt->execute();
+                }
+                catch(PDOException $e) 
+                {
+                    //echo $e;
+                    echo '[{"Estatus": "Fallido"}]';
+                    $db->rollBack();
+                    $app->status(409);
+                    $app->stop();
+                }
+            }
+        }
+    }
+
+    $numeroGrupo = count($cubierta->Color);
+        
+    if($numeroGrupo > 0)
+    {
+        $sql = "INSERT INTO ColorPorMaterialCubierta (MaterialId, GrupoId, CostoUnidad, PorDefecto) VALUES";
+
+        for($k=0; $k<$numeroGrupo; $k++)
+        {
+            $sql .= " (".$cubierta->Material->MaterialId.", ".$cubierta->Color[$k]->Grupo->GrupoId.",  ".$cubierta->Color[$k]->CostoUnidad.", ".$cubierta->Color[$k]->PorDefecto."),";
+        }
+
+        $sql = rtrim($sql,",");
+        
         try 
         {
             $stmt = $db->prepare($sql);
             $stmt->execute();
-
+            
             $db->commit();
-            $db = null;     
-
-             echo '[{"Estatus": "Exito"}]';
-        } catch(PDOException $e) 
+            $db = null; 
+            
+            echo '[{"Estatus": "Exitoso"}]';
+        } 
+        catch(PDOException $e) 
         {
+            //echo $e;
             echo '[{"Estatus": "Fallido"}]';
             $db->rollBack();
             $app->status(409);
             $app->stop();
         }
     }
+    
     else
     {
+        echo '[{"Estatus": "Exitoso"}]';
         $db->commit();
-        $db = null;     
-        echo '[{"Estatus": "Exito"}]';
+        $db = null; 
     }
+    
 }
 
-function GetContactoColaborador()
+/*--------------- datos de la cubierta ----------------------*/
+function GetCubiertaUbicacion()
 {
     global $app;
     global $session_expiration_time;
 
     $request = \Slim\Slim::getInstance()->request();
-    $colaboradorId = json_decode($request->getBody());
+    $materialId = json_decode($request->getBody());
     
     
-    $sql = "SELECT * FROM ContactoColaboradorVista WHERE ColaboradorId = '".$colaboradorId[0]."'";
+    $sql = "SELECT UbicacionCubiertaId FROM MaterialPorUbicacion WHERE MaterialId ='".$materialId[0]."'";
     
     try 
     {
-
         $db = getConnection();
         $stmt = $db->query($sql);
         $response = $stmt->fetchAll(PDO::FETCH_OBJ);
         $db = null;
         
-        echo '[ { "Estatus": "Exito"}, {"Contacto":'.json_encode($response).'} ]';  
+        echo json_encode($response);  
     } 
     catch(PDOException $e) 
     {
+        //echo $e;
         echo '[ { "Estatus": "Fallo" } ]';
-        //$app->status(409);
+        $app->status(409);
         $app->stop();
     }
 }
 
-function DeleteContactoColaborador() 
+function GetGrupoColorCubierta()
 {
-    //echo '[ { "Estatus": "Fallo" } ]';
     global $app;
     global $session_expiration_time;
-    
-    $request = \Slim\Slim::getInstance()->request();
-    $id = json_decode($request->getBody());
 
-    $sql = "DELETE FROM ContactoColaborador WHERE MedioContactoColaboradorId=".$id;
+    $request = \Slim\Slim::getInstance()->request();
+    $materialId = json_decode($request->getBody());
+    
+    
+    $sql = "SELECT * FROM ColorPorMaterialCubiertaVista WHERE MaterialId ='".$materialId[0]."'";
+    
     try 
     {
         $db = getConnection();
-        $stmt = $db->prepare($sql); 
-        $stmt->execute(); 
+        $stmt = $db->query($sql);
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
         $db = null;
         
-        echo '[ { "Estatus": "Exito" } ]';
-        //echo '[{"rowcount":'. $stmt->rowCount() .'}]';
+        echo json_encode($response);  
     } 
     catch(PDOException $e) 
     {
+        //echo $e;
         echo '[ { "Estatus": "Fallo" } ]';
         $app->status(409);
         $app->stop();
     }
 }
-
-function EditarContactoColabordor()
-{
-    global $app;
-    $request = \Slim\Slim::getInstance()->request();
-    $nuevoContacto = json_decode($request->getBody());
-   
-    $sql = "UPDATE ContactoColaborador SET TipoMedioContactoId='".$nuevoContacto->TipoMedioContactoId."', Contacto='".$nuevoContacto->Contacto."'   WHERE MedioContactoColaboradorId=".$nuevoContacto->MedioContactoColaboradorId."";
-    
-    try 
-    {
-        $db = getConnection();
-        $stmt = $db->prepare($sql);
-        $stmt->execute();
-        $db = null;
-        //if($stmt->rowCount() == 1)
-        echo '[{"Estatus":"Exitoso"}]';
-    }
-    catch(PDOException $e) {
-        echo ($e);
-        echo '[{"Estatus":"Fallo"}]';
-        $app->status(409);
-        $app->stop();
-    }
-}
-
 
 
 ?>

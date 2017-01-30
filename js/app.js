@@ -130,6 +130,9 @@ app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpPro
     when('/Modulo',{
         templateUrl: 'html/Administrador/Catalogo/Modulo.html'
     }).
+    when('/Cubierta',{
+        templateUrl: 'html/Administrador/Catalogo/Cubierta.html'
+    }).
     
     when('/Ejecutivo',{
         templateUrl: 'html/Ejecutivo/Ejecutivo.html'
@@ -236,6 +239,7 @@ app.run(function($rootScope, $location, $window, $http, CONFIG, $q, datosUsuario
         $rootScope.anchoPantalla = $( window ).width();
         $rootScope.$apply();       
     });
+
 });
 
 //identificas cuando los datos del usuario cambian

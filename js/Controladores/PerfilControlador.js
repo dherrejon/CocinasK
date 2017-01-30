@@ -144,6 +144,10 @@ function SetPerfil(perfil, $rootScope, $window, $http, CONFIG, usuario)
             {
                 $rootScope.barraNavegacionOpciones[1].elemento[1].show = true;
             }
+            else if(usuario.Permiso[k] == "ConCubConsultar")
+            {
+                $rootScope.barraNavegacionOpciones[1].elemento[2].show = true;
+            }
             /*Configurar*/
             else if(usuario.Permiso[k] == "ConCmpConsultar" || usuario.Permiso[k] == "ConPieConsultar" || usuario.Permiso[k] == "ConCnsConsultar" || usuario.Permiso[k] == "ConTMdConsultar")
             {

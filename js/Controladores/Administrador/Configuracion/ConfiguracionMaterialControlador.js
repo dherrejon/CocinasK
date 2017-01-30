@@ -594,7 +594,7 @@ app.controller("ConfiguaracionMaterial", function($scope, $http, $q, CONFIG, $ro
         
         for(var k=0; k<$scope.material.length; k++)
         {
-            if($scope.material[k].Nombre.toLowerCase() == $scope.nuevoMaterial.Nombre.toLowerCase() && $scope.material[k].MaterialId != $scope.nuevoMaterial.MaterialId && $scope.material[k].TipoMaterial.TipoMaterialId == $scope.nuevoMaterial.TipoMaterial.TipoMaterialId)
+            if($scope.material[k].Nombre.toLowerCase() == $scope.nuevoMaterial.Nombre.toLowerCase() && $scope.material[k].MaterialId != $scope.nuevoMaterial.MaterialId && $scope.material[k].TipoMaterial.TipoMaterialId != $scope.nuevoMaterial.TipoMaterial.TipoMaterialId)
             {
                 $scope.claseMaterial.nombre = "entradaError";
                 $scope.mensajeError[$scope.mensajeError.length] = "*El material " + $scope.nuevoMaterial.TipoMaterial.Nombre + " - " + $scope.nuevoMaterial.Nombre + " ya existe.";
@@ -914,14 +914,18 @@ function SetMaterialCompleto(material)
     nuevoMaterial.DisponibleCubierta = material.DisponibleCubierta;
     nuevoMaterial.DisponibleModulo = material.DisponibleModulo;
     nuevoMaterial.Nombre = material.Nombre;
+    nuevoMaterial.MaterialId = material.MaterialId;
     nuevoMaterial.CostoUnidad = material.CostoUnidad;
     nuevoMaterial.TipoMaterial = SetTipoMaterial(material.TipoMaterial);
     nuevoMaterial.Activo = material.Activo;
     nuevoMaterial.MaterialDe = material.MaterialDe;
     
-    for(var k=0; k<material.grueso.length; k++)
+    if(material.grueso != null)
     {
-        nuevoMaterial.grueso[k] = material.grueso[k];
+        for(var k=0; k<material.grueso.length; k++)
+        {
+            nuevoMaterial.grueso[k] = material.grueso[k];
+        }
     }
     
     return nuevoMaterial;

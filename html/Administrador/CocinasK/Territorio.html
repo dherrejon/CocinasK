@@ -193,15 +193,13 @@
                     <h4>Datos del Territorio</h4><br>
                 
                     <div class="row">
-                        <div class="col-xs-12">
+                        <div class="col-sm-6">
                             <div class="subrayado">
                             <label>Nombre</label><br>
                             <span class="textoModal">{{nuevoTerritorio.Nombre}}</span>
                             </div>
                         </div>
-                    </div>
-                    <br>
-                    <div class="row">
+                        <span class="hidden-sm hidden-md hidden-lg"><br></span>
                         <div class="col-sm-6">
                             <div class="subrayado">
                             <label>Margen</label><br>
@@ -210,6 +208,7 @@
                         </div>
                     </div>
                     <br>
+                    
                     <div class="row" ng-if="plaza.length > 0">
                         <div class="col-xs-12">
                             <h4>Plazas</h4>

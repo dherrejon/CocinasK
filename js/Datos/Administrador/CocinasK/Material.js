@@ -533,4 +533,54 @@ function GetTipoMaterialParaModulos($http, $q, CONFIG)
      }); 
     return q.promise;
 }
+
+//obtiene los tipos de módulos
+function GetTipoMaterialParaCubierta($http, $q, CONFIG)     
+{
+    var q = $q.defer();
+
+    $http({      
+          method: 'GET',
+          url: CONFIG.APIURL + '/GetTipoMaterialParaCubierta',
+
+      }).success(function(data)
+        {
+            var tipoMaterial = []; 
+            
+            for(var k=0; k<data.length; k++)
+            {
+                tipoMaterial[k] = new TipoMaterial();
+                tipoMaterial[k] = SetTipoMaterial(data[k]);
+            }
+        
+            q.resolve(tipoMaterial);  
+        }).error(function(data, status){
+            q.resolve(status);
+     }); 
+    return q.promise;
+}
+
+function GetMaterialCubierta($http, $q, CONFIG)     
+{
+    var q = $q.defer();
+
+    $http({      
+          method: 'GET',
+          url: CONFIG.APIURL + '/GetMaterialCubierta',
+
+      }).success(function(data)
+        {
+            var material = []; 
+
+            for(var k=0; k<data.length; k++)
+            {
+                material[k] = new Material();
+                material[k] = SetMaterial(data[k]);
+            }
+            q.resolve(material);  
+        }).error(function(data, status){
+            q.resolve(status);
+     }); 
+    return q.promise;
+}
  

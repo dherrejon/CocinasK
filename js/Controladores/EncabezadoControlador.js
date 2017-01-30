@@ -343,6 +343,10 @@ function SetPerfilNombre($rootScope, usuario)
             {
                 $rootScope.barraNavegacionOpciones[1].elemento[1].show = true;
             }
+            else if(usuario.Permiso[k] == "ConCubConsultar")
+            {
+                $rootScope.barraNavegacionOpciones[1].elemento[2].show = true;
+            }
             /*Configuración*/
             else if(usuario.Permiso[k] == "ConCmpConsultar" || usuario.Permiso[k] == "ConPieConsultar" || usuario.Permiso[k] == "ConCnsConsultar" || usuario.Permiso[k] == "ConTMdConsultar")
             {
@@ -390,7 +394,8 @@ var OpcionAdministrador =
         Opcion: {texto:"Catálogos", id:"catalogos"},
         elemento: [     
                         { referencia: "#Modulo", texto:"Módulos", nuevaPagina:true, show:false},
-                        { referencia: "#Combinacion", texto:"Combinación de Materiales", nuevaPagina:true, show:false} 
+                        { referencia: "#Combinacion", texto:"Combinación de Materiales", nuevaPagina:true, show:false},
+                        { referencia: "#Cubierta", texto:"Cubiertas", nuevaPagina:true, show:false}
                   ]                      
     },
     { 

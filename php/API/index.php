@@ -21,6 +21,7 @@
     require 'Administrador/Grupo.php';
     require 'Administrador/UbicacionCubierta.php';
     require 'Administrador/FabricacionCubierta.php';
+    require 'Administrador/Cubierta.php';
 
     require 'General/Direccion.php';
     require 'General/Sesion.php';
@@ -314,6 +315,9 @@
 
     /*------------------------Material Para----------------------------*/
     $app->get('/GetTipoMaterialParaModulo', $seguridad, $ChecarSesion, 'GetTipoMaterialParaModulo');
+    $app->get('/GetTipoMaterialParaCubierta', $seguridad, $ChecarSesion, 'GetTipoMaterialParaCubierta');
+
+    $app->get('/GetMaterialCubierta', $seguridad, $ChecarSesion, 'GetMaterialCubierta');
 
     /*------------------------ Grueso Material ----------------------------*/
     $app->get('/GetGruesoMaterial', $seguridad, $ChecarSesion, 'GetGruesoMaterial');
@@ -394,7 +398,15 @@
 
     $app->post('/GetDatosUbicacion', $seguridad, $ChecarSesion, 'GetDatosUbicacion');
     $app->put('/EditarUbicacionFabricacionTipoCubierta', $seguridad, $ChecarSesion, 'EditarUbicacionFabricacionTipoCubierta');
-    
+
+    /*---------------- Cubierta ------------------------*/
+    $app->get('/GetCubierta', $seguridad, $ChecarSesion, 'GetCubierta');
+    $app->post('/AgregarCubierta', $seguridad, $ChecarSesion, 'AgregarCubierta');
+    $app->put('/EditarCubierta', $seguridad, $ChecarSesion, 'EditarCubierta');
+
+    $app->post('/GetCubiertaUbicacion', $seguridad, $ChecarSesion, 'GetCubiertaUbicacion');
+    $app->post('/GetGrupoColorCubierta', $seguridad, $ChecarSesion, 'GetGrupoColorCubierta');
+
 
     $app->run(); 
 
