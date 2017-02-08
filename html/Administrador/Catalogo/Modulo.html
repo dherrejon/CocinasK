@@ -20,7 +20,8 @@
                         <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('Nombre')"><b>Nombre </b><b ng-if="ordenarPor === 'Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-Nombre'" class="fa fa-arrow-down"></b></button></th>
                         <th><button class="btn botonFalso"><b>Detalles</b></button></th>
                         <th><button class="btn botonFalso"><b>Editar</b></button></th>
-                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('ActivoN')"><b>Activo</b> <b ng-if="ordenarPor === 'ActivoN'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-ActivoN'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonFalso"><b>Activo</b></button></th>
+                        <!--<th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('ActivoN')"><b>Activo</b> <b ng-if="ordenarPor === 'ActivoN'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-ActivoN'" class="fa fa-arrow-down"></b></button></th>-->
                       </tr>
                     </thead>
                     <tbody>
@@ -28,20 +29,20 @@
                         <td>{{modulo.TipoModulo.Nombre}}</td>
                         <td>{{modulo.Nombre}}</td>
                           
-                        <td>
+                        <td class="text-center">
                             <a  class="BotonOperacion" href="" data-toggle="modal" data-target="#DetallesModulo" ng-click="MostarDetalles(modulo)">
                                 <span class="fa fa-eye fa-2x"></span>
                             </a>
                         </td>
 
-                        <td>
+                        <td class="text-center"> 
                             <a  ng-if="permisoUsuario.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirModuloModal('Editar', modulo)">
                                 <span class="fa fa-pencil fa-2x"></span>
                             </a>
                             <span ng-if="!permisoUsuario.editar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
                         </td>
 
-                        <td>
+                        <td class="text-center">
                             <div class="checkbox">
                                 <label>
                                     <input ng-disabled="!permisoUsuario.activar" ng-model="modulo.Activo" type="checkbox" value="" ng-click="CambiarEstatusActivo(modulo, 'modulo')">
@@ -313,19 +314,19 @@
                                 <table class="table table-hover">
                                     <thead class="TituloTabla">
                                       <tr>
-                                        <th><button class="btn botonOrdenar"><b>Ancho</b></button></th>
-                                        <th><button class="btn botonOrdenar"><b>Alto</b></button></th>
-                                        <th><button class="btn botonOrdenar"><b>Profundo</b></button></th>
-                                        <th><button class="btn botonOrdenar"><b>Activo</b></button></th>
+                                        <th><button class="btn botonFalso"><b>Ancho</b></button></th>
+                                        <th><button class="btn botonFalso"><b>Alto</b></button></th>
+                                        <th><button class="btn botonFalso"><b>Profundo</b></button></th>
+                                        <th><button class="btn botonFalso"><b>Activo</b></button></th>
                                       </tr>
                                     </thead>
                                     <tbody ng-repeat="medida in medidaModulo | orderBy:['Ancho']">
                                       <tr>
-                                        <td>{{medida.Ancho}}</td>
-                                        <td>{{medida.Alto}}</td>
-                                        <td>{{medida.Profundo}}</td>
+                                        <td class="text-center">{{medida.Ancho}}</td>
+                                        <td class="text-center">{{medida.Alto}}</td>
+                                        <td class="text-center">{{medida.Profundo}}</td>
                                         
-                                         <td>
+                                         <td class="text-center">
                                             <div class="checkbox">
                                                 <label>
                                                     <input ng-model="medida.Activo" type="checkbox" value="" ng-click="CambiarEstatusActivo(medida, 'medida')">
@@ -355,15 +356,15 @@
                                     <thead class="TituloTabla">
                                       <tr>
                                         <th><button class="btn botonOrdenar"><b>Nombre</b></button></th>
-                                        <th><button class="btn botonOrdenar"><b>Cantidad</b></button></th>
-                                        <th><button class="btn botonOrdenar"><b>Total</b></button></th>
+                                        <th><button class="btn botonFalso"><b>Cantidad</b></button></th>
+                                        <th><button class="btn botonFalso"><b>Total</b></button></th>
                                       </tr>
                                     </thead>
                                     <tbody ng-repeat="consumible in consumibleModulo | orderBy:['Consumible.Nombre']">
                                       <tr>
                                         <td>{{consumible.Consumible.Nombre}}</td>
-                                        <td>{{consumible.Cantidad}}</td>
-                                        <td>{{consumible.Cantidad * consumible.Consumible.Costo}}</td>
+                                        <td class="text-center">{{consumible.Cantidad}}</td>
+                                        <td class="text-center">${{consumible.Cantidad * consumible.Consumible.Costo}}</td>
                                       </tr>
                                     </tbody>
                                 </table>
@@ -385,13 +386,13 @@
                                     <thead class="TituloTabla">
                                       <tr>
                                         <th><button class="btn botonOrdenar"><b>Nombre</b></button></th>
-                                        <th><button class="btn botonOrdenar"><b>Cantidad</b></button></th>
+                                        <th><button class="btn botonFalso"><b>Cantidad</b></button></th>
                                       </tr>
                                     </thead>
                                     <tbody ng-repeat="componente in componenteModulo | orderBy:['Componente.Nombre']">
                                       <tr>
                                         <td>{{componente.Componente.Nombre}}</td>
-                                        <td>{{componente.Cantidad}}</td>
+                                        <td class="text-center">{{componente.Cantidad}}</td>
                                       </tr>
                                     </tbody>
                                 </table>
@@ -413,13 +414,13 @@
                                     <thead class="TituloTabla">
                                       <tr>
                                         <th><button class="btn botonOrdenar"><b>Pieza</b></button></th>
-                                        <th><button class="btn botonOrdenar"><b>Ancho</b></button></th>
+                                        <th><button class="btn botonFalso"><b>Ancho</b></button></th>
                                       </tr>
                                     </thead>
                                     <tbody ng-repeat="parte in parteModulo | orderBy:['NombreTipoParte']">
                                       <tr>
                                         <td>{{parte.NombreTipoParte}}</td>
-                                        <td>{{parte.Ancho}}</td>
+                                        <td class="text-center">{{parte.Ancho}}</td>
                                       </tr>
                                     </tbody>
                                 </table>
@@ -452,10 +453,10 @@
                                         <thead class="TituloTabla">
                                           <tr>
                                             <th><button class="btn botonOrdenar"><b>Sección</b></button></th>
-                                            <th><button class="btn botonOrdenar"><b>Luz</b></button></th>
-                                            <th><button class="btn botonOrdenar"><b># Entrepaños</b></button></th>
-                                            <th><button class="btn botonOrdenar"><b># Piezas</b></button></th>
-                                            <th><button class="btn botonOrdenar"><b>Peinazo Vertical</b></button></th>
+                                            <th><button class="btn botonFalso"><b>Luz</b></button></th>
+                                            <th><button class="btn botonFalso"><b># Entrepaños</b></button></th>
+                                            <th><button class="btn botonFalso"><b># Piezas</b></button></th>
+                                            <th><button class="btn botonFalso"><b>Peinazo Vertical</b></button></th>
                                           </tr>
                                         </thead>
                                         <tbody ng-repeat="seccion in seccionModulo | orderBy:['seccion.SeccionModulo.Nombre']">
@@ -608,7 +609,7 @@
                             <br><br class="hidden-xs">
 
                             <div class="row">
-                               <!-- Nombre -->
+                               <!-- Margen -->
                                 <div class="col-sm-6">
                                      <div class="entrada2">
                                         <input ng-pattern="erNumeroDecimal" type="text" required class="{{claseModulo.margen}} form-control" name="margen" ng-model="nuevoModulo.Margen"/>
@@ -684,11 +685,11 @@
                                         <table class="table table-hover">
                                             <thead class="TituloTabla">
                                               <tr>
-                                                <th><button class="btn botonOrdenar"><b>Ancho(plg)</b></button></th>
-                                                <th><button class="btn botonOrdenar"><b>Alto(plg) </b></button></th>
-                                                <th><button class="btn botonOrdenar"><b>Profundo(plg) </b></button></th>
-                                                <th><button class="btn botonOrdenar"><b>Editar </b></button></th>
-                                                <th><button class="btn botonOrdenar"><b>Activar/Eliminar </b></button></th>
+                                                <th><button class="btn botonFalso"><b>Ancho(plg)</b></button></th>
+                                                <th><button class="btn botonFalso"><b>Alto(plg) </b></button></th>
+                                                <th><button class="btn botonFalso"><b>Profundo(plg) </b></button></th>
+                                                <th><button class="btn botonFalso"><b>Editar </b></button></th>
+                                                <th><button class="btn botonFalso"><b>Activar/Eliminar </b></button></th>
                                               </tr>
                                             </thead>
                                             <tbody >
@@ -832,8 +833,8 @@
                                         <table class="table table-hover">
                                             <thead class="TituloTabla">
                                               <tr>
-                                                <th><button class="btn botonFalso"><b>Consumible</b></button></th>
-                                                <th class="cantidadColumna"><button class="btn botonFalso"><b>Cantidad</b></button></th>
+                                                <th><button class="btn botonOrdenar"><b>Consumible</b></button></th>
+                                                <th class="cantidadColumna"><button class="btn botonOrdenar"><b>Cantidad</b></button></th>
                                                 <th><button class="btn botonFalso"><b>Total</b></button></th>
                                                 <th><button class="btn botonFalso"><b>Quitar</b></button></th>
                                               </tr>
@@ -850,9 +851,9 @@
                                                     </div>
                                                 </td>
                                                 
-                                                <td>{{consumible.Cantidad * consumible.Consumible.Costo}}</td>
+                                                <td class="text-center">{{consumible.Cantidad * consumible.Consumible.Costo}}</td>
 
-                                                <td>
+                                                <td class="text-center">
                                                     <a class="BotonOperacion" href=""  ng-click="QuitarConsumible(consumible)">
                                                         <span class="fa fa-times fa-2x"></span>
                                                     </a>
@@ -950,8 +951,8 @@
                                         <table class="table table-hover">
                                             <thead class="TituloTabla">
                                               <tr>
-                                                <th><button class="btn botonFalso"><b>Componente</b></button></th>
-                                                <th class="cantidadColumna"><button class="btn botonFalso"><b>Cantidad</b></button></th>
+                                                <th><button class="btn botonOrdenar"><b>Componente</b></button></th>
+                                                <th class="cantidadColumna"><button class="btn botonOrdenar"><b>Cantidad</b></button></th>
                                                 <th><button class="btn botonFalso"><b>Quitar</b></button></th>
                                               </tr>
                                             </thead>
@@ -967,7 +968,7 @@
                                                     </div>
                                                 </td>
 
-                                                <td>
+                                                <td class="text-center">
                                                     <a class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="QuitarComponente(componente)">
                                                         <span class="fa fa-times fa-2x"></span>
                                                     </a>

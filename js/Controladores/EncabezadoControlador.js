@@ -347,6 +347,10 @@ function SetPerfilNombre($rootScope, usuario)
             {
                 $rootScope.barraNavegacionOpciones[1].elemento[2].show = true;
             }
+            else if(usuario.Permiso[k] == "CatAccConsultar")
+            {
+                $rootScope.barraNavegacionOpciones[1].elemento[3].show = true;
+            }
             /*Configuración*/
             else if(usuario.Permiso[k] == "ConCmpConsultar" || usuario.Permiso[k] == "ConPieConsultar" || usuario.Permiso[k] == "ConCnsConsultar" || usuario.Permiso[k] == "ConTMdConsultar")
             {
@@ -372,6 +376,18 @@ function SetPerfilNombre($rootScope, usuario)
             {
                 $rootScope.barraNavegacionOpciones[2].elemento[5].show = true;
             }
+            else if(usuario.Permiso[k] == "ConTAcConsultar" || usuario.Permiso[k] == "ConMAcConsultar")
+            {
+                $rootScope.barraNavegacionOpciones[2].elemento[6].show = true;
+            }
+            else if(usuario.Permiso[k] == "ConSerConsultar")
+            {
+                $rootScope.barraNavegacionOpciones[2].elemento[7].show = true;
+            }
+            else if(usuario.Permiso[k] == "ConMaqConsultar" || usuario.Permiso[k] == "ConMCMConsultar")
+            {
+                $rootScope.barraNavegacionOpciones[2].elemento[8].show = true;
+            }
         }
     }
     
@@ -395,7 +411,8 @@ var OpcionAdministrador =
         elemento: [     
                         { referencia: "#Modulo", texto:"Módulos", nuevaPagina:true, show:false},
                         { referencia: "#Combinacion", texto:"Combinación de Materiales", nuevaPagina:true, show:false},
-                        { referencia: "#Cubierta", texto:"Cubiertas", nuevaPagina:true, show:false}
+                        { referencia: "#Cubierta", texto:"Cubiertas", nuevaPagina:true, show:false},
+                        { referencia: "#Accesorio", texto:"Accesorios", nuevaPagina:true, show:false}
                   ]                      
     },
     { 
@@ -406,7 +423,10 @@ var OpcionAdministrador =
                         { referencia: "#ConfigurarMaterial", texto:"Materiales", nuevaPagina:true, show:false},
                         { referencia: "#ConfigurarPuerta", texto:"Puertas", nuevaPagina:true, show:false},
                         { referencia: "#ConfigurarCubierta", texto:"Cubiertas", nuevaPagina:true, show:false},
-                        { referencia: "#ConfigurarGeneral", texto:"General", nuevaPagina:true, show:false}
+                        { referencia: "#ConfigurarGeneral", texto:"General", nuevaPagina:true, show:false},
+                        { referencia: "#ConfigurarAccesorio", texto:"Accesorios", nuevaPagina:true, show:false},
+                        { referencia: "#Servicio", texto:"Servicios", nuevaPagina:true, show:false},
+                        { referencia: "#Maqueo", texto:"Maqueo", nuevaPagina:true, show:false}
                   ]                      
     },
     { 

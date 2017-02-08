@@ -51,6 +51,8 @@ app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, dat
     
     $scope.perfil = GetPerfil();   //guarda los perfiles que puede tener un usuario
     
+    $scope.terminarConcluido = true;
+    
     //Obtine los colaboradores dados de alta
     $scope.GetColaboradores = function()              
     {
@@ -1035,6 +1037,8 @@ app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, dat
     //Si los datos son valido se procede a agregar o editar el colaborador
     $scope.TerminarColaborador = function(nombreInvalido, apellido1Invalido, apellido2Invalido, domicilioInvalido, codigoInvalido, coloniaInvalida)
     {
+        $scope.terminarConcluido = false;
+        
         $scope.mensajeError = [];
         
         if(nombreInvalido)
@@ -1205,6 +1209,7 @@ app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, dat
         
         if($scope.mensajeError.length > 0)
         {
+            $scope.terminarConcluido = true;
             return;
         }
         
@@ -1218,6 +1223,7 @@ app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, dat
                     $scope.clase.nombre = "entradaError";
                     $scope.clase.primerApellido = "entradaError";
                     $scope.clase.segundoApellido = "entradaError";
+                    $scope.terminarConcluido = true;
                     return;
                 }
             }
@@ -1271,6 +1277,7 @@ app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, dat
             $scope.mensaje = "Ha ocurrido un error. Intente más tarde. Error: " +error;
             $('#mensajeColaborador').modal('toggle');
         });
+        $scope.terminarConcluido = true;
     };
     
     //Edita al colaborador
@@ -1297,6 +1304,8 @@ app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, dat
             $scope.mensaje = "Ha ocurrido un error. Intente más tarde. Error: " +error;
             $('#mensajeColaborador').modal('toggle');
         });
+        
+        $scope.terminarConcluido = true;
     };
     
     /*Unidad de negocio*/
@@ -1475,7 +1484,9 @@ app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, dat
     //Verifica que como minimo se haya agregado un permiso de cada perfil del usuario
     $scope.TerminarPermisosUsuario = function()
     {
-         $scope.mensajeError = [];
+        $scope.terminarConcluido = false;
+        
+        $scope.mensajeError = [];
         var permisoPerfilSeleccionado = {adminatrador: false, operativo: false, ejecutivo: false};
         
         for(var k=0; k<$scope.perfil.length; k++)
@@ -1525,6 +1536,7 @@ app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, dat
         if(!(permisoPerfilSeleccionado.adminatrador && permisoPerfilSeleccionado.ejecutivo && permisoPerfilSeleccionado.operativo))
         {
             $scope.mensajeError[0] = "Debes de seleccionar al menos un permiso por perfil.";
+            $scope.terminarConcluido = true;
             return;
         }
         
@@ -1554,8 +1566,10 @@ app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, dat
                 $scope.mensaje = "Ha ocurrido un error. Intente más tarde";
                 $('#mensajeColaborador').modal('toggle');
             }
+            $scope.terminarConcluido = true;
         }).catch(function(error)
         {
+            $scope.terminarConcluido = true;
             $scope.mensaje = "Ha ocurrido un error. Intente más tarde. Error: " +error;
             $('#mensajeColaborador').modal('toggle');
         });

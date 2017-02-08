@@ -4,7 +4,7 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="tituloModulo">
-                <span>Configurar - {{titulo}}</span>
+                <span>Configurar Módulos - {{titulo}}</span>
             </div>
         </div>
     </div>
@@ -49,7 +49,7 @@
                                     <table class="table table-hover">
                                         <thead class="TituloTabla">
                                           <tr>
-                                            <th><button class="btn botonFalso"><b>Nombre</b></button></th>
+                                            <th><button class="btn botonOrdenar"><b>Nombre</b></button></th>
                                             <th><button class="btn botonFalso"><b>Detalles</b></button></th>
                                             <th><button class="btn botonFalso"><b>Editar</b></button></th>
                                             <th><button class="btn botonFalso"><b>Activo</b></button></th>
@@ -59,13 +59,13 @@
                                           <tr>
                                             <td>{{componente.Nombre}}</td>
 
-                                            <td>
+                                            <td class="text-center">
                                                 <a class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirDetallesComponenteForma(componente)">
                                                     <span class="fa fa-eye fa-2x"></span>
                                                 </a>
                                             </td>
                                              
-                                             <td>
+                                             <td class="text-center">
                                                 <a ng-if="permisoUsuario.componente.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirComponenteForma('Editar', componente)">
                                                     <span class="fa fa-pencil fa-2x"></span>
                                                 </a>
@@ -73,7 +73,7 @@
                                                 <span ng-if="!permisoUsuario.componente.editar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
                                             </td>
                                               
-                                            <td>
+                                            <td class="text-center">
                                                 <div class="checkbox">
                                                     <label>
                                                         <input ng-disabled="!permisoUsuario.componente.activar" ng-model="componente.Activo" type="checkbox" value="" ng-click="CambiarEstatusActivo('componente', componente)">
@@ -128,7 +128,7 @@
                                     <table class="table table-hover">
                                         <thead class="TituloTabla">
                                           <tr>
-                                            <th><button class="btn botonFalso"><b>Nombre</b></button></th>
+                                            <th><button class="btn botonOrdenar"><b>Nombre</b></button></th>
                                             <!--<th><button class="btn botonFalso"><b>Ancho</b></button></th>
                                             <th><button class="btn botonFalso"><b>Largo</b></button></th>-->
                                             <th><button class="btn botonFalso"><b>Editar</b></button></th>
@@ -141,7 +141,7 @@
                                             <!--<td>{{pieza.FormulaAncho}}</td>
                                             <td>{{pieza.FormulaLargo}}</td>-->
 
-                                            <td>
+                                            <td class="text-center">
                                                 <a ng-if="permisoUsuario.pieza.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirPiezaForma('Editar', pieza)">
                                                     <span class="fa fa-pencil fa-2x"></span>
                                                 </a>
@@ -149,7 +149,7 @@
                                                 <span ng-if="!permisoUsuario.pieza.editar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
                                             </td>
                                               
-                                            <td>
+                                            <td class="text-center">
                                                 <div class="checkbox">
                                                     <label>
                                                         <input ng-disabled="!permisoUsuario.pieza.activar" ng-model="pieza.Activo" type="checkbox" value="" ng-click="CambiarEstatusActivo('pieza', pieza)">
@@ -204,7 +204,7 @@
                                     <table class="table table-hover">
                                         <thead class="TituloTabla">
                                           <tr>
-                                            <th><button class="btn botonFalso"><b>Tipo</b></button></th>
+                                            <th><button class="btn botonOrdenar"><b>Tipo</b></button></th>
                                             <th><button class="btn botonFalso"><b>Editar</b></button></th>
                                             <th><button class="btn botonFalso"><b>Activo</b></button></th>
                                           </tr>
@@ -213,7 +213,7 @@
                                           <tr>
                                             <td>{{tipo.Nombre}}</td>
 
-                                            <td>
+                                            <td class="text-center">
                                                 <a ng-if="permisoUsuario.tipoModulo.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirTipoModuloForma('Editar', tipo)">
                                                     <span class="fa fa-pencil fa-2x"></span>
                                                 </a>
@@ -221,7 +221,7 @@
                                                 <span  ng-if="!permisoUsuario.tipoModulo.editar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
                                             </td>
                                               
-                                            <td>
+                                            <td class="text-center">
                                                 <div class="checkbox">
                                                     <label>
                                                         <input ng-disabled="!permisoUsuario.tipoModulo.activar" ng-model="tipo.Activo" type="checkbox" value="" ng-click="CambiarEstatusActivo('tipoModulo', tipo)">
@@ -262,7 +262,7 @@
                                             <td>{{consumible.Nombre}}</td>
                                             <td>{{consumible.Costo}}</td>
 
-                                            <td>
+                                            <td class="text-center">
                                                 <a ng-if="permisoUsuario.consumible.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirConsumibleForma('Editar', consumible)">
                                                     <span class="fa fa-pencil fa-2x"></span>
                                                 </a>
@@ -270,7 +270,7 @@
                                                 <span ng-if="!permisoUsuario.consumible.consultar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
                                             </td>
                                               
-                                            <td>
+                                            <td class="text-center">
                                                 <div class="checkbox">
                                                     <label>
                                                         <input ng-disabled="!permisoUsuario.consumible.activar" ng-model="consumible.Activo" type="checkbox" value="" ng-click="CambiarEstatusActivo('consumible', consumible)">
@@ -342,13 +342,13 @@
                                     <thead class="TituloTabla">
                                       <tr>
                                         <th><button class="btn botonOrdenar"><b>Pieza</b></button></th>
-                                        <th><button class="btn botonOrdenar"><b>Cantidad</b></button></th>
+                                        <th><button class="btn botonFalso"><b>Cantidad</b></button></th>
                                       </tr>
                                     </thead>
                                     <tbody ng-repeat="pieza in piezaPorComponente | orderBy:['Pieza.Nombre']">
                                       <tr>
                                         <td>{{pieza.Pieza.Nombre}}</td>
-                                        <td>{{pieza.Cantidad}}</td>
+                                        <td class="text-center">{{pieza.Cantidad}}</td>
                                       </tr>
                                     </tbody>
                                 </table>
@@ -371,7 +371,7 @@
                                         <th><button class="btn botonOrdenar"><b>Combinación</b></button></th>
                                         <th><button class="btn botonOrdenar"><b>Tipo Material</b></button></th>
                                         <th><button class="btn botonOrdenar"><b>Material</b></button></th>
-                                        <th><button class="btn botonOrdenar"><b>Grueso</b></button></th>
+                                        <th><button class="btn botonFalso"><b>Grueso</b></button></th>
                                       </tr>
                                     </thead>
                                     <tbody ng-repeat="combinacion in combinacionMaterialComponente | orderBy:['CombinacionMaterial.Nombre']">
@@ -379,7 +379,7 @@
                                         <td>{{combinacion.CombinacionMaterial.Nombre}}</td>
                                         <td>{{combinacion.Material.TipoMaterial.Nombre}}</td>
                                         <td>{{combinacion.Material.Nombre}}</td>
-                                        <td>{{combinacion.Grueso}}</td>
+                                        <td class="text-center">{{combinacion.Grueso}}</td>
                                       </tr>
                                     </tbody>
                                 </table>
@@ -477,8 +477,8 @@
                                     <table class="table table-hover">
                                         <thead class="TituloTabla">
                                           <tr>
-                                            <th><button class="btn botonFalso"><b>Pieza</b></button></th>
-                                            <th><button class="btn botonFalso"><b>Cantidad</b></button></th>
+                                            <th><button class="btn botonOrdenar"><b>Pieza</b></button></th>
+                                            <th><button class="btn botonOrdenar"><b>Cantidad</b></button></th>
                                             <th><button class="btn botonFalso"><b>Quitar</b></button></th>
                                           </tr>
                                         </thead>
@@ -494,7 +494,7 @@
                                                 </div>
                                             </td>
 
-                                            <td>
+                                            <td class="text-center">
                                                 <a class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="QuitarPieza(pieza)">
                                                     <span class="fa fa-times fa-2x"></span>
                                                 </a>
@@ -550,10 +550,10 @@
                                     <table class="table table-hover">
                                         <thead class="TituloTabla">
                                           <tr>
-                                            <th><button class="btn botonFalso"><b>Combinación</b></button></th>
-                                            <th><button class="btn botonFalso"><b>Tipo Material</b></button></th>
-                                            <th><button class="btn botonFalso"><b>Material</b></button></th>
-                                            <th><button class="btn botonFalso"><b>Grueso</b></button></th>
+                                            <th><button class="btn botonOrdenar"><b>Combinación</b></button></th>
+                                            <th><button class="btn botonOrdenar"><b>Tipo Material</b></button></th>
+                                            <th><button class="btn botonOrdenar"><b>Material</b></button></th>
+                                            <th><button class="btn botonOrdenar"><b>Grueso</b></button></th>
                                           </tr>
                                         </thead>
                                         <tbody ng-repeat="combinacion in combinacionMaterialComponente | orderBy:'CombinacionMaterial.Nombre'" ng-if="combinacion.CombinacionMaterial.Activo">

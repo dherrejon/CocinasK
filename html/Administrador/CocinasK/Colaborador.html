@@ -58,7 +58,7 @@
                             <span ng-if="!permisoUsuario.editar"  class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
                         </td>
                         <!-- activo -->
-                        <td>
+                        <td class="text-center">
                             <div class="checkbox">
                                 <label>
                                     <input ng-disabled="!permisoUsuario.activar" ng-model="colaborador.Activo" type="checkbox" value="" ng-click="ConfirmarCambiarActivo(colaborador)">
@@ -508,8 +508,8 @@
                                       <tr>
                                         <th><button class="btn botonOrdenar"><b>Tipo de Teléfono </b></button></th>
                                         <th><button class="btn botonOrdenar"><b>Teléfono </b></button></th>
-                                          <th><button class="btn botonOrdenar"><b>Editar </b></button></th>
-                                          <th><button class="btn botonOrdenar"><b>Eliminar </b></button></th>
+                                          <th><button class="btn botonFalso"><b>Editar </b></button></th>
+                                          <th><button class="btn botonFalso"><b>Eliminar </b></button></th>
                                       </tr>
                                     </thead>
                                     <tbody >
@@ -517,7 +517,7 @@
                                         <td>{{telefono.NombreTipoMedioContacto}}</td>
                                         <td>{{telefono.Contacto | tel}}</td>
                                           
-                                        <td>
+                                        <td class="text-center">
                                             <a  ng-if="!editarContacto.realizar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="EditarContactoAgregado(telefono,'registrado')" >
                                                 <span class="fa fa-pencil fa-2x"></span>
                                             </a>
@@ -525,7 +525,7 @@
                                             <span ng-if="editarContacto.realizar"  class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
                                         </td>
                                           
-                                        <td>
+                                        <td class="text-center">
                                             <a  class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirModalEliminarContacto(telefono)">
                                                 <span class="fa fa-trash fa-2x"></span>
                                             </a>
@@ -617,8 +617,8 @@
                                       <tr>
                                         <th><button class="btn botonOrdenar"><b>Tipo de Correo </b></button></th>
                                         <th><button class="btn botonOrdenar"><b>Correo </b></button></th>
-                                        <th><button class="btn botonOrdenar"><b>Editar </b></button></th>
-                                        <th><button class="btn botonOrdenar"><b>Eliminar </b></button></th>
+                                        <th><button class="btn botonFalso"><b>Editar </b></button></th>
+                                        <th><button class="btn botonFalso"><b>Eliminar </b></button></th>
                                       </tr>
                                     </thead>
                                     <tbody >
@@ -626,7 +626,7 @@
                                         <td>{{correo.NombreTipoMedioContacto}}</td>
                                         <td>{{correo.Contacto}}</td>
                                         
-                                        <td>
+                                        <td class="text-center">
                                             <a  ng-if="!editarContacto.realizar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="EditarContactoAgregado(correo,'registrado')">
                                                 <span class="fa fa-pencil fa-2x"></span>
                                             </a>
@@ -634,7 +634,7 @@
                                             <span ng-if="editarContacto.realizar"  class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
                                         </td>
                                           
-                                        <td>
+                                        <td class="text-center">
                                             <a class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirModalEliminarContacto(correo)">
                                                 <span class="fa fa-trash fa-2x"></span>
                                             </a>
@@ -884,7 +884,7 @@
                         </div>
                         
                         <div class="col-xs-6">
-                            <button focus class="btn botonAvanzar btn-block" ng-click="TerminarColaborador(colaboradorForma.nombre.$invalid, colaboradorForma.primerApellido.$invalid, colaboradorForma.segundoApellido.$invalid, colaboradorForma.domicilio.$invalid, colaboradorForma.codigo.$invalid, colaboradorForma.otraColonia.$invalid)">TERMINAR</button>
+                            <button ng-disable="terminarConcluido" focus class="btn botonAvanzar btn-block" ng-click="TerminarColaborador(colaboradorForma.nombre.$invalid, colaboradorForma.primerApellido.$invalid, colaboradorForma.segundoApellido.$invalid, colaboradorForma.domicilio.$invalid, colaboradorForma.codigo.$invalid, colaboradorForma.otraColonia.$invalid)">TERMINAR</button>
                         </div>
                     </div>
                     <br> 
@@ -1023,7 +1023,7 @@
                             </div>
 
                             <div class="col-xs-6">
-                                <button focus class="btn botonAvanzar btn-block" ng-click="TerminarUsuario(usuarioForma.usuario.$invalid)">Siguiente &gt;&gt;</button>
+                                <button focus class="btn botonAvanzar btn-block" ng-click="TerminarUsuario(usuarioForma.usuario.$invalid)">SIGUIENTE &gt;&gt;</button>
                             </div>
                         </div>
                         <br>
@@ -1126,11 +1126,11 @@
                         <!---- botones de operacion --->
                         <div class="row">
                             <div class="col-xs-6">
-                                <button class="btn botonCancelar btn-block"  ng-click="AnteriorPermisos()">&lt;&lt; Anterior</button>
+                                <button class="btn botonCancelar btn-block"  ng-click="AnteriorPermisos()">&lt;&lt; ANTERIOR</button>
                             </div>
 
                             <div class="col-xs-6">
-                                <button focus class="btn botonAvanzar btn-block" ng-click="TerminarPermisosUsuario()">Terminar</button>
+                                <button ng-disable="!terminarConcluido" focus class="btn botonAvanzar btn-block" ng-click="TerminarPermisosUsuario()">TERMINAR</button>
                             </div>
                         </div>
                         <br>

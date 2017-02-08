@@ -21,7 +21,8 @@
                         <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('Material.TipoMaterial.Nombre')"><b>Tipo Material </b><b ng-if="ordenarPor === 'Material.TipoMaterial.Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-Material.TipoMaterial.Nombre'" class="fa fa-arrow-down"></b></button></th>
                         <th><button class="btn botonFalso"><b>Detalles</b></button></th>
                         <th><button class="btn botonFalso"><b>Editar</b></button></th>
-                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('ActivoN')"><b>Activo</b> <b ng-if="ordenarPor === 'ActivoN'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-ActivoN'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonFalso"><b>Activo</b></button></th>
+                        <!--<th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('ActivoN')"><b>Activo</b> <b ng-if="ordenarPor === 'ActivoN'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-ActivoN'" class="fa fa-arrow-down"></b></button></th>-->
                       </tr>
                     </thead>
                     <tbody ng-repeat="cubierta in cubierta | filter:buscar |filter:FiltrarCubierta | orderBy:[ordenarPor, 'Material.Nombre']">
@@ -30,13 +31,13 @@
                         <td> {{cubierta.TipoCubierta.Nombre}} </td>
                         <td> {{cubierta.Material.TipoMaterial.Nombre}} </td>
                         
-                        <td>
+                        <td class="text-center">
                             <a  class="BotonOperacion" href="" data-toggle="modal" data-target="#DetalleCubierta" ng-click="MostarDetalles(cubierta)">
                                 <span class="fa fa-eye fa-2x"></span>
                             </a>
                         </td>
 
-                        <td>
+                        <td class="text-center">
                             <a  ng-if="permisoUsuario.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="ObtenerDatosCubiertaEditar(cubierta)">
                                 <span class="fa fa-pencil fa-2x"></span>
                             </a>
@@ -44,7 +45,7 @@
                             <span ng-if="!permisoUsuario.editar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
                         </td>
 
-                        <td>
+                        <td class="text-center">
                             <div class="checkbox">
                                 <label>
                                     <input ng-disabled="!permisoUsuario.activar"  ng-model="cubierta.Material.Activo" type="checkbox" value="" ng-click="CambiarEstatusActivo(cubierta)">
@@ -568,9 +569,9 @@
                                     <thead class="TituloTabla">
                                       <tr>
                                         <th><button class="btn botonOrdenar"><b>Nombre</b></button></th>
-                                        <th><button class="btn botonOrdenar"><b>Colores</b></button></th>
-                                        <th><button class="btn botonOrdenar"><b>Costo Unidad</b></button></th>
-                                        <th><button class="btn botonOrdenar"><b>Activo</b></button></th>
+                                        <th><button class="btn botonFalso"><b>Colores</b></button></th>
+                                        <th><button class="btn botonFalso"><b>Costo Unidad</b></button></th>
+                                        <th><button class="btn botonFalso"><b>Activo</b></button></th>
                                       </tr>
                                     </thead>
                                     <tbody ng-repeat="grupo in cubiertaActualizar.Color | orderBy:['Grupo.Nombre']">
@@ -580,15 +581,15 @@
                                             <span ng-if="grupo.PorDefecto" class="fa fa-asterisk" data-toggle="tooltip" data-placement="bottom" title="Grupo de color por defecto"></span>
                                         </td>
                         
-                                        <td>
+                                        <td class="text-center">
                                             <a  class="BotonOperacion" href="" data-toggle="modal" data-target="#DetalleModuloCubiertaColor" ng-click="VerGrupoColor(grupo)">
                                                 <span class="fa fa-eye fa-2x"></span>
                                             </a>
                                         </td>
 
-                                        <td>${{grupo.CostoUnidad}}</td>
+                                        <td class="text-center">${{grupo.CostoUnidad}}</td>
 
-                                        <td>
+                                        <td class="text-center">
                                             <span class="fa fa-check-square-o fa-2x" ng-if="grupo.Grupo.Activo"></span>
                                             <span class="fa fa-square-o fa-2x" ng-if="!grupo.Grupo.Activo"></span>
                                         </td>
@@ -633,8 +634,8 @@
                             <table class="table table-hover">
                                 <thead class="TituloTabla">
                                   <tr>
-                                    <th><button class="btn botonFalso"><b>Color</b></button></th>
-                                    <th><button class="btn botonFalso"><b>Nombre</b></button></th>
+                                    <th><button class="btn botonOrdenar"><b>Color</b></button></th>
+                                    <th><button class="btn botonOrdenar"><b>Nombre</b></button></th>
                                     <th><button class="btn botonFalso"><b>Activo</b></button></th>
                                   </tr>
                                 </thead>
@@ -654,7 +655,7 @@
                                     
                                     <td>{{color.Nombre}}</td>
 
-                                    <td>
+                                    <td class="text-center">
                                         <span class="fa fa-check-square-o fa-2x" ng-if="color.Activo"></span>
                                         <span class="fa fa-square-o fa-2x" ng-if="!color.Activo"></span>
                                     </td>

@@ -148,6 +148,10 @@ function SetPerfil(perfil, $rootScope, $window, $http, CONFIG, usuario)
             {
                 $rootScope.barraNavegacionOpciones[1].elemento[2].show = true;
             }
+            else if(usuario.Permiso[k] == "CatAccConsultar")
+            {
+                $rootScope.barraNavegacionOpciones[1].elemento[3].show = true;
+            }
             /*Configurar*/
             else if(usuario.Permiso[k] == "ConCmpConsultar" || usuario.Permiso[k] == "ConPieConsultar" || usuario.Permiso[k] == "ConCnsConsultar" || usuario.Permiso[k] == "ConTMdConsultar")
             {
@@ -172,6 +176,18 @@ function SetPerfil(perfil, $rootScope, $window, $http, CONFIG, usuario)
             else if(usuario.Permiso[k] == "ConTMCConsultar" || usuario.Permiso[k] == "ConCloConsultar")
             {
                 $rootScope.barraNavegacionOpciones[2].elemento[5].show = true;
+            }
+            else if(usuario.Permiso[k] == "ConMAcConsultar" || usuario.Permiso[k] == "ConTAcConsultar")
+            {
+                $rootScope.barraNavegacionOpciones[2].elemento[6].show = true;
+            }
+            else if(usuario.Permiso[k] == "ConSerConsultar")
+            {
+                $rootScope.barraNavegacionOpciones[2].elemento[7].show = true;
+            }
+            else if(usuario.Permiso[k] == "ConMaqConsultar" || usuario.Permiso[k] == "ConMCMConsultar")
+            {
+                $rootScope.barraNavegacionOpciones[2].elemento[8].show = true;
             }
         }
     }

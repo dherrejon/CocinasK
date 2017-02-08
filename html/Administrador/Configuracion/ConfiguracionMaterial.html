@@ -4,7 +4,7 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="tituloModulo">
-                <span>Configurar - {{titulo}}</span>
+                <span>Configurar Material - {{titulo}}</span>
             </div>
         </div>
     </div>
@@ -64,7 +64,7 @@
                                                 <span ng-if="tipo.DisponibleCubierta">Cubiertas</span>
                                             </td>
 
-                                            <td>
+                                            <td class="text-center">
                                                 <a ng-if="permisoUsuario.tipoMaterial.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirTipoMaterialForma('Editar', tipo)">
                                                     <span class="fa fa-pencil fa-2x"></span>
                                                 </a>
@@ -72,7 +72,7 @@
                                                 <span ng-if="!permisoUsuario.tipoMaterial.editar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
                                             </td>
                                               
-                                            <td>
+                                            <td class="text-center">
                                                 <div class="checkbox">
                                                     <label>
                                                         <input ng-disabled="!permisoUsuario.tipoMaterial.activar" ng-model="tipo.Activo" type="checkbox" value="" ng-click="CambiarEstatusActivo('tipoMaterial', tipo)">
@@ -113,7 +113,7 @@
                                           <tr>
                                             <td>{{material.Nombre}}</td>
                                             <td>{{material.TipoMaterial.Nombre}}</td>
-                                            <td ng-if="material.grueso.length == 0">{{material.CostoUnidad}}</td>
+                                            <td ng-if="material.grueso.length == 0">${{material.CostoUnidad}}</td>
                                             
                                             <td ng-if="material.grueso.length > 0">
                                                 <a class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirGruesoForma(material)">
@@ -121,7 +121,7 @@
                                                 </a>
                                             </td>
                         
-                                            <td>
+                                            <td class="text-center">
                                                 <a ng-if="permisoUsuario.material.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirMaterialForma('Editar', material, 'Módulo')">
                                                     <span class="fa fa-pencil fa-2x"></span>
                                                 </a>
@@ -129,7 +129,7 @@
                                                 <span ng-if="!permisoUsuario.material.editar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
                                             </td>
                                               
-                                            <td>
+                                            <td class="text-center">
                                                 <div class="checkbox">
                                                     <label>
                                                         <input ng-disabled="!permisoUsuario.material.activar" ng-model="material.Activo" type="checkbox" value="" ng-click="CambiarEstatusActivo('material', material)">
@@ -244,7 +244,7 @@
                                             <td>{{material.Nombre}}</td>
                                             <td>{{material.TipoMaterial.Nombre}}</td>
                         
-                                            <td>
+                                            <td class="text-center">
                                                 <a ng-if="permisoUsuario.material.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirMaterialForma('Editar', material, 'Cubierta')">
                                                     <span class="fa fa-pencil fa-2x"></span>
                                                 </a>
@@ -252,7 +252,7 @@
                                                 <span ng-if="!permisoUsuario.material.editar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
                                             </td>
                                               
-                                            <td>
+                                            <td class="text-center">
                                                 <div class="checkbox">
                                                     <label>
                                                         <input ng-disabled="!permisoUsuario.material.activar" ng-model="material.Activo" type="checkbox" value="" ng-click="CambiarEstatusActivo('material', material)">
@@ -387,7 +387,7 @@
                         <br class="hidden-sm hidden-md hidden-lg">
                         
                         <div class="col-sm-6">
-                             <label class="btn checkBoxActivo">Tipo Módulo Activo <input type="checkbox" class="badgebox" ng-model="nuevoTipoMaterial.Activo"><span class="badge">&check;</span></label>
+                             <label class="btn checkBoxActivo">Tipo Material Activo <input type="checkbox" class="badgebox" ng-model="nuevoTipoMaterial.Activo"><span class="badge">&check;</span></label>
                          </div>
                         
                     </div> 
@@ -495,14 +495,14 @@
                                       <tr>
                                         <th><button class="btn botonOrdenar"><b>Grueso </b></button></th>
                                         <th><button class="btn botonOrdenar"><b>Costo por Unidad </b></button></th>
-                                        <th><button class="btn botonOrdenar"><b>Activo </b></button></th>
+                                        <th><button class="btn botonFalso"><b>Activo </b></button></th>
                                       </tr>
                                     </thead>
                                     <tbody ng-repeat="grueso in costoPorGrueso.grueso | orderBy:'CostoUnidad'">
                                       <tr>
                                         <td>{{grueso.Grueso}}</td>
-                                        <td>{{grueso.CostoUnidad}}</td>
-                                        <td>
+                                        <td>${{grueso.CostoUnidad}}</td>
+                                        <td class="text-center">
                                             <div class="checkbox">
                                                 <label>
                                                     <input ng-model="grueso.Activo" type="checkbox" value="" ng-click="CambiarEstatusActivo('gruesoMaterial', grueso)">
@@ -621,7 +621,7 @@
                                       <tr>
                                         <th><button class="btn botonOrdenar"><b>Grueso </b></button></th>
                                         <th><button class="btn botonOrdenar"><b>Costo por Unidad </b></button></th>
-                                        <th><button class="btn botonOrdenar"><b>Activo </b></button></th>
+                                        <th><button class="btn botonFalso"><b>Activo </b></button></th>
                                       </tr>
                                     </thead>
                                     <tbody ng-repeat="grueso in nuevoMaterial.grueso">
@@ -632,7 +632,7 @@
                                         <td>
                                             $<input required ng-pattern="erNumeroDecimal" type="text" ng-model="grueso.CostoUnidad" class="text-right {{grueso.ClaseCosto}}"/>
                                         </td>
-                                        <td>
+                                        <td class="text-center">
                                             <div class="checkbox">
                                                 <label>
                                                     <input ng-model="grueso.Activo" type="checkbox" value="" >

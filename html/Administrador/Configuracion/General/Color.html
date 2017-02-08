@@ -16,7 +16,7 @@
                       <tr>
                         <td>{{color.Nombre}}</td>
                         
-                        <td>
+                        <td class="text-center">
                             <a ng-if="color.Imagen.length > 0" class="BotonOperacion" href="" data-toggle="modal" data-target="#ImagenColorModal" ng-click="VerColor(color)">
                                 <span class="fa fa-picture-o fa-2x"></span>
                             </a>
@@ -24,7 +24,7 @@
                             <span ng-if="color.Imagen.length == 0" class="fa fa-picture-o fa-2x botonRegistroDeshabilitado"></span>
                         </td>
 
-                        <td>
+                        <td class="text-center">
                             <a ng-if="permisoUsuario.color.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirColor('Editar', color)">
                                 <span class="fa fa-pencil fa-2x"></span>
                             </a>
@@ -32,7 +32,7 @@
                             <span ng-if="!permisoUsuario.color.editar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
                         </td>
 
-                        <td>
+                        <td class="text-center">
                             <div class="checkbox">
                                 <label>
                                     <input ng-disabled="!permisoUsuario.color.activar" ng-model="color.Activo" type="checkbox" value="" ng-click="ActivarDesactivarColor(color)">

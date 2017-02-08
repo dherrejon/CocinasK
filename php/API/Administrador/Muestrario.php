@@ -1,13 +1,14 @@
 <?php
 
-function GetMuestrarioPuerta()
+function GetMuestrario()
 {
     global $app;
     global $session_expiration_time;
 
     $request = \Slim\Slim::getInstance()->request();
+    $tipoMuestrarioId = json_decode($request->getBody());
 
-    $sql = "SELECT * FROM Muestrario WHERE TipoMuestrarioId = 1";
+    $sql = "SELECT * FROM Muestrario WHERE TipoMuestrarioId = ".$tipoMuestrarioId;
 
     try 
     {
@@ -33,7 +34,7 @@ function AgregarMuestrario()
     $request = \Slim\Slim::getInstance()->request();
     $muestrario = json_decode($request->getBody());
     global $app;
-    $sql = "INSERT INTO Muestrario (TipoMuestrarioId, Nombre, Activo, PorDefecto) VALUES(:TipoMuestrarioId, :Nombre, :Activo, 0)";
+    $sql = "INSERT INTO Muestrario (TipoMuestrarioId, Nombre, Activo, PorDefecto, Margen) VALUES(:TipoMuestrarioId, :Nombre, :Activo, :PorDefecto, :Margen)";
     
     $db;
     $stmt;
@@ -48,6 +49,8 @@ function AgregarMuestrario()
         $stmt->bindParam("TipoMuestrarioId", $muestrario->TipoMuestrarioId);
         $stmt->bindParam("Nombre", $muestrario->Nombre);
         $stmt->bindParam("Activo", $muestrario->Activo);
+        $stmt->bindParam("PorDefecto", $muestrario->PorDefecto);
+        $stmt->bindParam("Margen", $muestrario->Margen);
 
         $stmt->execute();
         
@@ -62,7 +65,7 @@ function AgregarMuestrario()
         $app->stop();
     }
     
-    if($muestrario->PorDefecto)
+    if($muestrario->PorDefecto=="1" && $muestrario->TipoMuestrarioId=="1")
     {
         $sql = "UPDATE Muestrario SET PorDefecto=0  WHERE PorDefecto=1 AND TipoMuestrarioId = 1";
     
@@ -114,7 +117,7 @@ function EditarMuestrario()
     $request = \Slim\Slim::getInstance()->request();
     $muestrario = json_decode($request->getBody());
    
-    $sql = "UPDATE Muestrario SET Nombre='".$muestrario->Nombre."', TipoMuestrarioId='".$muestrario->TipoMuestrarioId."', Activo = '".$muestrario->Activo."'  WHERE MuestrarioId=".$muestrario->MuestrarioId."";
+    $sql = "UPDATE Muestrario SET Nombre='".$muestrario->Nombre."', TipoMuestrarioId='".$muestrario->TipoMuestrarioId."', Activo = '".$muestrario->Activo."', PorDefecto = '".$muestrario->PorDefecto."', Margen = ".$muestrario->Margen."  WHERE MuestrarioId=".$muestrario->MuestrarioId."";
     
     $stmt;
     $db;
@@ -128,13 +131,14 @@ function EditarMuestrario()
     }
     catch(PDOException $e) 
     {   
+        echo $e;
         $db->rollBack();
         echo '[{"Estatus": "Fallido"}]';
         $app->status(409);
         $app->stop();
     }
     
-    if($muestrario->PorDefecto)
+    if($muestrario->PorDefecto == "1" && $muestrario->TipoMuestrarioId=="1")
     {
         $sql = "UPDATE Muestrario SET PorDefecto=0  WHERE PorDefecto=1 AND TipoMuestrarioId = 1";
     
@@ -214,6 +218,35 @@ function GetPuertaPorMuestrario()
     
     
     $sql = "SELECT * FROM Puerta WHERE MuestrarioId='".$muestrarioId[0]."'";
+    
+    try 
+    {
+        $db = getConnection();
+        $stmt = $db->query($sql);
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $db = null;
+        
+        echo json_encode($response);  
+    } 
+    catch(PDOException $e) 
+    {
+        //echo $e;
+        echo '[ { "Estatus": "Fallo" } ]';
+        //$app->status(409);
+        $app->stop();
+    }
+}
+
+function GetAccesorioPorMuestrario()
+{
+    global $app;
+    global $session_expiration_time;
+
+    $request = \Slim\Slim::getInstance()->request();
+    $muestrarioId = json_decode($request->getBody());
+    
+    
+    $sql = "SELECT a.Nombre, a.Activo,  ta.Nombre as NombreTipoAccesorio FROM Accesorio a, TipoAccesorio ta WHERE a.TipoAccesorioId = ta.TipoAccesorioId AND a.MuestrarioId='".$muestrarioId[0]."'";
     
     try 
     {

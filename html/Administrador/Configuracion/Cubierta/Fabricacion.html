@@ -15,13 +15,13 @@
                       <tr>
                         <td>{{fabricacion.Nombre}}</td>
                         
-                        <td>
+                        <td class="text-center">
                             <a  class="BotonOperacion" href="" data-toggle="modal" data-target="#DetalleCubiertaFabricacion" ng-click="DetallesFabricion(fabricacion)">
                                 <span class="fa fa-eye fa-2x"></span>
                             </a>
                         </td>
 
-                        <td>
+                        <td class="text-center">
                             <a ng-if="permisoUsuario.fabricacion.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirFabricacionCubierta('Editar', fabricacion)">
                                 <span class="fa fa-pencil fa-2x"></span>
                             </a>
@@ -29,7 +29,7 @@
                             <span ng-if="!permisoUsuario.fabricacion.editar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
                         </td>
 
-                        <td>
+                        <td class="text-center">
                             <div class="checkbox">
                                 <label>
                                     <input ng-disabled="!permisoUsuario.fabricacion.activar" ng-model="fabricacion.Activo" type="checkbox" value="" ng-click="ActivarDesactivarFabricacionCubierta(fabricacion)">
@@ -170,8 +170,8 @@
                                 <table class="table table-hover">
                                     <thead class="TituloTabla">
                                       <tr>
-                                        <th><button class="btn botonFalso"><b>Nombre</b></button></th>
-                                        <th><button class="btn botonFalso"><b>Cantidad</b></button></th>
+                                        <th><button class="btn botonOrdenar"><b>Nombre</b></button></th>
+                                        <th><button class="btn botonOrdenar"><b>Cantidad</b></button></th>
                                         <th><button class="btn botonFalso"><b>Total</b></button></th>
                                         <th><button class="btn botonFalso"><b>Quitar</b></button></th>
                                       </tr>
@@ -187,9 +187,9 @@
                                             </div>
                                         </td>
                                          
-                                         <td>${{consumible.Cantidad * consumible.Costo}}</td>
+                                         <td class="text-center">${{consumible.Cantidad * consumible.Costo}}</td>
                                          
-                                         <td>
+                                         <td class="text-center">
                                             <a class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="QuitarConsumible(consumible)">
                                                 <span class="fa fa-times fa-2x"></span>
                                             </a>
@@ -256,7 +256,7 @@
                             <table class="table table-hover">
                                 <thead class="TituloTabla">
                                   <tr>
-                                    <th><button class="btn botonFalso"><b>Nombre</b></button></th>
+                                    <th><button class="btn botonOrdenar"><b>Nombre</b></button></th>
                                     <th><button class="btn botonFalso"><b>Cantidad</b></button></th>
                                     <th><button class="btn botonFalso"><b>Total</b></button></th>
                                   </tr>
@@ -265,8 +265,8 @@
                                   <tr>
                                     
                                     <td>{{consumible.Nombre}}</td>
-                                    <td>{{consumible.Cantidad}}</td>
-                                    <td>${{consumible.Costo * consumible.Cantidad}}</td>
+                                    <td class="text-center">{{consumible.Cantidad}}</td>
+                                    <td class="text-center">${{consumible.Costo * consumible.Cantidad}}</td>
 
                                   </tr>
                                 </tbody>

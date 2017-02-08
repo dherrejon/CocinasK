@@ -16,13 +16,13 @@
                       <tr>
                         <td>{{grupo.Nombre}}</td>
                         
-                        <td>
+                        <td class="text-center">
                             <a  class="BotonOperacion" href="" data-toggle="modal" data-target="#DetalleCubiertaColor" ng-click="VerGrupoColor(grupo)">
                                 <span class="fa fa-eye fa-2x"></span>
                             </a>
                         </td>
 
-                        <td>
+                        <td class="text-center">
                             <a ng-if="permisoUsuario.muestrarioColor.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirGrupoColor('Editar', grupo)">
                                 <span class="fa fa-pencil fa-2x"></span>
                             </a>
@@ -30,7 +30,7 @@
                             <span ng-if="!permisoUsuario.muestrarioColor.editar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
                         </td>
 
-                        <td>
+                        <td class="text-center">
                             <div class="checkbox">
                                 <label>
                                     <input ng-disabled="!permisoUsuario.muestrarioColor.activar" ng-model="grupo.Activo" type="checkbox" value="" ng-click="ActivarDesactivarGrupoColor(grupo)">
@@ -178,8 +178,8 @@
                                 <table class="table table-hover">
                                     <thead class="TituloTabla">
                                       <tr>
-                                        <th><button class="btn botonFalso"><b>Color</b></button></th>
-                                        <th><button class="btn botonFalso"><b>Nombre</b></button></th>
+                                        <th><button class="btn botonOrdenar"><b>Color</b></button></th>
+                                        <th><button class="btn botonOrdenar"><b>Nombre</b></button></th>
                                         <th><button class="btn botonFalso"><b>Quitar</b></button></th>
                                       </tr>
                                     </thead>
@@ -198,7 +198,7 @@
                                         
                                          <td>{{color.Nombre}}</td>
 
-                                        <td>
+                                        <td class="text-center">
                                             <a class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="QuitarColor(color)">
                                                 <span class="fa fa-times fa-2x"></span>
                                             </a>
@@ -266,8 +266,8 @@
                             <table class="table table-hover">
                                 <thead class="TituloTabla">
                                   <tr>
-                                    <th><button class="btn botonFalso"><b>Color</b></button></th>
-                                    <th><button class="btn botonFalso"><b>Nombre</b></button></th>
+                                    <th><button class="btn botonOrdenar"><b>Color</b></button></th>
+                                    <th><button class="btn botonOrdenar"><b>Nombre</b></button></th>
                                     <th><button class="btn botonFalso"><b>Activo</b></button></th>
                                   </tr>
                                 </thead>
@@ -287,7 +287,7 @@
                                     
                                     <td>{{color.Nombre}}</td>
 
-                                    <td>
+                                    <td class="text-center">
                                         <span class="fa fa-check-square-o fa-2x" ng-if="color.Activo"></span>
                                         <span class="fa fa-square-o fa-2x" ng-if="!color.Activo"></span>
                                     </td>

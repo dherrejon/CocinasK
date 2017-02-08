@@ -771,17 +771,28 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
             {   
                 for(var i=0; i<data.length; i++)
                 {
-                    $scope.ValidarComponenteFormula(data[i].Pieza.FormulaAncho);
-                    $scope.ValidarComponenteFormula(data[i].Pieza.FormulaLargo);
+                    $scope.ValidarComponenteFormula(data[i].Pieza.FormulaAncho, i).then(function(dato1)
+                    {
+                        
+                    });
+                    
+                    $scope.ValidarComponenteFormula(data[i].Pieza.FormulaLargo, i).then(function(dato2)
+                    {
+                        if(dato2==(data.length-1))
+                        {
+                            if($scope.componenteFaltante.length === 0)
+                            {
+                                 q.resolve(true);
+                            }
+                            else
+                            {
+                                 q.resolve(false);
+                            }
+                        }
+                    });
+                    
                 }
-                if($scope.componenteFaltante.length === 0)
-                {
-                     q.resolve(true);
-                }
-                else
-                {
-                     q.resolve(false);
-                }
+                
             }).catch(function(error)
             {
                 alert("Ha ocurrido un error al obtener las piezas del componente." + error);
@@ -794,8 +805,10 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
     };
     
     
-    $scope.ValidarComponenteFormula = function(formula)
+    $scope.ValidarComponenteFormula = function(formula, indexP)
     {
+        var q = $q.defer();
+        
         var nombreComponente;
         
         var index = formula.indexOf("[Componente]");
@@ -840,6 +853,7 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
                 {
                     if($scope.componenteFaltante[k] == nombreComponente)
                     {
+                        
                         componenteRegistrada = true;
                         break;
                     }
@@ -856,7 +870,14 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
             formula = formula.replace(componente, " ");
 
             index = formula.indexOf("[Componente]");
+            
+            if(index < 0)
+            {
+                q.resolve(indexP);
+            }
         }
+        
+        return q.promise;
     };
     
     $scope.SiguienteComponente = function()

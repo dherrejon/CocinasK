@@ -3,23 +3,23 @@ class Muestrario
     constructor()
     {
         this.MuestrarioId = "";
-        this.TipoMuestrario = "";
+        this.TipoMuestrarioId = "";
         this.Nombre = "";
-        this.Costo = "";
-        this.Precio = ""; 
+        this.Margen = null;
         this.Activo = true;
         this.ActivoN = "1";
         this.PorDefecto = false;
     }
 }
 
-function GetMuestrarioPuerta($http, $q, CONFIG)     
+function GetMuestrario($http, $q, CONFIG, tipoMuestrario)     
 {
     var q = $q.defer();
 
     $http({      
-          method: 'GET',
-          url: CONFIG.APIURL + '/GetMuestrarioPuerta',
+          method: 'POST',
+          url: CONFIG.APIURL + '/GetMuestrario',
+          data: tipoMuestrario
 
       }).success(function(data)
         {
@@ -44,8 +44,7 @@ function SetMuestrario(data)
     muestrario.MuestrarioId = data.MuestrarioId;
     muestrario.TipoMuestrarioId = data.TipoMuestrarioId;
     muestrario.Nombre = data.Nombre;
-    muestrario.Costo = parseFloat(data.Costo);
-    muestrario.Precio = parseFloat(data.Precio);
+    muestrario.Margen = parseFloat(data.Margen);
     muestrario.ActivoN = data.Activo;
     
     if(data.Activo == "1")
@@ -81,6 +80,15 @@ function AgregarMuestrario($http, CONFIG, $q, muestrario)
     else
     {
         muestrario.Activo = "0";
+    }
+    
+    if(muestrario.PorDefecto)
+    {
+        muestrario.PorDefecto = "1";
+    }
+    else
+    {
+        muestrario.PorDefecto = "0";
     }
 
     $http({      
@@ -121,6 +129,15 @@ function EditarMuestrario($http, CONFIG, $q, muestrario)
         muestrario.Activo = "0";
     }
     
+    if(muestrario.PorDefecto)
+    {
+        muestrario.PorDefecto = "1";
+    }
+    else
+    {
+        muestrario.PorDefecto = "0";
+    }
+    
     $http({      
           method: 'PUT',
           url: CONFIG.APIURL + '/EditarMuestrario',
@@ -151,7 +168,7 @@ function ActivarDesactivarMuestrario($http, $q, CONFIG, puerta)
 
     $http({      
           method: 'POST',
-          url: CONFIG.APIURL + '/ActivarDesactivarPuerta',
+          url: CONFIG.APIURL + '/ActivarDesactivarMuestrario',
           data: puerta
       }).success(function(data)
         {
@@ -174,6 +191,40 @@ function GetPuertaPorMuestrario($http, $q, CONFIG, id)
     $http({      
           method: 'POST',
           url: CONFIG.APIURL + '/GetPuertaPorMuestrario',
+          data: muestrarioId
+
+      }).success(function(data)
+        {
+            for(var k=0; k<data.length; k++)
+            {
+                if(data[k].Activo == "1")
+                {
+                    data[k].Activo = true;
+                }
+                else
+                {
+                    data[k].Activo = false;
+                }
+            }
+
+            q.resolve(data);
+        }).error(function(data){
+            q.resolve(data);
+     }); 
+    
+    return q.promise;
+}
+
+function GetAccesorioPorMuestrario($http, $q, CONFIG, id)
+{
+    var q = $q.defer();
+    
+    var muestrarioId = [];
+    muestrarioId[0] = id;
+
+    $http({      
+          method: 'POST',
+          url: CONFIG.APIURL + '/GetAccesorioPorMuestrario',
           data: muestrarioId
 
       }).success(function(data)

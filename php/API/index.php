@@ -22,6 +22,9 @@
     require 'Administrador/UbicacionCubierta.php';
     require 'Administrador/FabricacionCubierta.php';
     require 'Administrador/Cubierta.php';
+    require 'Administrador/Accesorio.php';
+    require 'Administrador/Servicio.php';
+    require 'Administrador/Maqueo.php';
 
     require 'General/Direccion.php';
     require 'General/Sesion.php';
@@ -99,7 +102,7 @@
         }        
     };
 
-      //------------------------------------ Inicio de sesion ------------------------------------------------
+    //------------------------------------ Inicio de sesion ------------------------------------------------
 
    
     function generateToken($expired)
@@ -347,12 +350,13 @@
     $app->post('/ActivarDesactivarConsumible', $seguridad, $ChecarSesion, 'ActivarDesactivarConsumible');
 
     /*------------------------Muestrario----------------*/
-    $app->get('/GetMuestrarioPuerta', $seguridad, $ChecarSesion, 'GetMuestrarioPuerta');
+    $app->post('/GetMuestrario', $seguridad, $ChecarSesion, 'GetMuestrario');
     $app->post('/AgregarMuestrario', $seguridad, $ChecarSesion, 'AgregarMuestrario');
     $app->put('/EditarMuestrario', $seguridad, $ChecarSesion, 'EditarMuestrario');
     $app->post('/ActivarDesactivarMuestrario', $seguridad, $ChecarSesion, 'ActivarDesactivarMuestrario');
 
     $app->post('/GetPuertaPorMuestrario', $seguridad, $ChecarSesion, 'GetPuertaPorMuestrario');
+    $app->post('/GetAccesorioPorMuestrario', $seguridad, $ChecarSesion, 'GetAccesorioPorMuestrario');
 
     /*------------------------Puerta----------------*/
     $app->get('/GetPuerta', $seguridad, $ChecarSesion, 'GetPuerta');
@@ -407,6 +411,34 @@
     $app->post('/GetCubiertaUbicacion', $seguridad, $ChecarSesion, 'GetCubiertaUbicacion');
     $app->post('/GetGrupoColorCubierta', $seguridad, $ChecarSesion, 'GetGrupoColorCubierta');
 
+    /*------------------------Tipo Accesorio----------------------------*/
+    $app->get('/GetTipoAccesorio', $seguridad, $ChecarSesion, 'GetTipoAccesorio');
+    $app->post('/AgregarTipoAccesorio', $seguridad, $ChecarSesion, 'AgregarTipoAccesorio');
+    $app->put('/EditarTipoAccesorio', $seguridad, $ChecarSesion, 'EditarTipoAccesorio');
+    $app->post('/ActivarDesactivarTipoAccesorio', $seguridad, $ChecarSesion, 'ActivarDesactivarTipoAccesorio');
+
+    $app->post('/GuardarInstrucciones/:id', $seguridad, $ChecarSesion, 'GuardarInstrucciones');
+
+    /*------------------ Servicio ------------------------------*/
+    $app->get('/GetServicio', $seguridad, $ChecarSesion, 'GetServicio');
+    
+    $app->post('/ActivarDesactivarServicio', $seguridad, $ChecarSesion, 'ActivarDesactivarServicio');
+
+
+    /*------------------ Maqueo ------------------------------*/
+    $app->get('/GetMaqueo', $seguridad, $ChecarSesion, 'GetMaqueo');
+    $app->post('/AgregarMaqueo', $seguridad, $ChecarSesion, 'AgregarMaqueo');
+    $app->put('/EditarMaqueo', $seguridad, $ChecarSesion, 'EditarMaqueo');
+    $app->post('/ActivarDesactivarMaqueo', $seguridad, $ChecarSesion, 'ActivarDesactivarMaqueo');
+
+    /*------------------ Accesorio ------------------------------*/
+    $app->get('/GetAccesorio', $seguridad, $ChecarSesion, 'GetAccesorio');
+    $app->post('/AgregarAccesorio', $seguridad, $ChecarSesion, 'AgregarAccesorio');
+    $app->put('/EditarAccesorio', $seguridad, $ChecarSesion, 'EditarAccesorio');
+    $app->post('/ActivarDesactivarAccesorio', $seguridad, $ChecarSesion, 'ActivarDesactivarAccesorio');
+    
+    $app->post('/GetCombinacionPorAccesorio', $seguridad, $ChecarSesion, 'GetCombinacionPorAccesorio');
+    $app->post('/GuardarImagenAccesorio/:id', $seguridad, $ChecarSesion, 'GuardarImagenAccesorio');
 
     $app->run(); 
 

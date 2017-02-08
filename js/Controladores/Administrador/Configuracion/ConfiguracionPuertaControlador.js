@@ -102,7 +102,7 @@ app.controller("ConfiguracionPuertaControlador", function($scope, $http, $q, CON
     
     $scope.GetMuestrarioPuerta = function()      
     {
-        GetMuestrarioPuerta($http, $q, CONFIG).then(function(data)
+        GetMuestrario($http, $q, CONFIG, 1).then(function(data)
         {
             $scope.muestrario = data;
         }).catch(function(error)
@@ -1009,6 +1009,7 @@ app.controller("ConfiguracionPuertaControlador", function($scope, $http, $q, CON
         }
         else if($scope.operacion == "Editar")
         {
+            $scope.nuevoMuestrario.Margen = "null";
             $scope.EditarMuestrario();
         }        
     };
@@ -1050,12 +1051,12 @@ app.controller("ConfiguracionPuertaControlador", function($scope, $http, $q, CON
             {
                 $scope.mensaje = "Ha ocurrido un error. Intente más tarde";
             }
+            $('#mensajeConfigurarPuerta').modal('toggle');
         }).catch(function(error)
         {
             $scope.mensaje = "Ha ocurrido un error. Intente más tarde. Error: " +error;
+            $('#mensajeConfigurarPuerta').modal('toggle');
         });
-        
-        $('#mensajeConfigurarPuerta').modal('toggle');
     };
     
     $scope.CerrarMuestrarioForma = function()
@@ -1263,7 +1264,7 @@ app.controller("ConfiguracionPuertaControlador", function($scope, $http, $q, CON
         });
     };
     
-     $scope.GetMaterial = function()      
+    $scope.GetMaterial = function()      
     {
         GetMaterial($http, $q, CONFIG).then(function(data)
         {

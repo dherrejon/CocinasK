@@ -1,0 +1,238 @@
+<div ng-controller="ServicioControlador as servicio">
+   
+    <div class="row">
+        <div class="col-md-11 col-xs-10">
+            <div class="table-responsive TablaUnidadNegocio">
+                <table class="table table-hover">
+                    <thead class="TituloTabla">
+                      <tr>
+                        <th><button class="btn btn-block botonOrdenar" ng-click="CambiarOrdenarServicio('Nombre')"><b>Nombre </b><b ng-if="ordenarServicio === 'Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarServicio === '-Nombre'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenarServicio('CostoUnidad')"><b>Costo Unidad </b><b ng-if="ordenarServicio === 'CostoUnidad'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarServicio === '-CostoUnidad'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenarServicio('PrecioVenta')"><b>Precio Venta </b><b ng-if="ordenarServicio === 'PrecioVenta'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarServicio === '-PrecioVenta'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonFalso"><b>Editar</b></button></th>
+                        <th><button class="btn botonFalso"><b>Obligatorio</b></button></th>
+                        <th><button class="btn botonFalso"><b>Activo</b></button></th>
+                      </tr>
+                    </thead>
+                    <tbody ng-repeat="servicio in servicio | orderBy:[ordenarServicio,'Nombre'] | filter:buscarServicio">
+                      <tr>
+                          <td>{{servicio.Nombre}}</td>
+                          
+                          <td>${{servicio.CostoUnidad}}</td>
+                          
+                          <td>${{servicio.PrecioVenta}}</td>
+
+                            <td class="text-center">
+                                <a ng-if="permisoUsuario.servicio.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirServicio('Editar', servicio)">
+                                    <span class="fa fa-pencil fa-2x" ></span>
+                                </a>
+
+                                <span ng-if="!permisoUsuario.servicio.editar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
+                            </td>
+                            
+                            <td class="text-center">
+                                <span class="fa fa-check-square-o fa-2x" ng-if="servicio.Obligatorio"></span>
+                                <span class="fa fa-square-o fa-2x" ng-if="!servicio.Obligatorio"></span>
+                          </td>
+
+                            <td class="text-center">
+                                <div class="checkbox">
+                                    <label>
+                                        <input  ng-disabled="!permisoUsuario.servicio.activar" ng-model="servicio.Activo" type="checkbox" value="" ng-click="ActivarDesactivarServicio(servicio)">
+                                        <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+                                    </label>
+                                </div>
+                            </td>
+
+                      </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-xs-2 col-md-1">
+             <button ng-disabled="!permisoUsuario.servicio.agregar"  class="btn btn-block botonOperacion fa fa-plus text-center" data-toggle="tooltip" data-placement="bottom" title="Agregar Tipo Módulo" ng-click="AbrirServicio('Agregar', null)"></button>
+             
+             <br><br>
+             <!-- Boton buscar -->
+            <div class="dropdown">
+                
+                <button class="btn btn btn-block botonOperacion fa fa-search text-center" data-toggle="dropdown" ></button>
+                    
+                <ul class="dropdown-menu dropdown-menu-right operacionPanel">
+
+                    <li style="width: 225px; height: 35px !important;">
+
+                        <form role="buscar" style="max-width: 200px; height: 25px !important;">
+                            <div class="input-group" >
+                              <input  type="text" class="form-control operacionPanelEntrada" placeholder="Buscar" style="margin-left: 5px; width: 175px;" ng-model="buscarServicio">
+                              <span class="input-group-btn" style="width: 25px;">
+                                <button class="btn operacionPanelBoton" type="button">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                              </span>
+                            </div>
+                        </form>
+                    </li>
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+                     
+    <!------------------------------------ Modales -------------------------------------------------------------------->
+    <!---- Agregar y editar muestrario -->
+    <div class="modal fade" id="servicioModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static" >
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <!-- encabezado del modal -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarMuestrarioForma()"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center" ng-if="operacion === 'Agregar'">Agregar Servicio</h3>
+                            <h3 class="text-center" ng-if="operacion === 'Editar'">Editar Servicio</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+                <br>
+
+                <form class="modal-body" name="servicioForma">
+                <!-- Datos -->
+                    <div class="row">
+                        <!-- Nombre -->
+                        <div class="col-sm-6">
+                             <div class="entrada2">
+                                <input ng-pattern="erNombreGeneral" type="text" required class="{{claseServicio.nombre}} form-control" name="nombre" ng-model="nuevoServicio.Nombre"/>
+                                <label>Nombre</label>
+                            </div>
+                        </div>
+                    </div> 
+                    <br>
+                    <div style="margin-top:10px"></div>
+                   
+                    <div class="row">
+                        <!-- Costo unidad -->
+                        <div class="col-sm-6">
+                             <div class="entrada2">
+                                <input ng-pattern="erNumeroDecimal" type="text" required class="{{claseServicio.costo}} form-control" name="costo" ng-model="nuevoServicio.CostoUnidad"/>
+                                <label>Costo Unidad</label>
+                            </div>
+                        </div>
+                        
+                        <br class="hidden-sm hidden-md hidden-lg">
+                        <div class="hidden-sm hidden-md hidden-lg" style="margin-top:10px"></div>
+                        <!-- Precio venta -->
+                        <div class="col-sm-6">
+                             <div class="entrada2">
+                                <input ng-pattern="erNumeroDecimal" type="text" required class="{{claseServicio.precio}} form-control" name="precio" ng-model="nuevoServicio.PrecioVenta"/>
+                                <label>Precio Venta</label>
+                            </div>
+                        </div>
+                        
+                    </div> 
+                    <br>
+                    
+                    <!--Por defecto -->
+                    <div class="row">
+                      <!-- activo -->
+                       <div class="col-sm-6">
+                             <label class="btn checkBoxActivo">Servicio PorDefecto <input type="checkbox" class="badgebox" ng-model="nuevoServicio.Obligatorio"><span class="badge">&check;</span></label>
+                         </div>
+                         
+                         <br class="hidden-sm hidden-md hidden-lg">
+                         
+                         <!-- por defecto -->
+                        <div class="col-sm-6">
+                             <label class="btn checkBoxActivo">Servicio Activo<input type="checkbox" class="badgebox" ng-model="nuevoServicio.Activo"><span class="badge">&check;</span></label>
+                         </div>
+                        
+                    </div> 
+                    <br>
+                    <!-------- mensaje de error ---->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div ng-repeat="error in mensajeError">
+                                <span class="textoError">{{error}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!---- botones de operacion --->
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <button class="btn botonCancelar btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarMuestrarioForma()">CANCELAR</button>
+                        </div>
+                        
+                        <div class="col-xs-6">
+                            <button ng-disabled="terminar" focus class="btn botonAvanzar btn-block" ng-click="TerminarServicio(servicioForma.nombre.$invalid, servicioForma.costo.$invalid, servicioForma.precio.$invalid)">TERMINAR</button>
+                        </div>
+                    </div>
+                    <br> 
+                </form>
+            </div>
+            <br><br><br>
+        </div>
+    </div>
+    
+    <!-- Desactivar Modal -->
+    <div class="modal fade" id="modalActivarDesactivarServicio" data-keyboard="false" data-backdrop="static">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                
+                <div class="modal-body">
+                    <br>
+                    <div class="panel panel-default modalMensaje">
+                        <br>
+                        <b>{{mensajeAdvertencia}}</b>
+                        <br><br>
+
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <button class="btn botonCancelar" data-dismiss="modal" aria-label="Close" ng-click="CancelarEstatusActivoServicio()">No</button>
+                            </div>
+                            <div class="col-xs-6">
+                                <button class="btn botonAvanzar" data-dismiss="modal" aria-label="Close" ng-click="ConfirmarActualizarServicio()">Si</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div> 
+    
+    <!-- Modal para mensajes -->
+    <div class="modal fade" id="mensajeServicio">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                
+                <div class="modal-body">
+                    <div class="panel panel-default modalMensaje">
+                        <br>
+                        <b>{{mensaje}}</b>
+
+                        <br><br>
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <button class="btn  botonAvanzar" data-dismiss="modal" aria-label="Close">Aceptar</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>             
+    
+                        
+</div>
+
+     

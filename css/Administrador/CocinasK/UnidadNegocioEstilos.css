@@ -42,6 +42,8 @@
 .botonOrdenar
 {
     background: transparent;
+    width: 100%;
+    text-align: left!important;
 }
 
 
@@ -55,6 +57,7 @@
 .botonFalso
 {
     background: transparent;
+    width: 100%;
 }
 
 
@@ -79,7 +82,7 @@
 
 .botonRegistroDeshabilitado
 {
-    color: rgb(89, 89, 89);
+    color: rgba(38, 38, 38, 0.3);
 }
 
  /*-----------------dropdonw de buscar y filtrar --------------*/

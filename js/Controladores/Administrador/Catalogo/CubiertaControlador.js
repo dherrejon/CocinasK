@@ -781,23 +781,26 @@ app.controller("CubiertaControlador", function($scope, $http, $q, CONFIG, datosU
             return false;
         }
         
-        for(var k=0; k<$scope.material.length; k++)
+        if($scope.nuevoMaterial)
         {
-            if($scope.material[k].Nombre.toLowerCase() == $scope.nuevaCubierta.Material.Nombre.toLowerCase())
-            {   
-                $scope.claseCubierta.nuevoMaterial = "entradaError";
-                $scope.mensajeError[$scope.mensajeError.length] = "*El material " + $scope.nuevaCubierta.Material.Nombre.toLowerCase() + " ya existe.";
-                return false;        
+            for(var k=0; k<$scope.material.length; k++)
+            {
+                if($scope.material[k].Nombre.toLowerCase() == $scope.nuevaCubierta.Material.Nombre.toLowerCase())
+                {   
+                    $scope.claseCubierta.nuevoMaterial = "entradaError";
+                    $scope.mensajeError[$scope.mensajeError.length] = "*El material " + $scope.nuevaCubierta.Material.Nombre.toLowerCase() + " ya existe.";
+                    return false;        
+                }
             }
-        }
         
-        for(var k=0; k<$scope.cubierta.length; k++)
-        {
-            if($scope.cubierta[k].Material.Nombre.toLowerCase() == $scope.nuevaCubierta.Material.Nombre.toLowerCase())
-            {   
-                $scope.claseCubierta.nuevoMaterial = "entradaError";
-                $scope.mensajeError[$scope.mensajeError.length] = "*El material " + $scope.nuevaCubierta.Material.Nombre.toLowerCase() + " ya existe.";
-                return false;        
+            for(var k=0; k<$scope.cubierta.length; k++)
+            {
+                if($scope.cubierta[k].Material.Nombre.toLowerCase() == $scope.nuevaCubierta.Material.Nombre.toLowerCase() && $scope.cubierta[k].Material.MaterialId != $scope.nuevaCubierta.Material.MaterialId)
+                {   
+                    $scope.claseCubierta.nuevoMaterial = "entradaError";
+                    $scope.mensajeError[$scope.mensajeError.length] = "*El material " + $scope.nuevaCubierta.Material.Nombre.toLowerCase() + " ya existe.";
+                    return false;        
+                }
             }
         }
         

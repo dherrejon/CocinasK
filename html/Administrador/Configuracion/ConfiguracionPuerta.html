@@ -4,7 +4,7 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="tituloModulo">
-                <span>Configurar - {{titulo}}</span>
+                <span>Configurar Puerta - {{titulo}}</span>
             </div>
         </div>
     </div>
@@ -61,13 +61,13 @@
                                             <td>{{puerta.Nombre}}</td>
                                             <td>{{puerta.Muestrario.Nombre}}</td>
                                             
-                                            <td>
+                                            <td class="text-center">
                                                 <a class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirDetallesPuerta(puerta)">
                                                     <span class="fa fa-eye fa-2x"></span>
                                                 </a>
                                             </td>
                                             
-                                            <td>
+                                            <td class="text-center"> 
                                                 <a ng-if="permisoUsuario.puerta.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirPuertaForma('Editar', puerta)">
                                                     <span class="fa fa-pencil fa-2x"></span>
                                                 </a>
@@ -75,7 +75,7 @@
                                                 <span ng-if="!permisoUsuario.puerta.editar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
                                             </td>
                                               
-                                            <td>
+                                            <td class="text-center">
                                                 <div class="checkbox">
                                                     <label>
                                                         <input ng-disabled="!permisoUsuario.puerta.activar" ng-model="puerta.Activo" type="checkbox" value="" ng-click="CambiarEstatusActivo('puerta', puerta)">
@@ -197,7 +197,7 @@
                                     <table class="table table-hover">
                                         <thead class="TituloTabla">
                                           <tr>
-                                            <th><button class="btn botonFalso"><b>Nombre</b></button></th>
+                                            <th><button class="btn botonOrdenar"><b>Nombre</b></button></th>
                                             <th><button class="btn botonFalso"><b>Detalles</b></button></th>
                                             <th><button class="btn botonFalso"><b>Editar</b></button></th>
                                             <th><button class="btn botonFalso"><b>Activo</b></button></th>
@@ -210,13 +210,13 @@
                                                   <span ng-if="muestrario.PorDefecto" class="fa fa-asterisk" data-toggle="tooltip" data-placement="bottom" title="Muestrario por defecto"></span>
                                               </td>
                                             
-                                            <td>
+                                            <td class="text-center">
                                                 <a class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirDetallesMuestrario(muestrario)">
                                                     <span class="fa fa-eye fa-2x"></span>
                                                 </a>
                                             </td>
                                             
-                                            <td>
+                                            <td class="text-center">
                                                 <a ng-if="permisoUsuario.muestrario.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirMuestrarioModal('Editar', muestrario)">
                                                     <span class="fa fa-pencil fa-2x" ></span>
                                                 </a>
@@ -224,10 +224,10 @@
                                                 <span ng-if="!permisoUsuario.muestrario.editar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
                                             </td>
                                               
-                                            <td>
+                                            <td class="text-center">
                                                 <div class="checkbox">
                                                     <label>
-                                                        <input  ng-disabled="muestrario.PorDefecto || !permisoUsuario.muestrario.agregar" ng-model="muestrario.Activo" type="checkbox" value="" ng-click="CambiarEstatusActivo('muestrario', muestrario)">
+                                                        <input  ng-disabled="muestrario.PorDefecto || !permisoUsuario.muestrario.activar" ng-model="muestrario.Activo" type="checkbox" value="" ng-click="CambiarEstatusActivo('muestrario', muestrario)">
                                                         <span class="cr"><i class="cr-icon fa fa-check"></i></span>
                                                     </label>
                                                 </div>
@@ -403,8 +403,8 @@
                                                 <table class="table table-hover">
                                                     <thead class="TituloTabla">
                                                       <tr>
-                                                        <th><button class="btn botonFalso"><b>Pieza</b></button></th>
-                                                        <th><button class="btn botonFalso"><b>Cantidad</b></button></th>
+                                                        <th><button class="btn botonOrdenar"><b>Pieza</b></button></th>
+                                                        <th><button class="btn botonOrdenar"><b>Cantidad</b></button></th>
                                                         <th><button class="btn botonFalso"><b>Quitar</b></button></th>
                                                       </tr>
                                                     </thead>
@@ -420,7 +420,7 @@
                                                             </div>
                                                         </td>
 
-                                                        <td>
+                                                        <td class="text-center">
                                                             <a class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="QuitarPieza(pieza)">
                                                                 <span class="fa fa-times fa-2x"></span>
                                                             </a>
@@ -617,13 +617,13 @@
                                         <thead class="TituloTabla">
                                           <tr>
                                             <th><button class="btn botonOrdenar"><b>Pieza</b></button></th>
-                                            <th><button class="btn botonOrdenar"><b>Cantidad</b></button></th>
+                                            <th><button class="btn botonFalso"><b>Cantidad</b></button></th>
                                           </tr>
                                         </thead>
                                         <tbody ng-repeat="pieza in componentePorPuerta | filter:{NombreComponente:componente.NombreComponente} | orderBy:'NombrePieza'">
                                           <tr>
                                             <td>{{pieza.NombrePieza}}</td>
-                                            <td>{{pieza.Cantidad}}</td>
+                                            <td class="text-center">{{pieza.Cantidad}}</td>
                                           </tr>
                                         </tbody>
                                     </table>
@@ -651,7 +651,7 @@
                                             <th><button class="btn botonOrdenar"><b>Componente</b></button></th>
                                             <th><button class="btn botonOrdenar"><b>Tipo Material</b></button></th>
                                             <th><button class="btn botonOrdenar"><b>Material</b></button></th>
-                                            <th><button class="btn botonOrdenar"><b>Grueso</b></button></th>
+                                            <th><button class="btn botonFalso"><b>Grueso</b></button></th>
                                           </tr>
                                         </thead>
                                         <tbody ng-repeat="componente in combinacionPorPuerta | filter:{CombinacionMaterial: combinacion.CombinacionMaterial} | orderBy:'Componente.Nombre' track by $index">
@@ -659,7 +659,7 @@
                                             <td>{{componente.Componente.Nombre}}</td>
                                             <td>{{componente.Material.TipoMaterial.Nombre}}</td>
                                             <td>{{componente.Material.Nombre}}</td>
-                                            <td>{{componente.Grueso}}</td>
+                                            <td class="text-center">{{componente.Grueso}}</td>
                                           </tr>
                                         </tbody>
                                     </table>
@@ -773,20 +773,16 @@
                                     <thead class="TituloTabla">
                                       <tr>
                                         <th><button class="btn botonOrdenar"><b>Puerta </b></button></th>
-                                        <th><button class="btn botonOrdenar"><b>Activo </b></button></th>
+                                        <th><button class="btn botonFalso"><b>Activo </b></button></th>
                                       </tr>
                                     </thead>
                                     <tbody ng-repeat="puerta in puertaPorMuestrario | orderBy:'puerta.Nombre'">
                                       <tr>
                                         <td>{{puerta.Nombre}}</td>
                                         
-                                        <td>
-                                            <div class="checkbox">
-                                                <label>
-                                                    <input disabled ng-model="puerta.Activo" type="checkbox" value="">
-                                                    <span class="cr"><i class="cr-icon fa fa-check"></i></span>
-                                                </label>
-                                            </div>
+                                        <td class="text-center">
+                                            <span class="fa fa-check-square-o fa-2x" ng-if="puerta.Activo"></span>
+                                            <span class="fa fa-square-o fa-2x" ng-if="!puerta.Activo"></span>
                                         </td>
                                       </tr>
                                     </tbody>

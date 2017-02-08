@@ -879,6 +879,12 @@ app.controller("EjecutivoControlador", function($scope, $http, $q, CONFIG, datos
     {   
         var count = 0;
         
+        for(var k=0; k<$scope.componentePuerta.length; k++)
+        {
+            $scope.componentePuerta[k].FormulaLargo = $scope.SustituirModulo($scope.componentePuerta[k].FormulaLargo);
+            $scope.componentePuerta[k].FormulaAncho = $scope.SustituirModulo($scope.componentePuerta[k].FormulaAncho);
+        }
+        
         for(var i=0; i<$scope.seccionModulo.length; i++)
         {
             $scope.seccionModulo[i].Pieza = [];

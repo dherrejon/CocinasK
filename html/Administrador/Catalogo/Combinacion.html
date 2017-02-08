@@ -19,7 +19,8 @@
                         <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('Nombre')"><b>Nombre </b><b ng-if="ordenarPor === 'Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-Nombre'" class="fa fa-arrow-down"></b></button></th>
                         <th><button class="btn botonFalso"><b>Detalles</b></button></th>
                         <th><button class="btn botonFalso"><b>Editar</b></button></th>
-                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('ActivoN')"><b>Activo</b> <b ng-if="ordenarPor === 'ActivoN'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-ActivoN'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonFalso"><b>Activo</b></button></th>
+                        <!--<th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('ActivoN')"><b>Activo</b> <b ng-if="ordenarPor === 'ActivoN'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-ActivoN'" class="fa fa-arrow-down"></b></button></th>-->
                       </tr>
                     </thead>
                     <tbody ng-repeat="combinacion in combinacion | filter:buscar | orderBy:[ordenarPor, 'Nombre']">
@@ -29,13 +30,13 @@
                          <span ng-if="combinacion.PorDefecto" class="fa fa-asterisk" data-toggle="tooltip" data-placement="bottom" title="Combinación por defecto"></span>
                         </td>
                           
-                        <td>
+                        <td class="text-center">
                             <a  class="BotonOperacion" href="" data-toggle="modal" data-target="#DetallesCombinacion" ng-click="MostarDetalles(combinacion)">
                                 <span class="fa fa-eye fa-2x"></span>
                             </a>
                         </td>
 
-                        <td>
+                        <td class="text-center">
                             <a  ng-if="permisoUsuario.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirCombinacionMaterialModal('Editar', combinacion)">
                                 <span class="fa fa-pencil fa-2x"></span>
                             </a>
@@ -43,7 +44,7 @@
                             <span ng-if="!permisoUsuario.editar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
                         </td>
 
-                        <td>
+                        <td class="text-center">
                             <div class="checkbox">
                                 <label>
                                     <input ng-disabled="!permisoUsuario.activar"  ng-model="combinacion.Activo" type="checkbox" value="" ng-click="CambiarEstatusActivo(combinacion)">
@@ -93,7 +94,7 @@
     <!----------------------------------- Modales --------------------------->
     
     <!--- Modal para Detalles del los materiales por componente --->
-    <div class="modal fade " id="DetallesCombinacion"  >
+    <div class="modal fade " id="DetallesCombinacion" >
         <br>    <br>   <br>
         <div class="modal-dialog modal-md">
             <div class="modal-content">
@@ -146,7 +147,7 @@
                                         <th><button class="btn botonOrdenar"><b>Componente </b></button></th>
                                         <th><button class="btn botonOrdenar"><b>Tipo de Material </b></button></th>
                                         <th><button class="btn botonOrdenar"><b>Material </b></button></th>
-                                        <th><button class="btn botonOrdenar"><b>Grueso </b></button></th>
+                                        <th><button class="btn botonFalso"><b>Grueso </b></button></th>
                                       </tr>
                                     </thead>
                                     <tbody ng-repeat="material in combinacionMaterialComponente | orderBy:['Componente.Nombre']">
@@ -154,7 +155,7 @@
                                         <td>{{material.Componente.Nombre}}</td>
                                         <td>{{material.Material.TipoMaterial.Nombre}}</td>
                                         <td>{{material.Material.Nombre}}</td>
-                                        <td>{{material.Grueso}}</td>
+                                        <td class="text-center">{{material.Grueso}}</td>
                                       </tr>
                                     </tbody>
                                 </table>
@@ -165,7 +166,7 @@
                     <div class="row" ng-if="combinacionPorPuerta.length > 0">
                       
                         <div class="col-xs-12 subtituloModal">
-                            <b>Materiales por Puerta {{combinacionPorPuerta.length}}</b>
+                            <b>Materiales por Puerta</b>
                         </div>
                         <br><br>  
                         <div class="col-xs-12">
@@ -180,7 +181,7 @@
                                             <th><button class="btn botonOrdenar"><b>Componente</b></button></th>
                                             <th><button class="btn botonOrdenar"><b>Tipo Material</b></button></th>
                                             <th><button class="btn botonOrdenar"><b>Material</b></button></th>
-                                            <th><button class="btn botonOrdenar"><b>Grueso</b></button></th>
+                                            <th><button class="btn botonFalso"><b>Grueso</b></button></th>
                                           </tr>
                                         </thead>
                                         <tbody ng-repeat="componente in combinacionPorPuerta | filter:FiltarPuerta | orderBy:'Componente.Nombre' track by $index">
@@ -188,7 +189,7 @@
                                             <td>{{componente.Componente.Nombre}}</td>
                                             <td>{{componente.Material.TipoMaterial.Nombre}}</td>
                                             <td>{{componente.Material.Nombre}}</td>
-                                            <td>{{componente.Grueso}}</td>
+                                            <td class="text-center">{{componente.Grueso}}</td>
                                           </tr>
                                         </tbody>
                                     </table>
@@ -260,10 +261,10 @@
                                     <table class="table table-hover">
                                         <thead class="TituloTabla">
                                           <tr>
-                                            <th><button class="btn botonFalso"><b>Componente</b></button></th>
-                                            <th><button class="btn botonFalso"><b>Tipo Material</b></button></th>
-                                            <th><button class="btn botonFalso"><b>Material</b></button></th>
-                                            <th><button class="btn botonFalso"><b>Grueso</b></button></th>
+                                            <th><button class="btn botonOrdenar"><b>Componente</b></button></th>
+                                            <th><button class="btn botonOrdenar"><b>Tipo Material</b></button></th>
+                                            <th><button class="btn botonOrdenar"><b>Material</b></button></th>
+                                            <th><button class="btn botonOrdenar"><b>Grueso</b></button></th>
                                           </tr>
                                         </thead>
                                         <tbody ng-repeat="combinacion in combinacionMaterialComponente | orderBy:'Componente.Nombre'" ng-if="combinacion.Componente.Activo">

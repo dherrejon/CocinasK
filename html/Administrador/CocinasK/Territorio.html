@@ -21,7 +21,8 @@
                         <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('Margen')"><b>Margen </b><b ng-if="ordenarPor === 'Margen'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-Margen'" class="fa fa-arrow-down"></b></button></th>
                         <th><button class="btn botonFalso"><b>Detalles</b></button></th>
                         <th><button class="btn botonFalso"><b>Editar</b></button></th>
-                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('ActivoN')"><b>Activo</b> <b ng-if="ordenarPor === 'ActivoN'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-ActivoN'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonFalso"><b>Activo</b></button></th>
+                        <!--<th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('ActivoN')"><b>Activo</b> <b ng-if="ordenarPor === 'ActivoN'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-ActivoN'" class="fa fa-arrow-down"></b></button></th>-->
                       </tr>
                     </thead>
                     <tbody ng-repeat="territorio in territorio | filter:filtarTerrirotio | filter:buscar | orderBy:[ordenarPor, 'Nombre']">
@@ -29,13 +30,13 @@
                         <td>{{territorio.Nombre}}</td>
                         <td>{{territorio.Margen}}</td>
                           
-                        <td>
+                        <td class="text-center">
                             <a  class="BotonOperacion" href="" data-toggle="modal" data-target="#DetallesTerriotorio" ng-click="MostarDetalles(territorio)">
                                 <span class="fa fa-eye fa-2x"></span>
                             </a>
                         </td>
 
-                        <td>
+                        <td class="text-center">
                             <a ng-if="permisoUsuario.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirTerritotioModal(territorio,'Editar')">
                                 <span class="fa fa-pencil fa-2x"></span>
                             </a>
@@ -43,7 +44,7 @@
                             <span ng-if="!permisoUsuario.editar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
                         </td>
 
-                        <td>
+                        <td class="text-center">
                             <div class="checkbox">
                                 <label>
                                     <input ng-disabled="!permisoUsuario.activar" ng-model="territorio.Activo" type="checkbox" value="" ng-click="ConfirmarCambiarActivo(territorio)">

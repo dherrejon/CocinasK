@@ -123,6 +123,15 @@ app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpPro
     when('/ConfigurarCubierta',{
         templateUrl: 'html/Administrador/Configuracion/ConfiguracionCubierta.html'
     }).
+    when('/ConfigurarAccesorio',{
+        templateUrl: 'html/Administrador/Configuracion/ConfiguracionAccesorio.html'
+    }).
+    when('/Servicio',{
+        templateUrl: 'html/Administrador/Configuracion/ConfiguracionServicio.html'
+    }).
+    when('/Maqueo',{
+        templateUrl: 'html/Administrador/Configuracion/ConfiguracionMaqueo.html'
+    }).
     //Catálogos
     when('/Combinacion',{
         templateUrl: 'html/Administrador/Catalogo/Combinacion.html'
@@ -133,7 +142,10 @@ app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpPro
     when('/Cubierta',{
         templateUrl: 'html/Administrador/Catalogo/Cubierta.html'
     }).
-    
+    when('/Accesorio',{
+        templateUrl: 'html/Administrador/Catalogo/Accesorio.html'
+    }).
+    //Otros Perfiles
     when('/Ejecutivo',{
         templateUrl: 'html/Ejecutivo/Ejecutivo.html'
     }).
@@ -206,7 +218,7 @@ app.run(function($rootScope, $location, $window, $http, CONFIG, $q, datosUsuario
     $rootScope.GetEstadoSesion();                     //Cada ves que se inicializa la aplicación verifica los datos del ususario
     
     /*-----------------Expresiones Regulares--------------------------*/
-    $rootScope.erNombreGeneral = /^(([a-z ñáéíóú]|[A-Z ÑÁÉÍÓÚ]|[0-9]|\.|\+|\-|\#|\[|\]) ?)+$/;   //expresión regular para nombres
+    $rootScope.erNombreGeneral = /^(([a-z ñáéíóú]|[A-Z ÑÁÉÍÓÚ]|[0-9]|\.|\+|\-|\#|\[|\]|\(|\)) ?)+$/;   //expresión regular para nombres
     $rootScope.erTelefono = /^(\d){10}$/;                                          //expresión regular para el teléfono   // \((\d){3}\) \d{3}-\d{4}
     $rootScope.erCP = /^(\d){5}$/;                                          //expresión regular para el código postal 
     $rootScope.erEmail = /^[_a-z0-9-]+(.[_a-z0-9-]+)*@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,4})$/;   //expresion regular para correo electronico                                       

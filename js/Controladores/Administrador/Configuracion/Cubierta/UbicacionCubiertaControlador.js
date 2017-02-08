@@ -238,7 +238,12 @@ app.controller("UbicacionControlador", function($scope, $http, $q, CONFIG, $root
         $scope.ubicacionActualizar.Activo = !$scope.ubicacionActualizar.Activo;
     };
     
+    
+    //***---------------Inicializae---------------*/
     $scope.GetUbicacionCubierta();
-    //$scope.GetTipoCubierta();
-    $scope.GetFabricacionCubiertaUbicacion();
+    
+    $rootScope.InicializarUbicacionCubierta = function()
+    {
+        $scope.GetFabricacionCubiertaUbicacion();
+    };
 });

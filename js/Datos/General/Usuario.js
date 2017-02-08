@@ -174,3 +174,15 @@ function SetPerfilInSesion(perfil, $http, CONFIG)
 
      });
 }
+
+function CambiarDatoBool(dato)
+{
+    if(dato)
+    {
+        return "1";
+    }
+    else
+    {
+        return "0";
+    }
+}

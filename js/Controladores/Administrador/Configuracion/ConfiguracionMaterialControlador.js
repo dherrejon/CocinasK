@@ -594,7 +594,7 @@ app.controller("ConfiguaracionMaterial", function($scope, $http, $q, CONFIG, $ro
         
         for(var k=0; k<$scope.material.length; k++)
         {
-            if($scope.material[k].Nombre.toLowerCase() == $scope.nuevoMaterial.Nombre.toLowerCase() && $scope.material[k].MaterialId != $scope.nuevoMaterial.MaterialId && $scope.material[k].TipoMaterial.TipoMaterialId != $scope.nuevoMaterial.TipoMaterial.TipoMaterialId)
+            if($scope.material[k].Nombre.toLowerCase() == $scope.nuevoMaterial.Nombre.toLowerCase() && $scope.material[k].MaterialId != $scope.nuevoMaterial.MaterialId && $scope.material[k].TipoMaterial.TipoMaterialId == $scope.nuevoMaterial.TipoMaterial.TipoMaterialId)
             {
                 $scope.claseMaterial.nombre = "entradaError";
                 $scope.mensajeError[$scope.mensajeError.length] = "*El material " + $scope.nuevoMaterial.TipoMaterial.Nombre + " - " + $scope.nuevoMaterial.Nombre + " ya existe.";

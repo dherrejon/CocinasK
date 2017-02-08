@@ -92,6 +92,11 @@ app.controller("ConfiguaracionCubiertaControlador", function($scope, $http, $q, 
                 $('#Ubicacion').show();
                 $('#MuestrarioColor').hide();
                 $('#Fabricacion').hide();
+                
+                if($scope.permisoUsuario.ubicacion.editar)
+                {
+                    $rootScope.InicializarUbicacionCubierta();
+                }
                 break;
             default:
                 break;

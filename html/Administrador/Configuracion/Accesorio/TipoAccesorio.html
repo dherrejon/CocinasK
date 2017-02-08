@@ -1,0 +1,250 @@
+<div ng-controller="TipoAccesorioControlador as tipoAccesorio">
+    
+    <div class="row">
+        <div class="col-md-11 col-xs-10">
+            <div class="table-responsive TablaUnidadNegocio">
+                <table class="table table-hover">
+                    <thead class="TituloTabla">
+                      <tr>
+                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenarTipoAccesorio('Nombre')"><b>Nombre </b><b ng-if="ordenarPorTipoAccesorio === 'Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPorTipoAccesorio === '-Nombre'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenarTipoAccesorio('ClaseAccesorio.Nombre')"><b>Clase Accesorio </b><b ng-if="ordenarPorTipoAccesorio === 'ClaseAccesorio.Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPorTipoAccesorio === '-ClaseAccesorio.Nombre'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonFalso"><b>Instrucciones</b></button></th>
+                        <th><button class="btn botonFalso"><b>Editar</b></button></th>
+                        <th><button class="btn botonFalso"><b>Activo</b></button></th>
+                      </tr>
+                    </thead>
+                    <tbody ng-repeat="tipo in tipoAccesorio | orderBy:[ordenarPorTipoAccesorio, 'Nombre'] | filter:{Nombre:buscarTipoAccesorio}">
+                      <tr>
+                        <td>{{tipo.Nombre}}</td>
+                        <td>{{tipo.ClaseAccesorio.Nombre}}</td>
+                        
+                        <td class="text-center"> 
+                            <a ng-if="tipo.Instrucciones.length > 0" class="BotonOperacion" href="" data-toggle="tooltip" data-placement="bottom" title="Descargar instrucciones para presupuestar este tipo de accesorio" ng-click="DescargarIntrucciones(tipo)">
+                                <span class="fa fa-file-pdf-o fa-2x"></span>
+                            </a>
+
+                            <span ng-if="tipo.Instrucciones.length == 0" class="fa fa-file-pdf-o fa-2x botonRegistroDeshabilitado"></span>
+                        </td>
+
+                        <td class="text-center">
+                            <a ng-if="permisoUsuario.tipoAccesorio.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirTipoAccesorio('Editar', tipo)">
+                                <span class="fa fa-pencil fa-2x"></span>
+                            </a>
+
+                            <span ng-if="!permisoUsuario.tipoAccesorio.editar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
+                        </td>
+
+                        <td class="text-center">
+                            <div class="checkbox">
+                                <label>
+                                    <input ng-disabled="!permisoUsuario.tipoAccesorio.activar" ng-model="tipo.Activo" type="checkbox" value="" ng-click="ActivarDesactivarTipoAccesorio(tipo)">
+                                    <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+                                </label>
+                            </div>
+                        </td>
+
+                      </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-xs-2 col-md-1">
+             <button ng-disabled="!permisoUsuario.tipoAccesorio.agregar"  class="btn btn-block botonOperacion fa fa-plus text-center" data-toggle="tooltip" data-placement="bottom" title="Agregar Tipo de Accesorio" ng-click="AbrirTipoAccesorio('Agregar', null)"></button>
+             
+             <br><br>
+             <!-- Boton buscar -->
+            <div class="dropdown">
+                
+                <button class="btn btn btn-block botonOperacion fa fa-search text-center" data-toggle="dropdown" ></button>
+                    
+                <ul class="dropdown-menu dropdown-menu-right operacionPanel">
+
+                    <li style="width: 225px; height: 35px !important;">
+
+                        <form role="buscar" style="max-width: 200px; height: 25px !important;">
+                            <div class="input-group" >
+                              <input  type="text" class="form-control operacionPanelEntrada" placeholder="Buscar" style="margin-left: 5px; width: 175px;" ng-model="buscarTipoAccesorio">
+                              <span class="input-group-btn" style="width: 25px;">
+                                <button class="btn operacionPanelBoton" type="button">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                              </span>
+                            </div>
+                        </form>
+                    </li>
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+                     
+     <!------------------------------------ Modales -------------------------------------------------------------------->
+                      
+    <!---- Modal para Agregar-editar Grupo Color Cubierta -->
+    <div class="modal fade" id="tipoAccesorioModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static" >
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <!-- encabezado del modal -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="LimpiarArchivoIntrucciones()"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center" ng-if="operacion === 'Agregar'">Agregar Tipo Accesorio</h3>
+                            <h3 class="text-center" ng-if="operacion === 'Editar'">Editar Tipo Accesorio</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+                <br>
+
+                <form class="modal-body" name="tipoAccesorioForma">
+                    <div class="row">
+                       <!-- clase de accesorio -->
+                        <div class="col-sm-6 etiquetaDropdownList">
+                             <label>Clase Accesorio</label>
+                             <div class="dropdown">
+
+                                <button class="dropdown-toggle  {{claseTipoAccesorio.clase}}" data-toggle="dropdown">
+                                    <span>{{nuevoTipoAccesorio.ClaseAccesorio.Nombre}}</span>
+                                    <span class="caret"></span>
+                                </button>
+
+                                <ul class="dropdown-menu elemetosDropdownListModal">
+                                    <li ng-repeat="clase in claseAccesorio | orderBy:'Nombre'">
+                                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarClaseAccesorio(clase)">
+                                            <span>{{clase.Nombre}}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                            </div>
+                        </div>
+                    
+                        <div class="col-xs-12 col-sm-6" style="margin-top:10px">
+                            <!-- Nombre -->
+                             <div class="entrada2">
+                                <input ng-pattern="erNombreGeneral" type="text" required class="{{claseTipoAccesorio.nombre}} form-control" name="nombre" ng-model="nuevoTipoAccesorio.Nombre"/>
+                                <label>Nombre</label>
+                            </div>
+                        </div>
+
+                    </div>
+                    
+                    <br>
+                    
+                    <div class="row">
+                       <div class="col-sm-6 etiquetaDropdownList">
+                             <label>Instrucciones</label>
+                             <div  method="post" enctype="multipart/form-data">
+                               <div class="input-group file-preview">
+                                    <input ng-if="archivoSeleccionado" type="text" class="form-control NombreArchivo" disabled="disabled" ng-model="instrucciones[0].name" data-toggle="tooltip" data-placement="bottom" title="{{instrucciones[0].name}}">
+                                    <input ng-if="!archivoSeleccionado" type="text" class="form-control NombreArchivo" disabled="disabled" ng-model="nuevoTipoAccesorio.NombreArchivo" data-toggle="tooltip" data-placement="bottom" title="{{nuevoTipoAccesorio.NombreArchivo}}">
+                                    <span class="input-group-btn"> 
+
+                                        <!--<button type="button" class="btn btn-default file-preview-clear" > <span class="glyphicon glyphicon-remove"></span> Clear </button>-->
+
+                                        <div class="btn botonOperacion file-preview-input"> <span class="fa fa-upload"></span>
+                                            <input type="file" id="cargarInstrucciones" accept="application/pdf" name="instruciones" onchange="angular.element(this).scope().CargarInstrucciones(this)" data-toggle="tooltip" data-placement="bottom" title="Cargar Instrucciones"/>
+                                        </div>
+
+                                        <button ng-disabled="nuevoTipoAccesorio.Instrucciones.length == 0 || nuevoTipoAccesorio.Instrucciones.length == null" type="button" class="btn btn-labeled botonOperacion" data-toggle="tooltip" data-placement="bottom" title="Descargar Instrucciones" ng-click="DescargarIntrucciones(nuevoTipoAccesorio)"> <span class="fa fa-file-pdf-o"></span></button>
+                                    </span> 
+                                </div>
+                           </div>
+                        </div>
+                        
+                            
+                        <!-- Activo -->
+                       <div class="col-xs-12 col-sm-6" style="margin-top:10px">
+                             <label class="btn checkBoxActivo">Tipo Accesorio Activo <input type="checkbox" class="badgebox" ng-model="nuevoTipoAccesorio.Activo"><span class="badge">&check;</span></label>
+                        </div>
+
+                    </div>
+                  
+                    <br>
+                    <!-------- mensaje de error ---->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div ng-repeat="error in mensajeError">
+                                <span class="textoError">{{error}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!---- botones de operacion --->
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <button class="btn botonCancelar btn-block" data-dismiss="modal" aria-label="Close" ng-click="LimpiarArchivoIntrucciones()">CANCELAR</button>
+                        </div>
+                        
+                        <div class="col-xs-6">
+                            <button focus class="btn botonAvanzar btn-block" ng-click="TerminarTipoAccesorio(tipoAccesorioForma.nombre.$invalid)">TERMINAR</button>
+                        </div>
+                    </div>
+                    <br>
+                </form>
+            </div>
+            <br><br><br>
+        </div>
+    </div>
+         
+    <!-- Desactivar Modal -->
+    <div class="modal fade" id="modalActivarDesactivarTipoAccesorio" data-keyboard="false" data-backdrop="static">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                
+                <div class="modal-body">
+                    <br>
+                    <div class="panel panel-default modalMensaje">
+                        <br>
+                        <b>{{mensajeAdvertencia}}</b>
+                        <br><br>
+
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <button class="btn botonCancelar" data-dismiss="modal" aria-label="Close" ng-click="CancelarEstatusActivoTipoAccesorio()">No</button>
+                            </div>
+                            <div class="col-xs-6">
+                                <button class="btn botonAvanzar" data-dismiss="modal" aria-label="Close" ng-click="ConfirmarActualizarTipoAccesorio()">Si</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div> 
+    
+    <!-- Modal para mensajes -->
+    <div class="modal fade" id="mensajeTipoAccesorio">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                
+                <div class="modal-body">
+                    <div class="panel panel-default modalMensaje">
+                        <br>
+                        <b>{{mensaje}}</b>
+
+                        <br><br>
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <button class="btn  botonAvanzar" data-dismiss="modal" aria-label="Close">Aceptar</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>  
+                        
+</div>
+
+     
