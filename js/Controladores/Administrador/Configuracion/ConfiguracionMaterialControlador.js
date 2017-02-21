@@ -1,5 +1,6 @@
 app.controller("ConfiguaracionMaterial", function($scope, $http, $q, CONFIG, $rootScope, datosUsuario, $window, $filter, $location)
-{   
+{
+    $rootScope.clasePrincipal = "";
     $scope.permisoUsuario = {
                             material:{consultar:false, agregar:false, editar:false, activar:false}, 
                             tipoMaterial:{consultar:false, agregar:false, editar:false, activar:false}

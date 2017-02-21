@@ -121,13 +121,29 @@
                             </div>
                         </div>
                     </div>
-                        
-                
+                    <br>
                     <div class="row">
-                        <div class="col-xs-12">
+                        <div class="col-sm-6">
                             <div class="subrayado">
-                            <label>Nombre</label><br>
-                            <span class="textoModal">{{nuevaCombinacion.Nombre}}</span>
+                                <label>Nombre</label><br>
+                                <span class="textoModal">{{nuevaCombinacion.Nombre}}</span>
+                            </div>
+                        </div>
+                        <br div class="hidden-sm hidden-md hidden-lg">
+                        <div class="col-sm-6">
+                            <div class="subrayado">
+                                <label>Tipo de Combinación</label><br>
+                                <span class="textoModal">{{nuevaCombinacion.TipoCombinacion.Nombre}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!--  Descripcion del presupuesto -->
+                    <div class="row">
+                        <div class="col-sm-12">
+                           <label>Descripción presupuesto</label><br>
+                            <div class="bordeBug">
+                                <span>{{nuevaCombinacion.TipoCombinacion.Descripcion}}</span>
                             </div>
                         </div>
                     </div>
@@ -138,8 +154,12 @@
                             <b>Materiales por Componente</b>
                         </div>
                         <div class="col-xs-12">
+                           
+                           <br>
+                            <button class="btn btn-block" ng-class="GetClaseDetallesPuerta('COMPONENTE')" ng-click="MostraComponentePuerta('COMPONENTE')">Componentes</button>
+                            <br>
                             
-                            <div class="table-responsive TablaModal">
+                            <div class="table-responsive TablaModal" ng-if=" mostrarComponentePuerta == 'COMPONENTE' ">
                                 <table class="table table-hover">
                                     <thead class="TituloTabla">
                                       <tr>
@@ -199,6 +219,38 @@
                         </div>
                     </div>
                     
+                    <div class="row" ng-if="combinacionAccesorio.length > 0">
+                       <div class="col-xs-12 subtituloModal">
+                            <b>Materiales por Accesorio</b>
+                        </div>
+                        <div class="col-xs-12">
+                            <br>
+                            <button class="btn btn-block" ng-class="GetClaseDetallesPuerta('ACCESORIO')" ng-click="MostraComponentePuerta('ACCESORIO')">Accesorios</button>
+                            <br>
+                            <div class="table-responsive TablaModal">
+                                <table class="table table-hover" ng-if=" mostrarComponentePuerta == 'ACCESORIO' ">
+                                    <thead class="TituloTabla">
+                                      <tr>
+                                        <!--<th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('Colaborador')"><b>Responsable</b> <b ng-if="ordenarPor === 'Colaborador'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-Colaborador'" class="fa fa-arrow-down"></b></button></th>-->
+                                        <th><button class="btn botonOrdenar"><b>Accesorio </b></button></th>
+                                        <th><button class="btn botonFalso"><b>Tipo de Material </b></button></th>
+                                        <th><button class="btn botonFalso"><b>Material </b></button></th>
+                                        <th><button class="btn botonFalso"><b>Grueso </b></button></th>
+                                      </tr>
+                                    </thead>
+                                    <tbody ng-repeat="material in combinacionAccesorio | orderBy:['Accesorio.Nombre']">
+                                      <tr ng-if="material.Accesorio.Activo">
+                                        <td>{{material.Accesorio.Nombre}}</td>
+                                        <td>{{material.Material.TipoMaterial.Nombre}}</td>
+                                        <td >{{material.Material.Nombre}}</td>
+                                        <td class="text-center">{{material.Grueso}}</td>
+                                      </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
                 </div>
             </div>
         </div>
@@ -234,23 +286,55 @@
                                     <label>Nombre</label>
                                 </div>
                             </div>
-                            <br class="hidden-sm hidden-md hidden-lg">
-                            <!-- Activo -->
-                            <div class="col-sm-6">
-                                 <label class="btn checkBoxActivo">Combinación Activa <input type="checkbox" class="badgebox" ng-model="nuevaCombinacion.Activo"><span class="badge">&check;</span></label>
-                             </div>
+                            <br class="hidden-sm hidden-md hidden-lg"><br class="hidden-sm hidden-md hidden-lg">
+                            <!-- Tipo de combinacion -->
+                            <div class="col-sm-6 etiquetaDropdownList">
+                             <label>Tipo de Combinación</label>
+                             <div class="dropdown">
+
+                                <button ng-disabled="nuevaPlaza.Municipio.length == 0" class="dropdown-toggle  {{claseCombinacion.tipo}}" data-toggle="dropdown">
+                                    <span>{{nuevaCombinacion.TipoCombinacion.Nombre}}</span>
+                                    <span class="caret"></span>
+                                </button>
+
+                                <ul class="dropdown-menu elemetosDropdownListModal"><!-- -->
+                                    <li ng-repeat="tipo in tipoCombinacion   | orderBy:'Nombre'" ng-show="tipo.Activo">
+                                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarTipoCombinacion(tipo)">
+                                            <span>{{tipo.Nombre}} </span>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                            </div>
+                        </div>
                         </div> 
-                        <br>
+                        <br class="hidden-xs">
                         
-                        <!-- Por defecto -->
+                        
                         <div class="row">
-                            <!-- Activo -->
+                           <!-- Activo -->
+                            <div class="col-sm-6">
+                                <label class="btn checkBoxActivo">Combinación Activa <input type="checkbox" class="badgebox" ng-model="nuevaCombinacion.Activo"><span class="badge">&check;</span></label>
+                            </div>
+                             <br class="hidden-sm hidden-md hidden-lg">
+                            <!-- Por defecto -->
                             <div class="col-sm-6">
                                  <label class="btn checkBoxActivo">Combinación Por Defecto <input type="checkbox" class="badgebox" ng-model="nuevaCombinacion.PorDefecto"><span class="badge">&check;</span></label>
                              </div>
                         </div> 
+                        
+                        <br>
+                        <!--  Descripcion del presupuesto -->
+                        <div class="row">
+                            <div class="col-sm-12">
+                               <label>Descripción presupuesto</label><br>
+                                <div class="bordeBug">
+                                    <span>{{nuevaCombinacion.TipoCombinacion.Descripcion}}</span>
+                                </div>
+                            </div>
+                        </div>
                         <br><br>
-
+                        
                         <div class="row" ng-if="componente.length > 0">
                             <div class="col-xs-12 subtituloModal">
                                 <b>¿De qué material es fabricado cada componente en esta combinación?</b>
@@ -414,7 +498,7 @@
 
                                                 <ul class="dropdown-menu elemetosDropdownListModal">
 
-                                                    <li ng-repeat="material in material | orderBy:'Nombre' | filter:{TipoMaterial:componente.Material.TipoMaterial}:true" ng-if="material.Activo">
+                                                    <li ng-repeat="material in material | orderBy:'Nombre' | filter:{TipoMaterial:{TipoMaterialId:componente.Material.TipoMaterial.TipoMaterialId}}:true" ng-if="material.Activo">
                                                         <a  href="" class="dropdownOpcionModal" ng-click="CambiarMaterial(material, componente)">
                                                             <span>{{material.Nombre}}</span>
                                                         </a>
@@ -457,14 +541,124 @@
                         <br>
                         <div class="row">
                             <div class="col-xs-6">
-                                <button class="btn botonCancelar btn-block" data-dismiss="modal" aria-label="Close" ng-click="AnteriorPuerta()">&lt;&lt; Anterior</button>
+                                <button class="btn botonCancelar btn-block" data-dismiss="modal" aria-label="Close" ng-click="AnteriorPuerta()">&lt;&lt; ANTERIOR</button>
                             </div>
 
                             <div class="col-xs-6">
-                                <button class="btn botonAvanzar btn-block" ng-click="TerminarCombinacion() ">TERMINAR</button>
+                                <button class="btn botonAvanzar btn-block" ng-click="TerminarCombinacion() ">SIGUIENTE &gt;&gt;</button>
                             </div>
                         </div>
                         <br>
+                    </div>
+                    
+                    <!-- Paso 3 -->
+                   <div ng-if="pasoCombinacion == 3">
+                       
+                        <div class="row">
+                            <div class="col-xs-12 subtituloModal" ng-if="combinacionAccesorio.length == 0">
+                                <span class="recuperarPassword">No hay accesorios dados de alta</span>
+                            </div>
+                       </div>
+                        <div class="row" ng-if="combinacionAccesorio.length > 0">
+                            <div class="col-xs-12 subtituloModal">
+                                <b>¿De qué material es fabricado cada accesorio en esta combinación?</b>
+                            </div>
+                            <br> <br>
+                            <div class="col-xs-12">
+                                <div class="piezaPorComponenteTabla">
+                                    <table class="table table-hover">
+                                        <thead class="TituloTabla">
+                                          <tr>
+                                            <th><button class="btn botonOrdenar"><b>Accesorio</b></button></th>
+                                            <th><button class="btn botonOrdenar"><b>Tipo Material</b></button></th>
+                                            <th><button class="btn botonOrdenar"><b>Material</b></button></th>
+                                            <th><button class="btn botonOrdenar"><b>Grueso</b></button></th>
+                                          </tr>
+                                        </thead>
+                                        <tbody ng-repeat="combinacion in combinacionAccesorio | orderBy:'Accesorio.Nombre'" ng-if="combinacion.Accesorio.Activo">
+                                          <tr>
+                                            <td>{{combinacion.Accesorio.Nombre}}</td>
+                                            <!--- tipo material --->
+                                            <td class="dropdown">
+                                                <button class="dropdown-toggle  {{combinacion.clase.tipoMaterial}}" data-toggle="dropdown">
+                                                    <span>{{combinacion.Material.TipoMaterial.Nombre}}</span>
+                                                    <span class="caret"></span>
+                                                </button>
+
+                                                <ul class="dropdown-menu elemetosDropdownListModal">
+                                                    <li>
+                                                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarTipoMaterial('No Aplica', combinacion)">
+                                                            <span>NO APLICA</span>
+                                                        </a>
+                                                    </li>
+                                                    <li ng-repeat="tipo in tipoMaterial | orderBy:'Nombre'" ng-if="tipo.Activo">
+                                                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarTipoMaterial(tipo, combinacion)">
+                                                            <span>{{tipo.Nombre}}</span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                            <!--- material --->
+                                            <td class="dropdown">
+                                                <button class="dropdown-toggle  {{combinacion.clase.material}}" data-toggle="dropdown" ng-disabled="combinacion.Material.TipoMaterial.Nombre.length == 0 || combinacion.Material.TipoMaterial.Nombre === 'No Aplica' ">
+                                                    <span>{{combinacion.Material.Nombre}}</span>
+                                                    <span class="caret"></span>
+                                                </button>
+                                                
+                                                <ul class="dropdown-menu elemetosDropdownListModal">
+
+                                                    <li ng-repeat="material in material | orderBy:'Nombre' | filter:{MaterialDe:'Módulo'} | filter:{TipoMaterial:{TipoMaterialId:combinacion.Material.TipoMaterial.TipoMaterialId}}:true" ng-if="material.Activo">
+                                                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarMaterial(material, combinacion)">
+                                                            <span>{{material.Nombre}}</span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                            <!--- grueso --->
+                                            <td class="dropdown">
+                                                <button class="dropdown-toggle  {{combinacion.clase.grueso}}" data-toggle="dropdown" ng-disabled="combinacion.Material.Nombre.length == 0 || !(combinacion.Material.Grueso.length > 0)">
+                                                    <span>{{combinacion.Grueso}}</span>
+                                                    <span class="caret"></span>
+                                                </button>
+
+                                                <ul class="dropdown-menu elemetosDropdownListModal">
+                                                    <li ng-repeat="grueso in combinacion.Material.Grueso | orderBy:'grueso' " ng-if="grueso.Activo">
+                                                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarGrueso(grueso.Grueso, combinacion)">
+                                                            <span>{{grueso.Grueso}}</span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                          </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <br>
+                        <!-------- mensaje de error ---->
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div ng-repeat="error in mensajeError track by $index">
+                                    <span class="textoError">{{error}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <!---- botones de operacion --->
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <button class="btn botonCancelar btn-block" data-dismiss="modal" aria-label="Close" ng-click="AnteriorPuerta()">&lt;&lt; ANTERIOR</button>
+                            </div>
+
+                            <div class="col-xs-6">
+                                <button focus class="btn botonAvanzar btn-block" ng-click="TerminarAccesorio()">TERMINAR</button>
+                            </div>
+                        </div>
+                        <br> 
                     </div>
                 </form>
             </div>

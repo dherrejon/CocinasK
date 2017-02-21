@@ -54,7 +54,7 @@
                                 <!-- módulos desplegados en dropdown list -->
                                 <ul class="dropdown-menu barraNavegacionDropdown">
 
-                                    <li ng-repeat="elemento in opcion.elemento" ng-if="elemento.show">
+                                    <li ng-repeat="elemento in opcion.elemento | orderBy:'texto'" ng-if="elemento.show">
                                         <a ng-if="elemento.nuevaPagina" href="{{elemento.referencia}}" class="dropdownOpcion">
                                             <span>{{elemento.texto}}</span>
                                         </a>
@@ -79,7 +79,7 @@
                                 </a>
 
                                 <ul class="dropdown-menu barraNavegacionDropdown">
-                                    <li ng-repeat="elemento in opcion.elemento">
+                                    <li ng-repeat="elemento in opcion.elemento | orderBy:'texto'" ng-if="elemento.show">
                                         <a ng-if="elemento.nuevaPagina" href="{{elemento.referencia}}" class="dropdownOpcion text-center" ng-click="CerrarBarraNavegacion()">
                                             <span>{{elemento.texto}}</span>
                                         </a>

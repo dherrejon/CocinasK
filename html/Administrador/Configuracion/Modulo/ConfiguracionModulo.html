@@ -131,6 +131,7 @@
                                             <th><button class="btn botonOrdenar"><b>Nombre</b></button></th>
                                             <!--<th><button class="btn botonFalso"><b>Ancho</b></button></th>
                                             <th><button class="btn botonFalso"><b>Largo</b></button></th>-->
+                                            <th><button class="btn botonFalso"><b>Detalles</b></button></th>
                                             <th><button class="btn botonFalso"><b>Editar</b></button></th>
                                             <th><button class="btn botonFalso"><b>Activo</b></button></th>
                                           </tr>
@@ -140,7 +141,12 @@
                                             <td>{{pieza.Nombre}}</td>
                                             <!--<td>{{pieza.FormulaAncho}}</td>
                                             <td>{{pieza.FormulaLargo}}</td>-->
-
+                                            <td class="text-center">
+                                                <a  class="BotonOperacion" href="" data-toggle="modal" data-target="#piezaDetalles" ng-click="MostrarPiezaDetalles(pieza)">
+                                                    <span class="fa fa-eye fa-2x"></span>
+                                                </a>
+                                            </td>
+                                            
                                             <td class="text-center">
                                                 <a ng-if="permisoUsuario.pieza.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirPiezaForma('Editar', pieza)">
                                                     <span class="fa fa-pencil fa-2x"></span>
@@ -670,12 +676,17 @@
                     
                     <!-- Nombre -->
                     <div class="row">
-                        <div class="col-sm-12">
+                        <div class="col-sm-6">
                              <div class="entrada2">
                                 <input ng-pattern="erNombreGeneral" type="text" required class="{{clasePieza.nombre}} form-control" name="nombre" ng-model="nuevaPieza.Nombre"/>
                                 <label>Nombre</label>
                             </div>
                         </div>
+                        <br class="hidden-sm hidden-md hidden-lg">
+                        
+                        <div class="col-sm-6">
+                             <label class="btn checkBoxActivo">Pieza Activo <input type="checkbox" class="badgebox" ng-model="nuevaPieza.Activo"><span class="badge">&check;</span></label>
+                         </div>
                     </div> 
                     <br><br>
                     
@@ -687,7 +698,7 @@
                             <div class="input-group">
                                 <input  disabled type="text" required class="{{clasePieza.ancho}} form-control" name="formulaAncho" ng-model="nuevaPieza.FormulaAncho"/>
                                 <span class="input-group-btn">
-                                    <button class="btn botonPanelOculto" type="button" ng-click="AbrirFormulaForma('Ancho', nuevaPieza.FormulaAncho)"><span class="fa fa-pencil"></span></button>
+                                    <button class="btn botonPanelOculto" type="button" ng-click="AbrirFormulaForma('Ancho', nuevaPieza)"><span class="fa fa-pencil"></span></button>
                                 </span>
                             </div>
                         </div>
@@ -702,18 +713,10 @@
                             <div class="input-group">
                                 <input  disabled type="text" required class="{{clasePieza.largo}} form-control" name="formulaLargo" ng-model="nuevaPieza.FormulaLargo"/>
                                 <span class="input-group-btn">
-                                    <button class="btn botonPanelOculto" type="button" ng-click="AbrirFormulaForma('Largo', nuevaPieza.FormulaLargo)"><span class="fa fa-pencil"></span></button>
+                                    <button class="btn botonPanelOculto" type="button" ng-click="AbrirFormulaForma('Largo', nuevaPieza)"><span class="fa fa-pencil"></span></button>
                                 </span>
                             </div>
                         </div>
-                    </div>
-                    <br>
-                    
-                    <!-- Activo -->
-                    <div class="row"> 
-                        <div class="col-sm-6">
-                             <label class="btn checkBoxActivo">Pieza Activo <input type="checkbox" class="badgebox" ng-model="nuevaPieza.Activo"><span class="badge">&check;</span></label>
-                         </div>
                     </div>
                     <br>
                     <!-------- mensaje de error ---->
@@ -739,6 +742,77 @@
                 </form>
             </div>
             <br><br><br>
+        </div>
+    </div>
+    
+    <!--- Pieza Detalles --->
+    <div class="modal fade " id="piezaDetalles"  >
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <!-- encabezado del modal -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center">Detalles de la piezas</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- cuerpo del modal -->
+                <div class="modal-body">
+                    <!-- Opciones de unidad de negocio -->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="pull-right">
+                                <button ng-if="bugDetalle.Resuelto == '0'" data-dismiss="modal" aria-label="Close" class="btn botonOperacion" data-toggle="tooltip" data-placement="bottom" title="Marcar como error resuelto" ng-click="ResolverBug(bugDetalle)"><span class="fa fa-check fa-2x"></span></button>
+                            </div>
+                        </div>
+                        
+                        <br class="hidden-sm hidden-md hidden-lg">
+                    </div>
+                    
+                    <!-- MNombre y activo-->
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="subrayado">
+                                <label>Nombre </label><br>
+                                <span class="textoModal">{{piezaDetalle.Nombre}}</span>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="col-sm-6 col-xs-12" >
+                             <button class="btn checkBoxActivo" >Pieza Activa<input ng-disabled="true" type="checkbox" class="badgebox" ng-model="piezaDetalle.Activo"><span class="badge">&check;</span></button>
+                        </div>
+                    </div>
+                    <br>
+                    
+                    <!--  Formula Ancho -->
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="bordeBug">
+                            <label>Formula Ancho</label><br>
+                            <span>{{piezaDetalle.FormulaAncho2}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    
+                    <!--  Formula Largo -->
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="bordeBug">
+                            <label>Formula Largo</label><br>
+                            <span>{{piezaDetalle.FormulaLargo2}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+
+                </div>
+            </div>
         </div>
     </div>
     
@@ -851,14 +925,9 @@
                                             <table class="table table-hover table-responsive">
                                               <tbody  style="cursor: pointer">
                                                 <tr ng-repeat="componente in componente | filter: { Nombre:buscarComponenteFormula} | orderBy:'Nombre'">
-                                                    <td ng-show="componente.Activo">
-                                                        {{componente.Nombre}} 
-                                                        <span class="pull-right">
-                                                            <a style="margin-left:10px" class="BotonOperacion" href=""  ng-click="SetComponenteFormula(componente.Nombre)">
-                                                                <span class="fa fa-check fa-2x"></span>
-                                                            </a>
-
-                                                        </span>
+                                                    <td ng-show="componente.Activo" class="botonPieza" ng-click="SetComponenteFormula(componente.Nombre, componente.ComponenteId)">
+                                                        <span>{{componente.Nombre}} </span>
+                                                        <span class="fa fa-check fa-2x pull-right" ng-if="componenteFormula == componente.Nombre"></span>
                                                     </td>
                                                 </tr>
                                               </tbody>
@@ -890,25 +959,20 @@
                                               <tbody  style="cursor: pointer">
                                                <!-- Partes-->
                                                 <tr ng-repeat="parte in tipoParte | filter: { Nombre:buscarPiezaFormula} | orderBy:'Nombre'">
-                                                    <td>
-                                                        {{parte.Nombre}} 
-                                                        <span class="pull-right">
-                                                            <a style="margin-left:10px" class="BotonOperacion" href=""  ng-click="SetPiezaFormula(parte.Nombre)">
-                                                                <span class="fa fa-check fa-2x"></span>
-                                                            </a>
-                                                        </span>
-                                                    </td>
+                
+                                                    <td class="botonPieza" ng-click="SetPiezaFormula(parte.Nombre, parte.TipoParteId, 'Parte')">
+                                                        <span>{{parte.Nombre}} </span>
+                                                        <span class="fa fa-check fa-2x pull-right" ng-if="piezaFormula== parte.Nombre"></span>
+                                                      </td>
                                                 </tr>
                                                 <!--Piezas-->
                                                 <tr ng-repeat="pieza in pieza | filter: { Nombre:buscarPiezaFormula} | orderBy:'Nombre'">
-                                                    <td ng-show="pieza.Activo">
-                                                        {{pieza.Nombre}} 
-                                                        <span class="pull-right">
-                                                            <a style="margin-left:10px" class="BotonOperacion" href=""  ng-click="SetPiezaFormula(pieza.Nombre)">
-                                                                <span class="fa fa-check fa-2x"></span>
-                                                            </a>
-                                                        </span>
-                                                    </td>
+                                                  
+                                                  <td ng-show="pieza.Activo" class="botonPieza" ng-click="SetPiezaFormula(pieza.Nombre, pieza.PiezaId, 'Pieza')">
+                                                    <span>{{pieza.Nombre}} </span>
+                                                    <span class="fa fa-check fa-2x pull-right" ng-if="piezaFormula== pieza.Nombre"></span>
+                                                  </td>
+                                                  
                                                 </tr>
                                               </tbody>
                                             </table>

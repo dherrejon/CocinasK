@@ -25,6 +25,8 @@
     require 'Administrador/Accesorio.php';
     require 'Administrador/Servicio.php';
     require 'Administrador/Maqueo.php';
+    require 'Administrador/Promocion.php';
+    require 'Administrador/PlanPago.php';
 
     require 'General/Direccion.php';
     require 'General/Sesion.php';
@@ -343,10 +345,16 @@
     $app->post('/GetCombinacionPorMaterialComponentePorPuerta', $seguridad, $ChecarSesion, 'GetCombinacionPorMaterialComponentePorPuerta');
     $app->post('/GetCombinacionPorMaterialComponentePorPuertaCombinacion', $seguridad, $ChecarSesion, 'GetCombinacionPorMaterialComponentePorPuertaCombinacion');
 
+    /*------------------------Tipo combinacion Material----------------------------*/
+    $app->get('/GetTipoCombinacionMaterial', $seguridad, $ChecarSesion, 'GetTipoCombinacionMaterial');
+    $app->post('/AgregarCombinacionMaterial', $seguridad, $ChecarSesion, 'AgregarCombinacionMaterial');
+    $app->put('/EditarCombinacionMaterial', $seguridad, $ChecarSesion, 'EditarCombinacionMaterial');
+    $app->post('/ActivarDesactivarTipoCombinacion', $seguridad, $ChecarSesion, 'ActivarDesactivarTipoCombinacion');
+
     /*------------------------Consumible----------------------------*/
     $app->get('/GetConsumible', $seguridad, $ChecarSesion, 'GetConsumible');
-    $app->post('/AgregarConsumible', $seguridad, $ChecarSesion, 'AgregarConsumible');
-    $app->put('/EditarConsumible', $seguridad, $ChecarSesion, 'EditarConsumible');
+    $app->post('/AgregarTipoCombiancion', $seguridad, $ChecarSesion, 'AgregarTipoCombiancion');
+    $app->put('/EditarTipoCombiancion', $seguridad, $ChecarSesion, 'EditarTipoCombiancion');
     $app->post('/ActivarDesactivarConsumible', $seguridad, $ChecarSesion, 'ActivarDesactivarConsumible');
 
     /*------------------------Muestrario----------------*/
@@ -421,7 +429,8 @@
 
     /*------------------ Servicio ------------------------------*/
     $app->get('/GetServicio', $seguridad, $ChecarSesion, 'GetServicio');
-    
+    $app->post('/AgregarServicio', $seguridad, $ChecarSesion, 'AgregarServicio');
+    $app->put('/EditarServicio', $seguridad, $ChecarSesion, 'EditarServicio');
     $app->post('/ActivarDesactivarServicio', $seguridad, $ChecarSesion, 'ActivarDesactivarServicio');
 
 
@@ -437,8 +446,25 @@
     $app->put('/EditarAccesorio', $seguridad, $ChecarSesion, 'EditarAccesorio');
     $app->post('/ActivarDesactivarAccesorio', $seguridad, $ChecarSesion, 'ActivarDesactivarAccesorio');
     
+    $app->post('/GetAccesorioClase', $seguridad, $ChecarSesion, 'GetAccesorioClase');
     $app->post('/GetCombinacionPorAccesorio', $seguridad, $ChecarSesion, 'GetCombinacionPorAccesorio');
     $app->post('/GuardarImagenAccesorio/:id', $seguridad, $ChecarSesion, 'GuardarImagenAccesorio');
+    
+    /*------------------ Promoción ------------------------------*/
+    $app->get('/GetPromocion', $seguridad, $ChecarSesion, 'GetPromocion');
+    $app->post('/AgregarPromocion', $seguridad, $ChecarSesion, 'AgregarPromocion');
+    $app->put('/EditarPromocion', $seguridad, $ChecarSesion, 'EditarPromocion');
+    $app->post('/ActivarDesactivarPromocion', $seguridad, $ChecarSesion, 'ActivarDesactivarPromocion'); 
+
+    $app->post('/GetUnidadNegocionPorPromocion', $seguridad, $ChecarSesion, 'GetUnidadNegocionPorPromocion');
+
+    /*------------------ Plan Pago ------------------------------*/
+    $app->get('/GetPlanPago', $seguridad, $ChecarSesion, 'GetPlanPago');
+    $app->post('/AgregarPlanPago', $seguridad, $ChecarSesion, 'AgregarPlanPago');
+    $app->put('/EditarPlanPago', $seguridad, $ChecarSesion, 'EditarPlanPago');
+    $app->post('/ActivarDesactivarPlanPago', $seguridad, $ChecarSesion, 'ActivarDesactivarPlanPago'); 
+
+    $app->post('/GetPlanPagoAbono', $seguridad, $ChecarSesion, 'GetPlanPagoAbono');
 
     $app->run(); 
 

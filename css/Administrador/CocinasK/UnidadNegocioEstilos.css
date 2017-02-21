@@ -288,6 +288,8 @@
 {
     background: #262626;
     color: white !important;
+    outline: none;
+    box-shadow: none;
 }
 
 .botonPanelOculto:hover

@@ -1,5 +1,6 @@
 app.controller("ConfiguaracionMaqueoController", function($scope, $http, $q, CONFIG, $rootScope, datosUsuario, $window, $filter, $location)
 {   
+    $rootScope.clasePrincipal = "";
     $scope.permisoUsuario = {
                             maqueo:{consultar:false, agregar:false, editar:false, activar:false},
                             muestario:{consultar:false, agregar:false, editar:false, activar:false}

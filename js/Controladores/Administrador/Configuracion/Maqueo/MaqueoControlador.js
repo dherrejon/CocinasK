@@ -129,7 +129,7 @@ app.controller("MaqueoControlador", function($scope, $http, $q, CONFIG, $rootSco
         maqueo.MaqueoId = data.MaqueoId;
         maqueo.Nombre = data.Nombre;
         maqueo.CostoUnidad = data.CostoUnidad;
-        maqueo.PrecioVenta = data.PrecioVenta;
+        maqueo.Margen = data.Margen;
         maqueo.PorDefecto = data.PorDefecto;
         maqueo.Activo = data.Activo;
         
@@ -266,7 +266,7 @@ app.controller("MaqueoControlador", function($scope, $http, $q, CONFIG, $rootSco
         }
         if(precioInvalido)
         {
-            $scope.mensajeError[$scope.mensajeError.length] = "*El precio de venta debe ser un número decimal.";
+            $scope.mensajeError[$scope.mensajeError.length] = "*El margen debe ser un número decimal.";
             $scope.claseMaqueo.precio = "entradaError";
         }
         else

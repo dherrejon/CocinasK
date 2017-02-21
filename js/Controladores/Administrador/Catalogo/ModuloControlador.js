@@ -773,13 +773,14 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
                 {
                     $scope.ValidarComponenteFormula(data[i].Pieza.FormulaAncho, i).then(function(dato1)
                     {
-                        
+
                     });
                     
                     $scope.ValidarComponenteFormula(data[i].Pieza.FormulaLargo, i).then(function(dato2)
                     {
                         if(dato2==(data.length-1))
                         {
+                            
                             if($scope.componenteFaltante.length === 0)
                             {
                                  q.resolve(true);
@@ -813,67 +814,83 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
         
         var index = formula.indexOf("[Componente]");
         
-        while(index > -1)
+        if(index <= -1)
         {
-            nombreComponente = "";
-            
-            for(var j=index+13; j<formula.length; j++)
+            q.resolve(indexP);
+        } 
+        else
+        {
+        
+            while(index > -1)
             {
-                nombreComponente += formula[j];
-                if(formula[j+1] == "]")
+                nombreComponente = "";
+
+                for(var j=index+13; j<formula.length; j++)
                 {
-                    index = j+1;
-                    break;
-                }
-            }
-            
-            var isComponente = false;
-            
-            
-            if(nombreComponente == "Frente Modulo")
-            {
-                isComponente = true;  
-            }
-            
-            if(!isComponente)
-            {
-                for(var k=0; k<$scope.componenteModulo.length; k++)
-                {
-                    if(nombreComponente == $scope.componenteModulo[k].Componente.Nombre)
+                    nombreComponente += formula[j];
+                    if(formula[j+1] == "]")
                     {
-                        isComponente = true;
-                    }
-                }
-            }
-            
-            if(!isComponente)
-            {
-                var componenteRegistrada = false;
-                for(var k=0; k<$scope.componenteFaltante.length; k++)
-                {
-                    if($scope.componenteFaltante[k] == nombreComponente)
-                    {
-                        
-                        componenteRegistrada = true;
+                        index = j+1;
                         break;
                     }
                 }
-                if(!componenteRegistrada)
+                
+                var isComponente = false;
+
+                if(nombreComponente == "4")
                 {
-                    $scope.componenteFaltante[$scope.componenteFaltante.length] = nombreComponente;
-                    $scope.mensajeError[$scope.mensajeError.length] = "*Falta agregar el componente \"" + nombreComponente + "\".";
+                    isComponente = true;  
+                }
+
+                if(!isComponente)
+                {
+                    for(var k=0; k<$scope.componenteModulo.length; k++)
+                    {
+                        if(nombreComponente == $scope.componenteModulo[k].Componente.ComponenteId)
+                        {
+
+                            isComponente = true;
+                        }
+                    }
                 }
                 
-            }
-            
-            var componente = "[Componente][" + nombreComponente + "]"; 
-            formula = formula.replace(componente, " ");
+                if(!isComponente)
+                {
+                    var componenteRegistrada = false;
+                    for(var k=0; k<$scope.componenteFaltante.length; k++)
+                    {
+                        if($scope.componenteFaltante[k] == nombreComponente)
+                        {
+                            componenteRegistrada = true;
+                            break;
+                        }
+                    }
 
-            index = formula.indexOf("[Componente]");
-            
-            if(index < 0)
-            {
-                q.resolve(indexP);
+                    if(!componenteRegistrada)
+                    {
+                        $scope.componenteFaltante[$scope.componenteFaltante.length] = nombreComponente;
+                        for(var k=0; k<$scope.componente.length; k++)
+                        {
+                            if($scope.componente[k].ComponenteId == nombreComponente)
+                            {
+
+                                $scope.mensajeError[$scope.mensajeError.length] = "*Falta agregar el componente \"" + $scope.componente[k].Nombre + "\".";
+                                break;
+                            }
+                        }
+                    }
+
+                }
+
+                var componente = "[Componente][" + nombreComponente + "]"; 
+                formula = formula.replace(componente, " ");
+
+                index = formula.indexOf("[Componente]");
+
+                if(index < 0)
+                {
+                    q.resolve(indexP);
+                }
             }
         }
         

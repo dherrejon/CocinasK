@@ -7,11 +7,10 @@ function GetCombinacionMaterial()
 
     $request = \Slim\Slim::getInstance()->request();
 
-    $sql = "SELECT * FROM CombinacionMaterial";
+    $sql = "SELECT * FROM CombinacionVista ";
 
     try 
     {
-
         $db = getConnection();
         $stmt = $db->query($sql);
         $response = $stmt->fetchAll(PDO::FETCH_OBJ);
@@ -34,8 +33,8 @@ function AgregarCombinacionMaterial()
     $combinacion = json_decode($request->getBody());
     global $app;
     
-    $sql = "INSERT INTO CombinacionMaterial (Nombre, Activo, PorDefecto) 
-                            VALUES(:Nombre, :Activo, :PorDefecto)";
+    $sql = "INSERT INTO CombinacionMaterial (Nombre, Activo, PorDefecto, TipoCombinacionId) 
+                            VALUES(:Nombre, :Activo, :PorDefecto, :TipoCombinacionId)";
 
     $db;
     $stmt;
@@ -50,6 +49,7 @@ function AgregarCombinacionMaterial()
         $stmt->bindParam("Nombre", $combinacion->Nombre);
         $stmt->bindParam("Activo", $combinacion->Activo);
         $stmt->bindParam("PorDefecto", $combinacion->PorDefecto);
+        $stmt->bindParam("TipoCombinacionId", $combinacion->TipoCombinacion->TipoCombinacionId);
 
         $stmt->execute();
         
@@ -72,6 +72,35 @@ function AgregarCombinacionMaterial()
         for($k=0; $k<$countMaterialComponente; $k++)
         {
             $sql .= " (".$combinacionMaterialId.", ".$combinacion->MaterialComponente[$k]->Componente->ComponenteId.", ".$combinacion->MaterialComponente[$k]->Material->MaterialId.", '".$combinacion->MaterialComponente[$k]->Grueso."'),";
+        }
+
+        $sql = rtrim($sql,",");
+
+        try 
+        {
+            $stmt = $db->prepare($sql);
+            $stmt->execute();
+            
+        } 
+        catch(PDOException $e) 
+        {
+            echo '[{"Estatus": "Fallido"}]';
+            echo $e;
+            $db->rollBack();
+            $app->status(409);
+            $app->stop();
+        }
+    }
+    
+    $countAccesorio = count($combinacion->Accesorio);
+    
+    if($countAccesorio > 0)
+    {
+        $sql = "INSERT INTO CombinacionPorMaterialAccesorio (CombinacionMaterialId, AccesorioId, MaterialId, Grueso) VALUES";
+
+        for($k=0; $k<$countAccesorio; $k++)
+        {
+            $sql .= " (".$combinacionMaterialId.", ".$combinacion->Accesorio[$k]->Accesorio->AccesorioId.", ".$combinacion->Accesorio[$k]->Material->MaterialId.", '".$combinacion->Accesorio[$k]->Grueso."'),";
         }
 
         $sql = rtrim($sql,",");
@@ -139,7 +168,7 @@ function EditarCombinacionMaterial()
     $combinacion = json_decode($request->getBody());
     global $app;
     
-    $sql = "UPDATE CombinacionMaterial SET Nombre='".$combinacion->Nombre."', Activo='".$combinacion->Activo."', PorDefecto='".$combinacion->PorDefecto."' WHERE CombinacionMaterialId=".$combinacion->CombinacionMaterialId."";
+    $sql = "UPDATE CombinacionMaterial SET Nombre='".$combinacion->Nombre."', TipoCombinacionId='".$combinacion->TipoCombinacion->TipoCombinacionId."', Activo='".$combinacion->Activo."', PorDefecto='".$combinacion->PorDefecto."' WHERE CombinacionMaterialId=".$combinacion->CombinacionMaterialId."";
 
     $db;
     $stmt;
@@ -176,6 +205,21 @@ function EditarCombinacionMaterial()
         $app->stop();
     }
     
+    $sql = "DELETE FROM CombinacionPorMaterialAccesorio WHERE CombinacionMaterialid=".$combinacion->CombinacionMaterialId;
+    try 
+    {
+        $stmt = $db->prepare($sql); 
+        $stmt->execute(); 
+        
+    } 
+    catch(PDOException $e) 
+    {
+        //echo '[ { "Estatus": "Fallo" } ]';
+        echo $e;
+        $db->rollBack();
+        $app->status(409);
+        $app->stop();
+    }
 
     $countMaterialComponente = count($combinacion->MaterialComponente);
     
@@ -186,6 +230,34 @@ function EditarCombinacionMaterial()
         for($k=0; $k<$countMaterialComponente; $k++)
         {
             $sql .= " (".$combinacion->CombinacionMaterialId.", ".$combinacion->MaterialComponente[$k]->Componente->ComponenteId.", ".$combinacion->MaterialComponente[$k]->Material->MaterialId.", '".$combinacion->MaterialComponente[$k]->Grueso."'),";
+        }
+
+        $sql = rtrim($sql,",");
+
+        try 
+        {
+            $stmt = $db->prepare($sql);
+            $stmt->execute();
+        } 
+        catch(PDOException $e) 
+        {
+            $db->rollBack();
+            $app->status(409);
+            $app->stop();
+            echo $e;
+            //echo '[{"Estatus": "Fallido"}]';
+        }
+    }
+    
+    $countAccesorio= count($combinacion->Accesorio);
+    
+    if($countAccesorio > 0)
+    {
+        $sql = "INSERT INTO CombinacionPorMaterialAccesorio (CombinacionMaterialId, AccesorioId, MaterialId, Grueso) VALUES";
+
+        for($k=0; $k<$countAccesorio; $k++)
+        {
+            $sql .= " (".$combinacion->CombinacionMaterialId.", ".$combinacion->Accesorio[$k]->Accesorio->AccesorioId.", ".$combinacion->Accesorio[$k]->Material->MaterialId.", '".$combinacion->Accesorio[$k]->Grueso."'),";
         }
 
         $sql = rtrim($sql,",");
@@ -398,6 +470,115 @@ function GetCombinacionPorMaterialComponentePorPuerta()
     }
 }
 
+//-------------------------------- Get tipo de combinación de combinación----------
+function GetTipoCombinacionMaterial()
+{
+    global $app;
+    global $session_expiration_time;
 
+    $request = \Slim\Slim::getInstance()->request();
+
+    $sql = "SELECT * FROM TipoCombinacion ";
+
+    try 
+    {
+        $db = getConnection();
+        $stmt = $db->query($sql);
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $db = null;
+
+        
+        echo json_encode($response);  
+    } 
+    catch(PDOException $e) 
+    {
+        echo($e);
+        $app->status(409);
+        $app->stop();
+    }
+}
+
+function AgregarTipoCombiancion()
+{
+    $request = \Slim\Slim::getInstance()->request();
+    $tipoCombinacion = json_decode($request->getBody());
+    global $app;
+    $sql = "INSERT INTO TipoCombinacion (Nombre, Descripcion, Activo) 
+            VALUES(:Nombre, :Descripcion, :Activo)";
+
+    try 
+    {
+        $db = getConnection();
+        $stmt = $db->prepare($sql);
+
+        $stmt->bindParam("Nombre", $tipoCombinacion->Nombre);
+        $stmt->bindParam("Descripcion", $tipoCombinacion->Descripcion);
+        $stmt->bindParam("Activo", $tipoCombinacion->Activo);
+
+        $stmt->execute();
+        $db = null;
+        
+        echo '[{"Estatus": "Exitoso"}]';
+
+    } catch(PDOException $e) 
+    {
+        //echo $e;
+        echo '[{"Estatus": "Fallido"}]';
+        $app->status(409);
+        $app->stop();
+    }
+}
+
+function EditarTipoCombiancion()
+{
+    global $app;
+    $request = \Slim\Slim::getInstance()->request();
+    $tipoCombinacion = json_decode($request->getBody());
+   
+    $sql = "UPDATE TipoCombinacion SET Nombre='".$tipoCombinacion->Nombre."', Descripcion='".$tipoCombinacion->Descripcion."', Activo = '".$tipoCombinacion->Activo."'  WHERE TipoCombinacionId=".$tipoCombinacion->TipoCombinacionId."";
+    
+    try 
+    {
+        $db = getConnection();
+        $stmt = $db->prepare($sql);
+        $stmt->execute();
+        $db = null;
+
+        echo '[{"Estatus":"Exitoso"}]';
+    }
+    catch(PDOException $e) 
+    {    
+        echo '[{"Estatus": "Fallido"}]';
+        $app->status(409);
+        $app->stop();
+    }
+}
+
+function ActivarDesactivarTipoCombinacion()
+{
+    global $app;
+    $request = \Slim\Slim::getInstance()->request();
+    $datos = json_decode($request->getBody());
+    
+    $sql = "UPDATE TipoCombinacion SET Activo = ".$datos[0]." WHERE TipoCombinacionId = ".$datos[1]."";
+    
+    try 
+    {
+        $db = getConnection();
+        $stmt = $db->prepare($sql);
+        $stmt->execute();
+        
+
+        $db = null;
+        echo '[{"Estatus":"Exito"}]';
+    }
+    catch(PDOException $e) 
+    {
+        echo '[{"Estatus":"Fallo"}]';
+        //echo ($e);
+        $app->status(409);
+        $app->stop();
+    }
+}
 
 ?>

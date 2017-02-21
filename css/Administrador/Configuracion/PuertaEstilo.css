@@ -95,3 +95,15 @@
         opacity: 1;
     }
 }
+
+.margenTextArea
+{
+    border:solid 2px #262626; 
+    max-width:100%;
+}
+
+.margenTextAreaError
+{
+    border:solid 2px rgb(250, 97, 21);
+    max-width:100%;
+}

@@ -11,6 +11,7 @@
         <script type="text/javascript" src="libs/angular/angular-route.min.js"></script>
         <script type="text/javascript" src="libs/angular/angular-md5.js"></script>
         <script src="libs/angular/angular-filter.min.js"></script>
+        <script type="text/javascript" src="libs/angular-loading-bar/loading-bar.js"></script>
 
         <!-- jQuery-->
         <script src="libs/jQuery.js"></script>
@@ -18,8 +19,14 @@
 
         <!-- Bootstrap-->
         <link rel="stylesheet" href="libs/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="libs/bootstrap/css/datepicker/bootstrap-datepicker3.css">
+        
         <script src="libs/bootstrap/js/bootstrap.min.js"></script>
         
+        <script src="libs/bootstrap/js/datepicker/bootstrap-datepicker.js"></script>
+        <script src="libs/bootstrap/js/datepicker/locales/bootstrap-datepicker.es.min.js"></script>
+        
+        <link rel="stylesheet" href="libs/angular-loading-bar/loading-bar.css">
         
         <!-- Datos -->
         <script src="js/Datos/General/Usuario.js"></script>
@@ -48,6 +55,8 @@
         <script src="js/Datos/Administrador/CocinasK/Accesorio.js"></script>
         <script src="js/Datos/Administrador/CocinasK/Servicio.js"></script>
         <script src="js/Datos/Administrador/CocinasK/Maqueo.js"></script>
+        <script src="js/Datos/Administrador/CocinasK/Promocion.js"></script>
+        <script src="js/Datos/Administrador/CocinasK/PlanPago.js"></script>
         
         <!-- Controladores -->
         <script src="js/app.js"></script>
@@ -59,11 +68,14 @@
         <script src="js/Controladores/RecuperarPasswordControlador.js"></script>
     
         <!-- Administrador -->
+            <!-- Cocinas k-->
         <script src="js/Controladores/Administrador/CocinasK/UnidadNegocioControlador.js"></script>
         <script src="js/Controladores/Administrador/CocinasK/TerritorioControlador.js"></script>
         <script src="js/Controladores/Administrador/CocinasK/PlazaControlador.js"></script>
         <script src="js/Controladores/Administrador/CocinasK/ColaboradorControlador.js"></script>
         <script src="js/Controladores/Administrador/CocinasK/UsuarioPerfilControlador.js"></script>
+        <script src="js/Controladores/Administrador/CocinasK/PromocionControlador.js"></script>
+        <script src="js/Controladores/Administrador/CocinasK/PlanPagoControlador.js"></script>
         
              <!-- Configuración -->
         <script src="js/Controladores/Administrador/Configuracion/ConfiguracionUnidadNegocioControlador.js"></script>
@@ -75,6 +87,7 @@
         <script src="js/Controladores/Administrador/Configuracion/ConfiguracionAccesorioControlador.js"></script>
         <script src="js/Controladores/Administrador/Configuracion/ConfiguracionServicioControlador.js"></script>
         <script src="js/Controladores/Administrador/Configuracion/ConfiguracionMaqueoControlador.js"></script>
+            <script src="js/Controladores/Administrador/Configuracion/ConfiguracionCombinacionControlador.js"></script>
                 
         <script src="js/Controladores/Administrador/Configuracion/Color/ColorControlador.js"></script>
         <script src="js/Controladores/Administrador/Configuracion/Cubierta/ColorCubiertaControlador.js"></script>
@@ -83,8 +96,9 @@
         <script src="js/Controladores/Administrador/Configuracion/Accesorio/TipoAccesorioControlador.js"></script>
         <script src="js/Controladores/Administrador/Configuracion/Accesorio/MuestrarioControlador.js"></script>
         <script src="js/Controladores/Administrador/Configuracion/Servicio/ServicioControlador.js"></script>
-          <script src="js/Controladores/Administrador/Configuracion/Maqueo/MaqueoControlador.js"></script>
-          <script src="js/Controladores/Administrador/Configuracion/Maqueo/ColorMaqueoControlador.js"></script>
+        <script src="js/Controladores/Administrador/Configuracion/Maqueo/MaqueoControlador.js"></script>
+        <script src="js/Controladores/Administrador/Configuracion/Maqueo/ColorMaqueoControlador.js"></script>
+          <script src="js/Controladores/Administrador/Configuracion/Combinacion/TipoCombinacionControlador.js"></script>
            
             <!-- Catálogos -->
         <script src="js/Controladores/Administrador/Catalogo/CombinacionControlador.js"></script>
@@ -103,6 +117,7 @@
         <link rel="stylesheet" href="css/EncabezadoEstilos.css">
         <link rel="stylesheet" href="css/PerfilEstilos.css">
         <link rel="stylesheet" href="css/HomeEstilos.css">
+        <link rel="stylesheet" href="css/Calendario.css">
         <link rel="stylesheet" href="css/Administrador/CocinasK/UnidadNegocioEstilos.css">
         <link rel="stylesheet" href="css/Administrador/CocinasK/UsuarioEstilos.css">
         <link rel="stylesheet" href="css/Administrador/CocinasK/TerritorioEstilo.css">
@@ -133,5 +148,8 @@
                 <footer ng-include=" 'html/Footer.html' "></footer>
             </div>-->
         </div>
+    
     </body>
+    
+   
 </html>

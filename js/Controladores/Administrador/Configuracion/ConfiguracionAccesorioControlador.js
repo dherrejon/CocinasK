@@ -1,5 +1,7 @@
 app.controller("ConfiguaracionAccesorioController", function($scope, $http, $q, CONFIG, $rootScope, datosUsuario, $window, $filter, $location)
 {   
+    $rootScope.clasePrincipal = "";
+    
     $scope.permisoUsuario = {
                             tipoAccesorio:{consultar:false, agregar:false, editar:false, activar:false}, 
                             muestrario:{consultar:false, agregar:false, editar:false, activar:false}

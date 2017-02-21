@@ -7,7 +7,7 @@ function GetMaqueo()
 
     $request = \Slim\Slim::getInstance()->request();
 
-    $sql = "SELECT MaqueoId, GrupoId, Nombre, CostoUnidad, PrecioVenta, PorDefecto, Activo, NombreGrupo FROM MaqueoVista";
+    $sql = "SELECT MaqueoId, GrupoId, Nombre, CostoUnidad, Margen, PorDefecto, Activo, NombreGrupo FROM MaqueoVista";
 
     try 
     {
@@ -34,8 +34,8 @@ function AgregarMaqueo()
     $request = \Slim\Slim::getInstance()->request();
     $maqueo = json_decode($request->getBody());
     global $app;
-    $sql = "INSERT INTO Maqueo (GrupoId, Nombre, CostoUnidad, PrecioVenta, Activo, PorDefecto) 
-            VALUES(:GrupoId, :Nombre, :CostoUnidad, :PrecioVenta, :Activo, :PorDefecto)";
+    $sql = "INSERT INTO Maqueo (GrupoId, Nombre, CostoUnidad, Margen, Activo, PorDefecto) 
+            VALUES(:GrupoId, :Nombre, :CostoUnidad, :Margen, :Activo, :PorDefecto)";
 
     try 
     {
@@ -45,7 +45,7 @@ function AgregarMaqueo()
         $stmt->bindParam("GrupoId", $maqueo->Grupo->GrupoId);
         $stmt->bindParam("Nombre", $maqueo->Nombre);
         $stmt->bindParam("CostoUnidad", $maqueo->CostoUnidad);
-        $stmt->bindParam("PrecioVenta", $maqueo->PrecioVenta);
+        $stmt->bindParam("Margen", $maqueo->Margen);
         $stmt->bindParam("Activo", $maqueo->Activo);
         $stmt->bindParam("PorDefecto", $maqueo->PorDefecto);
 
@@ -69,7 +69,7 @@ function EditarMaqueo()
     $request = \Slim\Slim::getInstance()->request();
     $maqueo = json_decode($request->getBody());
    
-    $sql = "UPDATE Maqueo SET GrupoId = ".$maqueo->Grupo->GrupoId.", Nombre='".$maqueo->Nombre."', CostoUnidad='".$maqueo->CostoUnidad."', PrecioVenta='".$maqueo->PrecioVenta."', PorDefecto='".$maqueo->PorDefecto."', Activo = '".$maqueo->Activo."'  WHERE MaqueoId=".$maqueo->MaqueoId."";
+    $sql = "UPDATE Maqueo SET GrupoId = ".$maqueo->Grupo->GrupoId.", Nombre='".$maqueo->Nombre."', CostoUnidad='".$maqueo->CostoUnidad."', Margen='".$maqueo->Margen."', PorDefecto='".$maqueo->PorDefecto."', Activo = '".$maqueo->Activo."'  WHERE MaqueoId=".$maqueo->MaqueoId."";
     
     try 
     {

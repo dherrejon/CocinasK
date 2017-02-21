@@ -1,4 +1,4 @@
-var app = angular.module('CocinasK',['ngRoute', 'angular.filter','angular-md5']);
+var app = angular.module('CocinasK',['ngRoute', 'angular.filter','angular-md5', 'angular-loading-bar']);
 
  //Configuracion del jason token, APIURL: indica la direccion del directorio de index.php
 app.constant('CONFIG',
@@ -92,7 +92,7 @@ app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpPro
     when('/UnidadNegocio',{
         templateUrl: 'html/Administrador/CocinasK/UnidadNegocio.html'
     }).
-     when('/Plaza',{
+    when('/Plaza',{
         templateUrl: 'html/Administrador/CocinasK/Plaza.html'
     }).
     when('/Territorio',{
@@ -103,6 +103,12 @@ app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpPro
     }).
     when('/UsuarioPerfil',{
         templateUrl: 'html/Administrador/CocinasK/UsuarioPerfil.html'
+    }).
+     when('/Promocion',{
+        templateUrl: 'html/Administrador/CocinasK/Promocion.html'
+    }).
+     when('/PlanPago',{
+        templateUrl: 'html/Administrador/CocinasK/PlanPago.html'
     }).
     //Configuración
     when('/ConfigurarUnidadNegocio',{
@@ -131,6 +137,9 @@ app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpPro
     }).
     when('/Maqueo',{
         templateUrl: 'html/Administrador/Configuracion/ConfiguracionMaqueo.html'
+    }).
+    when('/ConfigurarCombinacionMaterial',{
+        templateUrl: 'html/Administrador/Configuracion/ConfiguracionCombinacion.html'
     }).
     //Catálogos
     when('/Combinacion',{

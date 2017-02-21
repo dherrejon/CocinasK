@@ -1,5 +1,6 @@
 app.controller("ConfiguracionPuertaControlador", function($scope, $http, $q, CONFIG, $rootScope, datosUsuario, $window, $filter, $location)
 {   
+    $rootScope.clasePrincipal = "";
     $scope.permisoUsuario = {
                             puerta:{consultar:false, agregar:false, editar:false, activar:false}, 
                             muestrario:{consultar:false, agregar:false, editar:false, activar:false}

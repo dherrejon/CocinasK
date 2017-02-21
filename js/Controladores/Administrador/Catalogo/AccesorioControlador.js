@@ -188,7 +188,7 @@ app.controller("AccesorioModuloControlador", function($scope, $http, $q, CONFIG,
     
     $scope.GetCombinacionPorAccesorio = function(accesorioId, operacion)          
     {
-        GetCombinacionPorAccesorio($http, $q, CONFIG, accesorioId).then(function(data)
+        GetCombinacionPorAccesorio($http, $q, CONFIG, accesorioId, "accesorio").then(function(data)
         {
             if(data.length > 0)
             {

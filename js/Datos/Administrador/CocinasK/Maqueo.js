@@ -8,7 +8,7 @@ class Maqueo
         this.Grupo = new Grupo();
         this.Nombre = ""; 
         this.CostoUnidad = 0; 
-        this.PrecioVenta = 0; 
+        this.Margen = 0; 
         this.PorDefecto = true; 
         this.Activo = true; 
     }
@@ -47,7 +47,7 @@ function SetMaqueo(data)
     maqueo.MaqueoId = data.MaqueoId;
     maqueo.Nombre = data.Nombre;
     maqueo.CostoUnidad = parseFloat(data.CostoUnidad);
-    maqueo.PrecioVenta = parseFloat(data.PrecioVenta);
+    maqueo.Margen = parseFloat(data.Margen);
     
     maqueo.Grupo.GrupoId = data.GrupoId;
     maqueo.Grupo.Nombre = data.NombreGrupo;

@@ -1,5 +1,6 @@
 app.controller("ConfiguaracionServicioController", function($scope, $http, $q, CONFIG, $rootScope, datosUsuario, $window, $filter, $location)
 {   
+    $rootScope.clasePrincipal = "";
     $scope.permisoUsuario = {
                             servicio:{consultar:false, agregar:false, editar:false, activar:false}
                             };

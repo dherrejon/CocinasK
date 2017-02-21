@@ -6,7 +6,7 @@ app.controller("LoginControlador", function($window,$scope, $http, $rootScope, $
     /*------------------Indentifica cuando los datos del usuario han cambiado-------------------*/
     $scope.$on('cambioUsuario',function()
     {
-        $scope.usuario =  datosUsuario.getUsuario();    
+        $scope.usuario =  datosUsuario.getUsuario();
         
         if($scope.usuario.SesionIniciada)
         {

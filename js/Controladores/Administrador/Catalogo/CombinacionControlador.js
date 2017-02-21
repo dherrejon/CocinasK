@@ -36,13 +36,17 @@ app.controller("CombinacionControlador", function($scope, $http, $q, CONFIG, dat
     $scope.material = [];
     $scope.tipoMaterial = [];
     $scope.gruesoMaterial = [];
+    $scope.accesorio = [];
+    $scope.tipoCombinacion = [];
     
     $scope.ordenarPor = "Nombre";
-    $scope.claseCombinacion = {nombre:"entrada"};
+    $scope.claseCombinacion = {nombre:"entrada", tipo:"dropdownListModal"};
     $scope.mostrarComponentePuerta = "";
     $scope.combinacionPorPuerta = [];
     $scope.componentePorPuerta = [];
     $scope.pasoCombinacion = 1;
+    
+    $scope.combinacionAccesorio = [];
     
     $scope.mensajeError = [];
     
@@ -111,12 +115,44 @@ app.controller("CombinacionControlador", function($scope, $http, $q, CONFIG, dat
         });
     };
     
+    
+    $scope.GetCombinacionPorAccesorio = function(accesorioId, operacion)          
+    {
+        GetCombinacionPorAccesorio($http, $q, CONFIG, accesorioId, "combinacion").then(function(data)
+        {
+            if(data.length > 0)
+            {
+                $scope.combinacionAccesorio = data;
+                if(operacion == "editar")
+                {
+                    for(var k=0; k<data.length; k++)
+                    {
+                        for(var i=0; i<$scope.material.length; i++)
+                        {
+                            if($scope.material[i].MaterialId == $scope.combinacionAccesorio[k].Material.MaterialId)
+                            {
+                                $scope.combinacionAccesorio[k].Material.Grueso = $scope.material[i].grueso;
+                                break;
+                            }
+                        }
+                        
+                        $scope.combinacionAccesorio[k].clase = {tipoMaterial:"dropdownListModal", material:"dropdownListModal", grueso:"dropdownListModal"};
+                    }
+                }
+            }
+        }).catch(function(error)
+        {
+            alert(error);
+        });
+    };
+    
     /*---------- Detalles ---------*/
     $scope.MostarDetalles = function(combinacion)
     {
         $scope.nuevaCombinacion = combinacion;
         $scope.GetCombinacionPorMaterialComponente(combinacion.CombinacionMaterialId, "detalles");
         $scope.GetCombinacionPorPuerta(combinacion.CombinacionMaterialId);
+        $scope.GetCombinacionPorAccesorio(combinacion.CombinacionMaterialId, "");
     };
     
     $scope.MostraComponentePuerta = function(puerta)
@@ -179,42 +215,87 @@ app.controller("CombinacionControlador", function($scope, $http, $q, CONFIG, dat
         if(operacion == "Agregar")
         {
             $scope.nuevaCombinacion = new CombinacionMaterial();
-            $scope.combinacionMaterialComponente = [];
+           
+            $scope.SetCombinacionComponente();
+            $scope.SetCombinacionPuerta();
+            $scope.SetCombinacionAccesorio();
             
-            for(var k=0; k<$scope.componente.length; k++)
-            {
-                $scope.combinacionMaterialComponente[k] = new CombinacionPorMaterialComponente();
-                $scope.combinacionMaterialComponente[k].Componente = SetComponente($scope.componente[k]);
-                
-                $scope.combinacionMaterialComponente[k].clase = {tipoMaterial:"dropdownListModal", material:"dropdownListModal", grueso:"dropdownListModal"};
-            }
-            
-            $scope.combinacionPorPuerta = [];
-            for(var k=0; k<$scope.componentePorPuerta.length; k++)
-            {
-                $scope.combinacionPorPuerta[k] = new CombinacionPorMaterialComponente();
-                
-                $scope.combinacionPorPuerta[k].Puerta.PuertaId = $scope.componentePorPuerta[k].PuertaId;
-                $scope.combinacionPorPuerta[k].Puerta.Nombre = $scope.componentePorPuerta[k].NombrePuerta;
-                $scope.combinacionPorPuerta[k].Puerta.ComponentePorPuertaId = $scope.componentePorPuerta[k].ComponentePorPuertaId;
-                $scope.combinacionPorPuerta[k].Puerta.Activo = $scope.componentePorPuerta[k].ActivoPuerta;
-                
-                $scope.combinacionPorPuerta[k].Componente.ComponenteId = $scope.componentePorPuerta[k].ComponenteId;
-                $scope.combinacionPorPuerta[k].Componente.Nombre = $scope.componentePorPuerta[k].NombreComponente;
-               
-                $scope.combinacionPorPuerta[k].clase = {tipoMaterial:"dropdownListModal", material:"dropdownListModal", grueso:"dropdownListModal"};
-                
-            }
         }
         else if(operacion == "Editar")
         {
-            $scope.nuevaCombinacion = SetCombinacionMaterial(objeto); 
+            $scope.nuevaCombinacion = SetCombinacionMaterial(objeto);
+            $scope.nuevaCombinacion.TipoCombinacion = $scope.SetTipoCombinacion(objeto.TipoCombinacion);
           
             $scope.GetCombinacionPorMaterialComponente(objeto.CombinacionMaterialId, "editar");
             $scope.GetCombinacionPorPuerta(objeto.CombinacionMaterialId);
+            $scope.GetCombinacionPorAccesorio(objeto.CombinacionMaterialId, "editar");
         }
         
         $('#combinacionMaterialModal').modal('toggle');
+    };
+    
+    $scope.SetTipoCombinacion = function(data)
+    {
+        var tipo = new TipoCombinacion();
+        
+        tipo.TipoCombinacionId = data.TipoCombinacionId;
+        tipo.Nombre = data.Nombre;
+        tipo.Descripcion = data.Descripcion;
+        
+        return tipo;
+    };
+    
+    $scope.SetCombinacionComponente = function()
+    {
+         $scope.combinacionMaterialComponente = [];
+            
+        for(var k=0; k<$scope.componente.length; k++)
+        {
+            $scope.combinacionMaterialComponente[k] = new CombinacionPorMaterialComponente();
+            $scope.combinacionMaterialComponente[k].Componente = SetComponente($scope.componente[k]);
+
+            $scope.combinacionMaterialComponente[k].clase = {tipoMaterial:"dropdownListModal", material:"dropdownListModal", grueso:"dropdownListModal"};
+        }
+    };
+    
+    $scope.SetCombinacionPuerta = function()
+    {
+        $scope.combinacionPorPuerta = [];
+        for(var k=0; k<$scope.componentePorPuerta.length; k++)
+        {
+            $scope.combinacionPorPuerta[k] = new CombinacionPorMaterialComponente();
+
+            $scope.combinacionPorPuerta[k].Puerta.PuertaId = $scope.componentePorPuerta[k].PuertaId;
+            $scope.combinacionPorPuerta[k].Puerta.Nombre = $scope.componentePorPuerta[k].NombrePuerta;
+            $scope.combinacionPorPuerta[k].Puerta.ComponentePorPuertaId = $scope.componentePorPuerta[k].ComponentePorPuertaId;
+            $scope.combinacionPorPuerta[k].Puerta.Activo = $scope.componentePorPuerta[k].ActivoPuerta;
+
+            $scope.combinacionPorPuerta[k].Componente.ComponenteId = $scope.componentePorPuerta[k].ComponenteId;
+            $scope.combinacionPorPuerta[k].Componente.Nombre = $scope.componentePorPuerta[k].NombreComponente;
+
+            $scope.combinacionPorPuerta[k].clase = {tipoMaterial:"dropdownListModal", material:"dropdownListModal", grueso:"dropdownListModal"};
+
+        }
+    };
+    
+    $scope.SetCombinacionAccesorio = function()
+    {
+        $scope.combinacionAccesorio = [];
+        for(var k=0; k<$scope.accesorio.length; k++)
+        {
+            $scope.combinacionAccesorio[k] = new CombincacionPorMaterialAccesorio();
+            
+            $scope.combinacionAccesorio[k].Accesorio.AccesorioId = $scope.accesorio[k].AccesorioId;
+            $scope.combinacionAccesorio[k].Accesorio.Nombre = $scope.accesorio[k].Nombre;
+            $scope.combinacionAccesorio[k].Accesorio.Activo = $scope.accesorio[k].Activo;
+
+            $scope.combinacionAccesorio[k].clase = {tipoMaterial:"dropdownListModal", material:"dropdownListModal", grueso:"dropdownListModal"};
+        }
+    };
+    
+    $scope.CambiarTipoCombinacion = function(tipo)
+    {
+        $scope.nuevaCombinacion.TipoCombinacion = tipo;
     };
     
     $scope.CambiarTipoMaterial = function(tipoMaterial, combinacion)
@@ -266,7 +347,7 @@ app.controller("CombinacionControlador", function($scope, $http, $q, CONFIG, dat
     
     $scope.SiguienteCombinacion = function(nombreInvalido)
     {
-        $scope.nuevaCombinacion.MaterialComponente = $scope.combinacionMaterialComponente
+        $scope.nuevaCombinacion.MaterialComponente = $scope.combinacionMaterialComponente;
 
         $scope.mensajeError = [];
         
@@ -278,6 +359,16 @@ app.controller("CombinacionControlador", function($scope, $http, $q, CONFIG, dat
         else
         {
             $scope.claseCombinacion.nombre = "entrada";
+        }
+        
+        if($scope.nuevaCombinacion.TipoCombinacion.TipoCombinacionId.length === 0)
+        {
+            $scope.claseCombinacion.tipo = "dropdownListModalError";
+            $scope.mensajeError[$scope.mensajeError.length] = "*Selecciona un Tipo de Combinación.";  
+        }
+        else
+        {
+            $scope.claseCombinacion.tipo = "dropdownListModal";
         }
         
         if($scope.mensajeError.length>0)
@@ -407,21 +498,90 @@ app.controller("CombinacionControlador", function($scope, $http, $q, CONFIG, dat
         }
         
         $scope.nuevaCombinacion.puerta = $scope.combinacionPorPuerta;
-        
-        if($scope.operacion == "Agregar")
-        {
-            $scope.AgregarCombinacionMaterial();
-        }
-        else if($scope.operacion == "Editar")
-        {
-            $scope.EditarCombinacionMaterial();
-        }
+        $scope.pasoCombinacion++;
     };
     
     $scope.AnteriorPuerta = function()
     {
         $scope.pasoCombinacion--;
         $scope.mensajeError = [];
+    };
+    
+    /*--------------------Paso 3 ------------------------*/
+    $scope.TerminarAccesorio = function()
+    {
+        if(!$scope.ValidarDatosPaso3())
+        {
+            return;
+        }
+        else
+        {
+            $scope.nuevaCombinacion.Accesorio = $scope.combinacionAccesorio;
+            
+            if($scope.operacion == "Agregar")
+            {
+                $scope.AgregarCombinacionMaterial();
+            }
+            else if($scope.operacion == "Editar")
+            {
+                $scope.EditarCombinacionMaterial();
+            }
+        }
+    };
+    
+    $scope.ValidarDatosPaso3 = function()
+    {
+        $scope.mensajeError = [];
+       
+        var datosIncompletos = false;
+        
+        for(var k=0; k<$scope.combinacionAccesorio.length; k++)
+        {
+            if($scope.combinacionAccesorio[k].Accesorio.Activo === false || $scope.combinacionAccesorio[k].Accesorio.Activo == "0")
+            {
+                $scope.CambiarTipoMaterial('No Aplica', $scope.combinacionAccesorio[k]);
+            }
+            else
+            {
+                if($scope.combinacionAccesorio[k].Material.TipoMaterial.Nombre.length === 0)
+                {
+                    datosIncompletos = true;
+                    $scope.combinacionAccesorio[k].clase.tipoMaterial = "dropdownListModalError";
+                }
+                else
+                {
+                  $scope.combinacionAccesorio[k].clase.tipoMaterial = "dropdownListModal";  
+                }
+                if($scope.combinacionAccesorio[k].Material.Nombre.length === 0)
+                {
+                    datosIncompletos = true;
+                    $scope.combinacionAccesorio[k].clase.material = "dropdownListModalError";
+                }
+                else
+                {
+                  $scope.combinacionAccesorio[k].clase.material = "dropdownListModal";  
+                }
+                if($scope.combinacionAccesorio[k].Grueso.length === 0)
+                {
+                    $scope.combinacionAccesorio[k].clase.grueso = "dropdownListModalError";
+                    datosIncompletos = true;
+                }
+                else
+                {
+                    $scope.combinacionAccesorio[k].clase.grueso = "dropdownListModal";  
+                }
+            }
+        }
+        
+        if(datosIncompletos)
+        {
+            $scope.mensajeError[$scope.mensajeError.length] = "*Completa todos los datos."; 
+            return false;
+        }
+        else
+        {
+            return true;        
+        }
     };
     
     $scope.AgregarCombinacionMaterial = function()
@@ -433,9 +593,9 @@ app.controller("CombinacionControlador", function($scope, $http, $q, CONFIG, dat
                 $scope.GetCombinacionMaterial();
                 $scope.GetCombinacionPorMaterialComponente();  
                
-                $scope.CerrarCombinacionMaterialModal();
-                $('#combinacionMaterialModal').modal('toggle');
                 $scope.mensaje = "La combinación de materiales se ha agregado.";
+                $('#combinacionMaterialModal').modal('toggle');
+                $scope.CerrarCombinacionMaterialModal();
             }
             else
             {
@@ -459,9 +619,9 @@ app.controller("CombinacionControlador", function($scope, $http, $q, CONFIG, dat
                 $scope.GetCombinacionMaterial();
                 $scope.GetCombinacionPorMaterialComponente();
                 
-                $scope.CerrarCombinacionMaterialModal();
-                $('#combinacionMaterialModal').modal('toggle');
                 $scope.mensaje = "La combinación de materiales se ha editado.";
+                $('#combinacionMaterialModal').modal('toggle');
+                $scope.CerrarCombinacionMaterialModal();
             }
             else
             {
@@ -477,10 +637,10 @@ app.controller("CombinacionControlador", function($scope, $http, $q, CONFIG, dat
     
     $scope.CerrarCombinacionMaterialModal = function()
     {
-        $scope.pasoCombinacion = 1;
         $scope.mostrarComponentePuerta = "";
         $scope.mensajeError = [];
-        $scope.claseCombinacion.nombre = "entrada";
+        $scope.claseCombinacion = {nombre:"entrada", tipo:"dropdownListModal"};
+        $scope.pasoCombinacion = 1;
     };
     
     /*--------Activar-Desactivar----------*/
@@ -576,6 +736,28 @@ app.controller("CombinacionControlador", function($scope, $http, $q, CONFIG, dat
         });
     };
     
+    $scope.GetTipoCombinacion = function()      
+    {
+        GetTipoCombinacionMaterial($http, $q, CONFIG).then(function(data)
+        {
+            $scope.tipoCombinacion = data;
+        }).catch(function(error)
+        {
+            alert(error);
+        });
+    };
+    
+    $scope.GetAccesorioMadera = function()      
+    {
+        GetAccesorioClase($http, $q, CONFIG, 2).then(function(data)
+        {
+            $scope.accesorio = data;
+        }).catch(function(error)
+        {
+            alert(error);
+        });
+    };
+    
     $scope.GetTipoMaterial = function()      
     {
         GetTipoMaterialParaModulos($http, $q, CONFIG).then(function(data)
@@ -649,6 +831,8 @@ app.controller("CombinacionControlador", function($scope, $http, $q, CONFIG, dat
         $scope.GetGruesoMaterial();
         
         $scope.GetComponentesPorPuertaComponente();
+        $scope.GetAccesorioMadera();
+        $scope.GetTipoCombinacion();
     };
     
     /*------------------Indentifica cuando los datos del usuario han cambiado-------------------*/

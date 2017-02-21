@@ -10,7 +10,7 @@ function GetPerfilPorUsuario()
     $usuarioId = json_decode($request->getBody());
     
     
-    $sql = "SELECT p.* FROM Perfil p, Usuario u, PerfilPorusuario pp WHERE u.UsuarioId = pp.UsuarioId AND pp.PerfilId = p.PerfilId AND u.UsuarioId='".$usuarioId[0]."'";
+    $sql = "SELECT p.* FROM Perfil p, Usuario u, PerfilPorUsuario pp WHERE u.UsuarioId = pp.UsuarioId AND pp.PerfilId = p.PerfilId AND u.UsuarioId='".$usuarioId[0]."'";
     
     try 
     {

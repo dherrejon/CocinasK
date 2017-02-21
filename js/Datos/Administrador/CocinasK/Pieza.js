@@ -47,6 +47,8 @@ function SetPieza(data)
     pieza.Nombre = data.Nombre;
     pieza.FormulaAncho = data.FormulaAncho;
     pieza.FormulaLargo = data.FormulaLargo;
+    pieza.FormulaAncho2 = data.FormulaAncho;
+    pieza.FormulaLargo2 = data.FormulaLargo;
     
     if(data.Activo == "1")
     {

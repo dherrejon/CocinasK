@@ -186,3 +186,15 @@ function CambiarDatoBool(dato)
         return "0";
     }
 }
+
+function CambiarDatoEnteroABool(dato)
+{
+    if(dato == "1")
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}

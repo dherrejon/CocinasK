@@ -1,0 +1,247 @@
+<div ng-controller="TipoCombinacion as tipoCombinacion">
+   
+    <div class="row">
+        <div class="col-md-11 col-xs-10">
+            <div class="table-responsive TablaUnidadNegocio">
+                <table class="table table-hover">
+                    <thead class="TituloTabla">
+                      <tr>
+                        <th><button class="btn btn-block botonOrdenar" ng-click="CambiarOrdenarServicio('Nombre')"><b>Nombre </b><b ng-if="ordenarTipo === 'Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarTipo === '-Nombre'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonFalso"><b>Detalles</b></button></th>
+                        <th><button class="btn botonFalso"><b>Editar</b></button></th>
+                        <th><button class="btn botonFalso"><b>Activo</b></button></th>
+                      </tr>
+                    </thead>
+                    <tbody ng-repeat="tipo in tipoCombinacion | orderBy:ordenarTipo ">
+                      <tr>
+                            <td>{{tipo.Nombre}}</td>
+                          
+                            <td class="text-center">
+                                <a ng-if="permisoUsuario.tipo.consultar" class="BotonOperacion" href="" data-toggle="modal" data-target="#DetalleTipoCombinacion" ng-click="MostrarDetalle(tipo)">
+                                    <span class="fa fa-eye fa-2x" ></span>
+                                </a>
+                            </td>
+
+                            <td class="text-center">
+                                <a ng-if="permisoUsuario.tipo.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirTipoCombinacion('Editar', tipo)">
+                                    <span class="fa fa-pencil fa-2x" ></span>
+                                </a>
+
+                                <span ng-if="!permisoUsuario.tipo.editar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
+                            </td>
+
+                            <td class="text-center">
+                                <div class="checkbox">
+                                    <label>
+                                       
+                                        <input  ng-disabled="!permisoUsuario.tipo.activar" ng-model="tipo.Activo" type="checkbox" value="" ng-click="ActivarDesactivarTipoCombinacion(tipo)">
+                                        <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+                                    </label>
+                                </div>
+                            </td>
+
+                      </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-xs-2 col-md-1">
+             <button ng-disabled="!permisoUsuario.tipo.agregar"  class="btn btn-block botonOperacion fa fa-plus text-center" data-toggle="tooltip" data-placement="bottom" title="Agregar Tipo Módulo" ng-click="AbrirTipoCombinacion('Agregar', null)"></button>
+        </div>
+    </div>
+                     
+    <!------------------------------------ Modales -------------------------------------------------------------------->
+    <!---- Agregar y editar muestrario -->
+    <div class="modal fade" id="tipoCombinacionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static" >
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <!-- encabezado del modal -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarTipoCombinacionForma()"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center" ng-if="operacion === 'Agregar'">Agregar Tipo de Combinación</h3>
+                            <h3 class="text-center" ng-if="operacion === 'Editar'">Editar Tipo de Combinación</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+                <br>
+
+                <form class="modal-body" name="tipoCombinacionForma">
+                <!-- Datos -->
+                    <div class="row">
+                        <!-- Nombre -->
+                        <div class="col-sm-6">
+                             <div class="entrada2">
+                                <input ng-pattern="erNombreGeneral" type="text" required class="{{claseTipo.nombre}} form-control" name="nombre" ng-model="nuevoTipo.Nombre"/>
+                                <label>Nombre</label>
+                            </div>
+                        </div>
+                        
+                        <br class="hidden-sm hidden-md hidden-lg">
+                         
+                         <!-- por defecto -->
+                        <div class="col-sm-6">
+                             <label class="btn checkBoxActivo">Tipo Combinación Activo<input type="checkbox" class="badgebox" ng-model="nuevoTipo.Activo"><span class="badge">&check;</span></label>
+                         </div>
+                    </div> 
+                    <br>
+                    <!-- Descripcion -->
+                    <div class="row">
+                        <div class="col-sm-12">
+                             <div class="">
+                                <label>Descripción presupuesto</label>
+                                <textarea required type="text"  class="form-control" ng-class="claseTipo.descripcion" name="descripcion" ng-model="nuevoTipo.Descripcion" maxlength="1000"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    
+                    <!-------- mensaje de error ---->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div ng-repeat="error in mensajeError">
+                                <span class="textoError">{{error}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!---- botones de operacion --->
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <button class="btn botonCancelar btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarTipoCombinacionForma()">CANCELAR</button>
+                        </div>
+                        
+                        <div class="col-xs-6">
+                            <button ng-disabled="terminar" focus class="btn botonAvanzar btn-block" ng-click="TerminarTipoCombinacion(tipoCombinacionForma.nombre.$invalid, tipoCombinacionForma.descripcion.$invalid)">TERMINAR</button>
+                        </div>
+                    </div>
+                    <br> 
+                </form>
+            </div>
+            <br><br><br>
+        </div>
+    </div>
+    
+    <!--- Modal para Detalles del tipo combinacion --->
+    <div class="modal fade " id="DetalleTipoCombinacion"  >
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <!-- encabezado del modal -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center">Detalles del Tipo Combinación</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- cuerpo del modal -->
+                <div class="modal-body">
+                    <!-- Opciones de unidad de negocio -->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="pull-right">
+                                <button ng-if="bugDetalle.Resuelto == '0'" data-dismiss="modal" aria-label="Close" class="btn botonOperacion" data-toggle="tooltip" data-placement="bottom" title="Marcar como error resuelto" ng-click="ResolverBug(bugDetalle)"><span class="fa fa-check fa-2x"></span></button>
+                            </div>
+                        </div>
+                        
+                        <br class="hidden-sm hidden-md hidden-lg">
+                    </div>
+                    
+                    <!-- MNombre y activo-->
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="subrayado">
+                                <label>Nombre </label><br>
+                                <span class="textoModal">{{tipoActualizar.Nombre}}</span>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="col-sm-6 col-xs-12" >
+                             <button class="btn checkBoxActivo" >Tipo combinación Activo<input ng-disabled="true" type="checkbox" class="badgebox" ng-model="tipoActualizar.Activo"><span class="badge">&check;</span></button>
+                        </div>
+                    </div>
+                    <br>
+                    
+                    <!--  Descripcion del presupuesto -->
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="bordeBug">
+                            <label>Descripción presupuesto</label><br>
+                            <span>{{tipoActualizar.Descripcion}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Desactivar Modal -->
+    <div class="modal fade" id="modalActivarDesactivarTipoCombinacion" data-keyboard="false" data-backdrop="static">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                
+                <div class="modal-body">
+                    <br>
+                    <div class="panel panel-default modalMensaje">
+                        <br>
+                        <b>{{mensajeAdvertencia}}</b>
+                        <br><br>
+
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <button class="btn botonCancelar" data-dismiss="modal" aria-label="Close" ng-click="CancelarEstatusActivoTipoCombinacion()">No</button>
+                            </div>
+                            <div class="col-xs-6">
+                                <button class="btn botonAvanzar" data-dismiss="modal" aria-label="Close" ng-click="ConfirmarActualizarTipoCombinacion()">Si</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div> 
+    
+    <!-- Modal para mensajes -->
+    <div class="modal fade" id="mensajeTipoCombinacion">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                
+                <div class="modal-body">
+                    <div class="panel panel-default modalMensaje">
+                        <br>
+                        <b>{{mensaje}}</b>
+
+                        <br><br>
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <button class="btn  botonAvanzar" data-dismiss="modal" aria-label="Close">Aceptar</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>             
+    
+                        
+</div>
+
+     

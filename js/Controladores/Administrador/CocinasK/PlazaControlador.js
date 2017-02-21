@@ -334,6 +334,7 @@ app.controller("PlazaControlador", function($scope, $http, $q, CONFIG, $rootScop
     //el método sabe que operacion realizar y si los datos son validos llamara al método correspondiente para concluir la operación
     $scope.TerminarPlaza = function()
     {
+        debugger;
         $scope.mensajeError = [];
         if($scope.nuevaPlaza.Estado === "")
         {

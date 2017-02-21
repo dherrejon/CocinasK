@@ -7,7 +7,7 @@
                       <tr>
                         <th><button class="btn btn-block botonOrdenar" ng-click="CambiarOrdenarMaqueo('Nombre')"><b>Nombre </b><b ng-if="ordenarMaqueo === 'Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarMaqueo === '-Nombre'" class="fa fa-arrow-down"></b></button></th>
                         <th><button class="btn botonOrdenar" ng-click="CambiarOrdenarMaqueo('CostoUnidad')"><b>Costo Unidad </b><b ng-if="ordenarMaqueo === 'CostoUnidad'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarMaqueo === '-CostoUnidad'" class="fa fa-arrow-down"></b></button></th>
-                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenarMaqueo('PrecioVenta')"><b>Precio Venta </b><b ng-if="ordenarMaqueo === 'PrecioVenta'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarMaqueo === '-PrecioVenta'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenarMaqueo('Margen')"><b>Margen </b><b ng-if="ordenarMaqueo === 'Margen'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarMaqueo === '-Margen'" class="fa fa-arrow-down"></b></button></th>
                         <th><button class="btn botonFalso"><b>Colores</b></button></th>
                         <th><button class="btn botonFalso"><b>Editar</b></button></th>
                         <th><button class="btn botonFalso"><b>Activo</b></button></th>
@@ -22,7 +22,7 @@
                           
                           <td>${{maqueo.CostoUnidad}}</td>
                           
-                          <td>${{maqueo.PrecioVenta}}</td>
+                          <td>${{maqueo.Margen}}</td>
 
                            <td class="text-center">
                                 <a  class="BotonOperacion" href="" data-toggle="modal" data-target="#DetalleMaqueoColores" ng-click="VerGrupoColorMaqueo(maqueo.Grupo)">
@@ -176,11 +176,11 @@
                         
                         <br class="hidden-sm hidden-md hidden-lg">
                         <div class="hidden-sm hidden-md hidden-lg" style="margin-top:10px"></div>
-                        <!-- Precio venta -->
+                        <!-- Margen -->
                         <div class="col-sm-6">
                              <div class="entrada2">
-                                <input ng-pattern="erNumeroDecimal" type="text" required class="{{claseMaqueo.precio}} form-control" name="precio" ng-model="nuevoMaqueo.PrecioVenta"/>
-                                <label>Precio Venta</label>
+                                <input ng-pattern="erNumeroDecimal" type="text" required class="{{claseMaqueo.precio}} form-control" name="precio" ng-model="nuevoMaqueo.Margen"/>
+                                <label>Margen</label>
                             </div>
                         </div>
                         

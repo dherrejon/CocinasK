@@ -32,6 +32,39 @@ function GetAccesorio()
     }
 }
 
+function GetAccesorioClase()
+{
+    global $app;
+    global $session_expiration_time;
+
+    $request = \Slim\Slim::getInstance()->request();
+    $accesorio = json_decode($request->getBody());
+
+    $sql = "SELECT * FROM AccesorioVista WHERE ClaseAccesorioId = ". $accesorio[0];
+
+    try 
+    {
+
+        $db = getConnection();
+        $stmt = $db->query($sql);
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $db = null;
+        
+        foreach ($response as $aux) 
+        {
+            $aux->Imagen =  base64_encode($aux->Imagen);
+        }
+        
+        echo json_encode($response);  
+    } 
+    catch(PDOException $e) 
+    {
+        echo($e);
+        $app->status(409);
+        $app->stop();
+    }
+}
+
 function AgregarAccesorio()
 {
     $request = \Slim\Slim::getInstance()->request();
@@ -309,8 +342,15 @@ function GetCombinacionPorAccesorio()
     $request = \Slim\Slim::getInstance()->request();
     $accesorio = json_decode($request->getBody());
     
+    if($accesorio[1] == "accesorio")
+    {
+        $sql = "SELECT * FROM CombinacionAccesorioVista WHERE AccesorioId='".$accesorio[0]."'";
+    }
     
-    $sql = "SELECT * FROM CombinacionAccesorioVista WHERE AccesorioId='".$accesorio[0]."'";
+    if($accesorio[1] == "combinacion")
+    {
+        $sql = "SELECT * FROM CombinacionAccesorioVista WHERE CombinacionMaterialId='".$accesorio[0]."'";
+    }
     
     try 
     {

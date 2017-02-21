@@ -3,6 +3,7 @@ class CombinacionMaterial
     constructor()
     {
         this.CombinacionMaterialId = "";
+        this.TipoCombinacion = new TipoCombinacion();
         this.Nombre = "";
         this.Activo = true;
         this.PorDefecto = false;
@@ -44,6 +45,9 @@ function SetCombinacionMaterial(data)
     combinacion.CombinacionMaterialId = data.CombinacionMaterialId;
     combinacion.Nombre = data.Nombre;
     combinacion.ActivoN = data.Activo;
+    combinacion.TipoCombinacion.TipoCombinacionId = data.TipoCombinacionId;
+    combinacion.TipoCombinacion.Nombre = data.NombreTipoCombinacion;
+    combinacion.TipoCombinacion.Descripcion = data.Descripcion;
     if(data.Activo == "1")
     {
         combinacion.Activo = true;
@@ -253,6 +257,7 @@ function SetCombinacionPorMaterialComponente(data, modulo)
     
     combinacion.CombinacionPorMaterialComponenteId = data.CombinacionPorMaterialComponenteId;
     combinacion.Grueso = data.Grueso;
+    combinacion.Descripcion = data.Descripcion;
     
     tipoMaterial.TipoMaterialId = data.TipoMaterialId;
     tipoMaterial.Nombre = data.NombreTipoMaterial;
@@ -301,4 +306,135 @@ function SetCombinacionPorMaterialComponente(data, modulo)
     }
     
     return combinacion;
+}
+
+/*----------------------------------- Tipo combinacion ---------------------------*/
+class TipoCombinacion
+{
+    constructor()
+    {
+        this.TipoCombinacionId = "";
+        this.Nombre = "";
+        this.Descripcion = "";
+        this.Activo = true;
+    }
+}
+
+//obtener combinaciones
+function GetTipoCombinacionMaterial($http, $q, CONFIG)     
+{
+    var q = $q.defer();
+
+    $http({      
+          method: 'GET',
+          url: CONFIG.APIURL + '/GetTipoCombinacionMaterial',
+
+      }).success(function(data)
+        {
+            var combinacion = []; 
+            
+            for(var k=0; k<data.length; k++)
+            {
+                combinacion[k] = new TipoCombinacion();
+                combinacion[k] = SetTipoCombinacion(data[k]);
+            }
+            q.resolve(combinacion);  
+        }).error(function(data, status){
+            q.resolve(status);
+     }); 
+    return q.promise;
+}
+
+//copia los datos de una combinacion de materiales
+function SetTipoCombinacion(data)
+{
+    var tipoCombinacion = new TipoCombinacion();
+    
+    tipoCombinacion.TipoCombinacionId = data.TipoCombinacionId;
+    tipoCombinacion.Nombre = data.Nombre;
+    tipoCombinacion.Descripcion = data.Descripcion;
+    
+    tipoCombinacion.Activo = CambiarDatoEnteroABool(data.Activo);
+    
+    return tipoCombinacion;
+}
+
+function AgregarTipoCombiancion($http, CONFIG, $q, tipo)
+{
+    var q = $q.defer();   
+    
+    tipo.Activo = CambiarDatoBool(tipo.Activo);
+
+    $http({      
+          method: 'POST',
+          url: CONFIG.APIURL + '/AgregarTipoCombiancion',
+          data: tipo
+
+      }).success(function(data)
+        {
+            q.resolve("Exitoso");
+            if(data[0].Estatus == "Exitoso") 
+            {
+                q.resolve("Exitoso");
+            }
+            else
+            {
+                q.resolve("Fallido");
+            }
+            
+        }).error(function(data, status){
+            q.resolve(status);
+
+     }); 
+    return q.promise;
+}
+
+//edita una combinacion de materiales
+function EditarTipoCombiancion($http, CONFIG, $q, tipo)
+{
+    var q = $q.defer();
+    
+    tipo.Activo = CambiarDatoBool(tipo.Activo);
+    
+    $http({      
+          method: 'PUT',
+          url: CONFIG.APIURL + '/EditarTipoCombiancion',
+          data: tipo
+
+      }).success(function(data)
+        {
+            if(data[0].Estatus == "Exitoso") 
+            {
+                q.resolve("Exitoso");
+            }
+            else
+            {
+                q.resolve("Fallido");
+            }
+            
+        }).error(function(data, status){
+            q.resolve(status);
+
+     }); 
+    return q.promise;
+}
+
+function ActivarDesactivarTipoCombinacion($http, $q, CONFIG, tipo) 
+{
+    var q = $q.defer();
+
+    $http({      
+          method: 'POST',
+          url: CONFIG.APIURL + '/ActivarDesactivarTipoCombinacion',
+          data: tipo
+
+      }).success(function(data)
+        {
+            q.resolve(data); 
+        }).error(function(data, Estatus){
+            q.resolve(Estatus);
+
+     }); 
+    
+    return q.promise;
 }

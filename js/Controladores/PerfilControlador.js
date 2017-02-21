@@ -135,6 +135,14 @@ function SetPerfil(perfil, $rootScope, $window, $http, CONFIG, usuario)
             {
                 $rootScope.barraNavegacionOpciones[0].elemento[3].show= true;
             }
+            else if(usuario.Permiso[k] == "AdmProConsultar")
+            {
+                $rootScope.barraNavegacionOpciones[0].elemento[4].show = true;
+            }
+            else if(usuario.Permiso[k] == "AdmPlNConsultar")
+            {
+                $rootScope.barraNavegacionOpciones[0].elemento[5].show= true;
+            }
             /*catálogos*/
             else if(usuario.Permiso[k] == "CatModConsultar")
             {
@@ -188,6 +196,10 @@ function SetPerfil(perfil, $rootScope, $window, $http, CONFIG, usuario)
             else if(usuario.Permiso[k] == "ConMaqConsultar" || usuario.Permiso[k] == "ConMCMConsultar")
             {
                 $rootScope.barraNavegacionOpciones[2].elemento[8].show = true;
+            }
+            else if(usuario.Permiso[k] == "ConCMaConsultar")
+            {
+                $rootScope.barraNavegacionOpciones[2].elemento[9].show = true;
             }
         }
     }

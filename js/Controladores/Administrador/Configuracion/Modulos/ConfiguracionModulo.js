@@ -96,7 +96,7 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
     $scope.material = null;
     $scope.tipoMaterial = null;
     $scope.gruesoMaterial = null;
-    $scope.tipoParte = null;
+    $scope.tipoParte = [];
     
     $scope.mensajeError = [];
     
@@ -117,6 +117,7 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
     $scope.tabFormula = tabFormula;
     $scope.tabOperador = operadores;
     $scope.medidasFormula = "";
+    $scope.formulaId = [];
     
     //Cambia el contenido de la pestaña
     $scope.SeleccionarTab = function(tab, index)    
@@ -200,11 +201,6 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
             $scope.nuevoComponente = SetComponente(objeto);
            
             $scope.GetCombinacionPorMaterialComponente(objeto.ComponenteId, "editar");
-        }
-        
-        if($scope.tipoParte === null)
-        {
-            $scope.GetTipoParte();
         }
         
         $('#componenteForma').modal('toggle');
@@ -298,20 +294,11 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
             
             var isPieza = false;
             
-            
-            for(var k=0; k<$scope.tipoParte.length; k++)
-            {
-                if(nombrePieza == $scope.tipoParte[k].Nombre)
-                {
-                    isPieza = true;
-                }
-            }
-            
             if(!isPieza)
             {
                 for(var k=0; k<$scope.piezaPorComponente.length; k++)
                 {
-                    if(nombrePieza == $scope.piezaPorComponente[k].Pieza.Nombre)
+                    if(nombrePieza == $scope.piezaPorComponente[k].Pieza.PiezaId)
                     {
                         isPieza = true;
                     }
@@ -332,7 +319,15 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
                 if(!piezaRegistrada)
                 {
                     $scope.piezaFaltante[$scope.piezaFaltante.length] = nombrePieza;
-                    $scope.mensajeError[$scope.mensajeError.length] = "*Falta agregar la pieza \"" + nombrePieza + "\".";
+                    
+                    for(var k=0; k<$scope.pieza.length; k++)
+                    {
+                        if(nombrePieza == $scope.pieza[k].PiezaId)
+                        {
+                            $scope.mensajeError[$scope.mensajeError.length] = "*Falta agregar la pieza \"" + $scope.pieza[k].Nombre + "\".";
+                            break;
+                        }
+                    }
                 }
                 
             }
@@ -652,6 +647,15 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
     
     /*-----------------------------------Pestaña Pieza----------------------------------------------------------*/
     
+    /*----------- Detalles---------------*/
+    $scope.MostrarPiezaDetalles = function(pieza)
+    {   
+        $scope.piezaDetalle = pieza;
+        
+        $scope.piezaDetalle.FormulaAncho2 = $scope.SustituirFormulaIdNombre(pieza.FormulaAncho);
+        $scope.piezaDetalle.FormulaLargo2 = $scope.SustituirFormulaIdNombre(pieza.FormulaLargo);
+    };
+    
     $scope.GetPieza = function()      
     {
         GetPieza($http, $q, CONFIG).then(function(data)
@@ -669,11 +673,21 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
         
         if(operacion == "Agregar")
         {
-            $scope.nuevaPieza = new Pieza();   
+            $scope.nuevaPieza = new Pieza();
+            $scope.nuevaPieza.formulaLargoId = [];
+            $scope.nuevaPieza.formulaAnchoId = [];
         }
         else if(operacion == "Editar")
         {
             $scope.nuevaPieza = SetPieza(objeto);
+            
+            $scope.formulaId = [];
+            $scope.nuevaPieza.FormulaAncho = $scope.SustituirFormulaIdNombre($scope.nuevaPieza.FormulaAncho);
+            $scope.nuevaPieza.formulaAnchoId = $scope.SetFormilaIdNombre($scope.formulaId);
+            
+            $scope.formulaId = [];
+            $scope.nuevaPieza.FormulaLargo = $scope.SustituirFormulaIdNombre($scope.nuevaPieza.FormulaLargo);
+            $scope.nuevaPieza.formulaLargoId = $scope.SetFormilaIdNombre($scope.formulaId);
         }
         
         if($scope.tipoParte === null)
@@ -682,6 +696,194 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
         }
         
         $('#piezaForma').modal('toggle');
+    };
+    
+    $scope.SustituirFormulaIdNombre = function(formula)
+    {
+        if(formula.indexOf("[Componente]") > -1)
+        {
+           formula = $scope.SustituirComponente(formula);
+        }
+        
+        if(formula.indexOf("[Parte]") > -1)
+        {
+           formula = $scope.SustituirParte(formula);
+        }
+        
+        
+        if(formula.indexOf("[Pieza]") > -1 || formula.indexOf("[Pieza2]") > -1)
+        {
+           formula = $scope.SustituirParte(formula);
+        }
+        
+        formula = $scope.SustituirPieza(formula);
+        
+        return formula;
+    };
+    
+    $scope.SustituirComponente = function(formula)
+    {
+        var componenteId;
+        
+        var index = formula.indexOf("[Componente]");
+        
+        while(index > -1)
+        {
+            componenteId = "";
+            
+            for(var j=index+13; j<formula.length; j++)
+            {
+                componenteId += formula[j];
+                if(formula[j+1] == "]")
+                {
+                    index = j+1;
+                    break;
+                }
+            }
+
+            //console.log(nombreComponente);
+            
+            var medida = "[Componente][" + componenteId + "][Grueso]";
+            
+
+            for(var k=0; k<$scope.componente.length; k++)
+            {
+                if(componenteId == $scope.componente[k].ComponenteId)
+                {
+                    var componente = "[Componente2][" + $scope.componente[k].Nombre + "][Grueso]";
+                    formula = formula.replace(medida, componente);
+                    
+                    $scope.formulaId[$scope.formulaId.length] = {nombre:"", id:""};
+                    $scope.formulaId[$scope.formulaId.length-1].id = "[Componente][" + componenteId + "][Grueso]";
+                    $scope.formulaId[$scope.formulaId.length-1].nombre = "[Componente][" + $scope.componente[k].Nombre + "][Grueso]";
+                        
+                    break;
+                }
+            }
+
+            index = formula.indexOf("[Componente]");
+        }
+        
+        do
+        {
+            formula = formula.replace("[Componente2]", "[Componente]");
+            index = formula.indexOf("[Componente2]");
+        }while(index > -1);
+        
+        
+        return formula;
+    };
+    
+    $scope.SustituirParte = function(formula)
+    {
+        var parteId;
+        
+        var index = formula.indexOf("[Parte]");
+        
+        while(index > -1)
+        {
+            parteId = "";
+            
+            for(var j=index+8; j<formula.length; j++)
+            {
+                parteId += formula[j];
+                if(formula[j+1] == "]")
+                {
+                    index = j+1;
+                    break;
+                }
+            }
+
+            //console.log(parteId);
+            
+            var medida = "[Parte][" + parteId + "]";
+            
+
+            for(var k=0; k<$scope.tipoParte.length; k++)
+            {
+                if(parteId == $scope.tipoParte[k].TipoParteId)
+                {
+                    var parte = "[Pieza2][" + $scope.tipoParte[k].Nombre + "]";
+                    formula = formula.replace(medida, parte);
+                    
+                    $scope.formulaId[$scope.formulaId.length] = {nombre:"", id:""};
+                    $scope.formulaId[$scope.formulaId.length-1].id = "[Parte][" + parteId + "]";
+                    $scope.formulaId[$scope.formulaId.length-1].nombre = "[Pieza][" + $scope.tipoParte[k].Nombre + "]";
+                    
+                    break;
+                }
+            }
+
+            index = formula.indexOf("[Parte]");
+        }
+        
+        return formula;
+    };
+    
+    $scope.SetFormilaIdNombre = function(idNombre)
+    {
+        var nuevo = [];
+        
+        for(var k=0; k<idNombre.length; k++)
+        {
+            nuevo[k] = {nombre:"", id:""};
+            nuevo[k].nombre = idNombre[k].nombre;
+            nuevo[k].id = idNombre[k].id;
+        }
+        
+        return nuevo;
+    }
+    
+    $scope.SustituirPieza = function(formula)
+    {
+        var piezaId;
+        
+        var index = formula.indexOf("[Pieza]");
+        
+        while(index > -1)
+        {
+            piezaId = "";
+            
+            for(var j=index+8; j<formula.length; j++)
+            {
+                piezaId += formula[j];
+                if(formula[j+1] == "]")
+                {
+                    index = j+1;
+                    break;
+                }
+            }
+
+            //console.log(piezaId);
+            
+            var medida = "[Pieza][" + piezaId + "]";
+            
+
+            for(var k=0; k<$scope.pieza.length; k++)
+            {
+                if(piezaId == $scope.pieza[k].PiezaId)
+                {
+                    var pieza = "[Pieza2][" + $scope.pieza[k].Nombre + "]";
+                    formula = formula.replace(medida, pieza);
+                    
+                    $scope.formulaId[$scope.formulaId.length] = {nombre:"", id:""};
+                    $scope.formulaId[$scope.formulaId.length-1].id = "[Pieza][" + piezaId + "]";
+                    $scope.formulaId[$scope.formulaId.length-1].nombre = "[Pieza][" + $scope.pieza[k].Nombre + "]";
+                    
+                    break;
+                }
+            }
+
+            index = formula.indexOf("[Parte]");
+        }
+        
+        do
+        {
+            formula = formula.replace("[Pieza2]", "[Pieza]");
+            index = formula.indexOf("[Pieza2]");
+        }while(index > -1);
+        
+        return formula;
     };
     
     $scope.ValidarDatosPieza = function(nombreInvalido)
@@ -807,10 +1009,22 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
     
     
     /*---------Formula pieza ------------*/
-    $scope.AbrirFormulaForma = function(medida, formula)
+    $scope.AbrirFormulaForma = function(medida, pieza)
     {
         $scope.editarFormula = medida;
-        $scope.nuevaFormula = formula;
+        
+        $scope.formulaId = [];
+        
+        if(medida === "Ancho")
+        {
+            $scope.nuevaFormula = pieza.FormulaAncho;
+            $scope.formulaId = pieza.formulaAnchoId;
+        }
+        else if(medida == "Largo")
+        {
+            $scope.nuevaFormula = pieza.FormulaLargo;
+            $scope.formulaId = pieza.formulaLargoId;
+        }
         
         if($scope.nuevaFormula.length > 0)
         {
@@ -905,26 +1119,39 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
         $scope.mensajeError = [];
     };
     
-    $scope.SetComponenteFormula = function(componente)
+    $scope.SetComponenteFormula = function(componente, id)
     {
         $scope.componenteFormula = componente;
+        $scope.variableId = id;
     };
     
     $scope.SetComponenteValor = function()
     {
         $scope.nuevaFormula += "[Componente][" +$scope.componenteFormula + "][Grueso]"; 
+        
+        $scope.formulaId[$scope.formulaId.length] = {nombre:"", id:""};
+        $scope.formulaId[$scope.formulaId.length-1].nombre = "[Componente][" +$scope.componenteFormula + "][Grueso]"; 
+        $scope.formulaId[$scope.formulaId.length-1].id = "[Componente][" +$scope.variableId + "][Grueso]"; 
+        
         $scope.valorFormula = "operador";
         $scope.componenteFormula = "";
     };
     
-    $scope.SetPiezaFormula = function(pieza)
+    $scope.SetPiezaFormula = function(pieza, id, tipo)
     {
         $scope.piezaFormula = pieza;
+        $scope.variableId = id;
+        $scope.tipoComponente = tipo;
     };
     
     $scope.SetPiezaValor = function(valor)
     {
         $scope.nuevaFormula += "[Pieza][" +$scope.piezaFormula + "]["+valor+"]"; 
+        
+        $scope.formulaId[$scope.formulaId.length] = {nombre:"", id:""};
+        $scope.formulaId[$scope.formulaId.length-1].nombre = "[Pieza][" +$scope.piezaFormula + "]["+valor+"]";
+        $scope.formulaId[$scope.formulaId.length-1].id = "[" + $scope.tipoComponente + "][" +$scope.variableId + "]["+valor+"]";
+        
         $scope.valorFormula = "operador";
         $scope.piezaFormula = "";
     };
@@ -1055,17 +1282,31 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
         }
         else
         {
+            var formulaId = $scope.SustituirFormulaNombrePorId($scope.nuevaFormula);
             if($scope.editarFormula == "Ancho")
             {
                 $scope.nuevaPieza.FormulaAncho = $scope.nuevaFormula;
+                $scope.nuevaPieza.FormulaAncho2 = formulaId;
             }
             else if($scope.editarFormula == "Largo")
             {
                 $scope.nuevaPieza.FormulaLargo = $scope.nuevaFormula;
+                $scope.nuevaPieza.FormulaLargo2 = formulaId;
             }
             
             $('#piezaFormulaForma').modal('toggle');
         }
+    };
+    
+    $scope.SustituirFormulaNombrePorId = function(formula)
+    {
+        var nueva = $scope.nuevaFormula;
+        for(var k=0; k<$scope.formulaId.length; k++)
+        {
+            nueva = nueva.replace($scope.formulaId[k].nombre, $scope.formulaId[k].id);
+        }
+        
+        return nueva;
     };
     
     /*-------------------------------TIPO MÓDULO----------------------------------------------------*/
@@ -1617,6 +1858,7 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
         $scope.GetPieza();
         $scope.GetComponente();
         $scope.GetConsumible();
+        $scope.GetTipoParte();
 
         $scope.GetCombinacionMaterial();
         $scope.GetTipoMaterial();

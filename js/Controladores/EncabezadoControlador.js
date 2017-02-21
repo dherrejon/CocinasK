@@ -334,6 +334,14 @@ function SetPerfilNombre($rootScope, usuario)
             {
                 $rootScope.barraNavegacionOpciones[0].elemento[3].show= true;
             }
+            else if(usuario.Permiso[k] == "AdmProConsultar")
+            {
+                $rootScope.barraNavegacionOpciones[0].elemento[4].show = true;
+            }
+            else if(usuario.Permiso[k] == "AdmPlNConsultar")
+            {
+                $rootScope.barraNavegacionOpciones[0].elemento[5].show= true;
+            }
             /*Catálogos*/
             else if(usuario.Permiso[k] == "CatModConsultar")
             {
@@ -388,6 +396,10 @@ function SetPerfilNombre($rootScope, usuario)
             {
                 $rootScope.barraNavegacionOpciones[2].elemento[8].show = true;
             }
+            else if(usuario.Permiso[k] == "ConCMaConsultar")
+            {
+                $rootScope.barraNavegacionOpciones[2].elemento[9].show = true;
+            }
         }
     }
     
@@ -403,7 +415,9 @@ var OpcionAdministrador =
                         { referencia: "#Colaborador", texto:"Colaboradores", nuevaPagina:true, show:false},
                         { referencia: "#UnidadNegocio", texto:"Unidades de Negocio", nuevaPagina:true, show:false},
                         { referencia: "#Plaza", texto:"Plazas", nuevaPagina:true, show:false },
-                        { referencia: "#Territorio", texto:"Territorios", nuevaPagina:true, show:false}
+                        { referencia: "#Territorio", texto:"Territorios", nuevaPagina:true, show:false},
+                        { referencia: "#Promocion", texto:"Promociones", nuevaPagina:true, show:false},
+                        { referencia: "#PlanPago", texto:"Plan de pagos", nuevaPagina:true, show:false}
                   ]                      
     },
     { 
@@ -426,7 +440,8 @@ var OpcionAdministrador =
                         { referencia: "#ConfigurarGeneral", texto:"General", nuevaPagina:true, show:false},
                         { referencia: "#ConfigurarAccesorio", texto:"Accesorios", nuevaPagina:true, show:false},
                         { referencia: "#Servicio", texto:"Servicios", nuevaPagina:true, show:false},
-                        { referencia: "#Maqueo", texto:"Maqueo", nuevaPagina:true, show:false}
+                        { referencia: "#Maqueo", texto:"Maqueo", nuevaPagina:true, show:false},
+                        { referencia: "#ConfigurarCombinacionMaterial", texto:"Combinacion Material", nuevaPagina:true, show:false}
                   ]                      
     },
     { 

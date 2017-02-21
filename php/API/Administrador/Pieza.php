@@ -42,8 +42,8 @@ function AgregarPieza()
         $stmt = $db->prepare($sql);
 
         $stmt->bindParam("Nombre", $pieza->Nombre);
-        $stmt->bindParam("FormulaAncho", $pieza->FormulaAncho);
-        $stmt->bindParam("FormulaLargo", $pieza->FormulaLargo);
+        $stmt->bindParam("FormulaAncho", $pieza->FormulaAncho2);
+        $stmt->bindParam("FormulaLargo", $pieza->FormulaLargo2);
         $stmt->bindParam("Activo", $pieza->Activo);
 
         $stmt->execute();
@@ -64,7 +64,7 @@ function EditarPieza()
     $request = \Slim\Slim::getInstance()->request();
     $pieza = json_decode($request->getBody());
    
-    $sql = "UPDATE Pieza SET Nombre='".$pieza->Nombre."', FormulaAncho='".$pieza->FormulaAncho."',  FormulaLargo='".$pieza->FormulaLargo."', Activo = '".$pieza->Activo."'  WHERE PiezaId=".$pieza->PiezaId."";
+    $sql = "UPDATE Pieza SET Nombre='".$pieza->Nombre."', FormulaAncho='".$pieza->FormulaAncho2."',  FormulaLargo='".$pieza->FormulaLargo2."', Activo = '".$pieza->Activo."'  WHERE PiezaId=".$pieza->PiezaId."";
     
     try 
     {

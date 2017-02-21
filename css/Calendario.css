@@ -1,0 +1,14 @@
+.fechaEntrada
+{
+    color: #262626;
+    border-width: 0px 0px 3px 0px;
+    border-style: solid;
+    border-color: #262626;
+    border-radius: none;
+}
+
+.botonGrupo
+{
+    color: white;
+    background: #262626;
+}

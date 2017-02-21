@@ -42,6 +42,33 @@ function GetAccesorio($http, $q, CONFIG)
     return q.promise;
 }
 
+function GetAccesorioClase($http, $q, CONFIG, clase)     
+{
+    var q = $q.defer();
+    var datos = [];
+    datos[0] = clase;
+    
+    $http({      
+          method: 'POST',
+          url: CONFIG.APIURL + '/GetAccesorioClase',
+          data: datos
+      }).success(function(data)
+        {
+            var accesorio = []; 
+            
+            for(var k=0; k<data.length; k++)
+            {
+                accesorio[k] = new Accesorio();
+                accesorio[k] = SetAccesorio(data[k]);
+            }
+        
+            q.resolve(accesorio);  
+        }).error(function(data, status){
+            q.resolve(status);
+     }); 
+    return q.promise;
+}
+
 function SetAccesorio(data)
 {
     var accesorio = new Accesorio();
@@ -420,12 +447,13 @@ class CombincacionPorMaterialAccesorio
     }
 }
 
-function GetCombinacionPorAccesorio($http, $q, CONFIG, id)    // obtener los componentes del módulo
+function GetCombinacionPorAccesorio($http, $q, CONFIG, id, modulo)    // obtener los componentes del módulo
 {
     var q = $q.defer();
     
     var dato = [];
     dato[0] = id;
+    dato[1] = modulo;
         
 
     $http({      
