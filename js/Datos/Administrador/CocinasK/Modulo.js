@@ -406,7 +406,7 @@ class MedidasPorModulo
         this.ModuloId = "";
         this.Ancho = "";
         this.Alto = ""; 
-        this.Profunto = "";
+        this.Profundo = "";
         this.Activo = 1;
     }
 }

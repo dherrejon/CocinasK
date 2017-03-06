@@ -7,7 +7,7 @@ function GetPlanPago()
 
     $request = \Slim\Slim::getInstance()->request();
 
-    $sql = "SELECT PlanPagoId, Nombre, Pagos, Activo FROM PlanPago";
+    $sql = "SELECT PlanPagoId, Nombre, Pagos, FechaEntrega, Activo FROM PlanPago";
 
     try 
     {
@@ -34,8 +34,8 @@ function AgregarPlanPago()
     $request = \Slim\Slim::getInstance()->request();
     $planPago = json_decode($request->getBody());
     global $app;
-    $sql = "INSERT INTO PlanPago (Nombre, Pagos, Activo) 
-            VALUES( :Nombre, :Pagos, :Activo)";
+    $sql = "INSERT INTO PlanPago (Nombre, Pagos, FechaEntrega, Activo) 
+            VALUES( :Nombre, :Pagos, :FechaEntrega, :Activo)";
 
     try 
     {
@@ -45,6 +45,7 @@ function AgregarPlanPago()
 
         $stmt->bindParam("Nombre", $planPago->Nombre);
         $stmt->bindParam("Pagos", $planPago->Pagos);
+        $stmt->bindParam("FechaEntrega", $planPago->FechaEntrega);
         $stmt->bindParam("Activo", $planPago->Activo);
 
         $stmt->execute();
@@ -100,7 +101,7 @@ function EditarPlanPago()
     $request = \Slim\Slim::getInstance()->request();
     $planPago = json_decode($request->getBody());
    
-    $sql = "UPDATE  PlanPago SET Nombre='".$planPago->Nombre."', Pagos='".$planPago->Pagos."', Activo='".$planPago->Activo."' WHERE PlanPagoId=".$planPago->PlanPagoId;
+    $sql = "UPDATE  PlanPago SET Nombre='".$planPago->Nombre."', Pagos='".$planPago->Pagos."', FechaEntrega='".$planPago->FechaEntrega."', Activo='".$planPago->Activo."' WHERE PlanPagoId=".$planPago->PlanPagoId;
     
     try 
     {

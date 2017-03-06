@@ -602,7 +602,7 @@ function RecuperarPassword()
         $subject_message = "Recuperar contraseña";
         $body_message = "Accede al enlace especificado para que puedas reiniciar tu " .utf8_decode("contraseña");
         $body_message .= "\n\n";
-        $body_message .="Enlace: http://localhost/cocinasK/#/RecuperarPassword/".$response[0]->UsuarioId."/".$codigo;
+        $body_message .="Enlace: http://sistemack.com/#/RecuperarPassword/".$response[0]->UsuarioId."/".$codigo;
 
         $header = "De: Cocinas K\r\n";
 

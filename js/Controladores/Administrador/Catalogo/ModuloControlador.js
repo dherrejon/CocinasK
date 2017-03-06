@@ -837,7 +837,7 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
                 
                 var isComponente = false;
 
-                if(nombreComponente == "4")
+                if(nombreComponente == "1")
                 {
                     isComponente = true;  
                 }

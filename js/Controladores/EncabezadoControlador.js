@@ -441,7 +441,7 @@ var OpcionAdministrador =
                         { referencia: "#ConfigurarAccesorio", texto:"Accesorios", nuevaPagina:true, show:false},
                         { referencia: "#Servicio", texto:"Servicios", nuevaPagina:true, show:false},
                         { referencia: "#Maqueo", texto:"Maqueo", nuevaPagina:true, show:false},
-                        { referencia: "#ConfigurarCombinacionMaterial", texto:"Combinacion Material", nuevaPagina:true, show:false}
+                        { referencia: "#ConfigurarCombinacionMaterial", texto:"Combinación Material", nuevaPagina:true, show:false}
                   ]                      
     },
     { 

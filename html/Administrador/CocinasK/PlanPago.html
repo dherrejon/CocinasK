@@ -186,6 +186,15 @@
                             </div>
                         </div>
                     </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="subrayado">
+                            <label>Fecha de entreaga</label><br>
+                            <span class="textoModal">{{planPagoActualizar.FechaEntrega}}</span>
+                            </div>
+                        </div>
+                    </div>
 
                     <br>
                     <!-- Colores -->
@@ -243,7 +252,7 @@
                 <div class="row">
                     <div class="col-xs-12">
                         <div class="margenModal">
-                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarMuestrarioForma()"><span aria-hidden="true">&times;</span></button>
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarPlanPagoForma()"><span aria-hidden="true">&times;</span></button>
                             <h3 class="text-center" ng-if="operacion === 'Agregar'">Agregar Plan de Pagos</h3>
                             <h3 class="text-center" ng-if="operacion === 'Editar'">Editar Plan de Pagos</h3>
                             <hr class="separador">
@@ -279,8 +288,16 @@
                             </div>
                         </div>
                     </div>                     
-                   
+                   <br>
                     <div class="row">
+                     <div class="col-sm-6">
+                             <div class="entrada2">
+                                <input ng-pattern="erNumeroEntero" type="text" required class="{{clase.fecha}} form-control" name="fechaEntrega" ng-model="nuevoPlanPago.FechaEntrega"/>
+                                <label>Fecha de Entrega</label>
+                            </div>
+                        </div>
+                        
+                        <br class="hidden-sm hidden-md hidden-lg">
                       <!-- activo -->
                        <div class="col-sm-6">
                              <label class="btn checkBoxActivo">Plan de Pagos Activo <input type="checkbox" class="badgebox" ng-model="nuevoPlanPago.Activo"><span class="badge">&check;</span></label>
@@ -339,11 +356,11 @@
                     <!---- botones de operacion --->
                     <div class="row">
                         <div class="col-xs-6">
-                            <button class="btn botonCancelar btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarMuestrarioForma()">CANCELAR</button>
+                            <button class="btn botonCancelar btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarPlanPagoForma()">CANCELAR</button>
                         </div>
                         
                         <div class="col-xs-6">
-                            <button ng-disabled="terminar" focus class="btn botonAvanzar btn-block" ng-click="TerminarPlanPago(planPagoForma.nombre.$invalid)">TERMINAR</button>
+                            <button ng-disabled="terminar" focus class="btn botonAvanzar btn-block" ng-click="TerminarPlanPago(planPagoForma.nombre.$invalid, planPagoForma.fechaEntrega.$invalid)">TERMINAR</button>
                         </div>
                     </div>
                     <br> 

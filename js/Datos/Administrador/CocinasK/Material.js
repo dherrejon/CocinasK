@@ -163,6 +163,26 @@ function ActivarDesactivarMaterial($http, $q, CONFIG, material)
     return q.promise;
 }
 
+//obtiene los tipos de módulos
+function GetCostoMaterial($http, $q, CONFIG, material)     
+{
+    var q = $q.defer();
+
+    $http({      
+          method: 'POST',
+          url: CONFIG.APIURL + '/GetCostoMaterial',
+          data: material
+      }).success(function(data)
+        {
+            var material = []; 
+
+            q.resolve(data);  
+        }).error(function(data, status){
+            q.resolve(status);
+     }); 
+    return q.promise;
+}
+
 /*---------------------------------Tipo de material------------------------------*/
 class TipoMaterial
 {

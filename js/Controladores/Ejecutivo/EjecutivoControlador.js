@@ -857,7 +857,6 @@ app.controller("EjecutivoControlador", function($scope, $http, $q, CONFIG, datos
     {
         $scope.puertaSeleccionada  = puerta;
         
-        
         $scope.GetCombinacionPorPuerta(puerta.PuertaId);
     };
     

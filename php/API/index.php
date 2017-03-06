@@ -334,6 +334,8 @@
     $app->put('/EditarMaterial', $seguridad, $ChecarSesion, 'EditarMaterial');
     $app->post('/ActivarDesactivarMaterial', $seguridad, $ChecarSesion, 'ActivarDesactivarMaterial');
 
+    $app->post('/GetCostoMaterial', $seguridad, $ChecarSesion, 'GetCostoMaterial');
+
     /*------------------------Combinacion Material----------------------------*/
     $app->get('/GetCombinacionMaterial', $seguridad, $ChecarSesion, 'GetCombinacionMaterial');
     $app->post('/AgregarCombinacionMaterial', $seguridad, $ChecarSesion, 'AgregarCombinacionMaterial');

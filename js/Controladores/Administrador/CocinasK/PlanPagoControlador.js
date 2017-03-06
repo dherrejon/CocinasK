@@ -34,7 +34,7 @@ app.controller("PlanPagoControlador", function($scope, $http, $q, CONFIG, $rootS
     $scope.ordenarPor = "Nombre";
     $scope.detalle = "";
     
-    $scope.clase = {nombre:"entrada", pagos:"entrada"};
+    $scope.clase = {nombre:"entrada", fecha:"entrada", pagos:"entrada"};
     
     $scope.mostrarFiltro = {activo: true};
     $scope.filtro = {
@@ -206,6 +206,7 @@ app.controller("PlanPagoControlador", function($scope, $http, $q, CONFIG, $rootS
         plan.PlanPagoId = data.PlanPagoId;
         plan.Nombre = data.Nombre;
         plan.Pagos = data.Pagos;
+        plan.FechaEntrega = data.FechaEntrega;
         plan.Activo = data.Activo;
         
         plan.Abono = [];
@@ -226,10 +227,16 @@ app.controller("PlanPagoControlador", function($scope, $http, $q, CONFIG, $rootS
         return plan;
     };
     
-    /*-------------------------Terminar Plan de Pago --------------------*/
-    $scope.TerminarPlanPago = function(nombreInvalido)
+    $scope.CerrarPlanPagoForma = function()
     {
-        if(!$scope.ValidarDatos(nombreInvalido))
+        $scope.mensajeError = [];
+        $scope.clase = {nombre:"entrada", fecha:"entrada", pagos:"entrada"};
+    };
+    
+    /*-------------------------Terminar Plan de Pago --------------------*/
+    $scope.TerminarPlanPago = function(nombreInvalido, fechaEntregaInvalida)
+    {
+        if(!$scope.ValidarDatos(nombreInvalido, fechaEntregaInvalida))
         {
             return false;
         }
@@ -292,7 +299,7 @@ app.controller("PlanPagoControlador", function($scope, $http, $q, CONFIG, $rootS
         });
     };
     
-    $scope.ValidarDatos = function(nombreInvalido)
+    $scope.ValidarDatos = function(nombreInvalido, fechaEntregaInvalida)
     {
         $scope.mensajeError = [];
         if(nombreInvalido)
@@ -303,6 +310,16 @@ app.controller("PlanPagoControlador", function($scope, $http, $q, CONFIG, $rootS
         else
         {
             $scope.clase.nombre = "entrada";
+        }
+        
+        if(fechaEntregaInvalida)
+        {
+            $scope.mensajeError[$scope.mensajeError.length] = "*La fecha de entrega debe ser un número entero."; 
+            $scope.clase.fecha = "entradaError";
+        }
+        else
+        {
+            $scope.clase.fecha = "entrada";
         }
         
         var abonoError = false;

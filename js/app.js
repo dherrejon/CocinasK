@@ -154,6 +154,9 @@ app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpPro
     when('/Accesorio',{
         templateUrl: 'html/Administrador/Catalogo/Accesorio.html'
     }).
+        when('/CostoModulo',{
+            templateUrl: 'html/Administrador/Catalogo/Modulo/CostoModulo.html'
+        }).
     //Otros Perfiles
     when('/Ejecutivo',{
         templateUrl: 'html/Ejecutivo/Ejecutivo.html'

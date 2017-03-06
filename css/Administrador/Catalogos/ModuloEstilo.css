@@ -204,3 +204,22 @@
     border-radius: 3px;
 }
 
+/*------------- costo de modulos --------*/
+.botonIrA
+{
+    color: #262626;
+    background: white;
+    border-radius: 0px;
+    text-align: left;
+    font-size: 12pt;
+    outline: none !important;
+    box-shadow: none;
+}
+
+.botonIrA:hover
+{
+    color: rgb(250, 97, 21);
+    outline: none !important;
+    box-shadow: none;
+}
+

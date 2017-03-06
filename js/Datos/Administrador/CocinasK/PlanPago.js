@@ -7,6 +7,7 @@ class PlanPago
         this.PlanPagoId = "";
         this.Nombre = "";
         this.Pagos = 1;
+        this.FechaEntrega = 0;
         this.Activo = true;
     }
 }
@@ -45,6 +46,7 @@ function SetPlanPago(data)
     planPago.PlanPagoId = data.PlanPagoId;
     planPago.Nombre = data.Nombre;
     planPago.Pagos = parseFloat(data.Pagos);
+    planPago.FechaEntrega = parseInt(data.FechaEntrega);
     
     planPago.Activo = CambiarDatoEnteroABool(data.Activo);
     

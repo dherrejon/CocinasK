@@ -273,6 +273,36 @@ function ActivarDesactivarGruesoMaterial()
     }
 }
 
+function GetCostoMaterial()
+{
+    global $app;
+    global $session_expiration_time;
+
+    $request = \Slim\Slim::getInstance()->request();
+    $material = json_decode($request->getBody());
+    
+    
+    $sql = "SELECT IF(COUNT(*)=0, m.CostoUnidad, gm.CostoUnidad) as CostoUnidad FROM GruesoMaterial gm, Material m 
+            WHERE gm.MaterialId = m.MaterialId AND m.MaterialId = ".$material[0]." AND gm.Grueso = '".$material[1]."'";
+    
+    try 
+    {
+        $db = getConnection();
+        $stmt = $db->query($sql);
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $db = null;
+        
+        echo json_encode($response);  
+    } 
+    catch(PDOException $e) 
+    {
+        //echo $e;
+        echo '[ { "Estatus": "Fallo" } ]';
+        //$app->status(409);
+        $app->stop();
+    }
+}
+
 /*---------------------tipo material---------------------*/
 function GetTipoMaterial()
 {
