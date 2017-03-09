@@ -316,6 +316,8 @@
     color: #262626;
     opacity: 1.0;
     font-size: 30px;
+    outline: none;
+    box-shadow: none;
 }
 
 .cerrarModal:hover
@@ -412,6 +414,8 @@
     color: #262626;
     border: 2px solid  #262626;
     border-radius: 0px 0px 0px 3px;
+    max-height: 200px;
+    overflow: scroll;
 }
 
 .checkBoxActivoFiltro

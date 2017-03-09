@@ -1,35 +1,36 @@
-app.controller("ConfiguaracionCombinacionMaterialController", function($scope, $http, $q, CONFIG, $rootScope, datosUsuario, $window, $filter, $location)
+app.controller("ConfiguaracionClinete", function($scope, $http, $q, CONFIG, $rootScope, datosUsuario, $window, $filter, $location)
 {   
     $rootScope.clasePrincipal = "";
     
     $scope.permisoUsuario = {
-                            tipo:{consultar:false, agregar:false, editar:false, activar:false}
+                            medioCaptacion:{consultar:false, agregar:false, editar:false, activar:false}
                             };
+    
     $scope.IdentificarPermisos = function()
     {
         for(var k=0; k < $scope.usuarioLogeado.Permiso.length; k++)
         {
-            if($scope.usuarioLogeado.Permiso[k] == "ConCMaConsultar")
+            if($scope.usuarioLogeado.Permiso[k] == "ConMCaConsultar")
             {
-                $scope.permisoUsuario.tipo.consultar = true;
+                $scope.permisoUsuario.medioCaptacion.consultar = true;
             }
-            else if($scope.usuarioLogeado.Permiso[k] == "ConCMaAgregar")
+            else if($scope.usuarioLogeado.Permiso[k] == "ConMCaAgregar")
             {
-                $scope.permisoUsuario.tipo.agregar= true;
+                $scope.permisoUsuario.medioCaptacion.agregar= true;
             }
-            else if($scope.usuarioLogeado.Permiso[k] == "ConCMaEditar")
+            else if($scope.usuarioLogeado.Permiso[k] == "ConMCaEditar")
             {
-                $scope.permisoUsuario.tipo.editar = true;
+                $scope.permisoUsuario.medioCaptacion.editar = true;
             }
-            else if($scope.usuarioLogeado.Permiso[k] == "ConCMaActivar")
+            else if($scope.usuarioLogeado.Permiso[k] == "ConMCaActivar")
             {
-                $scope.permisoUsuario.tipo.activar= true;
+                $scope.permisoUsuario.medioCaptacion.activar= true;
             }
         }
     };
     
-    $scope.titulo = "Tipo de Combinación";
-    $scope.tabs = tabCombinacion;
+    $scope.titulo = "Medio de Captación";
+    $scope.tabs = tabConfigurarClientes;
     
     //Cambia el contenido de la pestaña
     $scope.SeleccionarTab = function(tab, index)    
@@ -39,7 +40,7 @@ app.controller("ConfiguaracionCombinacionMaterialController", function($scope, $
         switch (index)
         {
             case 0:  
-                $('#TipoCombinacion').show();
+                $('#MedioCaptacion').show();
                 break;
             default:
                 break;
@@ -56,7 +57,7 @@ app.controller("ConfiguaracionCombinacionMaterialController", function($scope, $
             if($scope.usuarioLogeado.PerfilSeleccionado == "Administrador")
             {
                 $scope.IdentificarPermisos();
-                if(!$scope.permisoUsuario.tipo.consultar)
+                if(!$scope.permisoUsuario.medioCaptacion.consultar)
                 {
                    $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
                 }
@@ -92,7 +93,7 @@ app.controller("ConfiguaracionCombinacionMaterialController", function($scope, $
             if($scope.usuarioLogeado.PerfilSeleccionado == "Administrador")
             {
                 $scope.IdentificarPermisos();
-                if(!$scope.permisoUsuario.tipo.consultar)
+                if(!$scope.permisoUsuario.medioCaptacion.consultar)
                 {
                    $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
                 }
@@ -111,7 +112,7 @@ app.controller("ConfiguaracionCombinacionMaterialController", function($scope, $
 });
 
 //Pestañas
-var tabCombinacion = 
+var tabConfigurarClientes = 
     [
-        {titulo:"Tipo de Combinación", referencia: "#TipoCombinacion", clase:"active", area:"tipoCombinacion"}
+        {titulo:"Medio de Captación", referencia: "#MedioCaptacion", clase:"active", area:"medioCaptacion"}
     ];

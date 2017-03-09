@@ -72,7 +72,7 @@ app.controller("RecuperarPasswordControlador", function($scope, $window, $rootSc
         $scope.mensajeError = [];
         if(passwordInvalido)
         {
-            $scope.mensajeError[$scope.mensajeError.length] = "*Escriebe una contraseña válida. La contraseña solo puede tener letras y números y un mínimo de 6 carácteres.";
+            $scope.mensajeError[$scope.mensajeError.length] = "*Escribe una contraseña válida. La contraseña solo puede tener letras y números y un mínimo de 6 carácteres.";
             return false;
         }
         if($scope.nuevoPassword.repetir != $scope.nuevoPassword.password)

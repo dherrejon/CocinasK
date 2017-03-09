@@ -62,6 +62,10 @@ app.controller("ConfiguaracionAccesorioController", function($scope, $http, $q, 
             case 1:  
                 $('#Muestrario').show();
                 $('#TipoAccesorio').hide();
+                if($scope.permisoUsuario.muestrario.editar || $scope.permisoUsuario.muestrario.agregar)
+                {
+                    $rootScope.InicializarMuestratrioAccesorio();
+                }
                 break;
             default:
                 break;

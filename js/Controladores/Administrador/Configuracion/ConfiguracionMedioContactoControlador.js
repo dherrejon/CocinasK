@@ -1,4 +1,4 @@
-app.controller("ConfiguaracionGeneralControlador", function($scope, $http, $q, CONFIG, $rootScope, datosUsuario, $window, $filter, $location)
+app.controller("ConfiguaracionMedioContactoControlador", function($scope, $http, $q, CONFIG, $rootScope, datosUsuario, $window, $filter, $location)
 {   
     $rootScope.clasePrincipal = "";
 
@@ -27,29 +27,12 @@ app.controller("ConfiguaracionGeneralControlador", function($scope, $http, $q, C
             {
                 $scope.permisoUsuario.tipoMedioContacto.activar  = true;
             }
-            //color
-            if($scope.usuarioLogeado.Permiso[k] == "ConCloConsultar")
-            {
-                $scope.permisoUsuario.color.consultar = true;
-            }
-            else if($scope.usuarioLogeado.Permiso[k] == "ConCloAgregar")
-            {
-                $scope.permisoUsuario.color.agregar  = true;
-            }
-            else if($scope.usuarioLogeado.Permiso[k] == "ConCloEditar")
-            {
-                $scope.permisoUsuario.color.editar  = true;
-            }
-            else if($scope.usuarioLogeado.Permiso[k] == "ConCloActivar")
-            {
-                $scope.permisoUsuario.color.activar  = true;
-            }
         }
     };
     
     $scope.titulo = "Tipo Medio Contacto";
     $scope.moduloActualizar = "";               //guarda el modulo con el que se estará trabajando (actualizar, agregar, editar)
-    $scope.tabs = tabGeneral;                   //pestañas 
+    $scope.tabs = tabMedioContacto;                   //pestañas 
     $scope.mensajeError = [];                   //mensaje de errores en el momento de agregar o editar
     $scope.operacion = "";                      //Saber si se esta agregando o editando
     $scope.ordenarPorTipo = "NombreMedioContacto";
@@ -92,11 +75,6 @@ app.controller("ConfiguaracionGeneralControlador", function($scope, $http, $q, C
         {
             case 0:  
                 $('#TipoMedioContacto').show();
-                $('#Color').hide();
-                break;
-            case 1:  
-                $('#Color').show();
-                $('#TipoMedioContacto').hide();
                 break;
             default:
                 break;
@@ -323,7 +301,7 @@ app.controller("ConfiguaracionGeneralControlador", function($scope, $http, $q, C
             if($scope.usuarioLogeado.PerfilSeleccionado == "Administrador")
             {
                 $scope.IdentificarPermisos();
-                if(!$scope.permisoUsuario.tipoMedioContacto.consultar && !$scope.permisoUsuario.color.consultar)
+                if(!$scope.permisoUsuario.tipoMedioContacto.consultar)
                 {
                    $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado); 
                 }
@@ -367,7 +345,7 @@ app.controller("ConfiguaracionGeneralControlador", function($scope, $http, $q, C
             if($scope.usuarioLogeado.PerfilSeleccionado == "Administrador")
             {
                 $scope.IdentificarPermisos();
-                if(!$scope.permisoUsuario.tipoMedioContacto.consultar && !$scope.permisoUsuario.color.consultar)
+                if(!$scope.permisoUsuario.tipoMedioContacto.consultar)
                 {
                     $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
                 }
@@ -394,8 +372,7 @@ app.controller("ConfiguaracionGeneralControlador", function($scope, $http, $q, C
 });
 
 //Pestañas
-var tabGeneral = 
+var tabMedioContacto = 
     [
-        {titulo:"Tipo Medio Contacto", referencia: "#General", clase:"active", area:"general"},
-        {titulo:"Color", referencia: "#Color", clase:"", area:"color"}
+        {titulo:"Tipo Medio Contacto", referencia: "#General", clase:"active", area:"general"}
     ];

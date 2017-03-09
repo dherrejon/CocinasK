@@ -29,16 +29,15 @@ app.controller("EncabezadoControlador", function($scope, $rootScope, $http, CONF
         }
     });
         
-    /*----------------------Control de vista de clases de la barra de navegación----------------------------*/ 
+    /*----------------------Control de vista de clases de la barra de navegación----------------------------*/     
     $scope.MouseClickElemento = function(index)
     {
-        $('#'+$scope.barraNavegacionOpciones[index].Opcion.id ).removeClass('open');
+        $('#'+$scope.barraNavegacionOpciones[index].Opcion.id ).addClass('open');
     };
     
     //despliega las secciones del módulo donde esta el mouse
     $scope.MouseEnterarElemento = function(index)
     {
-
         $('.header-horizontal-menu .navbar-nav > li.dropdown').removeClass('open');
         $('#'+$scope.barraNavegacionOpciones[index].Opcion.id).addClass('open');
     };
@@ -55,8 +54,11 @@ app.controller("EncabezadoControlador", function($scope, $rootScope, $http, CONF
         $('#navbarCollapse').removeClass('in');
     };
     
-    $scope.LlamarFuncion = function(funcion)
+    $scope.LlamarFuncion = function(funcion, opcion)
     {
+        $('#'+ opcion.Opcion.id).removeClass('open');
+        $scope.CerrarBarraNavegacion();
+        
         if(funcion == "CerrarSesion")
         {
             $scope.CerrarSesion();
@@ -313,142 +315,161 @@ function SetPerfilNombre($rootScope, usuario)
         }
     }
     
-    for(var k=0; k<usuario.Permiso.length; k++)
-    {
-        if(usuario.PerfilSeleccionado == "Administrador")
-        {
-            /*Cocinas k*/
-            if(usuario.Permiso[k] == "AdmColConsultar")
-            {
-                $rootScope.barraNavegacionOpciones[0].elemento[0].show = true;
-            }
-            else if(usuario.Permiso[k] == "AdmUNeConsultar")
-            {
-                $rootScope.barraNavegacionOpciones[0].elemento[1].show = true;
-            }
-            else if(usuario.Permiso[k] == "AdmPlaConsultar")
-            {
-                $rootScope.barraNavegacionOpciones[0].elemento[2].show = true;
-            }
-            else if(usuario.Permiso[k] == "AdmTerConsultar")
-            {
-                $rootScope.barraNavegacionOpciones[0].elemento[3].show= true;
-            }
-            else if(usuario.Permiso[k] == "AdmProConsultar")
-            {
-                $rootScope.barraNavegacionOpciones[0].elemento[4].show = true;
-            }
-            else if(usuario.Permiso[k] == "AdmPlNConsultar")
-            {
-                $rootScope.barraNavegacionOpciones[0].elemento[5].show= true;
-            }
-            /*Catálogos*/
-            else if(usuario.Permiso[k] == "CatModConsultar")
-            {
-                $rootScope.barraNavegacionOpciones[1].elemento[0].show = true;
-            }
-            else if(usuario.Permiso[k] == "CatComConsultar")
-            {
-                $rootScope.barraNavegacionOpciones[1].elemento[1].show = true;
-            }
-            else if(usuario.Permiso[k] == "ConCubConsultar")
-            {
-                $rootScope.barraNavegacionOpciones[1].elemento[2].show = true;
-            }
-            else if(usuario.Permiso[k] == "CatAccConsultar")
-            {
-                $rootScope.barraNavegacionOpciones[1].elemento[3].show = true;
-            }
-            /*Configuración*/
-            else if(usuario.Permiso[k] == "ConCmpConsultar" || usuario.Permiso[k] == "ConPieConsultar" || usuario.Permiso[k] == "ConCnsConsultar" || usuario.Permiso[k] == "ConTMdConsultar")
-            {
-                $rootScope.barraNavegacionOpciones[2].elemento[0].show = true;
-            }
-            else if(usuario.Permiso[k] == "AdmEmpConsultar" || usuario.Permiso[k] == "AdmTUNConsultar")
-            {
-                $rootScope.barraNavegacionOpciones[2].elemento[1].show = true;
-            }
-            else if(usuario.Permiso[k] == "AdmMatConsultar" || usuario.Permiso[k] == "AdmTMaConsultar")
-            {
-                $rootScope.barraNavegacionOpciones[2].elemento[2].show = true;
-            }
-            else if(usuario.Permiso[k] == "ConPueConsultar" || usuario.Permiso[k] == "ConMpuConsultar")
-            {
-                $rootScope.barraNavegacionOpciones[2].elemento[3].show = true;
-            }
-            else if(usuario.Permiso[k] == "ConMCCConsultar" || usuario.Permiso[k] == "ConFCuConsultar" || usuario.Permiso[k] == "ConUCuConsultar")
-            {
-                $rootScope.barraNavegacionOpciones[2].elemento[4].show = true;
-            }
-            else if(usuario.Permiso[k] == "ConTMCConsultar" || usuario.Permiso[k] == "ConCloConsultar")
-            {
-                $rootScope.barraNavegacionOpciones[2].elemento[5].show = true;
-            }
-            else if(usuario.Permiso[k] == "ConTAcConsultar" || usuario.Permiso[k] == "ConMAcConsultar")
-            {
-                $rootScope.barraNavegacionOpciones[2].elemento[6].show = true;
-            }
-            else if(usuario.Permiso[k] == "ConSerConsultar")
-            {
-                $rootScope.barraNavegacionOpciones[2].elemento[7].show = true;
-            }
-            else if(usuario.Permiso[k] == "ConMaqConsultar" || usuario.Permiso[k] == "ConMCMConsultar")
-            {
-                $rootScope.barraNavegacionOpciones[2].elemento[8].show = true;
-            }
-            else if(usuario.Permiso[k] == "ConCMaConsultar")
-            {
-                $rootScope.barraNavegacionOpciones[2].elemento[9].show = true;
-            }
-        }
-    }
+    HabilitarOpcionesMenu(usuario, $rootScope);
     
     //$rootScope.Altura = $('#barraNavegacion').offset().top;
 }
+function HabilitarOpcionesMenu(usuario, $rootScope)
+{
+    for(var k=0; k<usuario.Permiso.length; k++)
+    {
+        for(var i=0; i<$rootScope.barraNavegacionOpciones.length ;i++)
+        {
+            for(var j=0; j<$rootScope.barraNavegacionOpciones[i].elemento.length; j++)
+            {
+                if($rootScope.barraNavegacionOpciones[i].elemento[j].tipo == "enlace")
+                {
+                    for(var m=0; m<$rootScope.barraNavegacionOpciones[i].elemento[j].permiso.length; m++)
+                    {
+                        if(usuario.Permiso[k] == ($rootScope.barraNavegacionOpciones[i].elemento[j].permiso[m].clave))
+                        {
+                            $rootScope.barraNavegacionOpciones[i].elemento[j].show = true;
+                            break;
+                        }
+                    }
+                }
+                else if($rootScope.barraNavegacionOpciones[i].elemento[j].tipo == "dropdownlist")
+                {
+                    var permiso = false;
+                    for(var m=0; m<$rootScope.barraNavegacionOpciones[i].elemento[j].opcion.length; m++)
+                    {
+                        for(var n=0; n<$rootScope.barraNavegacionOpciones[i].elemento[j].opcion[m].permiso.length; n++)
+                        {
+                            if(usuario.Permiso[k] == $rootScope.barraNavegacionOpciones[i].elemento[j].opcion[m].permiso[n].clave)
+                            {
+                                $rootScope.barraNavegacionOpciones[i].elemento[j].opcion[m].show = true; 
+                                permiso = true;
+                                break;
+                            }
+                        }
+                    }
+                    if(permiso)
+                    {
+                        $rootScope.barraNavegacionOpciones[i].elemento[j].show = true;
+                    }
+                }
+                else if($rootScope.barraNavegacionOpciones[i].elemento[j].tipo == "funcion")
+                {
+                    $rootScope.barraNavegacionOpciones[i].elemento[j].show = true;
+                }
+            }
+        }
+    }
+}
 
-/*---------------------------------Opciones del menú principal dependiendo del perfil------------------------------------------*/
 var OpcionAdministrador =
 [
     { 
         Opcion: {texto:"Cocinas K", id:"cocinasK"},
         elemento: [ 
-                        { referencia: "#Colaborador", texto:"Colaboradores", nuevaPagina:true, show:false},
-                        { referencia: "#UnidadNegocio", texto:"Unidades de Negocio", nuevaPagina:true, show:false},
-                        { referencia: "#Plaza", texto:"Plazas", nuevaPagina:true, show:false },
-                        { referencia: "#Territorio", texto:"Territorios", nuevaPagina:true, show:false},
-                        { referencia: "#Promocion", texto:"Promociones", nuevaPagina:true, show:false},
-                        { referencia: "#PlanPago", texto:"Plan de pagos", nuevaPagina:true, show:false}
+                    { menu: 1, referencia: "#Colaborador", texto:"Colaboradores", show:false, tipo:"enlace", permiso:[{clave:"AdmColConsultar"}]},
+                    { menu: 1, texto:"Unidades de Negocio",  show:false, tipo:"dropdownlist", id:"UnidadNegocio", clase:"dropdown-submenu",
+                        opcion:[
+                                    {referencia: "#UnidadNegocio", texto:"Registro",  show:false, permiso:[{clave:"AdmUNeConsultar"}]},
+                                    {referencia: "#ConfigurarUnidadNegocio", texto:"Configuración", show:false, permiso:[
+                                                                                                                {clave:"AdmEmpConsultar"},
+                                                                                                                {clave:"AdmTUNConsultar"}
+                                                                                                                        ]}
+                                    
+                               ]
+                    },
+                    { menu: 1, referencia: "#Plaza", texto:"Plazas", show:false, tipo:"enlace", permiso:[{clave:"AdmPlaConsultar"}]},
+                    { menu: 1, referencia: "#Territorio", texto:"Territorios",  show:false, tipo:"enlace", permiso:[{clave:"AdmTerConsultar"}]},
+                    { menu: 1, referencia: "#Promocion", texto:"Promociones", show:false, tipo:"enlace", permiso:[{clave:"AdmProConsultar"}]},
+                    { menu: 1, referencia: "#PlanPago", texto:"Plan de pagos", show:false, tipo:"enlace", permiso:[{clave:"AdmPlNConsultar"}]}
                   ]                      
     },
+    
     { 
         Opcion: {texto:"Catálogos", id:"catalogos"},
-        elemento: [     
-                        { referencia: "#Modulo", texto:"Módulos", nuevaPagina:true, show:false},
-                        { referencia: "#Combinacion", texto:"Combinación de Materiales", nuevaPagina:true, show:false},
-                        { referencia: "#Cubierta", texto:"Cubiertas", nuevaPagina:true, show:false},
-                        { referencia: "#Accesorio", texto:"Accesorios", nuevaPagina:true, show:false}
-                  ]                      
-    },
-    { 
-        Opcion: {texto:"Configuración", id:"configuracion"},
         elemento: [ 
-                        { referencia: "#ConfigurarModulo", texto:"Módulos", nuevaPagina:true, show:false},
-                        { referencia: "#ConfigurarUnidadNegocio", texto:"Unidades de Negocio", nuevaPagina:true, show:false},
-                        { referencia: "#ConfigurarMaterial", texto:"Materiales", nuevaPagina:true, show:false},
-                        { referencia: "#ConfigurarPuerta", texto:"Puertas", nuevaPagina:true, show:false},
-                        { referencia: "#ConfigurarCubierta", texto:"Cubiertas", nuevaPagina:true, show:false},
-                        { referencia: "#ConfigurarGeneral", texto:"General", nuevaPagina:true, show:false},
-                        { referencia: "#ConfigurarAccesorio", texto:"Accesorios", nuevaPagina:true, show:false},
-                        { referencia: "#Servicio", texto:"Servicios", nuevaPagina:true, show:false},
-                        { referencia: "#Maqueo", texto:"Maqueo", nuevaPagina:true, show:false},
-                        { referencia: "#ConfigurarCombinacionMaterial", texto:"Combinación Material", nuevaPagina:true, show:false}
+                        { menu: 1, texto:"Módulos", show:false, tipo:"dropdownlist", id:"ConfigurarModulo", clase:"dropdown-submenu",
+                            opcion:[
+                                        {referencia: "#Modulo", texto:"Registro",  show:false, permiso:[{clave:"CatModConsultar"}]},
+                                        {referencia: "#ConfigurarModulo", texto:"Configuración", show:false, permiso:[
+                                                                                                                {clave:"ConCmpConsultar"}, {clave:"ConPieConsultar"},
+                                                                                                                {clave:"ConCnsConsultar"}, {clave:"ConTMdConsultar"}
+                                                                                                                    ]},
+
+                                        {divider:true, referencia: "#ConfigurarPuerta", texto:"Puertas", show:false, permiso:[
+                                                                                                                {clave:"ConPueConsultar"},
+                                                                                                                {clave:"ConMpuConsultar"}
+                                                                                                                        ]}
+                                   ]
+                        },
+            
+                        
+
+                        { menu: 1, referencia: "", texto:"Combinación de Materiales", show:false, tipo:"dropdownlist", id:"ConfigurarCombinacionMaterial", clase:"dropdown-submenu",
+                            opcion:[
+                                
+                                        {referencia: "#Combinacion", texto:"Registro",  show:false, permiso:[{clave:"CatComConsultar"}]},
+                                        {referencia: "#ConfigurarCombinacionMaterial", texto:"Configuración", show:false, permiso:[{clave:"ConCMaConsultar"}]}
+
+                                   ]
+                        },
+            
+                        { menu: 1, referencia: "", texto:"Accesorios", show:false, tipo:"dropdownlist", id:"Accesorios", clase:"dropdown-submenu",
+                            opcion:[
+                                
+                                        {referencia: "#Accesorio", texto:"Registro",  show:false, permiso:[{clave:"CatAccConsultar"}]},
+                                        {referencia: "#ConfigurarAccesorio", texto:"Configuración", show:false, permiso:[
+                                                                                                                {clave:"ConTAcConsultar"},
+                                                                                                                {clave:"ConMAcConsultar"}
+                                                                                                                        ]},
+                                        
+                                        {divider:true, referencia: "#Maqueo", texto:"Maqueo", show:false, permiso:[
+                                                                                                        {clave:"ConMaqConsultar"},
+                                                                                                        {clave:"ConMCMConsultar"}
+                                                                                                                ]},
+                                        {referencia: "#Servicio", texto:"Servicios", show:false, permiso:[{clave:"ConSerConsultar"}]},
+                                        
+                                   ]
+                        },
+            
+                        { menu: 1, referencia: "", texto:"Cubiertas", show:false, tipo:"dropdownlist", id:"Accesorios", clase:"dropdown-submenu",
+                            opcion:[
+                                
+                                        {referencia: "#Cubierta", texto:"Registro",  show:false, permiso:[{clave:"ConCubConsultar"}]},
+                                        {referencia: "#ConfigurarCubierta", texto:"Configuración", show:false, permiso:[
+                                                                                                            {clave:"ConMCCConsultar"}, {clave:"ConFCuConsultar"},
+                                                                                                            {clave:"ConUCuConsultar"}
+                                                                                                                    ]}
+
+                                   ]
+                        },
+            
+                        { menu: 1, referencia: "#ConfigurarMaterial", texto:"Materiales", show:false, tipo:"enlace", permiso:[
+                                                                                                                            {clave:"AdmMatConsultar"}, {clave:"AdmTMaConsultar"}
+                                                                                                                              ]},
+            
+                        { menu: 1, referencia: "#ConfigurarColor", texto:"Colores", show:false, tipo:"enlace", permiso:[{clave:"ConCloConsultar"}]},
+            
+                        { menu: 2, referencia: "", texto:"Clientes", show:false, tipo:"dropdownlist", id:"ConfigurarModulo", clase:"dropdown-submenu", divider:true,
+                                opcion:[
+                                            { referencia: "#ConfigurarCliente", texto:"Configuración", show:false, permiso:[{clave:"ConMCaConsultar"}]}
+                                       ]
+                        }, 
+            
+                        { menu: 2, referencia: "#ConfigurarMedioContacto", texto:"Medios de Contacto", show:false, tipo:"enlace", permiso:[{clave:"ConTMCConsultar"}]}
                   ]                      
     },
+    
     { 
         Opcion: {texto:"Usuario", id:"usuario"},
         elemento: [ 
-                        { texto:"Cambiar Contraseña", funcion:"CambiarContraseña", nuevaPagina:false, show:true},
-                        { texto:"Cerrar Sesión", funcion:"CerrarSesion", nuevaPagina:false, show:true}
+                        { texto:"Cambiar Contraseña", funcion:"CambiarContraseña", show:true, tipo:"funcion"},
+                        { texto:"Cerrar Sesión", funcion:"CerrarSesion", show:true, tipo:"funcion"}
                   ]                      
     }
 ];
@@ -482,3 +503,5 @@ var bug =   [
                     {modulo:{titulo:"Usuario", seccion:[{titulo:"Cambiar datos"}, {titulo:"Cerrar Sesión"}]}},
                     {modulo:{titulo:"General", seccion:[{titulo:"Login"}, {titulo:"Perfil"}, {titulo:"Encabezado"}, {titulo:"Otro"}]}}
             ];
+
+

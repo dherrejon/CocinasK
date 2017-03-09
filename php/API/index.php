@@ -27,6 +27,7 @@
     require 'Administrador/Maqueo.php';
     require 'Administrador/Promocion.php';
     require 'Administrador/PlanPago.php';
+    require 'Administrador/MedioCaptacion.php';
 
     require 'General/Direccion.php';
     require 'General/Sesion.php';
@@ -467,6 +468,16 @@
     $app->post('/ActivarDesactivarPlanPago', $seguridad, $ChecarSesion, 'ActivarDesactivarPlanPago'); 
 
     $app->post('/GetPlanPagoAbono', $seguridad, $ChecarSesion, 'GetPlanPagoAbono');
+
+    /*------------------ Medio Captación ------------------------------*/
+    $app->get('/GetMedioCaptacion', $seguridad, $ChecarSesion, 'GetMedioCaptacion');
+    $app->post('/AgregarMedioCaptacion', $seguridad, $ChecarSesion, 'AgregarMedioCaptacion');
+    $app->put('/EditarMedioCaptacion', $seguridad, $ChecarSesion, 'EditarMedioCaptacion');
+    $app->post('/ActivarDesactivarMedioCaptacion', $seguridad, $ChecarSesion, 'ActivarDesactivarMedioCaptacion');
+
+    $app->get('/GetMedioCaptacionOtro', $seguridad, $ChecarSesion, 'GetMedioCaptacionOtro');
+    $app->put('/ActualizarMedioCaptacionAgregar', $seguridad, $ChecarSesion, 'ActualizarMedioCaptacionAgregar');
+    $app->put('/ActualizarMedioCaptacion', $seguridad, $ChecarSesion, 'ActualizarMedioCaptacion');
 
     $app->run(); 
 

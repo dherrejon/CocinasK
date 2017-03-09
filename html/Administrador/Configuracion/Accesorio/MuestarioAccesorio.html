@@ -6,6 +6,7 @@
                 <table class="table table-hover">
                     <thead class="TituloTabla">
                       <tr>
+                       <th><button class="btn btn-block botonOrdenar" ng-click="CambiarOrdenarMuestrarioAccesorio('TipoAccesorio.Nombre')"><b>Tipo Accesorio </b><b ng-if="ordenarPorMuestarioAccesorio === 'TipoAccesorio.Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPorMuestarioAccesorio === '-TipoAccesorio.Nombre'" class="fa fa-arrow-down"></b></button></th>
                         <th><button class="btn btn-block botonOrdenar" ng-click="CambiarOrdenarMuestrarioAccesorio('Nombre')"><b>Nombre </b><b ng-if="ordenarPorMuestarioAccesorio === 'Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPorMuestarioAccesorio === '-Nombre'" class="fa fa-arrow-down"></b></button></th>
                         <th><button class="btn botonOrdenar" ng-click="CambiarOrdenarMuestrarioAccesorio('Margen')"><b>Margen </b><b ng-if="ordenarPorMuestarioAccesorio === 'Margen'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPorMuestarioAccesorio === '-Margen'" class="fa fa-arrow-down"></b></button></th>
                         <th><button class="btn botonFalso"><b>Accesorios</b></button></th>
@@ -13,8 +14,9 @@
                         <th><button class="btn botonFalso"><b>Activo</b></button></th>
                       </tr>
                     </thead>
-                    <tbody ng-repeat="muestrario in muestrario | orderBy:[ordenarPorMuestarioAccesorio,'Nombre'] | filter:buscarMuestarioAccesorio">
+                    <tbody ng-repeat="muestrario in muestrario | orderBy:[ordenarPorMuestarioAccesorio,'Nombre'] | filter:buscarMuestarioAccesorio | filter:FiltroMuestrarioAccesorio">
                       <tr>
+                         <td>{{muestrario.TipoAccesorio.Nombre}} </td>
                           <td>
                               {{muestrario.Nombre}} 
                               <span ng-if="muestrario.PorDefecto" class="fa fa-asterisk" data-toggle="tooltip" data-placement="bottom" title="Muestrario por defecto"></span>
@@ -52,9 +54,55 @@
         </div>
 
         <div class="col-xs-2 col-md-1">
+            
              <button ng-disabled="!permisoUsuario.muestrario.agregar"  class="btn btn-block botonOperacion fa fa-plus text-center" data-toggle="tooltip" data-placement="bottom" title="Agregar Tipo Módulo" ng-click="AbrirMuestrarioModal('Agregar', null)"></button>
-             
              <br><br>
+             
+             <!-- Boton filtrar -->
+            <div class="dropdown">
+
+                <button class="btn btn btn-block botonOperacion fa fa-filter text-center" data-toggle="dropdown" ></button>
+
+                <ul class="dropdown-menu dropdown-menu-right operacionPanel">
+
+                    <div  class="row ">
+                        <div class="col-xs-9">
+                            <li  class="dropdown-header tituloOpcionLateral">FILTRAR</li>
+                        </div>
+                        <div class="col-xs-3">
+                            <li> <button class="btn botonOperacion fa fa-ban" data-toggle="tooltip" data-placement="bottom" title="Limpiar filtro" ng-click="LimpiarFiltro()"></button></li>
+                        </div>
+                    </div>
+                    <li role="separator" class="divider"></li>
+
+                    <li style="width: 275px;">
+
+                        <form role="filtro">
+
+                            <!------ Tipo de Material ------>
+                            <button class="btn btn-block botonFiltro" ng-click="MostrarFiltros('tipoAccesorio')">Tipo Accesorio</button>
+
+                            <div class="row" ng-show="mostrarFiltro.tipoAccesorio">
+                                <div class="col-xs-12" >
+                                    <div class="opcionFiltro">
+                                        <div  ng-repeat="tipo in tipoAccesorio | orderBy:'Nombre' ">
+                                            <label class="checkBoxActivoFiltro">
+                                                <input type="checkbox" class="badgebox" ng-model="tipo.Filtro" ><span class="badge">&check;</span>
+                                                {{tipo.Nombre}}
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+
+                        </form>
+                    </li>
+                </ul>
+            </div>
+
+            <br>
+                                
              <!-- Boton buscar -->
             <div class="dropdown">
                 
@@ -102,6 +150,29 @@
 
                 <form class="modal-body" name="muestrarioAccesorioForma">
                 <!-- Datos -->
+                    <div class="row">
+                       <!-- tipo de accesorio -->
+                        <div class="col-sm-6 etiquetaDropdownList">
+                             <label>Tipo Accesorio</label>
+                             <div class="dropdown">
+
+                                <button class="dropdown-toggle  {{claseMuestrario.tipoAccesorio}}" data-toggle="dropdown">
+                                    <span>{{nuevoMuestrario.TipoAccesorio.Nombre}}</span>
+                                    <span class="caret"></span>
+                                </button>
+
+                                <ul class="dropdown-menu elemetosDropdownListModal">
+                                    <li ng-repeat="tipo in tipoAccesorio | orderBy:'Nombre'" ng-show="tipo.Activo">
+                                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarTipoAccesorio(tipo)">
+                                            <span>{{tipo.Nombre}}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top:20px"></div>
                     
                     <!-- Nombre -->
                     <div class="row">
@@ -112,7 +183,7 @@
                             </div>
                         </div>
                         
-                        <br class="hidden-sm hidden-md hidden-lg">
+                        <br class="hidden-sm hidden-md hidden-lg"><br class="hidden-sm hidden-md hidden-lg">
                         <!-- Margen -->
                         <div class="col-sm-6">
                              <div class="entrada2">

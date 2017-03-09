@@ -123,8 +123,11 @@ app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpPro
     when('/ConfigurarPuerta',{
         templateUrl: 'html/Administrador/Configuracion/ConfiguracionPuerta.html'
     }).
-    when('/ConfigurarGeneral',{
-        templateUrl: 'html/Administrador/Configuracion/ConfiguracionGeneral.html'
+    when('/ConfigurarMedioContacto',{
+        templateUrl: 'html/Administrador/Configuracion/ConfiguracionMedioContacto.html'
+    }).
+    when('/ConfigurarColor',{
+        templateUrl: 'html/Administrador/Configuracion/ConfiguracionColor.html'
     }).
     when('/ConfigurarCubierta',{
         templateUrl: 'html/Administrador/Configuracion/ConfiguracionCubierta.html'
@@ -140,6 +143,9 @@ app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpPro
     }).
     when('/ConfigurarCombinacionMaterial',{
         templateUrl: 'html/Administrador/Configuracion/ConfiguracionCombinacion.html'
+    }).
+     when('/ConfigurarCliente',{
+        templateUrl: 'html/Administrador/Configuracion/ConfiguracionCliente.html'
     }).
     //Catálogos
     when('/Combinacion',{

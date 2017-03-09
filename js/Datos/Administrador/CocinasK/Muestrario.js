@@ -4,6 +4,7 @@ class Muestrario
     {
         this.MuestrarioId = "";
         this.TipoMuestrarioId = "";
+        this.TipoAccesorio = new TipoAccesorio();
         this.Nombre = "";
         this.Margen = null;
         this.Activo = true;
@@ -46,6 +47,9 @@ function SetMuestrario(data)
     muestrario.Nombre = data.Nombre;
     muestrario.Margen = parseFloat(data.Margen);
     muestrario.ActivoN = data.Activo;
+    
+    muestrario.TipoAccesorio.TipoAccesorioId = data.TipoAccesorioId;
+    muestrario.TipoAccesorio.Nombre = data.NombreTipoAccesorio;
     
     if(data.Activo == "1")
     {

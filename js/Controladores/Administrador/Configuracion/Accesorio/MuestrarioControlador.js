@@ -2,19 +2,34 @@ app.controller("MuestarioAccesorioControlador", function($scope, $http, $q, CONF
 {   
     $scope.muestrario = []; 
     $scope.accesorioPorMuestrario = [];
+    $scope.tipoAccesorio = [];
     
     $scope.muestrarioActualizar = null;
     $scope.nuevoMuestrario = null;
     $scope.buscarMuestarioAccesorio = "";
-    $scope.ordenarPorMuestarioAccesorio = "Nombre";
+    $scope.ordenarPorMuestarioAccesorio = "TipoAccesorio.Nombre";
     
-    $scope.claseMuestrario = {nombre:"entrada", margen:"entrada"};
+    $scope.claseMuestrario = {nombre:"entrada", margen:"entrada", tipoAccesorio:"dropdownListModal"};
+    
+    $scope.mostrarFiltro = {tipoAccesorio:true};
     
     $scope.GetMuestrarioAccesorio = function()      
     {
         GetMuestrario($http, $q, CONFIG, 2).then(function(data)
         {
             $scope.muestrario = data;
+        }).catch(function(error)
+        {
+            alert(error);
+        });
+    };
+    
+    $scope.GetTipoAccesorio = function()              
+    {
+        GetTipoAccesorio($http, $q, CONFIG).then(function(data)
+        {
+            $scope.tipoAccesorio = data;
+        
         }).catch(function(error)
         {
             alert(error);
@@ -46,6 +61,66 @@ app.controller("MuestarioAccesorioControlador", function($scope, $http, $q, CONF
         });
     };
     
+    /*---------------------- Filtrar ----------------------*/
+    $scope.FiltroMuestrarioAccesorio = function(muestrario)
+    {
+        var cumpleFiltro = false;
+        var filtroSeleccionado = false;
+        
+        for(var k=0; k<$scope.tipoAccesorio.length; k++)
+        {
+            if($scope.tipoAccesorio[k].Filtro)
+            {
+                filtroSeleccionado = true;
+                break;
+            }
+        }
+        
+        if(filtroSeleccionado)
+        {
+            for(var k=0; k<$scope.tipoAccesorio.length; k++)
+            {
+                if($scope.tipoAccesorio[k].Filtro)
+                {
+                    if(muestrario.TipoAccesorio.TipoAccesorioId == $scope.tipoAccesorio[k].TipoAccesorioId)
+                    {
+                        cumpleFiltro = true;
+                        break;
+                    }
+                }
+            }
+        }
+        else
+        {
+            return true;
+        }
+        
+        if(!cumpleFiltro)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    };
+    
+    $scope.MostrarFiltros = function(filtro)
+    {
+        if(filtro == "tipoAccesorio")
+        {
+            $scope.mostrarFiltro.tipoAccesorio =  !$scope.mostrarFiltro.tipoAccesorio;
+        }
+    };
+    
+    $scope.LimpiarFiltro = function()
+    {
+        for(var k=0; k<$scope.tipoAccesorio.length; k++)
+        {
+            $scope.tipoAccesorio[k].Filtro = false;
+        }
+    };
+    
     /*------------ Detalles ----------------*/
     $scope.AbrirDetallesMuestrario = function(muestrario)
     {
@@ -69,9 +144,21 @@ app.controller("MuestarioAccesorioControlador", function($scope, $http, $q, CONF
         else if(operacion == "Editar")
         {
             $scope.nuevoMuestrario = SetMuestrario(muestrario);
+            $scope.nuevoMuestrario.TipoAccesorio = SetTipoAccesorio(muestrario.TipoAccesorio);
         }
         
         $('#muestrarioAccesorioModal').modal('toggle');
+    };
+    
+    $scope.CambiarTipoAccesorio = function(tipo)
+    {
+        $scope.nuevoMuestrario.TipoAccesorio = tipo;
+    };
+    
+    $scope.CerrarMuestrarioForma = function()
+    {
+        $scope.claseMuestrario = {nombre:"entrada", margen:"entrada", tipoAccesorio:"dropdownListModal"};
+        $scope.mensajeError = [];
     };
     
     /*-------------- Terminar Muestrario Accesorios --------------*/
@@ -139,6 +226,16 @@ app.controller("MuestarioAccesorioControlador", function($scope, $http, $q, CONF
     $scope.ValidarDatos = function(nombreInvalido, margenInvalido)
     {
         $scope.mensajeError = [];
+        
+        if($scope.nuevoMuestrario.TipoAccesorio.TipoAccesorioId.length === 0)
+        {
+            $scope.mensajeError[$scope.mensajeError.length] = "*Selecciona un tipo de accesorio.";   
+            $scope.claseMuestrario.tipoAccesorio = "dropdownListModalError";
+        }
+        else
+        {
+            $scope.claseMuestrario.tipoAccesorio = "dropdownListModal";
+        }
         
         if(nombreInvalido)
         {
@@ -240,4 +337,10 @@ app.controller("MuestarioAccesorioControlador", function($scope, $http, $q, CONF
     
     /*------------------ Inicializar --------------------*/
     $scope.GetMuestrarioAccesorio();
+    
+    $rootScope.InicializarMuestratrioAccesorio = function()
+    {
+        $scope.GetTipoAccesorio();
+    };
+    
 });

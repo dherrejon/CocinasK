@@ -1,35 +1,38 @@
-app.controller("ConfiguaracionCombinacionMaterialController", function($scope, $http, $q, CONFIG, $rootScope, datosUsuario, $window, $filter, $location)
+app.controller("ConfiguaracionColorControlador", function($scope, $http, $q, CONFIG, $rootScope, datosUsuario, $window, $filter, $location)
 {   
     $rootScope.clasePrincipal = "";
-    
+
+    /*----------------verificar los permisos---------------------*/
     $scope.permisoUsuario = {
-                            tipo:{consultar:false, agregar:false, editar:false, activar:false}
+                                color:{consultar:false, agregar:false, editar:false, activar:false}
                             };
     $scope.IdentificarPermisos = function()
     {
         for(var k=0; k < $scope.usuarioLogeado.Permiso.length; k++)
         {
-            if($scope.usuarioLogeado.Permiso[k] == "ConCMaConsultar")
+            //color
+            if($scope.usuarioLogeado.Permiso[k] == "ConCloConsultar")
             {
-                $scope.permisoUsuario.tipo.consultar = true;
+                $scope.permisoUsuario.color.consultar = true;
             }
-            else if($scope.usuarioLogeado.Permiso[k] == "ConCMaAgregar")
+            else if($scope.usuarioLogeado.Permiso[k] == "ConCloAgregar")
             {
-                $scope.permisoUsuario.tipo.agregar= true;
+                $scope.permisoUsuario.color.agregar  = true;
             }
-            else if($scope.usuarioLogeado.Permiso[k] == "ConCMaEditar")
+            else if($scope.usuarioLogeado.Permiso[k] == "ConCloEditar")
             {
-                $scope.permisoUsuario.tipo.editar = true;
+                $scope.permisoUsuario.color.editar  = true;
             }
-            else if($scope.usuarioLogeado.Permiso[k] == "ConCMaActivar")
+            else if($scope.usuarioLogeado.Permiso[k] == "ConCloActivar")
             {
-                $scope.permisoUsuario.tipo.activar= true;
+                $scope.permisoUsuario.color.activar  = true;
             }
         }
     };
     
-    $scope.titulo = "Tipo de Combinación";
-    $scope.tabs = tabCombinacion;
+    $scope.titulo = "Color";
+    $scope.tabs = tabColor;                   //pestañas 
+
     
     //Cambia el contenido de la pestaña
     $scope.SeleccionarTab = function(tab, index)    
@@ -39,13 +42,14 @@ app.controller("ConfiguaracionCombinacionMaterialController", function($scope, $
         switch (index)
         {
             case 0:  
-                $('#TipoCombinacion').show();
+                $('#Color').show();
                 break;
             default:
                 break;
         }        
     };
-
+    
+         
     /*------------------Indentifica cuando los datos del usuario han cambiado-------------------*/
     $scope.usuarioLogeado =  datosUsuario.getUsuario(); 
     
@@ -56,9 +60,9 @@ app.controller("ConfiguaracionCombinacionMaterialController", function($scope, $
             if($scope.usuarioLogeado.PerfilSeleccionado == "Administrador")
             {
                 $scope.IdentificarPermisos();
-                if(!$scope.permisoUsuario.tipo.consultar)
+                if(!$scope.permisoUsuario.color.consultar)
                 {
-                   $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
+                   $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado); 
                 }
             }
             else if($scope.usuarioLogeado.PerfilSeleccionado === "")
@@ -92,9 +96,9 @@ app.controller("ConfiguaracionCombinacionMaterialController", function($scope, $
             if($scope.usuarioLogeado.PerfilSeleccionado == "Administrador")
             {
                 $scope.IdentificarPermisos();
-                if(!$scope.permisoUsuario.tipo.consultar)
+                if(!$scope.permisoUsuario.color.consultar)
                 {
-                   $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
+                    $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
                 }
             }
             else if($scope.usuarioLogeado.PerfilSeleccionado === "")
@@ -107,11 +111,11 @@ app.controller("ConfiguaracionCombinacionMaterialController", function($scope, $
             }
         }
     });
-    
+
 });
 
 //Pestañas
-var tabCombinacion = 
+var tabColor = 
     [
-        {titulo:"Tipo de Combinación", referencia: "#TipoCombinacion", clase:"active", area:"tipoCombinacion"}
+        {titulo:"Color", referencia: "#Color", clase:"active", area:"color"}
     ];

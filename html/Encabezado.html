@@ -39,54 +39,88 @@
                           <span class="barraNavegacionHamburguesa icon-bar"></span>
                         </button>
                     </div>
-
+                    
+    
                     <!-- Barra de navegación sm md lg -->
                     <div class="collapse navbar-collapse" id="navbarCollapse">
 
                         <ul class="nav navbar-nav navbar-right  hidden-xs">
-                            <li ng-repeat="opcion in barraNavegacionOpciones"  class="dropdown " ng-click="MouseClickElemento($index);"  ng-mouseenter="MouseEnterarElemento($index);" ng-mouseleave="MouseSalirElemento($index);" id="{{opcion.Opcion.id}}">
+                            <li ng-repeat="opcion in barraNavegacionOpciones"  data-toggle="dropdown" class="dropdown-toggle"  ng-mouseenter="MouseEnterarElemento($index);" ng-mouseleave="MouseSalirElemento($index);" id="{{opcion.Opcion.id}}">
+                                
                                 <!-- menú principal -->
-                                <a class="claseSeccion">
+                                <a class="claseSeccion" ng-click="MouseClickElemento($index);">
                                     <span>{{opcion.Opcion.texto}}</span>
                                  
                                 </a>
 
                                 <!-- módulos desplegados en dropdown list -->
-                                <ul class="dropdown-menu barraNavegacionDropdown">
+                                <ul class="dropdown-menu barraNavegacionDropdown" >
+                                    <li ng-repeat="elemento in opcion.elemento | orderBy:['menu', 'texto']" ng-if="elemento.show || elemento.divider" ng-class="elemento.clase">
+                                    
+                                        <div class="separadorDropdown"  ng-if="elemento.divider"></div>
+                                        
+                                        <!-- enlace -->
+                                        <a ng-if="elemento.tipo == 'enlace' && elemento.show" href="{{elemento.referencia}}" class="dropdownOpcion" ng-click="LlamarFuncion(null, opcion)">
+                                            <span class="fa fa-caret-left" style="color:transparent"></span ><span> {{elemento.texto}}</span>
+                                        </a>
+                                        
+                                        <!-- funciones -->
+                                        <a ng-if="elemento.tipo == 'funcion' && elemento.show" href="" ng-click="LlamarFuncion(elemento.funcion, opcion)" class="dropdownOpcion">
+                                            <span>{{elemento.texto}}</span>
+                                        </a>
+                                        
+                                        <!-- dropdownlist -->
+                                        <a href="" class="dropdownOpcion" ng-if="elemento.tipo == 'dropdownlist' && elemento.show">
+                                            <span class="fa fa-caret-left"></span > {{elemento.texto}}
+                                        </a>
+                                        <ul class="dropdown-menu dropdown-menu-right">
+                                            <li ng-repeat="enlace in elemento.opcion" ng-show="enlace.show || enlace.divider">
+                                               <div class="separadorDropdown" ng-if="enlace.divider"></div>
+                                                <a ng-if="enlace.show" href="{{enlace.referencia}}" class="dropdownOpcion" ng-click="LlamarFuncion(null, opcion)"> 
+                                                    <span>{{enlace.texto}}</span>
+                                                </a>
+                                            </li>
+                                        </ul>
 
-                                    <li ng-repeat="elemento in opcion.elemento | orderBy:'texto'" ng-if="elemento.show">
-                                        <a ng-if="elemento.nuevaPagina" href="{{elemento.referencia}}" class="dropdownOpcion">
-                                            <span>{{elemento.texto}}</span>
-                                        </a>
-                                        <!-- boton de cerrar sesion -->
-                                        <a ng-if="!elemento.nuevaPagina" href="" ng-click="LlamarFuncion(elemento.funcion)" class="dropdownOpcion">
-                                            <span>{{elemento.texto}}</span>
-                                        </a>
                                     </li>
-
                                 </ul>
-
                             </li>
                         </ul>
 
                         <!-- barra de navegación en móviles (xs)-->
                         <ul class="nav navbar-nav hidden-sm hidden-lg hidden-md">
-                            <li ng-repeat="opcion in barraNavegacionOpciones" class="dropdown">
+                            <li ng-repeat="opcion in barraNavegacionOpciones" class="dropdown" >
 
-                                <a class="dropdown-toggle  text-center" data-toggle="dropdown">
+                                <a class="dropdown-toggle" data-toggle="dropdown" id="{{opcion.id}}">
                                     <span>{{opcion.Opcion.texto}}</span>
                                     <span class="caret"></span>
                                 </a>
 
-                                <ul class="dropdown-menu barraNavegacionDropdown">
-                                    <li ng-repeat="elemento in opcion.elemento | orderBy:'texto'" ng-if="elemento.show">
-                                        <a ng-if="elemento.nuevaPagina" href="{{elemento.referencia}}" class="dropdownOpcion text-center" ng-click="CerrarBarraNavegacion()">
+                                <ul class="dropdown-menu barraNavegacionDropdown" aria-labelledby="{{opcion.id}}">
+                                    <li ng-repeat="elemento in opcion.elemento | orderBy:['menu', 'texto']" ng-if="elemento.show" ng-class="elemento.clase">
+                                        <div class="separadorDropdown" ng-if="elemento.divider"></div>
+                                        
+                                       <!--enlace-->
+                                        <a ng-if="elemento.tipo == 'enlace'" href="{{elemento.referencia}}" class="dropdownOpcion" ng-click="CerrarBarraNavegacion()">
                                             <span>{{elemento.texto}}</span>
                                         </a>
-                                        <!-- boton de cerrar sesion -->
-                                        <a ng-if="!elemento.nuevaPagina" href="" class="dropdownOpcion text-center" ng-click="LlamarFuncion(elemento.funcion)">
+                                        <!-- funcion -->
+                                        <a ng-if="elemento.tipo == 'funcion'" href="" class="dropdownOpcion" ng-click="LlamarFuncion(elemento.funcion, opcion)">
                                             <span>{{elemento.texto}}</span>
                                         </a>
+                                        <!-- dropdownlist -->
+                                        <a href="" data-toggle="dropdown" class="dropdown-toggle dropdownOpcion" ng-if="elemento.tipo == 'dropdownlist'" id="{{elemento.texto}}">
+                                           {{elemento.texto}} <span class="fa fa-caret-right"></span >
+                                        </a>   
+                                    
+                                        <ul class="dropdown-menu dropdown-menu-right" role="{{elemento.texto}}" aria-labelledby="{{elemento.texto}}">
+                                            <li ng-repeat="enlace in elemento.opcion" ng-show="enlace.show">
+                                                <div class="separadorDropdown" ng-if="enlace.divider"></div>
+                                                <a href="{{enlace.referencia}}" class="dropdownOpcion2level" ng-click="LlamarFuncion(null, opcion)"> 
+                                                    <span>{{enlace.texto}}</span>
+                                                </a>
+                                            </li>
+                                        </ul>
                                     </li>
                                 </ul>
 

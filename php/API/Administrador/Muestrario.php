@@ -8,7 +8,7 @@ function GetMuestrario()
     $request = \Slim\Slim::getInstance()->request();
     $tipoMuestrarioId = json_decode($request->getBody());
 
-    $sql = "SELECT * FROM Muestrario WHERE TipoMuestrarioId = ".$tipoMuestrarioId;
+    $sql = "SELECT * FROM MuestrarioVista WHERE TipoMuestrarioId = ".$tipoMuestrarioId;
 
     try 
     {
@@ -34,7 +34,7 @@ function AgregarMuestrario()
     $request = \Slim\Slim::getInstance()->request();
     $muestrario = json_decode($request->getBody());
     global $app;
-    $sql = "INSERT INTO Muestrario (TipoMuestrarioId, Nombre, Activo, PorDefecto, Margen) VALUES(:TipoMuestrarioId, :Nombre, :Activo, :PorDefecto, :Margen)";
+    $sql = "INSERT INTO Muestrario (TipoMuestrarioId, Nombre, Activo, PorDefecto, Margen, TipoAccesorioId) VALUES(:TipoMuestrarioId, :Nombre, :Activo, :PorDefecto, :Margen, :TipoAccesorioId)";
     
     $db;
     $stmt;
@@ -51,6 +51,7 @@ function AgregarMuestrario()
         $stmt->bindParam("Activo", $muestrario->Activo);
         $stmt->bindParam("PorDefecto", $muestrario->PorDefecto);
         $stmt->bindParam("Margen", $muestrario->Margen);
+        $stmt->bindParam("TipoAccesorioId", $muestrario->TipoAccesorio->TipoAccesorioId);
 
         $stmt->execute();
         
@@ -117,7 +118,8 @@ function EditarMuestrario()
     $request = \Slim\Slim::getInstance()->request();
     $muestrario = json_decode($request->getBody());
    
-    $sql = "UPDATE Muestrario SET Nombre='".$muestrario->Nombre."', TipoMuestrarioId='".$muestrario->TipoMuestrarioId."', Activo = '".$muestrario->Activo."', PorDefecto = '".$muestrario->PorDefecto."', Margen = ".$muestrario->Margen."  WHERE MuestrarioId=".$muestrario->MuestrarioId."";
+    $sql = "UPDATE Muestrario SET Nombre='".$muestrario->Nombre."', TipoMuestrarioId='".$muestrario->TipoMuestrarioId."', Activo = '".$muestrario->Activo."', 
+    PorDefecto = '".$muestrario->PorDefecto."', Margen = ".$muestrario->Margen.", TipoAccesorioId = ".$muestrario->TipoAccesorio->TipoAccesorioId." WHERE MuestrarioId=".$muestrario->MuestrarioId."";
     
     $stmt;
     $db;

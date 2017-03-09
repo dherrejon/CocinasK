@@ -964,10 +964,12 @@ app.controller("ConfiguracionPuertaControlador", function($scope, $http, $q, CON
         if(operacion == "Agregar")
         {
             $scope.nuevoMuestrario = new Muestrario();
+            $scope.nuevoMuestrario.TipoAccesorio.TipoAccesorioId = null;
         }
         else if(operacion == "Editar")
         {
             $scope.nuevoMuestrario = SetMuestrario(muestrario);
+            $scope.nuevoMuestrario.TipoAccesorio.TipoAccesorioId = "null";
         }
         
         $('#muestrarioModal').modal('toggle');
