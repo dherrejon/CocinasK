@@ -193,3 +193,34 @@ function SetTipoMedioContacto(data)
     return tipoMedioContacto;
 }
 
+
+/*--------- contacto -----------*/
+class Contacto
+{
+    constructor()
+    {
+        this.TipoMedioContacto = new TipoMedioContacto();
+        this.MedioContacto = new MedioContacto(); 
+        this.Contacto = "";
+        this.Activo = true;
+    }
+}
+
+class Domicilio
+{
+    constructor()
+    {
+        this.TipoMedioContacto = new TipoMedioContacto();
+        this.Pais = new Pais(); 
+        this.Codigo = "";
+        this.Domicilio = "";
+        this.Estado = "";
+        this.Municipio = "";
+        this.Ciudad = "";
+        this.Colonia = "";
+        this.Activo = true;
+        
+        this.Pais.PaisId = "1";
+    }
+}
+

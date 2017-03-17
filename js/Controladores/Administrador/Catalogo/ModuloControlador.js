@@ -322,7 +322,7 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
         $scope.nuevoModulo.TipoModulo = SetTipoModulo(tipo);
     };
     
-    $scope.SiguienteDatosModulo1 = function(nombreInvalido, numeroSeccionInvalido, margenInvalido)
+    $scope.SiguienteDatosModulo1 = function(nombreInvalido, numeroSeccionInvalido, margenInvalido, desperdicioValido)
     {
         $scope.mensajeError = [];
         
@@ -352,6 +352,15 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
         else
         {
             $scope.claseModulo.margen = "entrada"; 
+        }
+        if(desperdicioValido)
+        {
+            $scope.claseModulo.desperdicio = "entradaError";
+            $scope.mensajeError[$scope.mensajeError.length] = "*El desperdicio debe ser un porcentaje hasta con 2 decimas.";
+        }
+        else
+        {
+            $scope.claseModulo.desperdicio = "entrada";
         }
         if($scope.nuevoModulo.TipoModulo.Nombre.length == "0")
         {
@@ -409,6 +418,10 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
         }
         
         $scope.numeroPaso = 2;
+        
+        $scope.pasoModulo[0].clase="pasoNoActivo";
+        $scope.pasoModulo[1].clase="pasoActivo";
+
         if($scope.nuevoModulo.NumeroSeccion > 0)
         {
             $scope.ConfigurarPartePorModulo();
@@ -665,19 +678,9 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
         }
     };
     
-    $scope.SiguienteDatosModulo2 = function(desperdicioValido)
+    $scope.SiguienteDatosModulo2 = function()
     {
         $scope.mensajeError = [];
-        
-        if(desperdicioValido)
-        {
-            $scope.claseModulo.desperdicio = "entradaError";
-            $scope.mensajeError[$scope.mensajeError.length] = "*El desperdicio debe ser un porcentaje hasta con 2 decimas.";
-        }
-        else
-        {
-            $scope.claseModulo.desperdicio = "entrada";
-        }
         
         if($scope.consumibleModulo.length === 0)
         {
@@ -696,7 +699,8 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
         
         $scope.numeroPaso = 3;
         $scope.pasoModulo[0].clase="pasoNoActivo";
-        $scope.pasoModulo[1].clase="pasoActivo";
+        $scope.pasoModulo[1].clase="pasoNoActivo";
+        $scope.pasoModulo[2].clase="pasoActivo";
     };
     
     /*--------Paso 3------------*/
@@ -927,8 +931,8 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
                 if($scope.nuevoModulo.NumeroSeccion != "0")
                 {
                     $scope.numeroPaso = 4;
-                    $scope.pasoModulo[1].clase="pasoNoActivo";
-                    $scope.pasoModulo[2].clase="pasoActivo";
+                    $scope.pasoModulo[2].clase="pasoNoActivo";
+                    $scope.pasoModulo[3].clase="pasoActivo";
                 }
                 else
                 {
@@ -1381,10 +1385,15 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
     {
         if($scope.ValidarMedida(anchoInvalido, altoInvalido, profundoInvalido))
         {
-            $scope.nuevoModulo.MedidasPorModulo[$scope.nuevoModulo.MedidasPorModulo.length] = new MedidasPorModulo();
-            $scope.nuevoModulo.MedidasPorModulo[$scope.nuevoModulo.MedidasPorModulo.length-1].Ancho = $scope.nuevaMedida.Ancho;
-            $scope.nuevoModulo.MedidasPorModulo[$scope.nuevoModulo.MedidasPorModulo.length-1].Alto = $scope.nuevaMedida.Alto;
-            $scope.nuevoModulo.MedidasPorModulo[$scope.nuevoModulo.MedidasPorModulo.length-1].Profundo = $scope.nuevaMedida.Profundo;        
+            var index = $scope.nuevoModulo.MedidasPorModulo.length;
+            $scope.nuevoModulo.MedidasPorModulo[index] = new MedidasPorModulo();
+            $scope.nuevoModulo.MedidasPorModulo[index].Ancho = $scope.nuevaMedida.Ancho;
+            $scope.nuevoModulo.MedidasPorModulo[index].Alto = $scope.nuevaMedida.Alto;
+            $scope.nuevoModulo.MedidasPorModulo[index].Profundo = $scope.nuevaMedida.Profundo; 
+            
+            $scope.nuevoModulo.MedidasPorModulo[index].AnchoNumero = $scope.FraccionADecimal($scope.nuevaMedida.Ancho);
+            $scope.nuevoModulo.MedidasPorModulo[index].AltoNumero = $scope.FraccionADecimal($scope.nuevaMedida.Alto);
+            $scope.nuevoModulo.MedidasPorModulo[index].ProfundoNumero = $scope.FraccionADecimal($scope.nuevaMedida.Profundo);
         }
         
     };
@@ -1525,23 +1534,33 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
         
         $scope.mensajeError = [];
         
-        if($scope.numeroPaso == 1 || $scope.numeroPaso == 2)
+        if($scope.numeroPaso == 1)
         {
             $scope.pasoModulo[0].clase = "pasoActivo";
             $scope.pasoModulo[1].clase = "pasoNoActivo";
             $scope.pasoModulo[2].clase = "pasoNoActivo";
+            $scope.pasoModulo[3].clase = "pasoNoActivo";
         }
-        else if($scope.numeroPaso == 3)
+        else if($scope.numeroPaso == 2)
         {
             $scope.pasoModulo[0].clase = "pasoNoActivo";
             $scope.pasoModulo[1].clase = "pasoActivo";
             $scope.pasoModulo[2].clase = "pasoNoActivo";
+            $scope.pasoModulo[3].clase = "pasoNoActivo";
+        }
+        else if($scope.numeroPaso == 3)
+        {
+            $scope.pasoModulo[0].clase = "pasoNoActivo";
+            $scope.pasoModulo[1].clase = "pasoNoActivo";
+            $scope.pasoModulo[2].clase = "pasoActivo";
+            $scope.pasoModulo[3].clase = "pasoNoActivo";
         }
         else if($scope.numeroPaso == 4)
         {
             $scope.pasoModulo[0].clase = "pasoNoActivo";
             $scope.pasoModulo[1].clase = "pasoNoActivo";
-            $scope.pasoModulo[2].clase = "pasoActivo";
+            $scope.pasoModulo[2].clase = "pasoNoActivo";
+            $scope.pasoModulo[3].clase = "pasoActivo";
         }
     };
     
@@ -1679,8 +1698,14 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
     {
         GetMedidasPorModulo($http, $q, CONFIG, moduloId).then(function(data)
         {
+            for(var k=0; k<data.length; k++)
+            {
+                data[k].AnchoNumero = $scope.FraccionADecimal(data[k].Ancho);
+                data[k].AltoNumero = $scope.FraccionADecimal(data[k].Alto);
+                data[k].ProfundoNumero = $scope.FraccionADecimal(data[k].Profundo);
+            }
             $scope.medidaModulo = data;
-            
+
         }).catch(function(error)
         {
             alert("Ha ocurrido un error." + error);
@@ -1950,6 +1975,7 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
 
 var pasoModulo = [
                     {nombre:"Datos Módulo", clase:"pasoActivo"},
+                    {nombre:"Consumibles", clase:"pasoNoActivo"},
                     {nombre:"Componentes", clase:"pasoNoActivo"},
                     {nombre:"Frente Módulo", clase:"pasoNoActivo" }
                  ];

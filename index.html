@@ -19,12 +19,16 @@
 
         <!-- Bootstrap-->
         <link rel="stylesheet" href="libs/bootstrap/css/bootstrap.min.css">
-        <link rel="stylesheet" href="libs/bootstrap/css/datepicker/bootstrap-datepicker3.css">
+        
+        <link rel="stylesheet" href="libs/bootstrap/css/datepicker/bootstrap-material-datetimepicker.css">
+        
         
         <script src="libs/bootstrap/js/bootstrap.min.js"></script>
+    
+		<!--<script type="text/javascript" src="http://momentjs.com/downloads/moment-with-locales.min.js"></script>-->
+        <script type="text/javascript" src="libs/bootstrap/js/datepicker/moment-with-locales.min.js"></script>
+        <script type="text/javascript" src="libs/bootstrap/js/datepicker/bootstrap-material-datetimepicker.js"></script>
         
-        <script src="libs/bootstrap/js/datepicker/bootstrap-datepicker.js"></script>
-        <script src="libs/bootstrap/js/datepicker/locales/bootstrap-datepicker.es.min.js"></script>
         
         <link rel="stylesheet" href="libs/angular-loading-bar/loading-bar.css">
         
@@ -58,6 +62,10 @@
         <script src="js/Datos/Administrador/CocinasK/Promocion.js"></script>
         <script src="js/Datos/Administrador/CocinasK/PlanPago.js"></script>
         <script src="js/Datos/Administrador/CocinasK/MedioCaptacion.js"></script>
+        
+        <!-------- Operativo ----------->
+        <script src="js/Datos/Operativo/Cita.js"></script>
+        <script src="js/Datos/Operativo/Persona.js"></script>
         
         <!-- Controladores -->
         <script src="js/app.js"></script>
@@ -114,8 +122,11 @@
             <!-- Ejecutivo -->
         <script src="js/Controladores/Ejecutivo/EjecutivoControlador.js"></script>
         
-            <!-- Operativo -->
+        <!-- Operativo -->
         <script src="js/Controladores/Operativo/OperativoControlador.js"></script>
+        <script src="js/Controladores/Operativo/CitaControlador.js"></script>
+        <script src="js/Controladores/Operativo/MedioContactoControlador.js"></script>
+        <script src="js/Controladores/Operativo/DomicilioControlador.js"></script>
         
         <!--css-->
         <link rel="stylesheet" href="css/Login.css">
@@ -123,6 +134,8 @@
         <link rel="stylesheet" href="css/PerfilEstilos.css">
         <link rel="stylesheet" href="css/HomeEstilos.css">
         <link rel="stylesheet" href="css/Calendario.css">
+        <link rel="stylesheet" href="css/bootstrap-material-datetimepicker.css">
+        
         <link rel="stylesheet" href="css/Administrador/CocinasK/UnidadNegocioEstilos.css">
         <link rel="stylesheet" href="css/Administrador/CocinasK/UsuarioEstilos.css">
         <link rel="stylesheet" href="css/Administrador/CocinasK/TerritorioEstilo.css">
@@ -134,6 +147,9 @@
         <link rel="stylesheet" href="css/Administrador/Configuracion/PuertaEstilo.css">
         <link rel="stylesheet" href="css/Administrador/Configuracion/Imagen.css">
         <link rel="stylesheet" href="css/Administrador/Configuracion/CargarArchivoEstilos.css">
+        
+        <link rel="stylesheet" href="css/Operativo/Modales.css">
+        <link rel="stylesheet" href="css/Operativo/Controles.css">
         
         <!--awesome font-->
         <link rel="stylesheet" href="css/font-awesome.min.css">

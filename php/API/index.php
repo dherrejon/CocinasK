@@ -3,7 +3,7 @@
     require 'Slim/Slim.php';
     require 'configuration.php';
     
-    /*-----Funciones-----*/
+    /*-----Administrador-----*/
     require 'Administrador/UnidadNegocio.php';
     require 'Administrador/Territorio.php';
     require 'Administrador/Plaza.php';
@@ -29,6 +29,11 @@
     require 'Administrador/PlanPago.php';
     require 'Administrador/MedioCaptacion.php';
 
+    /*------------Operativo-----------*/
+    require 'Operativo/Cita.php';
+    require 'Operativo/Persona.php';
+
+    /*------------General----------*/
     require 'General/Direccion.php';
     require 'General/Sesion.php';
     require 'General/MedioContacto.php';
@@ -478,6 +483,16 @@
     $app->get('/GetMedioCaptacionOtro', $seguridad, $ChecarSesion, 'GetMedioCaptacionOtro');
     $app->put('/ActualizarMedioCaptacionAgregar', $seguridad, $ChecarSesion, 'ActualizarMedioCaptacionAgregar');
     $app->put('/ActualizarMedioCaptacion', $seguridad, $ChecarSesion, 'ActualizarMedioCaptacion');
+
+    /*------------------ Cita ----------------------------------------------*/
+    $app->post('/AgregarCita', $seguridad, $ChecarSesion, 'AgregarCita');
+
+    /*------------------ Persona ----------------------------------------------*/
+    $app->post('/GetBuscarPersona', $seguridad, $ChecarSesion, 'GetBuscarPersona');
+    $app->post('/GetMedioContactoPersona', $seguridad, $ChecarSesion, 'GetMedioContactoPersona');
+    $app->post('/GetDireccionPersona', $seguridad, $ChecarSesion, 'GetDireccionPersona');   
+    $app->put('/EditarMedioContactoPersona', $seguridad, $ChecarSesion, 'EditarMedioContactoPersona');
+    $app->put('/EditarDireccionPersona', $seguridad, $ChecarSesion, 'EditarDireccionPersona');
 
     $app->run(); 
 

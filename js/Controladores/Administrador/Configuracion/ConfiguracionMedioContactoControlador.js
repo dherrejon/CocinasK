@@ -94,6 +94,11 @@ app.controller("ConfiguaracionMedioContactoControlador", function($scope, $http,
             $scope.ordenarPorTipo = campoOrdenar;
         }
     };
+    
+    $scope.TipoMedioContactoValido = function(tipo)
+    {
+        return (parseInt(tipo.TipoMedioContactoId) > 0);
+    };
      
     /*--------------Activar y desactivar empresa y tipo de unidad de negocio ------------------*/
     $scope.ActivarDesactivar = function(modulo, objeto) //Activa o desactiva un elemento (empresa y tipo de unidad de negocio)
@@ -185,6 +190,21 @@ app.controller("ConfiguaracionMedioContactoControlador", function($scope, $http,
         else
         {
             $scope.clase.tipoMedioContacto.medioContacto = "dropdownListModal";
+        }
+        
+        if($scope.mensajeError.length > 0)
+        {
+            return false;
+        }
+        
+        for(var k=0; k<$scope.tipoMedioContacto.length; k++)
+        {
+            if($scope.tipoMedioContacto[k].MedioContactoId == $scope.nuevoTipoMedioContacto.MedioContactoId && $scope.tipoMedioContacto[k].Nombre.toLowerCase() == $scope.nuevoTipoMedioContacto.Nombre.toLowerCase() && $scope.tipoMedioContacto[k].TipoMedioContactoId != $scope.nuevoTipoMedioContacto.TipoMedioContactoId)
+            {
+                $scope.mensajeError[$scope.mensajeError.length] = "*El tipo medio contacto "  + $scope.tipoMedioContacto[k].NombreMedioContacto + " - " +  $scope.tipoMedioContacto[k].Nombre.toLowerCase() + " ya existe.";
+                $scope.clase.tipoMedioContacto.nombre = "entradaError";
+                break;
+            }
         }
         
         if($scope.mensajeError.length > 0)

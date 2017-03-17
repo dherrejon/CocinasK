@@ -72,10 +72,6 @@ function AgregarPromocion($http, CONFIG, $q, promocion)
     var q = $q.defer();
     
     promocion.Activo = CambiarDatoBool(promocion.Activo);
-    if(promocion.TipoPromocion.TipoPromocionId == '1')
-    {
-        promocion.FechaLimite = CambiarFormatoFecha(promocion.FechaLimite);
-    }
 
     $http({      
           method: 'POST',
@@ -107,10 +103,6 @@ function EditarPromocion($http, CONFIG, $q, promocion)
     var q = $q.defer();
     
     promocion.Activo = CambiarDatoBool(promocion.Activo);
-    if(promocion.TipoPromocion.TipoPromocionId == '1')
-    {
-        promocion.FechaLimite = CambiarFormatoFecha(promocion.FechaLimite);
-    }
 
     $http({      
           method: 'PUT',
@@ -229,13 +221,4 @@ function GetTipoPromocion()
     tipoPromocion[2].Nombre = "Vigencia Dinámica";
     
     return tipoPromocion;
-}
-
-
-function CambiarFormatoFecha(fecha)
-{
-    var date = "";
-    
-    date = fecha[6] + fecha[7] + fecha[8] + fecha[9] + "-" + fecha[3] + fecha[4] + "-" + fecha[0] + fecha[1];
-    return date;
 }

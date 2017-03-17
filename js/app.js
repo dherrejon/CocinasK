@@ -68,7 +68,7 @@ app.factory('mhttpInterceptor', function($q,CONFIG,$rootScope,$window,$location)
 
 
 //indica las rutas de la aplicacion web
-app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpProvider) 
+app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpProvider, $ocLazyLoad) 
 {   
     $httpProvider.interceptors.push('mhttpInterceptor');
     

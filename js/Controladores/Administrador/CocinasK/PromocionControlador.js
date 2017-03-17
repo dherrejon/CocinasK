@@ -350,6 +350,8 @@ app.controller("PromocionControlador", function($scope, $http, $q, CONFIG, $root
             $scope.nuevaPromocion = $scope.SetPromocion(objeto);
             $scope.nuevaPromocion.UnidadNegocio = objeto.UnidadNegocio;
             $scope.ValidarUnidades($scope.nuevaPromocion.UnidadNegocio);
+            
+            document.getElementById("fechaLimite").value= objeto.FechaLimite;
         }
 
         $('#promocionModal').modal('toggle');
@@ -411,15 +413,13 @@ app.controller("PromocionControlador", function($scope, $http, $q, CONFIG, $root
         });
     };
     
-    $('#fechaLimite').datepicker(
+    $('#fechaLimite').bootstrapMaterialDatePicker(
     {
-        clearBtn: true,
-        language: "es",
-        keyboardNavigation: false,
-        forceParse: false,
-        daysOfWeekDisabled: "0",
-        autoclose: true,
-        todayHighlight: true
+        weekStart : 0, 
+        time: false,
+        format: "DD/MM/YYYY",
+        minDate : new Date(),
+        disabledDays: [7]
     });
     
     $scope.CambiarMotrarUnidad = function()
@@ -667,6 +667,7 @@ app.controller("PromocionControlador", function($scope, $http, $q, CONFIG, $root
     
     $scope.CerrarPromocion = function()
     {
+        document.getElementById("fechaLimite").value= "";
         $scope.mensajeError = [];
         $scope.clase = {tipoPromocion:"dropdownListModal", tipoVenta:"dropdownListModal", minimo:"entrada", maximo:"entrada", fecha:"entrada", numeroPagos:"entrada", vigencia:"entrada", unidad:"botonOperacion"};
     };

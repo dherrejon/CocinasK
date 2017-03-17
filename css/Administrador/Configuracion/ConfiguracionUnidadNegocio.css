@@ -12,12 +12,14 @@ a:hover,a:focus{
     margin: 0 3px 0 0;
     position: relative;
 }
+
 .tab .nav-tabs li.active:before
 {
     content: "";
     position: absolute;
     bottom: -28px;
-    left: 51px;
+    left: 50%;
+    margin-left: -14px;
     border: 14px solid transparent;
     border-top-color: #262626;
 }
@@ -27,7 +29,8 @@ a:hover,a:focus{
     content: "";
     position: absolute;
     bottom: -24px;
-    left: 53px;
+    left: 50%;
+    margin-left: -12px;
     border: 12px solid transparent;
     border-top-color: #262626;
 }

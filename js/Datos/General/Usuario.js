@@ -122,6 +122,7 @@ function SetUsuario(data)
     
     usuario.UsuarioId = data[0].UsuarioId;
     usuario.Nombre = data[0].NombreUsuario;
+    usuario.UnidadNegocioId = data[0].UnidadNegocioId;
     usuario.Password = "";
     usuario.SesionIniciada = true;
     usuario.NombreColaborador = data[0].NombreColaborador;

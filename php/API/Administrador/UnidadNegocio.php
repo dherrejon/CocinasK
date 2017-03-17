@@ -125,7 +125,7 @@ function GetResponsable()
 
     $request = \Slim\Slim::getInstance()->request();
 
-    $sql = "SELECT CONCAT(c.PrimerApellido, ' ', c.SegundoApellido, ' ', c.Nombre) AS Nombre, c.ColaboradorId FROM Colaborador c ";
+    $sql = "SELECT CONCAT(c.PrimerApellido, ' ', c.SegundoApellido, ' ', c.Nombre) AS Nombre, c.ColaboradorId, c.UnidadNegocioId FROM Colaborador c WHERE Activo = 1";
 
     try 
     {

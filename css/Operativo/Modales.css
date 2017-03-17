@@ -1,0 +1,187 @@
+.modalPrincipal
+{
+    background: white;
+    color: #262626;
+    border-radius: 0px;
+    padding: 20px;
+}
+
+.botonOperacionModal, botonOperacionModal:focus, botonOperacionModal:active
+{
+    background: white;
+    border-radius: 0px;
+    border: 2px solid rgb(250, 97, 21);
+    color: rgb(250, 97, 21) !important;
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.botonOperacionModal:hover
+{
+    background: rgb(250, 97, 21);
+    border-radius: 0px;
+    border: 2px solid rgb(250, 97, 21);
+    color: white !important;
+    outline: none;
+    box-shadow: none;
+}
+
+.tituloModal
+{
+    font-size: 19pt;
+    font-style: bold;
+}
+
+
+/*----------------  dropdown list -------------------*/
+.dropdownlistModal
+{
+    border-width: 0px 0px 3px 0px;
+    border-style: solid;
+    border-color: #262626;
+    
+    font-size:16px;
+    background: transparent;
+    color: #262626;
+    display: block;
+    width: 100%;
+    text-align: left;
+    border-radius: 0px 0px 0px 0px;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.dropdownlistModal:disabled
+{
+    background: rgb(234, 234, 234);
+} 
+
+.dropdownlistModal:hover:disabled
+{
+    background: rgb(234, 234, 234);
+    color: #262626;
+    border-color: #262626;
+} 
+
+.dropdownlistModalError
+{
+    border-width: 0px 0px 3px 0px;
+    border-style: solid;
+    border-color:rgb(250, 97, 21);
+    
+    font-size:16px;
+    background: transparent;
+    color: #262626;
+    display: block;
+    width: 100%;
+    text-align: left;
+    border-radius: 0px 0px 0px 0px
+}
+
+.dropdownlistModal:hover, .dropdownlistModalError:hover
+{
+    background:  white; 
+    color: rgb(250, 97, 21);
+    cursor: hand;
+    
+    border-width: 0px 0px 3px 0px;
+    border-style: solid;
+    border-color: rgb(250, 97, 21);
+}
+
+.dropdownlistModalError:disabled
+{
+    background: rgb(234, 234, 234);
+} 
+
+
+
+.listaOpcionesDropdownList
+{
+    background: white;
+    border: solid 2px #262626;
+    max-height: 150px;
+    overflow: scroll;
+    border-radius: 0px;
+}
+
+
+/*--------clase para CheckBox----------*/
+
+.radio,
+.checkboxOperativo
+{
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-left: -8px;  
+}
+
+.checkboxOperativo label:after
+{
+    content: '';
+}
+
+.checkboxOperativo .cr
+{
+    position: relative;
+
+    border: 1px solid #262626;
+    border-radius: 0pt;
+    width: 1.5em;
+    height: 1.5em;
+    float: left;
+    margin-right: .5em;
+    
+    cursor: pointer;
+}
+
+.radio .cr 
+{
+    border-radius: 50%;
+}
+
+.checkboxOperativo .cr .cr-icon
+{
+    position: absolute;
+    font-size: 1em;
+    line-height: 0;
+    top: 50%;
+    left: 20%;
+}
+
+.checkboxOperativo label input[type="checkbox"]
+{
+    display: none;
+}
+
+.checkboxOperativo label input[type="checkbox"] + .cr > .cr-icon
+{
+    transform: scale(3) rotateZ(-20deg);
+    opacity: 0;
+    transition: all .3s ease-in;
+}
+
+.checkboxOperativo label input[type="checkbox"]:checked + .cr > .cr-icon
+{
+    transform: scale(1) rotateZ(0deg);
+    opacity: 1;
+}
+
+.checkboxOperativo label input[type="checkbox"]:disabled + .cr
+{
+    opacity: .5;
+}
+
+/*modal*/
+
+.sombraDivModal
+{
+    background: rgba(0,0,0, 0.5);
+    left: 0%;
+    top: 0%;
+    position: fixed;
+    z-index: 10000000000000000000000000000000000000000001;
+    height: 100%;
+    width: 100%;
+}

@@ -552,6 +552,7 @@ function GetResponsable($http, $q, CONFIG)
                 responsable[k] = new Responsable();
                 responsable[k].Nombre = data[k].Nombre;
                 responsable[k].ColaboradorId = data[k].ColaboradorId;
+                responsable[k].UnidadNegocioId = data[k].UnidadNegocioId;
             }
         
             q.resolve(responsable);  

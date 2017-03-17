@@ -35,7 +35,7 @@ function AgregarPromocion()
     $promocion = json_decode($request->getBody());
     global $app;
     $sql = "INSERT INTO Promocion (TipoPromocionId, TipoVentaId, Descripcion, DescuentoMaximo, DescuentoMinimo, NumeroPagos, FechaLimite, Vigencia, Activo) 
-            VALUES(:TipoPromocionId, :TipoVentaId, :Descripcion, :DescuentoMaximo, :DescuentoMinimo, :NumeroPagos, :FechaLimite, :Vigencia, :Activo)";
+            VALUES(:TipoPromocionId, :TipoVentaId, :Descripcion, :DescuentoMaximo, :DescuentoMinimo, :NumeroPagos, STR_TO_DATE(:FechaLimite, '%d/%m/%Y') , :Vigencia, :Activo)";
 
     try 
     {
@@ -59,7 +59,7 @@ function AgregarPromocion()
 
     } catch(PDOException $e) 
     {
-        //echo $e;
+        echo $e;
         echo '[{"Estatus": "Fallido"}]';
         $db->rollBack();
         $app->status(409);
@@ -114,7 +114,7 @@ function EditarPromocion()
    
     $sql = "UPDATE Promocion SET TipoPromocionId='".$promocion->TipoPromocion->TipoPromocionId."', TipoVentaId='".$promocion->TipoVenta->TipoVentaId."', 
     Descripcion='".$promocion->Descripcion."', DescuentoMinimo='".$promocion->DescuentoMinimo."', DescuentoMaximo = '".$promocion->DescuentoMaximo."', 
-    NumeroPagos = '".$promocion->NumeroPagos."', FechaLimite = :FechaLimite, Vigencia = :Vigencia,
+    NumeroPagos = '".$promocion->NumeroPagos."', FechaLimite = STR_TO_DATE(:FechaLimite, '%d/%m/%Y'), Vigencia = :Vigencia,
     Activo = '".$promocion->Activo."' WHERE PromocionId=".$promocion->PromocionId;
     
     try 

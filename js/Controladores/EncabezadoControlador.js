@@ -1,4 +1,4 @@
-app.controller("EncabezadoControlador", function($scope, $rootScope, $http, CONFIG, $q, $window, datosUsuario, datosPerfil, md5)
+app.controller("EncabezadoControlador", function($scope, $rootScope, $http, CONFIG, $q, $window, datosUsuario, datosPerfil, md5, CITA)
 {   
     $rootScope.barraNavegacionOpciones = "";      //opciones de la barra de navegación
     $scope.usuario = datosUsuario.getUsuario();
@@ -66,6 +66,10 @@ app.controller("EncabezadoControlador", function($scope, $rootScope, $http, CONF
         else if(funcion == "CambiarContraseña")
         {
             $scope.CambiarPassword();
+        }
+        else if(funcion == "AgregarCita")
+        {
+            CITA.AgregarCitaCero(); 
         }
     };
     
@@ -468,19 +472,29 @@ var OpcionAdministrador =
     { 
         Opcion: {texto:"Usuario", id:"usuario"},
         elemento: [ 
-                        { texto:"Cambiar Contraseña", funcion:"CambiarContraseña", show:true, tipo:"funcion"},
-                        { texto:"Cerrar Sesión", funcion:"CerrarSesion", show:true, tipo:"funcion"}
+                        { menu: 1, texto:"Cambiar Contraseña", funcion:"CambiarContraseña", show:true, tipo:"funcion"},
+                        { menu: 1, texto:"Cerrar Sesión", funcion:"CerrarSesion", show:true, tipo:"funcion"}
                   ]                      
     }
 ];
 
 var OpcionOperativo =
 [
-   { 
+    { 
+        Opcion: {texto:"Clientes", id:"clientes"},
+        elemento: [ 
+                    { menu: 1, referencia: "#Territorio", texto:"Perfil Clientes",  show:false, tipo:"enlace", permiso:[{clave:"AdmTerConsultar"}]},
+                    { divider: true, menu: 2, texto:"Agregar Cita", funcion:"AgregarCita", show:true, tipo:"funcion"},
+                    { menu: 2, referencia: "#PlanPago", texto:"Agregar Presupuesto", show:false, tipo:"enlace", permiso:[{clave:"AdmPlNConsultar"}]}
+                  ]                      
+    },
+    
+    { 
         Opcion: {texto:"Usuario", id:"usuario"},
         elemento: [ 
-                        { texto:"Cambiar Contraseña", funcion:"CambiarContraseña", nuevaPagina:false, show:true},
-                        { texto:"Cerrar Sesión", funcion:"CerrarSesion", nuevaPagina:false, show:true}
+                        { menu: 1, referencia: "#Plaza", texto:"Agenda", show:false, tipo:"enlace", permiso:[{clave:"AdmPlaConsultar"}]},
+                        { menu: 2, texto:"Cambiar Contraseña", funcion:"CambiarContraseña", show:true, tipo:"funcion", divider:true},
+                        { menu: 2, texto:"Cerrar Sesión", funcion:"CerrarSesion", show:true, tipo:"funcion"}
                   ]                      
     }
 ];
@@ -490,8 +504,8 @@ var OpcionEjecutivo =
    { 
         Opcion: {texto:"Usuario", id:"usuario"},
         elemento: [ 
-                        { texto:"Cambiar Contraseña", funcion:"CambiarContraseña", nuevaPagina:false, show:true},
-                        { texto:"Cerrar Sesión", funcion:"CerrarSesion", nuevaPagina:false, show:true}
+                        { texto:"Cambiar Contraseña", funcion:"CambiarContraseña", show:true, tipo:"funcion"},
+                        { texto:"Cerrar Sesión", funcion:"CerrarSesion", show:true, tipo:"funcion"}
                   ]                      
     } 
 ];

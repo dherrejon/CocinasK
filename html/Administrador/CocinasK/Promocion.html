@@ -449,17 +449,10 @@
                     
                     <div class="row" ng-show="nuevaPromocion.TipoPromocion.TipoPromocionId == '1'">
                       
-                        <div class="col-xs-12 col-sm-6 etiquetaDropdownList" >
-                           <label>Fecha Límite</label>
-                            <div class="input-group date" data-provide="datepicker" id="fechaLimite" >
-                                <input type="text" class="form-control" ng-show="false" onchange="angular.element(this).scope().CambiarFecha(this)">
-                                <input type="text" class="form-control {{clase.fecha}}" ng-model="nuevaPromocion.FechaLimite" ng-disabled="true">
-                                <span class="input-group-btn">
-
-                                    <button class="btn botonPanelOculto" type="button">
-                                        <span class="fa fa-calendar" ng-model="fecha" ></span>
-                                    </button>
-                                </span>
+                        <div class="col-xs-12 col-sm-6" >
+                          <div class="entrada2">
+                                <input type="text" class="form-control entrada"  id="fechaLimite" onchange="angular.element(this).scope().CambiarFecha(this)">
+                                <label>Fecha Límite</label>
                             </div>
                         </div>
    

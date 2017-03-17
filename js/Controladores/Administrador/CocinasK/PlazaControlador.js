@@ -664,22 +664,26 @@ app.controller("PlazaControlador", function($scope, $http, $q, CONFIG, $rootScop
     {
         if($scope.usuarioLogeado.SesionIniciada)
         {
-            $scope.IdentificarPermisos();
-            if(!$scope.permisoUsuario.consultar)
+            if($scope.usuarioLogeado.PerfilSeleccionado == "Administrador")
             {
-               for(var k=0; k<$rootScope.Perfiles.length; k++)
+                $scope.IdentificarPermisos();
+                if(!$scope.permisoUsuario.consultar)
                 {
-                    if($scope.usuarioLogeado.PerfilSeleccionado == $rootScope.Perfiles[k].nombre)         //Se verifica con que perfil cuenta el usuario
-                    {
-                        $window.location = $rootScope.Perfiles[k].paginaPrincipal;
-                    }
-                } 
+                   $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
+                }
+                else
+                {
+                    $scope.GetPlaza();
+                }
+            }
+            else if($scope.usuarioLogeado.PerfilSeleccionado === "")
+            {
+                $window.location = "#Perfil";
             }
             else
             {
-                $scope.GetPlaza();
+                $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
             }
-            
         }
         else
         {
@@ -699,20 +703,25 @@ app.controller("PlazaControlador", function($scope, $http, $q, CONFIG, $rootScop
         }
         else
         {
-            $scope.IdentificarPermisos();
-            if(!$scope.permisoUsuario.consultar)
+            if($scope.usuarioLogeado.PerfilSeleccionado == "Administrador")
             {
-               for(var k=0; k<$rootScope.Perfiles.length; k++)
+                $scope.IdentificarPermisos();
+                if(!$scope.permisoUsuario.consultar)
                 {
-                    if($scope.usuarioLogeado.PerfilSeleccionado == $rootScope.Perfiles[k].nombre)         //Se verifica con que perfil cuenta el usuario
-                    {
-                        $window.location = $rootScope.Perfiles[k].paginaPrincipal;
-                    }
-                } 
+                   $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
+                }
+                else
+                {
+                    $scope.GetPlaza();
+                }
+            }
+            else if($scope.usuarioLogeado.PerfilSeleccionado === "")
+            {
+                $window.location = "#Perfil";
             }
             else
             {
-                $scope.GetPlaza();
+                $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
             }
         }
     });

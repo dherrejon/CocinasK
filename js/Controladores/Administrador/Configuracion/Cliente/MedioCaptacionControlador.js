@@ -285,7 +285,6 @@ app.controller("MedioCaptacionControlador", function($scope, $http, $q, CONFIG, 
     
     $scope.ActualizarMedioCaptacion = function()
     {
-        console.log($scope.medioCaptacionOtro);
         ActualizarMedioCaptacion($http, CONFIG, $q, $scope.medioCaptacionOtro).then(function(data)
         {
             if(data[0].Estatus == "Exitoso")

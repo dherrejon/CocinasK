@@ -537,7 +537,7 @@
                                         <td>{{telefono.NombreTipoMedioContacto}}</td>
                                         <td>{{telefono.Contacto | tel}}</td>
                                           
-                                        <td>
+                                        <td class="text-center">
                                             <a  ng-if="!editarContacto.realizar" class="BotonOperacion" href=""  ng-click="EditarContactoAgregado(telefono, 'nuevo')">
                                                 <span class="fa fa-pencil fa-2x"></span>
                                             </a>
@@ -545,7 +545,7 @@
                                             <span ng-if="editarContacto.realizar"  class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
                                         </td>
                                           
-                                        <td>
+                                        <td class="text-center">
                                             <a  class="BotonOperacion" href=""  ng-click="BorrarContactoAgregado(telefono.Contacto)">
                                                 <span class="fa fa-trash fa-2x"></span>
                                             </a>
@@ -646,7 +646,7 @@
                                         <td>{{correo.NombreTipoMedioContacto}}</td>
                                         <td>{{correo.Contacto}}</td>
                                           
-                                        <td>
+                                        <td class="text-center">
                                             <a ng-if="!editarContacto.realizar"   class="BotonOperacion" href=""  ng-click="EditarContactoAgregado(correo, 'nuevo')">
                                                 <span class="fa fa-pencil fa-2x"></span>
                                             </a>
@@ -654,7 +654,7 @@
                                             <span ng-if="editarContacto.realizar"  class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
                                         </td>
                                           
-                                        <td>
+                                        <td class="text-center">
                                             <a class="BotonOperacion" href=""  ng-click="BorrarContactoAgregado(correo.Contacto)">
                                                 <span class="fa fa-trash fa-2x"></span>
                                             </a>

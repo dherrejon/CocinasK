@@ -55,7 +55,7 @@
                                             <th><button class="btn botonFalso"><b>Activo</b></button></th>
                                           </tr>
                                         </thead>
-                                        <tbody ng-repeat="tipo in tipoMedioContacto | orderBy:[ordenarPorTipo, 'Nombre']">
+                                        <tbody ng-repeat="tipo in tipoMedioContacto | orderBy:[ordenarPorTipo, 'Nombre']" ng-if="TipoMedioContactoValido(tipo)">
                                           <tr>
                                             <td>{{tipo.NombreMedioContacto}}</td>
                                             <td>{{tipo.Nombre}}</td>
