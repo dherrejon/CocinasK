@@ -488,7 +488,11 @@
     $app->post('/AgregarCita', $seguridad, $ChecarSesion, 'AgregarCita');
 
     /*------------------ Persona ----------------------------------------------*/
+    $app->get('/GetCliente', $seguridad, $ChecarSesion, 'GetCliente');
+
     $app->post('/GetBuscarPersona', $seguridad, $ChecarSesion, 'GetBuscarPersona');
+    $app->post('/GetDatoPersona', $seguridad, $ChecarSesion, 'GetDatoPersona');
+    $app->post('/GetUnidadNegocioPersona', $seguridad, $ChecarSesion, 'GetUnidadNegocioPersona');
     $app->post('/GetMedioContactoPersona', $seguridad, $ChecarSesion, 'GetMedioContactoPersona');
     $app->post('/GetDireccionPersona', $seguridad, $ChecarSesion, 'GetDireccionPersona');   
     $app->put('/EditarMedioContactoPersona', $seguridad, $ChecarSesion, 'EditarMedioContactoPersona');

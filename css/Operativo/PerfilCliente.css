@@ -1,0 +1,61 @@
+.botonAcordionPerfil, .botonAcordionPerfil:focus, .botonAcordionPerfil:active
+{
+    border-radius: 0px;
+    border: 2px solid lightgray;
+    background: white;
+    color: #262626;
+    margin-bottom: 5px;
+    text-align: left;
+    font-weight: bold;
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.botonAcordionPerfil:hover
+{
+    background: lightgray;
+}
+
+.botonAcordionPerfil.active
+{
+    border-radius: 0px;
+    background: #262626;
+    color: white;
+    text-align: left;
+    font-weight: bold;
+    
+    border: 2px solid #262626;
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.contenedorAcordio
+{
+    margin-top: -5px;
+    border-width: 0px 2px 2px 2px; 
+    border-style: solid;
+    border-color: #262626;
+    margin-bottom: 10px;
+    padding: 15px;
+}
+
+.subrayadoOperativo
+{
+    border-bottom: 2px solid rgb(89,89, 89);
+    min-height: 45px;
+}
+
+.labelTitulo
+{
+    color: rgb(89,89, 89);
+    font-weight: bold;
+    letter-spacing:.5px;
+}
+
+.textoEtiqueta
+{
+    font-size: 16px;
+    color: black;
+}

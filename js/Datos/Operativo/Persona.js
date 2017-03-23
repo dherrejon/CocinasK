@@ -6,7 +6,7 @@ class Persona
         this.PersonaId = "";
         this.MedioCaptacion = new MedioCaptacion(); 
         this.TipoPersona = new TipoPersona();
-        this.UnidadNegocio =  new UnidadNegocio();
+        this.UnidadNegocio =  [];
         
         this.Nombre = "";
         this.PrimerApellido = "";
@@ -16,25 +16,24 @@ class Persona
 }
 
 //obtiene los compoenetes para los módulos
-/*function GetComponente($http, $q, CONFIG)     
+function GetCliente($http, $q, CONFIG)     
 {
     var q = $q.defer();
 
     $http({      
           method: 'GET',
-          url: CONFIG.APIURL + '/GetComponente',
+          url: CONFIG.APIURL + '/GetCliente',
 
       }).success(function(data)
         {
-            var componente = []; 
+            var cliente = []; 
             
-            for(var k=0; k<data.length; k++)
+            if(data[0].Estatus == "Exito")
             {
-                componente[k] = new Componente();
-                componente[k] = SetComponente(data[k]);
+                 q.resolve(data[1].Cliente);
             }
         
-            q.resolve(componente);  
+            q.resolve(cliente);  
         }).error(function(data, status){
             q.resolve(status);
      }); 
@@ -68,7 +67,7 @@ function GetTodosComponente($http, $q, CONFIG)
 }
 
 //obtiene los compoenetes exclusivos para puerta
-function GetComponentePuerta($http, $q, CONFIG)     
+/*function GetComponentePuerta($http, $q, CONFIG)     
 {
     var q = $q.defer();
 
@@ -241,6 +240,68 @@ function GetBuscarPersona($http, $q, CONFIG, persona)
         }).error(function(data, status){
             q.resolve(status);
      }); 
+    return q.promise;
+}
+
+function GetDatoPersona($http, $q, CONFIG, id)     
+{
+    var q = $q.defer();
+    
+    var persona = new Object();
+    persona.PersonaId = id;
+
+    $http({      
+          method: 'POST',
+          url: CONFIG.APIURL + '/GetDatoPersona',
+          data: persona
+
+      }).success(function(data)
+        {
+            var persona = []; 
+            
+            if(data[0].Estatus == "Exito")
+            {
+                persona = data[1].Persona[0];
+            }
+        
+            q.resolve(persona);  
+        }).error(function(data, status){
+            q.resolve(status);
+     }); 
+    return q.promise;
+}
+
+function GetUnidadNegocioPersona($http, $q, CONFIG, id)    
+{
+    var q = $q.defer();
+    
+    var persona = new Object();
+    persona.PersonaId = id;
+
+    $http({      
+          method: 'POST',
+          url: CONFIG.APIURL + '/GetUnidadNegocioPersona',
+          data: persona
+
+      }).success(function(data)
+        {
+            if(data[0].Estatus == "Exito")
+            {
+                var unidadNegocio = [];
+                
+                unidadNegocio = data[1].UnidadNegocio;
+                
+                q.resolve(unidadNegocio);
+            }
+            else
+            {
+               q.resolve([]);  
+            }
+            
+        }).error(function(data){
+            q.resolve(data);
+     }); 
+    
     return q.promise;
 }
 

@@ -76,43 +76,77 @@ function AgregarCita()
             $app->stop();
         }
         
-        
-       $sql = "INSERT UnidadNegocioPorPersona (PersonaId, UnidadNegocioId) VALUES 
-        ('".$cita->Persona->PersonaId."', '".$cita->Persona->UnidadNegocio->UnidadNegocioId."')";
-        
-        try 
+        $counUnidad = count($cita->Persona->UnidadNegocio);
+        if($counUnidad > 0)
         {
-            $stmt = $db->prepare($sql);
-            $stmt->execute();
-        
-        }
-        catch(PDOException $e) 
-        {    
-            echo $e;
-            echo '[{"Estatus": "Fallido"}]';
-            $db->rollBack();
-            $app->status(409);
-            $app->stop();
-        }
+            $sql = "INSERT UnidadNegocioPorPersona (PersonaId, UnidadNegocioId) VALUES ";
+            
+            for($k=0; $k<$counUnidad; $k++)
+            {
+                $sql .= " (".$cita->Persona->PersonaId.", ".$cita->Persona->UnidadNegocio[$k]->UnidadNegocioId."),";
+            }
+            
+            $sql = rtrim($sql,",");
+            
+            try 
+            {
+                $stmt = $db->prepare($sql);
+                $stmt->execute();
+            }
+            catch(PDOException $e) 
+            {    
+                //echo $sql;
+                //echo $e;
+                echo '[{"Estatus": "Fallido"}]';
+                $db->rollBack();
+                $app->status(409);
+                $app->stop();
+            }
+        }   
     }
     else
     {
-        $sql = "UPDATE  UnidadNegocioPorPersona SET UnidadNegocioId = '".$cita->Persona->UnidadNegocio->UnidadNegocioId."'
-        WHERE PersonaId = ".$cita->Persona->PersonaId;
-        
+        $sql = "DELETE FROM UnidadNegocioPorPersona WHERE PersonaId=".$cita->Persona->PersonaId;
         try 
         {
-            $stmt = $db->prepare($sql);
-            $stmt->execute();
-        
-        }
+            $stmt = $db->prepare($sql); 
+            $stmt->execute(); 
+
+        } 
         catch(PDOException $e) 
-        {   
+        {
+            echo '[ { "Estatus": "Fallo" } ]';
             echo $e;
-            echo '[{"Estatus": "Fallido"}]';
             $db->rollBack();
             $app->status(409);
             $app->stop();
+        }
+        
+        $counUnidad = count($cita->Persona->UnidadNegocio);
+        if($counUnidad > 0)
+        {
+            $sql = "INSERT UnidadNegocioPorPersona (PersonaId, UnidadNegocioId) VALUES ";
+            
+            for($k=0; $k<$counUnidad; $k++)
+            {
+                $sql .= " ('".$cita->Persona->PersonaId."', '".$cita->Persona->UnidadNegocio[$k]->UnidadNegocioId."'),";
+            }
+            
+            $sql = rtrim($sql,",");
+            
+            try 
+            {
+                $stmt = $db->prepare($sql);
+                $stmt->execute();
+            }
+            catch(PDOException $e) 
+            {    
+                echo $e;
+                echo '[{"Estatus": "Fallido"}]';
+                $db->rollBack();
+                $app->status(409);
+                $app->stop();
+            }
         }
     }
     
@@ -188,6 +222,11 @@ function AgregarCita()
     {
         $cita->Responsable->UnidadNegocio = $cita->Responsable->ResponsableId;
         $cita->Responsable->Colaborador = "null";
+    }
+    
+    if($cita->Tarea->TareaCitaId != "1")
+    {
+        $cita->DireccionCitaId = "null";
     }
 
     $sql = "INSERT Cita (TareaCitaId, PersonaId, EstatusCitaId, ColaboradorId, UnidadNegocioId, ProyectoId, DireccionPersonaId, Asunto, Fecha, HoraInicio, HoraFin, Descripcion) VALUES 

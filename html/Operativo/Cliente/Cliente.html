@@ -1,0 +1,119 @@
+<div ng-controller="ClienteControlador as cliente" class="container-fluid">
+    
+    <br><br>
+        
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="tituloModulo">
+                <span>Clientes</span>
+            </div>
+        </div>
+    </div>
+    <br><br>
+    
+    <div class="row">
+        
+       <div class="col-sm-6 col-xs-9">
+            <input type="text" placeholder="Buscar cliente" class="entrada form-control" ng-model="buscarCliente"/>
+        </div>
+
+        <div class="col-xs-3">
+            <div class="dropdown">
+            
+                <button class="btn  botonAgregarAcordion text-center"  data-toggle="dropdown">
+                   <span style="font-size:20pt" class="fa fa-filter"></span>
+               </button>
+
+                <ul class="dropdown-menu dropdown-menu-right filtroPanelPrincipal">
+
+                    <div  class="row ">
+                        <div class="col-xs-9"> 
+                            <li  class="dropdown-header tituloFitro">FILTRAR</li>
+                        </div>
+                        <div class="col-xs-3">
+                            <li> <button class="btn botonLimpiarFiltro fa fa-ban" data-toggle="tooltip" data-placement="bottom" title="Limpiar filtro" ng-click="LimpiarFiltro()"></button></li>
+                        </div>
+                    </div>
+                    <!--<li role="separator" class="divider"></li>-->
+
+                    <li style="width: 300px;">
+
+                        <form role="filtro">
+                            <!------ Autor ------>
+                            <button class="btn btn-block botonMostrarFiltro">Unidad de Negocio</button>
+
+                            <div>
+                               <div class="col-xs-12" style="margin-top: 10px"></div>
+                                <div class="col-xs-12">
+                                    <input type="text"  placeholder="Buscar Unidad Negocio" class="entrada form-control" name="buscarUnidad" ng-model="buscarUnidad">
+                                </div>
+                                <div class="col-xs-12" style="margin-top: 10px"></div>
+                                <div class="panel  panelFiltro" style="border-radius: 0px;">
+                                    <div class="row " >
+                                        <div class="col-xs-12">
+
+                                           <div ng-repeat="unidad in unidadNegocio | filter:buscarUnidad | orderBy:'Nombre'" >
+                                                    <div class="checkbox checkboxOperativo" style="margin-top:5px !important;">
+                                                        <label>
+                                                            <input  ng-model="unidad.Filtro" type="checkbox"  ng-click="FitroCliente()">
+                                                            <span class="cr"> <i class="cr-icon fa fa-check"></i> </span>{{unidad.NombreTipoUnidadNegocio}} - {{unidad.Nombre}} 
+                                                        </label>
+                                                    </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                        </form>
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+        
+            
+
+    </div>
+    <br>
+    
+    <div class="row">
+       <div class="col-xs-12">
+       
+           <div class="table-responsive TablaUnidadNegocio">
+                <table class="table table-hover">
+                    <thead class="TituloTabla">
+                      <tr>
+                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('PrimerApellidoA')"><b>Primer Apellido </b><b ng-if="ordenarPor === 'PrimerApellidoA'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-PrimerApellidoA'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('SegundoApellidoA')"><b>Segundo Apellido </b><b ng-if="ordenarPor === 'SegundoApellidoA'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-SegundoApellidoA'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('NombreA')"><b>Nombre(s) </b><b ng-if="ordenarPor === 'NombreA'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-NombreA'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonFalso"><b>Perfil</b></button></th>                        
+                      </tr>
+                    </thead>
+                    <tbody ng-repeat="cliente in cliente  | filter:buscarCliente | orderBy:[ordenarPor, 'PrimerApellidoA', 'SegundoApellidoA', 'NombreA']">
+                      <tr>
+                        <td>{{cliente.PrimerApellido}}</td>
+                        <td>{{cliente.SegundoApellido}}</td>
+                        <td>{{cliente.Nombre}}</td>
+                        
+                        <!---Perfil--> 
+                        <td class="text-center">
+                            <a class="BotonOperacion" href="#PerfilCliente/{{cliente.PersonaId}}/DatosGenerales" ng-click="MostrarUsuarioPefil(colaborador)">
+                                <span class="fa fa-user fa-2x" ng-show="colaborador.UsuarioId !== null"></span>
+                            </a>
+
+                        </td>
+                        
+
+                      </tr>
+                    </tbody>
+                </table>
+            </div>
+       
+        </div>
+    </div>
+    
+</div>
+
+     

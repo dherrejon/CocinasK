@@ -167,9 +167,18 @@ app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpPro
     when('/Ejecutivo',{
         templateUrl: 'html/Ejecutivo/Ejecutivo.html'
     }).
+    
+    //Operativo
     when('/Operativo',{
         templateUrl: 'html/Operativo/Operativo.html'
     }).
+    when('/Cliente',{
+        templateUrl: 'html/Operativo/Cliente/Cliente.html'
+    }).
+    when('/PerfilCliente/:personaId/:seccion',{
+        templateUrl: 'html/Operativo/Cliente/PerfilCliente.html'
+    }).
+    
     otherwise({
         templateUrl: 'html/Login.html'
     });

@@ -11,7 +11,7 @@ app.controller("CitaControlador", function($scope, $rootScope, CITA, $http, $q, 
     $scope.tipoResponsable = "UnidadNegocio";
     $scope.buscarColaborador = "";
     $scope.buscarUnidad = "";
-    $scope.mostrarContenido = {contacto:false, direccion:false};
+    $scope.mostrarContenido = {contacto:false, direccion:false, unidad: false};
     
     $scope.claseCita = {
                             paso1:{nombre:"entrada", apellido1:"entrada", apellido2:"entrada", captacion:"dropdownlistModal", otro:"entrada"},
@@ -24,13 +24,14 @@ app.controller("CitaControlador", function($scope, $rootScope, CITA, $http, $q, 
         $scope.nuevaCita = new Cita();
         $scope.nuevaCita.Persona.NuevoContacto = [];
         $scope.nuevaCita.Persona.NuevoDomicilio = [];
+        $scope.nuevaCita.Persona.UnidadNegocio = [];
         
         $scope.personaSeleccionada = false;
         $scope.mostrarResponsable = false;
         $scope.pasoCita = 1;
         $scope.persona = [];
         $scope.tipoResponsable = "UnidadNegocio";
-        $scope.mostrarContenido = {contacto:false, direccion:false};
+        $scope.mostrarContenido = {contacto:false, direccion:false, unidad:false};
         
         $scope.CargarCatalogoCita();
         
@@ -43,6 +44,8 @@ app.controller("CitaControlador", function($scope, $rootScope, CITA, $http, $q, 
         $scope.GetMedioCaptacion();
         $scope.GetResponsable();
         $scope.GetUnidadNegocio();
+        
+        $scope.usuario = datosUsuario.getUsuario();
     };
     
     /*------------------------------ catálogos --------------------------------*/
@@ -96,16 +99,13 @@ app.controller("CitaControlador", function($scope, $rootScope, CITA, $http, $q, 
         {
             if(data.length > 0)
             {
-                $scope.unidadNegocio = data;
-                var usuario = datosUsuario.getUsuario();
-                console.log($scope.nuevaCita);
                 for(var k=0; k<data.length; k++)
                 {
-                    if(data[k].UnidadNegocioId == usuario.UnidadNegocioId)
-                    {
-                        $scope.nuevaCita.Persona.UnidadNegocio = data[k];
-                    }
+                    data[k].show = true;
                 }
+                
+                $scope.unidadNegocio = data;
+    
             }
             else
             {
@@ -142,6 +142,32 @@ app.controller("CitaControlador", function($scope, $rootScope, CITA, $http, $q, 
         });
     };
     
+    $scope.GetUnidadNegocioPersona = function(id)              
+    {
+        GetUnidadNegocioPersona($http, $q, CONFIG, id).then(function(data)
+        {
+            $scope.nuevaCita.Persona.UnidadNegocio = data;
+            
+            for(var k=0; k<$scope.unidadNegocio.length; k++)
+            {
+                $scope.unidadNegocio[k].show = true;
+                
+                for(var i=0; i<data.length; i++)
+                {
+                    if(data[i].UnidadNegocioId == $scope.unidadNegocio[k].UnidadNegocioId)
+                    {
+                        $scope.unidadNegocio[k].show = false;
+                        break;
+                    }
+                }
+            }
+        
+        }).catch(function(error)
+        {
+            alert(error);
+        });
+    };
+    
     /*----------------------------   Agregar Cita ------------------------*/
     /*--------- Paso 1 -------------*/
     $scope.TerminarCita1 = function(nombreInvalido, apellidoInvalido, medioInvalido)
@@ -155,7 +181,6 @@ app.controller("CitaControlador", function($scope, $rootScope, CITA, $http, $q, 
         {
             $scope.pasoCita++;
         }
-        
     };
     
     $scope.ValidarDatos = function(nombreInvalido, apellidoInvalido, medioInvalido)
@@ -215,6 +240,11 @@ app.controller("CitaControlador", function($scope, $rootScope, CITA, $http, $q, 
                     $scope.claseCita.paso1.otro = "entrada";
                 }
             }
+        }
+        
+        if($scope.nuevaCita.Persona.UnidadNegocio.length == 0 && $rootScope.permisoOperativo.verTodosCliente)
+        {
+            $scope.mensajeError[$scope.mensajeError.length] = "*Debes de seleccionar al menos una Unidad de negocio del cliente.";
         }
         
         var telefono = false;
@@ -312,11 +342,6 @@ app.controller("CitaControlador", function($scope, $rootScope, CITA, $http, $q, 
         }
     };
     
-    $scope.CambiarUnidadNegocio = function(Unidad)
-    {
-        $scope.nuevaCita.Persona.UnidadNegocio = Unidad;
-    };
-    
     $scope.SeleccionarPersona = function(persona)
     {
         for(var k=0; k<$scope.persona.length ;k++)
@@ -332,7 +357,7 @@ app.controller("CitaControlador", function($scope, $rootScope, CITA, $http, $q, 
             $scope.nuevaCita.Persona = $scope.SetPersona(persona);
             $scope.GetMedioContactoPersona(persona.PersonaId);
             $scope.GetDireccionPersona(persona.PersonaId);
-            
+            $scope.GetUnidadNegocioPersona(persona.PersonaId);
             
             $scope.personaSeleccionada = true;
             
@@ -347,8 +372,14 @@ app.controller("CitaControlador", function($scope, $rootScope, CITA, $http, $q, 
             $scope.nuevaCita.Persona = new Persona();
             $scope.nuevaCita.Persona.NuevoContacto = [];
             $scope.nuevaCita.Persona.NuevoDomicilio = [];
+            $scope.nuevaCita.Persona.UnidadNegocio = [];
             
             $scope.personaSeleccionada = false;
+            
+            for(var k=0; k<$scope.unidadNegocio.length; k++)
+            {
+                $scope.unidadNegocio[k].show = true;
+            }
         }
     };
         
@@ -374,11 +405,44 @@ app.controller("CitaControlador", function($scope, $rootScope, CITA, $http, $q, 
         persona.MedioCaptacion.MedioCaptacionId = data.MedioCaptacionId;
         persona.NuevoContacto = $scope.nuevaCita.Persona.NuevoContacto;
         persona.NuevoDomicilio = $scope.nuevaCita.Persona.NuevoDomicilio;
-    
-        persona.UnidadNegocio.UnidadNegocioId = data.UnidadNegocioId;
-        persona.UnidadNegocio.Nombre = data.NombreUnidadNegocio;
+        persona.UnidadNegocio = $scope.nuevaCita.Persona.UnidadNegocio;
         
         return persona;
+    };
+    
+    $scope.AgregarUnidadNegocio = function(unidad)
+    {
+        $scope.nuevaCita.Persona.UnidadNegocio.push(unidad);
+        
+        for(var k=0; k<$scope.unidadNegocio.length; k++)
+        {
+            if(unidad.UnidadNegocioId == $scope.unidadNegocio[k].UnidadNegocioId)
+            {
+                $scope.unidadNegocio[k].show = false;
+                break;
+            }
+        }
+    };
+    
+    $scope.QuitarUnidadNegocio = function(unidad)
+    {
+        for(var k=0; k<$scope.nuevaCita.Persona.UnidadNegocio.length; k++)
+        {
+            if(unidad.UnidadNegocioId == $scope.nuevaCita.Persona.UnidadNegocio[k].UnidadNegocioId)
+            {
+                $scope.nuevaCita.Persona.UnidadNegocio.splice(k,1);
+                break;
+            }
+        }
+        
+        for(var k=0; k<$scope.unidadNegocio.length; k++)
+        {
+            if(unidad.UnidadNegocioId == $scope.unidadNegocio[k].UnidadNegocioId)
+            {
+                $scope.unidadNegocio[k].show = true;
+                break;
+            }
+        }
     };
     
     $scope.MostrarContenido = function(contenido)
@@ -390,6 +454,10 @@ app.controller("CitaControlador", function($scope, $rootScope, CITA, $http, $q, 
         else if(contenido == "direccion")
         {
             $scope.mostrarContenido.direccion = !$scope.mostrarContenido.direccion;
+        }
+        else if(contenido == "unidad")
+        {
+            $scope.mostrarContenido.unidad = !$scope.mostrarContenido.unidad;
         }
     };
     
@@ -580,7 +648,6 @@ app.controller("CitaControlador", function($scope, $rootScope, CITA, $http, $q, 
     $scope.$on('DomicilioAgregado',function()
     {
         $scope.nuevaCita.Persona.NuevoDomicilio.push(DOMICILIO.GetDomicilio());
-        console.log($scope.nuevaCita.Persona);
     });
     
     $scope.BorrarDomicilioAgregado = function(domicilio)
@@ -676,9 +743,25 @@ app.controller("CitaControlador", function($scope, $rootScope, CITA, $http, $q, 
                 $scope.nuevaCita.Persona.PersonaId = "0";
             }
             
-            //var usuario = datosUsuario.getUsuario();
-            //console.log(usuario);
-            //$scope.nuevaCita.Persona.UnidadNegocio.UnidadNegocioId = usuario.UnidadNegocioId;
+            if(!$rootScope.permisoOperativo.verTodosCliente)
+            {
+                var unidad = false;
+                for(var k=0; k<$scope.nuevaCita.Persona.UnidadNegocio.length; k++)
+                {
+                    if($scope.usuario.UnidadNegocioId == $scope.nuevaCita.Persona.UnidadNegocio[k].UnidadNegocioId)
+                    {
+                        unidad = true;
+                        break;
+                    }
+                }
+                
+                if(!unidad)
+                {
+                    var unidadNegocio = new Object();
+                    unidadNegocio.UnidadNegocioId = $scope.usuario.UnidadNegocioId;
+                    $scope.nuevaCita.Persona.UnidadNegocio.push(unidadNegocio);
+                }
+            }
             
             if($scope.operacion == "Agregar")
             {

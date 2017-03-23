@@ -83,31 +83,85 @@
                         </div>
                    </div>             
                 </div>
-                <br>
+
                 <!-- UnidadNegocio -->
-                <div class="row" ng-show="permisoOperativo.verTodosCliente">
-                  
-                    <div class="col-sm-6 etiquetaDropdownList">
-                         <label>Unidad de Negocio*</label>
-                         <div class="dropdown">
-
-                            <button  class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown">
-                                <span>{{nuevaCita.Persona.UnidadNegocio.Nombre}}</span>
-                                <span class="caret"></span>
-                            </button>
-                            
-                            <ul class="dropdown-menu listaOpcionesDropdownList " >
-                                
-                                <li ng-repeat="unidad in unidadNegocio | orderBy:'Nombre'">
-                                    <a  href="" class="dropdownOpcionModal" ng-click="CambiarUnidadNegocio(unidad)">
-                                        <span>{{unidad.Nombre}}</span>
-                                    </a>
-                                </li>
-                            </ul>
-
-                        </div>
-                    </div>          
+                <!--  -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <button class="btn btn-block botonAcordion" ng-click="MostrarContenido('unidad')" ng-show="permisoOperativo.verTodosCliente" ng-disabled="cita1Forma.nombre.$invalid || cita1Forma.apellido1.$invalid"><!--  -->
+                            <span class="pull-left " >
+                                <span ></span><span>Unidades de Negocio</span> 
+                            </span>
+                            <span ng-if="!mostrarContenido.unidad" class="pull-right fa fa-chevron-down"></span>
+                            <span ng-if="mostrarContenido.unidad" class="pull-right fa fa-chevron-up"></span>
+                        </button>
+                    </div>
+                    
                 </div>
+                
+                <div class="row" ng-if="mostrarContenido.unidad" > 
+                    
+                    <div class="col-xs-12">
+                        
+                        <div class="row" >
+                           <br>
+                            <div class="col-xs-12" >
+            
+                                <div class="panel panelOpciones tablaResponsable" >
+                                    <table class="table table-hover table-responsive">
+                                      <tbody  style="cursor: pointer">
+                                        <tr ng-repeat="unidad in unidadNegocio | filter: { Nombre:buscarUnidad} | orderBy:'Nombre'" ng-show="unidad.show">
+                                          <td ng-click="SetReponsable(unidad, 'UnidadNegocio')">
+                                              {{unidad.NombreTipoUnidadNegocio}} - {{unidad.Nombre}}
+                                              
+                                               <a class="pull-right BotonOperacion text-center" href="" style="font-size:16pt" ng-click="AgregarUnidadNegocio(unidad)">
+                                                    <span class="fa fa-plus "></span>
+                                                </a>
+                                            
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                </div>
+                                        
+                            </div> 
+                        </div>
+                        
+                        <!-- unidades de negocio agregadas -->
+                        <div class="row" ng-if="nuevaCita.Persona.UnidadNegocio.length > 0">
+                            <div class="col-xs-12">
+                                <div class="table-responsive TablaModal">
+                                    <table class="table table-hover">
+                                        <thead class="TituloTabla">
+                                          <tr>
+                                            <th>Unidad Negocio</th>
+                                            <th class="text-center">Quitar </th>
+                                          </tr>
+                                        </thead>
+                                        <tbody >
+                                          <tr ng-repeat="unidad in nuevaCita.Persona.UnidadNegocio | orderBy:['NombreTipoUnidadNegocio','Nombre'] ">
+                                            <td>{{unidad.NombreTipoUnidadNegocio}} - {{unidad.Nombre}}</td>
+
+                                            <td class="text-center">
+                                                <a  class="BotonOperacion" href=""  ng-click="QuitarUnidadNegocio(unidad)">
+                                                    <span class="fa fa-times fa-2x"></span>
+                                                </a>
+                                            </td>
+                                            
+                                          </tr>   
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                    </div>   
+                        
+                </div>
+                <br><br ng-if="mostrarResponsable">
+            
                 
                 <!-- Medios de contacto -->
                 <div class="row">

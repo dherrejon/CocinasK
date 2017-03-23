@@ -1,5 +1,35 @@
 <?php
 
+function GetCliente()
+{
+    global $app;
+    global $session_expiration_time;
+
+    $request = \Slim\Slim::getInstance()->request();
+
+    $sql = "SELECT * FROM ClienteVista";
+
+    try 
+    {
+
+        $db = getConnection();
+        $stmt = $db->query($sql);
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $db = null;
+    
+        
+        echo '[ { "Estatus": "Exito"}, {"Cliente":'.json_encode($response).'} ]'; 
+    } 
+    catch(PDOException $e) 
+    {
+        //echo($e);
+        echo '[ { "Estatus": "Fallo" } ]';
+        $app->status(409);
+        $app->stop();
+    }
+}
+
+
 function GetBuscarPersona()
 {
     global $app;
@@ -9,7 +39,7 @@ function GetBuscarPersona()
     $persona = json_decode($request->getBody());
     
     
-    $sql = "SELECT PersonaId, Nombre, PrimerApellido, SegundoApellido, MedioCaptacionId, NombreMedioCaptacion, UnidadNegocioId, NombreUnidadNegocio FROM BuscarPersonaVista
+    $sql = "SELECT PersonaId, Nombre, PrimerApellido, SegundoApellido, MedioCaptacionId, NombreMedioCaptacion FROM BuscarPersonaVista
             WHERE Nombre LIKE '%".$persona->Nombre."%' AND PrimerApellido LIKE '%".$persona->PrimerApellido."%'";
     
     try 
@@ -84,41 +114,10 @@ function EditarDireccionPersona()
     }
 }
 	
-/*function GetColor()
-{
-    global $app;
-    global $session_expiration_time;
-
-    $request = \Slim\Slim::getInstance()->request();
-
-    $sql = "SELECT * FROM Color";
-
-    try 
-    {
-
-        $db = getConnection();
-        $stmt = $db->query($sql);
-        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
-        $db = null;
-        
-        foreach ($response as $img) 
-        {
-            $img->Imagen =  base64_encode($img->Imagen);
-        }
-        
-        //echo '[ { "Estatus": "Exito"}, {"Color":'.json_encode($response).'} ]'; 
-        echo json_encode($response);  
-    } 
-    catch(PDOException $e) 
-    {
-        //echo($e);
-        echo '[ { "Estatus": "Fallo" } ]';
-        $app->status(409);
-        $app->stop();
-    }
+/*
 }
 
-function AgregarColor()
+/*function AgregarColor()
 {
     $request = \Slim\Slim::getInstance()->request();
     $color = json_decode($request->getBody());
@@ -278,6 +277,66 @@ function GetDireccionPersona()
         $db = null;
         
         echo '[ { "Estatus": "Exito"}, {"Direccion":'.json_encode($response).'} ]'; 
+    } 
+    catch(PDOException $e) 
+    {
+        //echo $e;
+        echo '[ { "Estatus": "Fallo" } ]';
+        //$app->status(409);
+        $app->stop();
+    }
+}
+
+function GetUnidadNegocioPersona()
+{
+    global $app;
+    global $session_expiration_time;
+
+    $request = \Slim\Slim::getInstance()->request();
+    $persona = json_decode($request->getBody());
+    
+    
+    $sql = "SELECT *
+            FROM UnidadNegocioVista WHERE PersonaId = ".$persona->PersonaId;
+    
+    try 
+    {
+        $db = getConnection();
+        $stmt = $db->query($sql);
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $db = null;
+        
+        echo '[ { "Estatus": "Exito"}, {"UnidadNegocio":'.json_encode($response).'} ]'; 
+    } 
+    catch(PDOException $e) 
+    {
+        //echo $e;
+        echo '[ { "Estatus": "Fallo" } ]';
+        //$app->status(409);
+        $app->stop();
+    }
+}
+
+function GetDatoPersona()
+{
+    global $app;
+    global $session_expiration_time;
+
+    $request = \Slim\Slim::getInstance()->request();
+    $persona = json_decode($request->getBody());
+    
+    
+    $sql = "SELECT PersonaId, Nombre, PrimerApellido, SegundoApellido, MedioCaptacionId, NombreMedioCaptacion, TipoPersonaId FROM BuscarPersonaVista
+            WHERE PersonaId = ".$persona->PersonaId;
+    
+    try 
+    {
+        $db = getConnection();
+        $stmt = $db->query($sql);
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $db = null;
+        
+        echo '[ { "Estatus": "Exito"}, {"Persona":'.json_encode($response).'} ]'; 
     } 
     catch(PDOException $e) 
     {
