@@ -27,7 +27,7 @@
                             </button>
                             
                             <ul class="dropdown-menu listaOpcionesDropdownList " >
-                                <li ng-repeat="medio in medioContacto | orderBy:'Nombre'" ng-show="medio.MedioContactoId != '3'">
+                                <li ng-repeat="medio in medioContacto | orderBy:'Nombre'" ng-show="medio.MedioContactoId != '3' && MostrarMedioContacto(medio)">
                                     <a  href="" class="dropdownOpcionModal" ng-click="CambiarMedioContacto(medio)">
                                         <span>{{medio.Nombre}}</span>
                                     </a>
@@ -39,7 +39,7 @@
                     
                     <div class="hidden-sm hidden-md hidden-lg"><br></div>
                         
-                    <div class="col-sm-6 etiquetaDropdownList">
+                    <div class="col-sm-6 etiquetaDropdownList" ng-show="fuente != 'Fiscal'">
                          <label>Tipo Medio de Contacto</label>
                          <div class="dropdown">
 
@@ -49,7 +49,7 @@
                             </button>
                             
                             <ul class="dropdown-menu listaOpcionesDropdownList " >
-                                <li ng-repeat="tipo in tipoMedioContacto | orderBy:'Nombre' | filter:{MedioContactoId:nuevoContacto.MedioContacto.MedioContactoId}:true" ng-show="tipo.Activo">
+                                <li ng-repeat="tipo in tipoMedioContacto | orderBy:'Nombre' | filter:{MedioContactoId:nuevoContacto.MedioContacto.MedioContactoId}:true" ng-show="tipo.Activo && MostarTipoMedioContacto(tipo)">
                                     <a  href="" class="dropdownOpcionModal" ng-click="CambiarTipoMedioContacto(tipo)">
                                         <span>{{tipo.Nombre}}</span>
                                     </a>
@@ -75,7 +75,7 @@
                 <div class="row"> 
                     <div class="col-sm-12 etiquetaDropdownList" ng-if="nuevoContacto.MedioContacto.MedioContactoId == '1'">
                        <div class="entrada2">
-                            <input  ng-pattern="erEmail" type="email" required class="{{claseContacto.contacto}} form-control" name="email" ng-model="nuevoContacto.Contacto" ng-maxlength="120"/>
+                            <input  ng-pattern="erEmail" type="text" required class="{{claseContacto.contacto}} form-control" name="email" ng-model="nuevoContacto.Contacto" ng-maxlength="120"/>
                             <label>Correo Electrónico</label>
                         </div>
                    </div>             
@@ -125,9 +125,7 @@
                     <button focus class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close">Aceptar</button>
                 </div>
             </div>
-        </div>
-        
-            
+        </div>   
     </div> 
     
     

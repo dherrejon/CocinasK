@@ -206,7 +206,7 @@
                                           </tr>
                                         </thead>
                                         <tbody >
-                                          <tr ng-repeat="contacto in nuevaCita.Persona.Contacto | orderBy:['MedioContacto.Nombre','TipoMedioContacto.Nombre'] " ng-show="contacto.Activo">
+                                          <tr ng-repeat="contacto in nuevaCita.Persona.Contacto | orderBy:['MedioContacto.Nombre','TipoMedioContacto.Nombre'] " ng-show="contacto.Activo && MostrarMedioContacto(contacto.TipoMedioContacto.TipoMedioContactoId)">
                                             <td>{{contacto.MedioContacto.Nombre}}</td>
                                             <td>{{contacto.TipoMedioContacto.Nombre}}</td>
                                             
@@ -387,6 +387,7 @@
                                         <thead class="TituloTabla">
                                           <tr>
                                             <th>Tipo Domicilio</th>
+                                            <th>Domicilio</th>
                                             <th class="text-center">Detalles</th>
                                             <th class="text-center">Editar</th>
                                             <th class="text-center">Quitar </th>
@@ -396,7 +397,7 @@
                                         <tbody >
                                           <tr ng-repeat="domicilio in nuevaCita.Persona.Domicilio | orderBy:['TipoMedioContacto.Nombre'] " ng-show="domicilio.Activo">
                                             <td>{{domicilio.TipoMedioContacto.Nombre}}</td>
-                                            
+                                            <td>{{domicilio.Domicilio}}</td>
 
                                            <td class="text-center">
                                                 <a  class="BotonOperacion" href=""  ng-click="DetalleDomicilio(domicilio)">
@@ -427,6 +428,8 @@
                                           <tr ng-repeat="domicilio in nuevaCita.Persona.NuevoDomicilio | orderBy:['TipoMedioContacto.Nombre'] ">
                                            
                                             <td>{{domicilio.TipoMedioContacto.Nombre}}</td>
+                                            
+                                            <td>{{domicilio.Domicilio}}</td>
                                             
                                             <td class="text-center">
                                                 <a  class="BotonOperacion" href=""  ng-click="DetalleDomicilio(domicilio)">

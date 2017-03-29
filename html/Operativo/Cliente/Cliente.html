@@ -53,12 +53,12 @@
                                         <div class="col-xs-12">
 
                                            <div ng-repeat="unidad in unidadNegocio | filter:buscarUnidad | orderBy:'Nombre'" >
-                                                    <div class="checkbox checkboxOperativo" style="margin-top:5px !important;">
-                                                        <label>
-                                                            <input  ng-model="unidad.Filtro" type="checkbox"  ng-click="FitroCliente()">
-                                                            <span class="cr"> <i class="cr-icon fa fa-check"></i> </span>{{unidad.NombreTipoUnidadNegocio}} - {{unidad.Nombre}} 
-                                                        </label>
-                                                    </div>
+                                                <div class="checkbox checkboxOperativo" style="margin-top:5px !important;">
+                                                    <label>
+                                                        <input  ng-model="unidad.Filtro" type="checkbox"  ng-click="FitroCliente()">
+                                                        <span class="cr"> <i class="cr-icon fa fa-check"></i> </span>{{unidad.NombreTipoUnidadNegocio}} - {{unidad.Nombre}} 
+                                                    </label>
+                                                </div>
                                             </div>
 
                                         </div>

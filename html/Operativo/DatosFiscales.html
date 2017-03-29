@@ -1,0 +1,185 @@
+<div ng-controller="DatosFiscalesOperativo as datoFiscalOperativo">
+
+     <!-- Modal para mensajes -->
+    <div class="modal fade sombraDivModal" id="datoFiscalModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="true" data-backdrop="static">
+        <br>    <br>   <br>
+        <div class="modal-dialog modalPrincipal">
+           
+            <div class="row">
+                <div class="col-xs-12">
+                    <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarDatosFiscales()"><span aria-hidden="true">&times;</span></button>
+                    <span ng-if="operacion == 'Agregar'" class="tituloModal">Agregar Datos Ficales</span>
+                    <span ng-if="operacion == 'Editar'" class="tituloModal">Editar Datos Fiscales</span>
+                </div>
+            </div>
+            <br><br><br>
+        
+            <form name="datoFiscalForma">
+               
+               <!-- nombre -->
+                <div class="row"> 
+                    <div class="col-sm-12">
+                       <div class="entrada2">
+                            <input  ng-pattern="erNombreGeneral" type="text" required class="{{claseFiscal.nombre}} form-control" name="nombre" ng-model="nuevoDato.Nombre" ng-maxlength="120"/>
+                            <label>Nombre*</label>
+                        </div>
+                   </div>             
+                </div>
+                <br><br>
+                <!-- RFC -->
+                <div class="row"> 
+                    <div class="col-sm-12">
+                       <div class="entrada2">
+                            <input  ng-pattern="erRFC" type="text" required class="{{claseFiscal.rfc}} form-control" name="rfc" ng-model="nuevoDato.RFC" maxlength="14" style="text-transform: uppercase"/>
+                            <label>RFC*</label>
+                        </div>
+                   </div>             
+                </div>
+                
+                <hr class="margenSeparador">
+                <br>
+                <!-- Correo -->
+                <div class="row">
+                    <div class="col-sm-12 etiquetaDropdownList">
+                         <label>Correo Eletrónico</label>
+                         <div class="dropdown">
+
+                            <button class="dropdown-toggle  {{claseFiscal.correo}}" data-toggle="dropdown">
+                                <span>{{nuevoDato.CorreoElectronico}}</span>
+                                <span class="caret"></span>
+                            </button>
+                            
+                            <ul class="dropdown-menu listaOpcionesDropdownList " >
+                               
+                               <li>
+                                   <a  href="" class="dropdownOpcionModal" ng-click="CambiarMedioContacto('Nuevo')">
+                                        <b>Nuevo</b>
+                                    </a>
+                               </li>
+                                <li ng-repeat="contacto in datoPersona.Contacto | orderBy:'TipoMedioContacto.Nombre'" ng-show="contacto.MedioContacto.MedioContactoId == '1'">
+                                    
+                                    <a  href="" class="dropdownOpcionModal" ng-click="CambiarMedioContacto(contacto.Contacto)">
+                                        <span>{{contacto.Contacto}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div>
+                         
+                </div>
+                
+                <hr class="margenSeparador">
+                <br>
+                
+                <!-- Domicilio -->
+                <div class="row">
+                    <div class="col-sm-12 etiquetaDropdownList">
+                         <label>Domicilio</label>
+                         <div class="dropdown">
+
+                            <button class="dropdown-toggle  {{claseFiscal.domicilio}}" data-toggle="dropdown">
+                                <span>Selecciona un domicilio</span>
+                                <span class="caret"></span>
+                            </button>
+                            
+                            <ul class="dropdown-menu listaOpcionesDropdownList " >
+                               
+                               <li>
+                                   <a  href="" class="dropdownOpcionModal" ng-click="CambiarDomicilio('Nuevo')">
+                                        <b>Nuevo</b>
+                                    </a>
+                               </li>
+                                <li ng-repeat="domicilio in datoPersona.Domicilio | orderBy:'TipoMedioContacto.Nombre'">
+                                    
+                                    <a  href="" class="dropdownOpcionModal" ng-click="CambiarDomicilio(domicilio)">
+                                        <span>
+                                            {{domicilio.Domicilio}}<br>
+                                            {{domicilio.Colonia}}<br>
+                                            {{domicilio.Municipio}}, {{domicilio.Estado}}<br>
+                                            {{domicilio.Codigo}}<br>
+                                        </span>
+                                    </a>
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div>        
+                </div>
+                
+                <div ng-show="nuevoDato.Codigo.length > 0">
+                    <!-- domicilio y cp -->
+                    <div class="row">
+                    
+                       
+    
+                        <div class="col-xs-6">
+                            {{nuevoDato.Domicilio}}<br>
+                            {{nuevoDato.Colonia}}<br>
+                            {{nuevoDato.Municipio}}, {{nuevoDato.Estado}}<br>
+                            {{nuevoDato.Codigo}}<br>
+                        </div>
+                        
+                        <div class="col-xs-6">
+                            <button class="btn botonAgregarAcordion pull-right" ng-click="EditarDomicilio()" style="font-size:12pt !important">
+                                <span>
+                                    <span class="fa fa-pencil"></span>
+                                    <span> Editar</span> 
+                                </span>
+                            </button>
+                       </div>
+                    </div>
+                    <br>
+                </div>
+                
+                <!-------- mensaje de error ---->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div ng-repeat="error in mensajeError">
+                            <span class="textoError">{{error}}</span>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <!---- botones de operacion -->
+                <div class="row">
+                    <div class="col-xs-6">
+                        <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarDatosFiscales()">CANCELAR</button>
+                    </div>
+
+                    <div class="col-xs-6">
+                        <button focus class="btn botonOperacionModal btn-block" ng-click="TerminarDatoFiscal(datoFiscalForma.nombre.$invalid, datoFiscalForma.rfc.$invalid)">TERMINAR</button>
+                    </div>
+                </div>
+                <br>
+            </form>
+             
+            
+        </div>
+    </div> 
+    
+    
+    <!-- Modal para mensajes -->
+    <div class="modal fade sombraDivModal" id="mensajeDatoFiscal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <br>    <br>   <br>
+        <div class="modal-dialog modalPrincipal modal-sm">
+           <br>
+            <div class="row">
+                <div class="col-xs-12 text-center" style="font-size:12pt">
+                   {{mensaje}}
+                </div>
+            </div>
+            <br>
+            <div class="row">
+            
+                <div class="col-xs-12">
+                    <button focus class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close">Aceptar</button>
+                </div>
+            </div>
+        </div>   
+    </div> 
+    
+    
+</div>
+
+     

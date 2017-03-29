@@ -489,14 +489,29 @@
 
     /*------------------ Persona ----------------------------------------------*/
     $app->get('/GetCliente', $seguridad, $ChecarSesion, 'GetCliente');
+    $app->put('/EditarDatosPersona', $seguridad, $ChecarSesion, 'EditarDatosPersona');
 
     $app->post('/GetBuscarPersona', $seguridad, $ChecarSesion, 'GetBuscarPersona');
     $app->post('/GetDatoPersona', $seguridad, $ChecarSesion, 'GetDatoPersona');
     $app->post('/GetUnidadNegocioPersona', $seguridad, $ChecarSesion, 'GetUnidadNegocioPersona');
     $app->post('/GetMedioContactoPersona', $seguridad, $ChecarSesion, 'GetMedioContactoPersona');
     $app->post('/GetDireccionPersona', $seguridad, $ChecarSesion, 'GetDireccionPersona');   
+    $app->post('/GetContactoAdicional', $seguridad, $ChecarSesion, 'GetContactoAdicional');
+    $app->post('/GetDatosFiscales', $seguridad, $ChecarSesion, 'GetDatosFiscales');
+
+    $app->post('/AgregarMedioContactoPersona', $seguridad, $ChecarSesion, 'AgregarMedioContactoPersona');
+    $app->post('/AgregarDomicilioPersona', $seguridad, $ChecarSesion, 'AgregarDomicilioPersona');   
     $app->put('/EditarMedioContactoPersona', $seguridad, $ChecarSesion, 'EditarMedioContactoPersona');
     $app->put('/EditarDireccionPersona', $seguridad, $ChecarSesion, 'EditarDireccionPersona');
+    $app->put('/EditarUnidadNegocioPersona', $seguridad, $ChecarSesion, 'EditarUnidadNegocioPersona');
+
+    $app->post('/AgregarContactoAdicional', $seguridad, $ChecarSesion, 'AgregarContactoAdicional');
+    $app->put('/EditarContactoAdicional', $seguridad, $ChecarSesion, 'EditarContactoAdicional');
+
+    $app->post('/AgregarDatoFiscalPersona', $seguridad, $ChecarSesion, 'AgregarDatoFiscalPersona');
+    $app->put('/EditarDatoFiscalPersona', $seguridad, $ChecarSesion, 'EditarDatoFiscalPersona');
+
+    $app->delete('/DeleteUnidadNegocioPersona', $seguridad, $ChecarSesion, 'DeleteUnidadNegocioPersona');
 
     $app->run(); 
 

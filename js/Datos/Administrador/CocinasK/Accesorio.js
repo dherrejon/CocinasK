@@ -421,7 +421,7 @@ function GuardarInstrucciones($http, $q, CONFIG, archivo, tipoId)
       {
         "Content-type": undefined 
       },
-      //transformRequest: fd
+      //transformRequest: angular.identity
 
         }).success(function(data)
         {

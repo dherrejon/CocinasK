@@ -9,19 +9,32 @@ app.controller("DomicilioOperativoControlador", function($scope, $rootScope, $ht
     $scope.otraColonia = false;
     $scope.estadoMexico = [];
     $scope.tipoMedioContacto = [];
+    $scope.fuente = "ninguno";
     
     $scope.$on('AgregarDomicilio',function()
     {
-        $scope.operacion = "Agregar";
         $scope.tipoOperacion = "Agregar Sin Registro";
+        $scope.InicializarDomicilio();
+    });
+    
+    $scope.$on('AgregarDomicilioPersona',function()
+    {
+        $scope.tipoOperacion = "Agregar Registro";
+        $scope.InicializarDomicilio();
+    });
+    
+    $scope.InicializarDomicilio = function()
+    {
+        $scope.operacion = "Agregar";
         $scope.nuevoDomicilio = new Domicilio();
         $scope.sinCP = false;
         $scope.otraColonia = false;
         
-        $scope.GetCatalogosDomicilio();
+        $scope.fuente = DOMICILIO.GetFuente();
         
-        $('#domicilioModal').modal('toggle');
-    });
+        $scope.GetCatalogosDomicilio();
+         $('#domicilioModal').modal('toggle');
+    };
     
     $scope.$on('EditarDomicilioNuevo',function()
     {
@@ -30,6 +43,7 @@ app.controller("DomicilioOperativoControlador", function($scope, $rootScope, $ht
         $scope.nuevoDomicilio = DOMICILIO.GetDomicilio();
         $scope.sinCP = false;
         $scope.otraColonia = false;
+        $scope.fuente = DOMICILIO.GetFuente();
         
         $scope.GetCatalogosDomicilio();
         $scope.GetDatosDomicilio();
@@ -52,6 +66,7 @@ app.controller("DomicilioOperativoControlador", function($scope, $rootScope, $ht
         
         $scope.GetCatalogosDomicilio();
         $scope.GetDatosDomicilio();
+        $scope.fuente = DOMICILIO.GetFuente();
         
         if($scope.nuevoDomicilio.Codigo == "NC.P.")
         {
@@ -304,7 +319,37 @@ app.controller("DomicilioOperativoControlador", function($scope, $rootScope, $ht
             {
                 $scope.EditarDireccionPersona();
             }
+            
+            if($scope.tipoOperacion == "Agregar Registro")
+            {
+                $scope.AgregarDireccionPersona();
+            }
         }
+    };
+    
+    $scope.AgregarDireccionPersona = function()
+    {
+        $scope.nuevoDomicilio.PersonaId = DOMICILIO.GetPersonaId();
+        
+        AgregarDireccionPersona($http, CONFIG, $q, $scope.nuevoDomicilio).then(function(data)
+        {
+            if(data == "Exitoso")
+            {
+                $('#domicilioModal').modal('toggle');
+                $scope.mensaje = "La dirección se ha agregado.";
+                
+                DOMICILIO.TerminarNuevoDomicilioPersona();
+            }
+            else
+            {
+                $scope.mensaje = "Ha ocurrido un error. Intente más tarde";   
+            }
+            $('#mensajeDomicilio').modal('toggle');
+        }).catch(function(error)
+        {
+            $scope.mensaje = "Ha ocurrido un error. Intente más tarde. Error: " + error;
+            $('#mensajeDomicilio').modal('toggle');
+        });
     };
     
     $scope.EditarDireccionPersona = function()
@@ -334,7 +379,7 @@ app.controller("DomicilioOperativoControlador", function($scope, $rootScope, $ht
     {
         $scope.mensajeError = [];
         
-        if($scope.nuevoDomicilio.TipoMedioContacto.TipoMedioContactoId.length === 0)
+        if($scope.nuevoDomicilio.TipoMedioContacto.TipoMedioContactoId.length === 0 && $scope.fuente != 'Fiscal')
         {
             $scope.mensajeError[$scope.mensajeError.length] = "*Selecciona un tipo de domicilio.";
             $scope.claseDomicilio.tipoMedio = "dropdownlistModalError";
@@ -441,6 +486,38 @@ app.controller("DomicilioOperativoControlador", function($scope, $rootScope, $ht
         $scope.mensajeError = [];
         $scope.claseDomicilio = {tipoMedio:"dropdownlistModal", tipo:"dropdownlistModal", codigo:"entrada", domicilio:"entrada", estado:"dropdownlistModal", municipio:"dropdownlistModal", ciudad:"dropdownlistModal", colonia:"dropdownlistModal", otra:"entrada"};
     };
+    
+    $scope.MostrarDomicilioDomicilios = function(tipoMedioContactoId)
+    {
+        var val = parseInt(tipoMedioContactoId);
+        if( val > 0)
+        {
+            return true;
+        }
+        else
+        {
+            var fuente = DOMICILIO.GetFuente();
+            if(fuente == "Cita" && val == -3)
+            {
+                return true;
+            }
+            else if(fuente == "Proyecto" && val == -2)
+            {
+                return true;
+            }
+            else if(fuente == "Fiscal" && val == -1)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+                
+        }
+        
+        return parseInt(tipoMedioContactoId) > 0;
+    };
 
 });
 
@@ -449,27 +526,50 @@ app.factory('DOMICILIO',function($rootScope)
   var service = {};
   service.domicilio = null;
     
-  service.AgregarDomicilio = function()
+  service.AgregarDomicilio = function(fuente)
   {
       this.domicilio = null;
+      this.fuente = fuente;
       $rootScope.$broadcast('AgregarDomicilio');
+  };
+    
+  service.AgregarDomicilioPersona = function(id, fuente)
+  {
+      this.personaId = id;
+      this.fuente = fuente;
+      $rootScope.$broadcast('AgregarDomicilioPersona');
   };
 
   service.TerminarNuevoDomicilio = function(domicilio)
   {
       this.domicilio = SetDomicilio(domicilio);
-      $rootScope.$broadcast('DomicilioAgregado');
+      
+      if(this.fuente == "Fiscal")
+      {
+          $rootScope.$broadcast('DomicilioAgregadoFiscal');
+      }
+      else
+      {
+          $rootScope.$broadcast('DomicilioAgregado');
+      }
   };
     
-  service.EditarDomicilioNuevo = function(domicilio)
+  service.TerminarNuevoDomicilioPersona = function()
   {
-      this.domicilio = domicilio;
+      $rootScope.$broadcast('TerminarNuevoDomicilioPersona');
+  };
+    
+  service.EditarDomicilioNuevo = function(domicilio, fuente)
+  {
+      this.domicilio = SetDomicilio(domicilio);
+      this.fuente = fuente;
       $rootScope.$broadcast('EditarDomicilioNuevo');
   };
     
-  service.EditarDomicilioRegistrado = function(domicilio)
+  service.EditarDomicilioRegistrado = function(domicilio, fuente)
   {
       this.domicilio = SetDomicilio(domicilio);
+      this.fuente = fuente;
       $rootScope.$broadcast('EditarDomicilioRegistrado');
   };
     
@@ -488,6 +588,16 @@ app.factory('DOMICILIO',function($rootScope)
   service.GetDomicilio = function()
   {
       return this.domicilio;
+  };
+    
+  service.GetPersonaId = function()
+  {
+      return this.personaId;
+  };
+    
+  service.GetFuente = function()
+  {
+      return this.fuente;
   };
     
   return service;

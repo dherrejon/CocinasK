@@ -46,6 +46,140 @@
         </div>
     </div>
     
+    
+    
+    <!------------------------------------ Modales ---------------------------------------------->
+    <!-- Modal para mensajes -->
+    <div class="modal fade sombraDivModal" id="datosModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="true" data-backdrop="static">
+        <br>    <br>   <br>
+        <div class="modal-dialog modalPrincipal">
+           
+            <div class="row">
+                <div class="col-xs-12">
+                    <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarDatosModal()"><span aria-hidden="true">&times;</span></button>
+                    <span ng-if="operacion == 'Agregar'" class="tituloModal">Agregar Datos Generales</span>
+                    <span ng-if="operacion == 'Editar'" class="tituloModal">Editar Datos Generales</span>
+                </div>
+            </div>
+            <br><br><br>
+        
+            <form name="datosPersonaForma">
+                
+                <!-- nombre -->
+                <div class="row"> 
+                    <div class="col-sm-12">
+                       <div class="entrada2">
+                            <input   ng-pattern="erNombrePersonal" type="text" required class="{{clasePersona.nombre}} form-control" name="nombre" ng-model="nuevaPersona.Nombre" ng-maxlength="255"/>
+                            <label>Nombre*</label>
+                        </div>
+                   </div>             
+                </div>
+                <br><br>
+                <!-- Apellidos -->
+                <div class="row"> 
+                    <div class="col-sm-6">
+                       <div class="entrada2">
+                            <input ng-disabled=" personaSeleccionada" ng-pattern="erNombrePersonal" type="text" required class="{{clasePersona.apellido1}} form-control" name="apellido1" ng-model="nuevaPersona.PrimerApellido" ng-maxlength="120"/>
+                            <label>Primer Apellido*</label>
+                        </div>
+                   </div>
+                   
+                   <div class="hidden-sm hidden-md hidden-lg"> <br><br> </div>   
+                   
+                   <div class="col-sm-6">
+                       <div class="entrada2">
+                            <input required ng-disabled=" personaSeleccionada" type="text" class="{{clasePersona.apellido2}} form-control" name="apellido2" ng-model="nuevaPersona.SegundoApellido" ng-maxlength="120"/>
+                            <label>Segundo Apellido</label>
+                        </div>
+                   </div>       
+                </div>
+                <br><br>
+                <!-- Medio de captación -->
+                <div class="row">
+                  
+                    <div class="col-sm-6 etiquetaDropdownList">
+                         <label>Medio de captación*</label>
+                         <div class="dropdown">
+
+                            <button ng-disabled=" personaSeleccionada" class="dropdown-toggle  {{clasePersona.captacion}} " data-toggle="dropdown">
+                                <span>{{nuevaPersona.MedioCaptacion.Nombre}}</span>
+                                <span class="caret"></span>
+                            </button>
+                            
+                            <ul class="dropdown-menu listaOpcionesDropdownList " >
+                               <li>
+                                    <a  href="" class="dropdownOpcionModal" ng-click="CambiarMedioCaptacion('otro')">
+                                        <span class="text-center"> OTRO </span>
+                                    </a>
+                                </li>
+                                
+                                <li ng-repeat="medio in medioCaptacion | orderBy:'Nombre'">
+                                    <a  href="" class="dropdownOpcionModal" ng-click="CambiarMedioCaptacion(medio)" ng-show="medio.Activo && medio.MedioCaptacionId != '0'">
+                                        <span>{{medio.Nombre}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div>
+                        
+                    <div ng-if="nuevaCita.Persona.MedioCaptacion.MedioCaptacionId == '0'" class="hidden-sm hidden-md hidden-lg"> <br> </div>
+                   
+                    <div class="col-sm-6" ng-if="nuevaPersona.MedioCaptacion.MedioCaptacionId == '0'">
+                       <div class="entrada2">
+                            <input ng-disabled=" personaSeleccionada"  ng-pattern="erNombreGeneral" type="text" required class="{{clasePersona.otro}} form-control" name="nombreMedioCaptacion" ng-model="nuevaPersona.NombreMedioCaptacion" ng-maxlength="120"/>
+                            <label>Nombre Medio de Captación*</label>
+                        </div>
+                   </div>             
+                </div>
+                <br>
+                <!-------- mensaje de error ---->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div ng-repeat="error in mensajeError">
+                            <span class="textoError">{{error}}</span>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <!---- botones de operacion -->
+                <div class="row">
+                    <div class="col-xs-6">
+                        <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarDatosModal()">CANCELAR</button>
+                    </div>
+
+                    <div class="col-xs-6">
+                        <button focus class="btn botonOperacionModal btn-block" ng-click="TerminarDatosPersona(datosPersonaForma.nombre.$invalid, datosPersonaForma.apellido1.$invalid, datosPersonaForma.nombreMedioCaptacion.$invalid)">TERMINAR</button>
+                    </div>
+                </div>
+                <br>
+            </form>
+             
+            
+        </div>
+    </div> 
+    
+    
+    <!-- Modal para mensajes -->
+    <div class="modal fade sombraDivModal" id="mensajePerfil" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <br>    <br>   <br>
+        <div class="modal-dialog modalPrincipal modal-sm">
+           <br>
+            <div class="row">
+                <div class="col-xs-12 text-center" style="font-size:12pt">
+                   {{mensaje}}
+                </div>
+            </div>
+            <br>
+            <div class="row">
+            
+                <div class="col-xs-12">
+                    <button focus class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close">Aceptar</button>
+                </div>
+            </div>
+        </div>   
+    </div>
+    
 </div>
 
      

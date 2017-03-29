@@ -59,3 +59,9 @@
     font-size: 16px;
     color: black;
 }
+
+/*------------------   ------------------*/
+.margenSeparador
+{
+    border: 2px solid rgb(234, 234, 234) !important;
+}

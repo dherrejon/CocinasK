@@ -358,7 +358,27 @@
                 
             </div>
         </div>
-    </div>  
+    </div>
+           
+            
+             
+    <div ng-if="PerfilSeleccinado == 'Operativo'">
+        <header ng-include=" 'html/Operativo/Cita.html' "></header>
+    </div>
+    
+    <div ng-if="PerfilSeleccinado == 'Operativo'">
+        <header ng-include=" 'html/Operativo/DatosFiscales.html' "></header>
+    </div> 
+
+    <div ng-if="PerfilSeleccinado == 'Operativo'">
+        <header ng-include=" 'html/Operativo/MedioContacto.html' "></header>
+    </div>
+
+    <div ng-if="PerfilSeleccinado == 'Operativo'">
+        <header ng-include=" 'html/Operativo/Domicilio.html' "></header>
+    </div> 
+           
+    
             
 </div>
 

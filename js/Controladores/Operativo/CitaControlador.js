@@ -463,7 +463,7 @@ app.controller("CitaControlador", function($scope, $rootScope, CITA, $http, $q, 
     
     $scope.AgregarMedioContacto = function()
     {
-        MEDIOCONTACTO.AgregarMedioContacto();
+        MEDIOCONTACTO.AgregarMedioContacto("Cita");
     };
     
     $scope.$on('MedioContactoAgregado',function()
@@ -477,16 +477,15 @@ app.controller("CitaControlador", function($scope, $rootScope, CITA, $http, $q, 
         if(tipo == "Nuevo")
         {
             $scope.nuevoContacto = contacto;
-            MEDIOCONTACTO.EditarMedioContacto(contacto);
+            MEDIOCONTACTO.EditarMedioContacto(contacto, "Cita");
         }
         else if(tipo == "Registrado")
         {
             $scope.nuevoContacto = contacto;
-            MEDIOCONTACTO.EditarMedioContactoRegistrado(contacto);
+            MEDIOCONTACTO.EditarMedioContactoRegistrado(contacto, "Cita");
         }
         
     };
-    
     
     $scope.$on('MedioContactoEditado',function()
     {
@@ -517,6 +516,11 @@ app.controller("CitaControlador", function($scope, $rootScope, CITA, $http, $q, 
             }
         }
         
+    };
+    
+    $scope.MostrarMedioContacto = function(id)
+    {
+        return parseInt(id) > 0;
     };
     
     /*------------------------ Paso 2 ---------------------*/
@@ -642,7 +646,7 @@ app.controller("CitaControlador", function($scope, $rootScope, CITA, $http, $q, 
     
     $scope.AgregarDomicilio = function()
     {
-        DOMICILIO.AgregarDomicilio();
+        DOMICILIO.AgregarDomicilio("Cita");
     };
     
     $scope.$on('DomicilioAgregado',function()
@@ -669,12 +673,12 @@ app.controller("CitaControlador", function($scope, $rootScope, CITA, $http, $q, 
         
         if(tipo == "Nuevo")
         {
-            DOMICILIO.EditarDomicilioNuevo(domicilio);
+            DOMICILIO.EditarDomicilioNuevo(domicilio, "Cita");
         }
         
         if(tipo == "Registrado")
         {
-            DOMICILIO.EditarDomicilioRegistrado(domicilio);
+            DOMICILIO.EditarDomicilioRegistrado(domicilio, "Cita");
         }
     };
     

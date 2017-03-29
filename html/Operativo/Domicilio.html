@@ -15,7 +15,7 @@
             <br><br><br>
         
             <form name="domicilioForma">
-               <div class="row">    
+               <div class="row" ng-show="fuente != 'Fiscal'">    
                     <div class="col-sm-6 etiquetaDropdownList">
                          <label>Tipo de Domicilio</label>
                          <div class="dropdown">
@@ -26,7 +26,7 @@
                             </button>
                             
                             <ul class="dropdown-menu listaOpcionesDropdownList " >
-                                <li ng-repeat="tipo in tipoMedioContacto | orderBy:'Nombre' | filter:{MedioContactoId:'3'}" ng-show="tipo.Activo">
+                                <li ng-repeat="tipo in tipoMedioContacto | orderBy:'Nombre' | filter:{MedioContactoId:'3'}" ng-show="tipo.Activo" ng-if="MostrarDomicilioDomicilios(tipo.TipoMedioContactoId)">
                                     <a  href="" class="dropdownOpcionModal" ng-click="CambiarTipoMedioContacto(tipo)">
                                         <span>{{tipo.Nombre}}</span>
                                     </a>
@@ -37,7 +37,7 @@
                     </div> 
                              
                 </div>
-                <br>
+                <br  ng-show="fuente != 'Fiscal'">
                 <!-- Dirección -->
                 <!-- Domicilio y código postal -->
                 <div class="row">
@@ -61,8 +61,8 @@
 
                     <!--- Botón para cambiar el método de ingresar la dirección -->
                     <div class="col-sm-3 col-xs-6">                            
-                        <a ng-show="!sinCP" class="btn btn-block botonBordeNegro" data-toggle="tooltip" data-placement="bottom" title="No se conoce el C.P." ng-click="ConocerCP()">Sin C.P.</a>
-                        <a ng-show="sinCP" class="btn btn-block botonBordeNegro" data-toggle="tooltip" data-placement="bottom" title="Se conoce el C.P."  ng-click="ConocerCP()" style="margin-top:-1px">Con C.P.</a>
+                        <button ng-disabled="fuente == 'Fiscal'" ng-show="!sinCP" class="btn btn-block botonBordeNegro" data-toggle="tooltip" data-placement="bottom" title="No se conoce el C.P." ng-click="ConocerCP()">Sin C.P.</button>
+                        <button ng-show="sinCP" class="btn btn-block botonBordeNegro" data-toggle="tooltip" data-placement="bottom" title="Se conoce el C.P."  ng-click="ConocerCP()" style="margin-top:-1px">Con C.P.</button>
                     </div>
                 </div>
 
@@ -250,7 +250,7 @@
                 <!--Estado-->
                 <div class="col-sm-6">
                     <div class="subrayado">
-                    <label>Domicilio</label><br>
+                    <label>Estado</label><br>
                     <span class="textoModal">{{domicilioDetalle.Estado}}</span>
                     </div>
                 </div>
@@ -258,7 +258,7 @@
                 <!-- Municipio -->
                 <div class="col-sm-6">
                     <div class="subrayado">
-                    <label>Código Postal</label><br>
+                    <label>Municipio</label><br>
                     <span class="textoModal">{{domicilioDetalle.Municipio}}</span>
                     </div>
                 </div>
@@ -269,7 +269,7 @@
                 <!--Ciudad-->
                 <div class="col-sm-6">
                     <div class="subrayado">
-                    <label>Domicilio</label><br>
+                    <label>Ciudad</label><br>
                     <span class="textoModal">{{domicilioDetalle.Ciudad}}</span>
                     </div>
                 </div>
@@ -277,7 +277,7 @@
                 <!-- Colonia -->
                 <div class="col-sm-6">
                     <div class="subrayado">
-                    <label>Código Postal</label><br>
+                    <label>Colonia</label><br>
                     <span class="textoModal">{{domicilioDetalle.Colonia}}</span>
                     </div>
                 </div>

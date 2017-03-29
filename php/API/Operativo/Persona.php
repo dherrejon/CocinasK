@@ -86,6 +86,72 @@ function EditarMedioContactoPersona()
     }
 }
 
+function AgregarMedioContactoPersona()
+{
+    $request = \Slim\Slim::getInstance()->request();
+    $contacto = json_decode($request->getBody());
+    global $app;
+    $sql = "INSERT INTO ContactoPersona (PersonaId, TipoMedioContactoId, Contacto, Activo) VALUES(:PersonaId, :TipoMedioContactoId, :Contacto, 1)";
+
+    try 
+    {
+        $db = getConnection();
+        $stmt = $db->prepare($sql);
+
+        $stmt->bindParam("PersonaId", $contacto->PersonaId);
+        $stmt->bindParam("TipoMedioContactoId", $contacto->TipoMedioContacto->TipoMedioContactoId);
+        $stmt->bindParam("Contacto", $contacto->Contacto);
+
+        $stmt->execute();
+
+        $db = null;
+        echo '[{"Estatus": "Exitoso"}]';
+
+    } catch(PDOException $e) 
+    {
+        echo $e;
+        echo '[{"Estatus": "Fallido"}]';
+        $app->status(409);
+        $app->stop();
+    }
+}
+
+function AgregarDomicilioPersona()
+{
+    $request = \Slim\Slim::getInstance()->request();
+    $domicilio = json_decode($request->getBody());
+    global $app;
+    $sql = "INSERT INTO DireccionPersona (TipoMedioContactoId, PersonaId, PaisId, Codigo, Domicilio, Estado, Municipio, Ciudad, Colonia, Activo) 
+            VALUES(:TipoMedioContactoId, :PersonaId, 1, :Codigo, :Domicilio, :Estado, :Municipio, :Ciudad, :Colonia, Activo)";
+
+    try 
+    {
+        $db = getConnection();
+        $stmt = $db->prepare($sql);
+
+        $stmt->bindParam("TipoMedioContactoId", $domicilio->TipoMedioContacto->TipoMedioContactoId);
+        $stmt->bindParam("PersonaId", $domicilio->PersonaId);
+        $stmt->bindParam("Codigo", $domicilio->Codigo);
+        $stmt->bindParam("Domicilio", $domicilio->Domicilio);
+        $stmt->bindParam("Estado", $domicilio->Estado);
+        $stmt->bindParam("Municipio", $domicilio->Municipio);
+        $stmt->bindParam("Ciudad", $domicilio->Ciudad);
+        $stmt->bindParam("Colonia", $domicilio->Colonia);
+
+        $stmt->execute();
+
+        $db = null;
+        echo '[{"Estatus": "Exitoso"}]';
+
+    } catch(PDOException $e) 
+    {
+        echo $e;
+        echo '[{"Estatus": "Fallido"}]';
+        $app->status(409);
+        $app->stop();
+    }
+}
+
 function EditarDireccionPersona()
 {
     global $app;
@@ -113,47 +179,15 @@ function EditarDireccionPersona()
         $app->stop();
     }
 }
-	
-/*
-}
 
-/*function AgregarColor()
-{
-    $request = \Slim\Slim::getInstance()->request();
-    $color = json_decode($request->getBody());
-    global $app;
-    $sql = "INSERT INTO Color (Nombre, Activo) VALUES(:Nombre, :Activo)";
-
-    try 
-    {
-        $db = getConnection();
-        $stmt = $db->prepare($sql);
-
-        $stmt->bindParam("Nombre", $color->Nombre);
-        //$stmt->bindParam("MedioContactoId", $color->MedioContactoId);
-        $stmt->bindParam("Activo", $color->Activo);
-
-        $stmt->execute();
-        
-        $colorId = $db->lastInsertId();
-        $db = null;
-        
-        echo '[{"Estatus": "Exitoso"}, {"ColorId":'.$colorId.'}]';
-
-    } catch(PDOException $e) 
-    {
-        echo $e;
-        echo '[{"Estatus": "Fallido"}]';
-    }
-}
-
-function EditarColor()
+function EditarDatosPersona()
 {
     global $app;
     $request = \Slim\Slim::getInstance()->request();
-    $color = json_decode($request->getBody());
+    $persona = json_decode($request->getBody());
    
-    $sql = "UPDATE Color SET Nombre='".$color->Nombre."', Activo = '".$color->Activo."'  WHERE ColorId=".$color->ColorId."";
+    $sql = "UPDATE Persona SET Nombre = '".$persona->Nombre."', PrimerApellido = '".$persona->PrimerApellido."', SegundoApellido = '".$persona->SegundoApellido."', 
+    MedioCaptacionId = '".$persona->MedioCaptacion->MedioCaptacionId."' WHERE PersonaId =" .$persona->PersonaId;
     
     try 
     {
@@ -167,65 +201,11 @@ function EditarColor()
     catch(PDOException $e) 
     {    
         echo '[{"Estatus": "Fallido"}]';
+        echo $e;
         $app->status(409);
         $app->stop();
     }
 }
-
-function ActivarDesactivarColor()
-{
-    global $app;
-    $request = \Slim\Slim::getInstance()->request();
-    $datos = json_decode($request->getBody());
-    try 
-    {
-        $db = getConnection();
-        
-        $sql = "UPDATE Color SET Activo = ".$datos[0]." WHERE ColorId = ".$datos[1]."";
-        $stmt = $db->prepare($sql);
-        $stmt->execute();
-    
-        $db = null;
-        
-        echo '[{"Estatus": "Exito"}]';
-    }
-    catch(PDOException $e) 
-    {
-        echo '[{"Estatus":"Fallo"}]';
-        //echo ($sql);
-        $app->status(409);
-        $app->stop();
-    }
-}
-
-function GuardarImagenColor($id)
-{
-    global $app;
-    $request = \Slim\Slim::getInstance()->request();
-    $name = $_FILES['file']['tmp_name'];
-    
-    $imagen = addslashes(file_get_contents($_FILES['file']['tmp_name']));
-
-    $sql = "UPDATE Color SET Imagen = '".$imagen."' WHERE ColorId= ".$id."";
-
-    try 
-    {
-        $db = getConnection();
-        $stmt = $db->prepare($sql);
-        $stmt->execute();
-        $db = null;
-        echo '[{"Estatus": "Exitoso"}]';
-        //echo '[{"rowcount":'. $stmt->rowCount() .'}]';
-    }
-    catch(PDOException $e) 
-    {
-        
-        //echo $e;
-        echo '[{"Estatus": "Fallido"}]';
-        $app->status(409);
-        $app->stop();
-    }
-}*/
 
 function GetMedioContactoPersona()
 {
@@ -287,6 +267,66 @@ function GetDireccionPersona()
     }
 }
 
+function GetContactoAdicional()
+{
+    global $app;
+    global $session_expiration_time;
+
+    $request = \Slim\Slim::getInstance()->request();
+    $persona = json_decode($request->getBody());
+    
+    
+    $sql = "SELECT ContactoAdicionalId, Nombre, CorreoElectronico, Telefono
+            FROM ContactoAdicional WHERE PersonaId = ".$persona->PersonaId;
+    
+    try 
+    {
+        $db = getConnection();
+        $stmt = $db->query($sql);
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $db = null;
+        
+        echo '[ { "Estatus": "Exito"}, {"ContactoAdicional":'.json_encode($response).'} ]'; 
+    } 
+    catch(PDOException $e) 
+    {
+        //echo $e;
+        echo '[ { "Estatus": "Fallo" } ]';
+        //$app->status(409);
+        $app->stop();
+    }
+}
+
+function GetDatosFiscales()
+{
+    global $app;
+    global $session_expiration_time;
+
+    $request = \Slim\Slim::getInstance()->request();
+    $persona = json_decode($request->getBody());
+    
+    
+    $sql = "SELECT *
+            FROM DatosFiscales WHERE PersonaId = ".$persona->PersonaId;
+    
+    try 
+    {
+        $db = getConnection();
+        $stmt = $db->query($sql);
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $db = null;
+        
+        echo '[ { "Estatus": "Exito"}, {"DatosFiscales":'.json_encode($response).'} ]'; 
+    } 
+    catch(PDOException $e) 
+    {
+        //echo $e;
+        echo '[ { "Estatus": "Fallo" } ]';
+        //$app->status(409);
+        $app->stop();
+    }
+}
+
 function GetUnidadNegocioPersona()
 {
     global $app;
@@ -297,7 +337,7 @@ function GetUnidadNegocioPersona()
     
     
     $sql = "SELECT *
-            FROM UnidadNegocioVista WHERE PersonaId = ".$persona->PersonaId;
+            FROM UnidadNegocioPersonaVista WHERE PersonaId = ".$persona->PersonaId;
     
     try 
     {
@@ -343,6 +383,221 @@ function GetDatoPersona()
         //echo $e;
         echo '[ { "Estatus": "Fallo" } ]';
         //$app->status(409);
+        $app->stop();
+    }
+}
+
+function EditarUnidadNegocioPersona()
+{
+    global $app;
+    global $session_expiration_time;
+
+    $request = \Slim\Slim::getInstance()->request();
+    $unidad = json_decode($request->getBody());
+   
+    $sql = "DELETE FROM UnidadNegocioPorPersona WHERE PersonaId=".$unidad->Persona->PersonaId;
+
+    try 
+    {
+        $db = getConnection();
+        $db->beginTransaction();
+        
+        $stmt = $db->prepare($sql);
+        $stmt->execute(); 
+    } 
+    catch(PDOException $e) 
+    {
+        
+        echo '[ { "Estatus": "Fallo" } ]';
+        $db->rollBack();
+        $app->status(409);
+        $app->stop();
+    }
+    
+    $counUnidad = count($unidad->Unidad);
+
+    if($counUnidad > 0)
+    {
+        $sql = "INSERT UnidadNegocioPorPersona (PersonaId, UnidadNegocioId) VALUES ";
+
+
+        for($k=0; $k<$counUnidad; $k++)
+        {
+            $sql .= " ('".$unidad->Persona->PersonaId."', '".$unidad->Unidad[$k]->UnidadNegocioId."'),";
+        }
+        
+        $sql = rtrim($sql,",");
+
+        try 
+        {
+            $stmt = $db->prepare($sql);
+            $stmt->execute();
+            
+            $db->commit();
+             $db = null;
+            echo '[ { "Estatus": "Exitoso" } ]';
+           
+        }
+        catch(PDOException $e) 
+        {    
+            echo $e;
+            $db->rollBack();
+            echo '[{"Estatus": "Fallido"}]';
+            $db->rollBack();
+            $app->status(409);
+            $app->stop();
+        }
+    }
+}
+
+function AgregarContactoAdicional()
+{
+    $request = \Slim\Slim::getInstance()->request();
+    $contacto = json_decode($request->getBody());
+    global $app;
+    $sql = "INSERT INTO ContactoAdicional (PersonaId, Nombre, Telefono, CorreoElectronico) VALUES(:PersonaId, :Nombre, :Telefono, :CorreoElectronico)";
+
+    try 
+    {
+        $db = getConnection();
+        $stmt = $db->prepare($sql);
+        
+        $stmt->bindParam("PersonaId", $contacto->PersonaId);
+        $stmt->bindParam("Nombre", $contacto->Nombre);
+        $stmt->bindParam("Telefono", $contacto->Telefono);
+        $stmt->bindParam("CorreoElectronico", $contacto->Correo);
+
+        $stmt->execute();
+
+        $db = null;
+        echo '[{"Estatus": "Exitoso"}]';
+
+    } catch(PDOException $e) 
+    {
+        echo $e;
+        echo '[{"Estatus": "Fallido"}]';
+        $app->status(409);
+        $app->stop();
+    }
+}
+
+function AgregarDatoFiscalPersona()
+{
+    $request = \Slim\Slim::getInstance()->request();
+    $datoFiscal = json_decode($request->getBody());
+    global $app;
+    $sql = "INSERT INTO DatosFiscales (PersonaId, Nombre, RFC, CorreoElectronico, Domicilio, Codigo, Estado, Municipio, Ciudad, Colonia) 
+                                VALUES(:PersonaId, :Nombre, :RFC, :CorreoElectronico, :Domicilio, :Codigo, :Estado, :Municipio, :Ciudad, :Colonia)";
+
+    try 
+    {
+        $db = getConnection();
+        $stmt = $db->prepare($sql);
+        
+        $stmt->bindParam("PersonaId", $datoFiscal->PersonaId);
+        $stmt->bindParam("Nombre", $datoFiscal->Nombre);
+        $stmt->bindParam("RFC", $datoFiscal->RFC);
+        $stmt->bindParam("CorreoElectronico", $datoFiscal->CorreoElectronico);
+        $stmt->bindParam("Domicilio", $datoFiscal->Domicilio);
+        $stmt->bindParam("Codigo", $datoFiscal->Codigo);
+        $stmt->bindParam("Estado", $datoFiscal->Estado);
+        $stmt->bindParam("Municipio", $datoFiscal->Municipio);
+        $stmt->bindParam("Ciudad", $datoFiscal->Ciudad);
+        $stmt->bindParam("Colonia", $datoFiscal->Colonia);
+
+        $stmt->execute();
+
+        $db = null;
+        echo '[{"Estatus": "Exitoso"}]';
+
+    } catch(PDOException $e) 
+    {
+        echo $e;
+        echo '[{"Estatus": "Fallido"}]';
+        $app->status(409);
+        $app->stop();
+    }
+}
+
+function EditarDatoFiscalPersona()
+{
+    global $app;
+    $request = \Slim\Slim::getInstance()->request();
+    $datos = json_decode($request->getBody());
+   
+    $sql = "UPDATE DatosFiscales SET Nombre = '".$datos->Nombre."', RFC = '".$datos->RFC."', CorreoElectronico = '".$datos->CorreoElectronico."',
+            Codigo = '".$datos->Codigo."', Domicilio = '".$datos->Domicilio."', Estado = '".$datos->Estado."', Municipio = '".$datos->Municipio."',
+            Ciudad = '".$datos->Ciudad."', Colonia = '".$datos->Colonia."' WHERE DatosFiscalesId =" .$datos->DatosFiscalesId;
+    
+    try 
+    {
+        $db = getConnection();
+        $stmt = $db->prepare($sql);
+        $stmt->execute();
+        $db = null;
+
+        echo '[{"Estatus":"Exitoso"}]';
+    }
+    catch(PDOException $e) 
+    {    
+        echo '[{"Estatus": "Fallido"}]';
+        echo $e;
+        $app->status(409);
+        $app->stop();
+    }
+}
+
+function EditarContactoAdicional()
+{
+    global $app;
+    $request = \Slim\Slim::getInstance()->request();
+    $contacto = json_decode($request->getBody());
+   
+    $sql = "UPDATE ContactoAdicional SET PersonaId = ".$contacto->PersonaId.", Nombre = '".$contacto->Nombre."', Telefono = '".$contacto->Telefono."', CorreoElectronico = '".$contacto->Correo."' 
+            WHERE ContactoAdicionalId =" .$contacto->ContactoAdicionalId;
+    
+    try 
+    {
+        $db = getConnection();
+        $stmt = $db->prepare($sql);
+        $stmt->execute();
+        $db = null;
+
+        echo '[{"Estatus":"Exitoso"}]';
+    }
+    catch(PDOException $e) 
+    {    
+        echo '[{"Estatus": "Fallido"}]';
+        echo $e;
+        $app->status(409);
+        $app->stop();
+    }
+}
+
+function DeleteUnidadNegocioPersona() 
+{
+    global $app;
+    global $session_expiration_time;
+    
+    $request = \Slim\Slim::getInstance()->request();
+    $id = json_decode($request->getBody());
+
+    $sql = "DELETE FROM UnidadNegocioPorPersona WHERE UnidadNegocioPorPersonaId=".$id;
+    try 
+    {
+        $db = getConnection();
+        $stmt = $db->prepare($sql); 
+        $stmt->execute(); 
+        $db = null;
+        
+        echo '[ { "Estatus": "Exito" } ]';
+        //echo '[{"rowcount":'. $stmt->rowCount() .'}]';
+    } 
+    catch(PDOException $e) 
+    {
+        echo $sql;
+        echo '[ { "Estatus": "Fallo" } ]';
+        $app->status(409);
         $app->stop();
     }
 }

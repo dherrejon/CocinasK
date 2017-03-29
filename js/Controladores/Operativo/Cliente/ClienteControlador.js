@@ -1,5 +1,7 @@
 app.controller("ClienteControlador", function($scope, $rootScope, CITA, $http, $q, CONFIG)
 {   
+    $rootScope.clasePrincipal = "";
+    
     $scope.cliente = [];
     $scope.buscarCliente = "";
     $scope.unidadNegocio = [];
