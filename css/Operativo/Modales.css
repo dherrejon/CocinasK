@@ -35,7 +35,7 @@
 
 
 /*----------------  dropdown list -------------------*/
-.dropdownlistModal
+.dropdownlistModal, .dropdownlistModal:hover
 {
     border-width: 0px 0px 3px 0px;
     border-style: solid;
@@ -79,7 +79,7 @@
     border-radius: 0px 0px 0px 0px
 }
 
-.dropdownlistModal:hover, .dropdownlistModalError:hover
+.dropdownlistModalError:hover
 {
     background:  white; 
     color: rgb(250, 97, 21);

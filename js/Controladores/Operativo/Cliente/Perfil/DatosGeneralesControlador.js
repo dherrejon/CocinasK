@@ -181,6 +181,21 @@ app.controller("DatosClienteControlador", function($scope, $rootScope, CITA, $ht
         DOMICILIO.VerDomicilio(domicilio);
     };
     
+    $scope.GetCountDomicilio = function()
+    {
+        var val = 0;
+        for(var k=0; k<$rootScope.persona.Domicilio.length; k++)
+        {
+            if(parseInt($rootScope.persona.Domicilio[k].TipoMedioContacto.TipoMedioContactoId) > 0)
+            {
+                val++;
+                break;
+            }
+        }
+        
+        return val;  
+    };
+    
     //------------ UnidadNegocio --------------------
     $scope.AbrirUnidadNegocioPersona = function(unidad)
     {

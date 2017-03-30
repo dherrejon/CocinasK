@@ -443,7 +443,7 @@ app.controller("PlanPagoControlador", function($scope, $http, $q, CONFIG, $rootS
         {
             if(data[0].Estatus == "Exito")
             {
-                $scope.mensaje = "El el plan de pagos se ha actualizado correctamente.";
+                $scope.mensaje = "El plan de pagos se ha actualizado correctamente.";
             }
             else
             {

@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-md-11 col-xs-10">
             <div class="table-responsive TablaUnidadNegocio">
-                <table class="table table-hover">
+                <table class="table table-hover table-striped table-condensed">
                     <thead class="TituloTabla">
                       <tr>
                         <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('Nombre')"><b>Nombre </b><b ng-if="ordenarPorGrupoColor === 'Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPorGrupoColor === '-Nombre'" class="fa fa-arrow-down"></b></button></th>
@@ -11,8 +11,8 @@
                         <th><button class="btn botonFalso"><b>Activo</b></button></th>
                       </tr>
                     </thead>
-                    <tbody ng-repeat="grupo in grupo | orderBy:[ordenarPorGrupoColor, 'Nombre'] | filter:{Nombre:buscarGrupoColor}">
-                      <tr>
+                    <tbody >
+                      <tr ng-repeat="grupo in grupo | orderBy:[ordenarPorGrupoColor, 'Nombre'] | filter:{Nombre:buscarGrupoColor}">
                         <td>{{grupo.Nombre}}</td>
                         
                         <td class="text-center">

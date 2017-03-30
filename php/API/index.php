@@ -486,6 +486,7 @@
 
     /*------------------ Cita ----------------------------------------------*/
     $app->post('/AgregarCita', $seguridad, $ChecarSesion, 'AgregarCita');
+    $app->post('/CambiarEstatusCita', $seguridad, $ChecarSesion, 'CambiarEstatusCita');
 
     /*------------------ Persona ----------------------------------------------*/
     $app->get('/GetCliente', $seguridad, $ChecarSesion, 'GetCliente');
@@ -498,6 +499,7 @@
     $app->post('/GetDireccionPersona', $seguridad, $ChecarSesion, 'GetDireccionPersona');   
     $app->post('/GetContactoAdicional', $seguridad, $ChecarSesion, 'GetContactoAdicional');
     $app->post('/GetDatosFiscales', $seguridad, $ChecarSesion, 'GetDatosFiscales');
+    $app->post('/GetCitaPersona', $seguridad, $ChecarSesion, 'GetCitaPersona');
 
     $app->post('/AgregarMedioContactoPersona', $seguridad, $ChecarSesion, 'AgregarMedioContactoPersona');
     $app->post('/AgregarDomicilioPersona', $seguridad, $ChecarSesion, 'AgregarDomicilioPersona');   

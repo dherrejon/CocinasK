@@ -112,6 +112,12 @@
     box-shadow: none;
 }
 
+.botonAgregarAcordion:disabled:hover, .botonAgregarAcordion:disabled
+{
+    opacity: 0.6;
+    color: #262626 !important;
+}
+
 .botonAgregarAcordion:hover
 {
     color: rgba(250, 97, 21, 1.0);
@@ -134,6 +140,55 @@
     background: rgba(250, 97, 21, 1.0);
     border-color: rgba(250, 97, 21, 1.0);
     color: white;
+}
+
+
+/*---------------------- Citas ------------*/
+.listaOpcionesDropdownListTabla
+{
+    background: white;
+    border: solid 2px #262626;
+    max-height: 150px;
+    overflow: scroll;
+    border-radius: 0px;
+    margin-top: -5px;
+}
+
+/*-------------------Acordio vertical---------------*/
+.opcionAcordionCita, .opcionAcordionCita:active, .opcionAcordionCita:focus
+{
+    background: rgb(249, 249, 249);
+    border-radius: 0px;
+    border-color: #262626;
+    border-style: solid;
+    border-width: 0px 0px 0px 6px;
+    text-align: left;
+    font-size: 14pt;
+    font-weight: bold;
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.opcionAcordionCita.active
+{
+    background: rgb(249, 249, 249);
+    border-radius: 0px;
+    border-color: rgb(250, 97, 21);
+    border-style: solid;
+    border-width: 0px 0px 0px 6px;
+    color: rgb(250, 97, 21);
+    text-align: left;
+    font-size: 14pt;
+    font-weight: bold;
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.opcionAcordionCita:hover, .opcionAcordionSeleccionadoCita:hover
+{
+    background: rgba(38,38, 38, 0.2);
 }
 
 

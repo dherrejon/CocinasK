@@ -230,7 +230,7 @@ function AgregarCita()
     }
 
     $sql = "INSERT Cita (TareaCitaId, PersonaId, EstatusCitaId, ColaboradorId, UnidadNegocioId, ProyectoId, DireccionPersonaId, Asunto, Fecha, HoraInicio, HoraFin, Descripcion) VALUES 
-    ('".$cita->Tarea->TareaCitaId."', '".$cita->Persona->PersonaId."', 3, ".$cita->Responsable->Colaborador.", ".$cita->Responsable->UnidadNegocio.", 
+    ('".$cita->Tarea->TareaCitaId."', '".$cita->Persona->PersonaId."', 2, ".$cita->Responsable->Colaborador.", ".$cita->Responsable->UnidadNegocio.", 
     null, ".$cita->DireccionCitaId.", '".$cita->Asunto."', STR_TO_DATE('".$cita->Fecha."', '%d-%m-%Y') , '".$cita->HoraInicio."', '".$cita->HoraFin."', '".$cita->Descripcion."')";
     
      try 
@@ -277,9 +277,9 @@ function AgregarCita()
         $app->status(409);
         $app->stop();
     }
-}
+}*/
 
-function ActivarDesactivarColor()
+function CambiarEstatusCita()
 {
     global $app;
     $request = \Slim\Slim::getInstance()->request();
@@ -288,13 +288,13 @@ function ActivarDesactivarColor()
     {
         $db = getConnection();
         
-        $sql = "UPDATE Color SET Activo = ".$datos[0]." WHERE ColorId = ".$datos[1]."";
+        $sql = "UPDATE Cita SET EstatusCitaId = ".$datos->EstatusCitaId." WHERE CitaId = ".$datos->CitaId."";
         $stmt = $db->prepare($sql);
         $stmt->execute();
     
         $db = null;
         
-        echo '[{"Estatus": "Exito"}]';
+        echo '[{"Estatus": "Exitoso"}]';
     }
     catch(PDOException $e) 
     {
@@ -305,7 +305,7 @@ function ActivarDesactivarColor()
     }
 }
 
-function GuardarImagenColor($id)
+/*function GuardarImagenColor($id)
 {
     global $app;
     $request = \Slim\Slim::getInstance()->request();

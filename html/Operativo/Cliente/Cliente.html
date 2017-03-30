@@ -82,7 +82,7 @@
        <div class="col-xs-12">
        
            <div class="table-responsive TablaUnidadNegocio">
-                <table class="table table-hover">
+                <table class="table table-hover table-striped table-condesed">
                     <thead class="TituloTabla">
                       <tr>
                         <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('PrimerApellidoA')"><b>Primer Apellido </b><b ng-if="ordenarPor === 'PrimerApellidoA'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-PrimerApellidoA'" class="fa fa-arrow-down"></b></button></th>
@@ -91,8 +91,8 @@
                         <th><button class="btn botonFalso"><b>Perfil</b></button></th>                        
                       </tr>
                     </thead>
-                    <tbody ng-repeat="cliente in cliente  | filter:buscarCliente | orderBy:[ordenarPor, 'PrimerApellidoA', 'SegundoApellidoA', 'NombreA']">
-                      <tr>
+                    <tbody >
+                      <tr ng-repeat="cliente in cliente  | filter:buscarCliente | orderBy:[ordenarPor, 'PrimerApellidoA', 'SegundoApellidoA', 'NombreA']">
                         <td>{{cliente.PrimerApellido}}</td>
                         <td>{{cliente.SegundoApellido}}</td>
                         <td>{{cliente.Nombre}}</td>

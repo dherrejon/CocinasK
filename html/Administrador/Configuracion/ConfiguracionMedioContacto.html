@@ -46,7 +46,7 @@
                         <div class="row">
                             <div class="col-md-11 col-xs-10">
                                 <div class="table-responsive TablaUnidadNegocio">
-                                    <table class="table table-hover">
+                                    <table class="table table-hover table-striped table-condensed">
                                         <thead class="TituloTabla">
                                           <tr>
                                             <th><button class="btn botonOrdenar" ng-click="CambiarOrdenarTipoMedioContacto('NombreMedioContacto')"><b>Medio Contacto </b><b ng-if="ordenarPorTipo === 'NombreMedioContacto'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPorTipo === '-NombreMedioContacto'" class="fa fa-arrow-down"></b></button></th>
@@ -55,8 +55,8 @@
                                             <th><button class="btn botonFalso"><b>Activo</b></button></th>
                                           </tr>
                                         </thead>
-                                        <tbody ng-repeat="tipo in tipoMedioContacto | orderBy:[ordenarPorTipo, 'Nombre']" ng-if="TipoMedioContactoValido(tipo)">
-                                          <tr>
+                                        <tbody >
+                                          <tr ng-repeat="tipo in tipoMedioContacto | orderBy:[ordenarPorTipo, 'Nombre']" ng-if="TipoMedioContactoValido(tipo)">
                                             <td>{{tipo.NombreMedioContacto}}</td>
                                             <td>{{tipo.Nombre}}</td>
 

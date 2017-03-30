@@ -1,6 +1,112 @@
-<div ng-controller="ClitaClienteControlador as citaCliente" class="container-fluid">
+<div ng-controller="CitaClienteControlador as citaCliente">
     
-   {{titulo}}
+    <br>
+    <div class="row">
+        <div class="col-xs-12">
+           
+            <button ng-disabled="true" class="btn botonAgregarAcordion pull-right" ng-click="AgregarMedioContacto('ninguno')" >
+                <span>
+                    <span class="fa fa-plus"></span>
+                    <span> Nuevo</span> 
+                </span>
+            </button>
+        </div>
+    </div>
+                 
+    <div class="row" >
+        <div class="col-xs-12">
+           <div ng-repeat="estatus in citaEstatus | orderBy:'EstatusCitaId'" ng-if="estatus.EstatusCitaId != '1'" >
+               
+               <button class="btn btn-block opcionAcordionCita {{estatus.clase}}" ng-click="MostrarEstatusCita(estatus.EstatusCitaId)">
+                   {{estatus.Nombre}} 
+               </button><br>
+               
+                <div class="table-responsive tablePerfilCliente" ng-if="estatus.clase == 'active' && (cita | filter:{EstatusCita:{ EstatusCitaId: estatus.EstatusCitaId} }).length > 0">
+                    <table class="table table-hover table-striped table-condensed">
+                        <thead class="TituloTabla">
+                          <tr>
+                            <th><span class=""><b>Tarea</b></span></th>
+                            <th><span class=""><b>Asunto</b></span></th>
+                            <th class="text-center"><span><b>Fecha</b></span></th>
+                            <th class="text-center"><span><b>Horario</b></span></th>
+                            <th><span><b>Responsable</b></span></th>
+                            <th class="text-center"><span><b>Detalles</b></span></th>
+                            <th class="text-center" ng-if="estatus.EstatusCitaId == '2'"><span><b>Estatus</b></span></th>
+                          </tr>
+                        </thead>
+                        <tbody >
+                          <tr ng-repeat="cita in cita | orderBy:['EstatusCita.EstatusCitaId', 'EstatusCita.Nombre', '-Fecha', '-HoraInicio']" ng-if="estatus.EstatusCitaId == cita.EstatusCita.EstatusCitaId">
+
+                             <td>{{cita.Tarea.Nombre}}</td>
+                             <td>{{cita.Asunto}}</td>
+                             <td class="text-center">{{cita.Fecha}}</td>
+                             <td class="text-center">{{cita.HoraInicio}} - {{cita.HoraFin}}</td>
+                             <td>{{cita.Responsable.Nombre}}</td>
+
+                             <td class="text-center">
+                                <!--<a   class="BotonOperacion" href=""  ng-click="DetalleDomicilio(domicilio)">
+                                    <span class="fa fa-eye fa-2x"></span>
+                                </a>-->
+                                <span  class="fa fa-eye fa-2x botonRegistroDeshabilitado"></span>
+                            </td>
+
+                             <td class="dropdown" ng-if="estatus.EstatusCitaId == '2'">
+                                <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown" style="font-size:14px;">
+                                    <span ng-if="cita.EstatusCita.EstatusCitaId != 2" ng-class="GetClaseEstatus(cita.EstatusCita)">{{cita.EstatusCita.Nombre}}</span>
+                                    <span ng-if="cita.EstatusCita.EstatusCitaId == 2" ng-class="GetClaseEstatus(cita.EstatusCita)">{{GetEstatusCita(cita)}}{{cita.EstatusCita.Nombre}}</span>
+                                    <span class="caret"></span>
+                                </button>
+
+                                <ul class="dropdown-menu dropdown-menu-right listaOpcionesDropdownListTabla">
+                                    <li ng-repeat="estatus in citaEstatus | orderBy:'Nombre'" ng-show="estatus.EstatusCitaId != '1' && estatus.EstatusCitaId != '2'">
+                                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarEstatusCita(cita, estatus)">
+                                            <span>{{estatus.Nombre}}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                              </td>
+
+                          </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div style="margin-bottom:10px" class="textoPerfilHome" ng-if="estatus.clase == 'active' && (cita | filter:{EstatusCita:{ EstatusCitaId: estatus.EstatusCitaId} }).length == 0">
+                        Sin Citas {{estatus.Nombre}}s  
+                </div>
+               
+            </div>
+           
+        </div>
+    </div>
+    
+    
+    <!--------------------------- Modales -------------------------------------->
+    
+    <!-- Cambiar estatus cita -->
+    <div class="modal fade" id="cambiarEstatusCita">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm modalPrincipal text-center">
+           
+            <div class="row">
+                <div class="col-xs-12">
+                    <span style="font-size:14pt">{{mensajeAdvertencia}}</span>
+                </div>
+            </div>
+            <br><br>
+            <div class="row">
+                <div class="col-xs-6">
+                    <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close">No</button>
+                </div>
+                <div class="col-xs-6">
+                    <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="ConfirmarCambiarEstatusCita()">Si</button>
+                </div>
+            </div>
+                        
+        </div>
+    </div>
+    
     
 </div>
 

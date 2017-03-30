@@ -9,6 +9,7 @@ class Cita
         this.EstatusCita = new EstatusCita();
         
         this.Responsable = new ResponsableCita();
+        this.Domicilio = new Domicilio();
         
         this.Asunto = "";
         this.Fecha = "";
@@ -94,28 +95,53 @@ function GetComponentePuerta($http, $q, CONFIG)
             q.resolve(status);
      }); 
     return q.promise;
-}
+}*/
 
 //copia los datos del tipo modulo
-function SetComponente(data)
+function SetCita(data)
 {
-    var componente = new Componente();
+    var cita = new Cita();
     
-    componente.ComponenteId = data.ComponenteId;
-    componente.TipoComponenteId = data.TipoComponenteId;
-    componente.Nombre = data.Nombre;
+    cita.CitaId = data.CitaId;
+    cita.Asunto = data.Asunto;
+    cita.Fecha = data.Fecha;
+    cita.HoraInicio = data.HoraInicio.slice(0,5);
+    cita.HoraFin = data.HoraFin.slice(0,5);
+    cita.Descripcion = data.Descripcion;
     
-    if(data.Activo == "1")
+    cita.Tarea.TareaCitaId = data.TareaCitaId;
+    cita.Tarea.Nombre = data.NombreTareaCita;
+    
+    cita.EstatusCita.EstatusCitaId = data.EstatusCitaId;
+    cita.EstatusCita.Nombre = data.NombreEstatusCita;
+    
+    cita.Persona.PersonaId = data.PersonaId;
+    cita.Persona.Nombre = data.NombrePersona;
+    
+    cita.Domicilio.Codigo = data.Codigo;
+    cita.Domicilio.Estado = data.Estado;
+    cita.Domicilio.Domicilio = data.Codigo;
+    cita.Domicilio.Municipio = data.Municipio;
+    cita.Domicilio.Ciudad = data.Ciudad;
+    cita.Domicilio.Colonia = data.Colonia;
+    
+    if(data.UnidadNegocioId !== null)
     {
-        componente.Activo = true;
+        cita.Responsable.UnidadNegocio = true;
+        cita.Responsable.Colaborador = false;
+        cita.Responsable.ResponsableId = data.UnidadNegocioId;
+        cita.Responsable.Nombre = data.NombreUnidadNegocio;
     }
-    else
+    else if(data.ColobaoradorId !== null)
     {
-        componente.Activo = false;
+        cita.Responsable.UnidadNegocio = false;
+        cita.Responsable.Colaborador = true;
+        cita.Responsable.ResponsableId = data.ColobaoradorId;
+        cita.Responsable.Nombre = data.NombreColaborador;
     }
-    
-    return componente;
-}*/
+
+    return cita;
+}
 
 //agrega un componente
 function AgregarCita($http, CONFIG, $q, cita)
@@ -171,27 +197,34 @@ function AgregarCita($http, CONFIG, $q, cita)
 
      }); 
     return q.promise;
-}
+}*/
 
-function ActivarDesactivarComponente($http, $q, CONFIG, pieza) 
+function CambiarEstatusCita($http, $q, CONFIG, estatus) 
 {
     var q = $q.defer();
 
     $http({      
           method: 'POST',
-          url: CONFIG.APIURL + '/ActivarDesactivarComponente',
-          data: pieza
+          url: CONFIG.APIURL + '/CambiarEstatusCita',
+          data: estatus
 
       }).success(function(data)
         {
-            q.resolve(data); 
+            if(data[0].Estatus == "Exitoso")
+            {
+                q.resolve("Exitoso");
+            }
+            else
+            {
+                q.resolve("Fallo");
+            }
         }).error(function(data, Estatus){
             q.resolve(Estatus);
 
      }); 
     
     return q.promise;
-}*/
+}
 
 /*------------------------  Datos de cita ---------------------------------------*/
 class TareaCita
@@ -238,19 +271,19 @@ function GetEstatusCita()
     var estatus = [];
     
     estatus[0] = new EstatusCita();
-    estatus[0].EstatusCitaId = "1";
+    estatus[0].EstatusCitaId = "3";
     estatus[0].Nombre = "Terminada";
     
     estatus[1] = new EstatusCita();
-    estatus[1].EstatusCitaId = "2";
+    estatus[1].EstatusCitaId = "4";
     estatus[1].Nombre = "Cancelada";
     
     estatus[2] = new EstatusCita();
-    estatus[2].EstatusCitaId = "3";
+    estatus[2].EstatusCitaId = "2";
     estatus[2].Nombre = "Pendiente";
     
     estatus[3] = new EstatusCita();
-    estatus[3].EstatusCitaId = "4";
+    estatus[3].EstatusCitaId = "1";
     estatus[3].Nombre = "Atrasada";
     
     return estatus;

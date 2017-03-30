@@ -13,7 +13,7 @@
     <div class="row" ng-if="permisoUsuario.consultar">
         <div class="col-md-11 col-xs-10">
             <div class="table-responsive TablaUnidadNegocio">
-                <table class="table table-hover">
+                <table class="table table-hover table-striped table-condensed">
                     <thead class="TituloTabla">
                       <tr>
                         <!--<th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('Colaborador')"><b>Responsable</b> <b ng-if="ordenarPor === 'Colaborador'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-Colaborador'" class="fa fa-arrow-down"></b></button></th>-->
@@ -27,8 +27,8 @@
                         <!--<th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('ActivoN')"><b>Activo</b> <b ng-if="ordenarPor === 'ActivoN'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-ActivoN'" class="fa fa-arrow-down"></b></button></th>-->
                       </tr>
                     </thead>
-                    <tbody ng-repeat="plaza in plaza | filter:FiltrarPlaza | filter:buscar | orderBy:[ordenarPor, 'Estado', 'Municipio', 'Ciudad']">
-                      <tr>
+                    <tbody >
+                      <tr ng-repeat="plaza in plaza | filter:FiltrarPlaza | filter:buscar | orderBy:[ordenarPor, 'Estado', 'Municipio', 'Ciudad']">
                         <td>{{plaza.Estado}}</td>
                         <td>{{plaza.Municipio}}</td>
                         <td>{{plaza.Ciudad}}</td>

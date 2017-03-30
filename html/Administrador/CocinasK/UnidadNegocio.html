@@ -12,7 +12,7 @@
     <div class="row" ng-if="permisoUsuario.consultar">
         <div class="col-md-11 col-xs-10">
             <div class="table-responsive TablaUnidadNegocio">
-                <table class="table table-hover">
+                <table class="table table-hover table-striped table-condensed">
                     <thead class="TituloTabla">
                       <tr>
                         <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('TipoUnidadNegocio.Nombre')"><b>Tipo Unidad</b> <b ng-if="ordenarPor === 'TipoUnidadNegocio.Nombre'" class="fa fa-arrow-up"></b> <b ng-if="ordenarPor == '-TipoUnidadNegocio.Nombre'" class="fa fa-arrow-down"></b></button></th>
@@ -24,8 +24,8 @@
                         <th><button class="btn botonFalso"><b>Activo</b></button></th>
                       </tr>
                     </thead>
-                    <tbody ng-repeat="unidad in UnidadNegocio | filter:filtrarUnidad | filter:buscar  |orderBy:[ordenarPor, 'Nombre']">
-                      <tr>
+                    <tbody >
+                      <tr ng-repeat="unidad in UnidadNegocio | filter:filtrarUnidad | filter:buscar  |orderBy:[ordenarPor, 'Nombre']">
                         <td>{{unidad.TipoUnidadNegocio.Nombre}}</td>
                         <td>{{unidad.Nombre}}</td>
                         <td>{{unidad.Telefono | tel}}</td>

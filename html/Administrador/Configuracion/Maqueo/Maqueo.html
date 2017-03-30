@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-md-11 col-xs-10">
             <div class="table-responsive TablaUnidadNegocio">
-                <table class="table table-hover">
+                <table class="table table-hover table-striped table-condensed">
                     <thead class="TituloTabla">
                       <tr>
                         <th><button class="btn btn-block botonOrdenar" ng-click="CambiarOrdenarMaqueo('Nombre')"><b>Nombre </b><b ng-if="ordenarMaqueo === 'Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarMaqueo === '-Nombre'" class="fa fa-arrow-down"></b></button></th>
@@ -13,8 +13,8 @@
                         <th><button class="btn botonFalso"><b>Activo</b></button></th>
                       </tr>
                     </thead>
-                    <tbody ng-repeat="maqueo in maqueo | orderBy:[ordenarMaqueo,'Nombre'] | filter:buscarMaqueo">
-                      <tr>
+                    <tbody >
+                      <tr ng-repeat="maqueo in maqueo | orderBy:[ordenarMaqueo,'Nombre'] | filter:buscarMaqueo">
                           <td>
                               {{maqueo.Nombre}}
                                <span ng-if="maqueo.PorDefecto" class="fa fa-asterisk" data-toggle="tooltip" data-placement="bottom" title="Maqueo por defecto"></span>

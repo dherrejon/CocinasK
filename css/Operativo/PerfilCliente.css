@@ -61,7 +61,40 @@
 }
 
 /*------------------   ------------------*/
+.tablePerfilCliente
+{
+    max-height: 70vh !important;
+    overflow: scroll;
+}
+
+.tablePerfilClienteDatos
+{
+    max-height: 320px !important;
+    overflow: scroll;
+}
+
+
 .margenSeparador
 {
     border: 2px solid rgb(234, 234, 234) !important;
+}
+/*------------- Citas ---------------*/
+.textoRojo
+{
+    color: #970000;
+}
+
+.textoVerde
+{
+    color: green;
+}
+
+.textoAzul
+{
+    color: blue;
+}
+
+.textoNaranja
+{
+    color: rgb(250, 97, 21);
 }

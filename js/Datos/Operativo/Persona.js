@@ -349,6 +349,43 @@ function GetDatosFiscales($http, $q, CONFIG, id)
     return q.promise;
 }
 
+function GetCitaPersona($http, $q, CONFIG, id)    
+{
+    var q = $q.defer();
+    
+    var persona = new Object();
+    persona.PersonaId = id;
+
+    $http({      
+          method: 'POST',
+          url: CONFIG.APIURL + '/GetCitaPersona',
+          data: persona
+
+      }).success(function(data)
+        {
+            if(data[0].Estatus == "Exito")
+            {
+                var cita = [];
+                
+                for(var k=0; k<data[1].Cita.length; k++)
+                {
+                    cita[k] = SetCita(data[1].Cita[k]);
+                }
+                
+                q.resolve(cita);
+            }
+            else
+            {
+               q.resolve([]);  
+            }
+            
+        }).error(function(data){
+            q.resolve(data);
+     }); 
+    
+    return q.promise;
+}
+
 function SetMedioContactoPersona(data)
 {
     var contacto = new Contacto();

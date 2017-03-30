@@ -46,7 +46,7 @@
                         <div class="row">
                             <div class="col-md-11 col-xs-10">
                                 <div class="table-responsive TablaUnidadNegocio">
-                                    <table class="table table-hover">
+                                    <table class="table table-hover table-striped table-condensed">
                                         <thead class="TituloTabla">
                                           <tr>
                                             <th><button class="btn botonOrdenar" ng-click="CambiarOrdenarTipoMaterial('Nombre')"><b>Nombre </b><b ng-if="ordenarPorTipo === 'Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPorTipo === '-Nombre'" class="fa fa-arrow-down"></b></button></th>
@@ -55,8 +55,8 @@
                                             <th><button class="btn botonFalso"><b>Activo</b></button></th>
                                           </tr>
                                         </thead>
-                                        <tbody ng-repeat="tipo in tipoMaterial | orderBy:[ordenarPorTipo, 'Nombre']">
-                                          <tr>
+                                        <tbody >
+                                          <tr ng-repeat="tipo in tipoMaterial | orderBy:[ordenarPorTipo, 'Nombre']">
                                             <td>{{tipo.Nombre}}</td>
                                             <td>
                                                 <span ng-if="tipo.DisponibleModulo">Módulos</span>
@@ -99,7 +99,7 @@
                         <div class="row">
                             <div class="col-md-11 col-xs-10">
                                 <div class="table-responsive TablaUnidadNegocio">
-                                    <table class="table table-hover">
+                                    <table class="table table-hover table-striped table-condensed">
                                         <thead class="TituloTabla">
                                           <tr>
                                             <th><button class="btn botonOrdenar" ng-click="CambiarOrdenarMaterial('Nombre')"><b>Nombre </b><b ng-if="ordenarPorMaterial === 'Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPorMaterial === '-Nombre'" class="fa fa-arrow-down"></b></button></th>
@@ -109,8 +109,8 @@
                                             <th><button class="btn botonFalso"><b>Activo</b></button></th>
                                           </tr>
                                         </thead>
-                                        <tbody ng-repeat="material in material | orderBy:[ordenarPorMaterial, 'Nombre'] | filter:buscar | filter:FiltrarMaterial | filter:{MaterialDe:'Módulo'}">
-                                          <tr>
+                                        <tbody >
+                                          <tr ng-repeat="material in material | orderBy:[ordenarPorMaterial, 'Nombre'] | filter:buscar | filter:FiltrarMaterial | filter:{MaterialDe:'Módulo'}">
                                             <td>{{material.Nombre}}</td>
                                             <td>{{material.TipoMaterial.Nombre}}</td>
                                             <td ng-if="material.grueso.length == 0">${{material.CostoUnidad}}</td>
@@ -230,7 +230,7 @@
                         <div class="row">
                             <div class="col-md-11 col-xs-10">
                                 <div class="table-responsive TablaUnidadNegocio">
-                                    <table class="table table-hover">
+                                    <table class="table table-hover table-striped table-condensed">
                                         <thead class="TituloTabla">
                                           <tr>
                                             <th><button class="btn botonOrdenar" ng-click="CambiarOrdenarMaterialCubierta('Nombre')"><b>Nombre </b><b ng-if="ordenarPorMaterialCubierta === 'Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPorMaterialCubierta === '-Nombre'" class="fa fa-arrow-down"></b></button></th>
@@ -239,8 +239,8 @@
                                             <th><button class="btn botonFalso"><b>Activo</b></button></th>
                                           </tr>
                                         </thead>
-                                        <tbody ng-repeat="material in material | orderBy:[ordenarPorMaterialCubierta, 'Nombre'] | filter:buscar | filter:FiltrarMaterialCubierta | filter:{MaterialDe:'Cubierta'}">
-                                          <tr>
+                                        <tbody >
+                                          <tr ng-repeat="material in material | orderBy:[ordenarPorMaterialCubierta, 'Nombre'] | filter:buscar | filter:FiltrarMaterialCubierta | filter:{MaterialDe:'Cubierta'}">
                                             <td>{{material.Nombre}}</td>
                                             <td>{{material.TipoMaterial.Nombre}}</td>
                         

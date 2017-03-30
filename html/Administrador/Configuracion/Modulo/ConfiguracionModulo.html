@@ -46,7 +46,7 @@
                         <div class="row">
                             <div class="col-md-11 col-xs-10">
                                 <div class="table-responsive TablaUnidadNegocio">
-                                    <table class="table table-hover">
+                                    <table class="table table-hover table-striped table-condensed">
                                         <thead class="TituloTabla">
                                           <tr>
                                             <th><button class="btn botonOrdenar"><b>Nombre</b></button></th>
@@ -55,8 +55,8 @@
                                             <th><button class="btn botonFalso"><b>Activo</b></button></th>
                                           </tr>
                                         </thead>
-                                        <tbody ng-repeat="componente in componente | orderBy:'Nombre' | filter:{TipoComponenteId:1} | filter:buscarComponente">
-                                          <tr>
+                                        <tbody >
+                                          <tr ng-repeat="componente in componente | orderBy:'Nombre' | filter:{TipoComponenteId:1} | filter:buscarComponente">
                                             <td>{{componente.Nombre}}</td>
 
                                             <td class="text-center">
@@ -125,7 +125,7 @@
                         <div class="row">
                             <div class="col-md-11 col-xs-10">
                                 <div class="table-responsive TablaUnidadNegocio">
-                                    <table class="table table-hover">
+                                    <table class="table table-hover table-striped table-condensed">
                                         <thead class="TituloTabla">
                                           <tr>
                                             <th><button class="btn botonOrdenar"><b>Nombre</b></button></th>
@@ -136,8 +136,8 @@
                                             <th><button class="btn botonFalso"><b>Activo</b></button></th>
                                           </tr>
                                         </thead>
-                                        <tbody ng-repeat="pieza in pieza | orderBy:'Nombre' | filter:buscarPiezaVista">
-                                          <tr>
+                                        <tbody >
+                                          <tr ng-repeat="pieza in pieza | orderBy:'Nombre' | filter:buscarPiezaVista">
                                             <td>{{pieza.Nombre}}</td>
                                             <!--<td>{{pieza.FormulaAncho}}</td>
                                             <td>{{pieza.FormulaLargo}}</td>-->
@@ -207,7 +207,7 @@
                         <div class="row">
                             <div class="col-md-11 col-xs-10">
                                 <div class="table-responsive TablaUnidadNegocio">
-                                    <table class="table table-hover">
+                                    <table class="table table-hover table-striped table-condensed">
                                         <thead class="TituloTabla">
                                           <tr>
                                             <th><button class="btn botonOrdenar"><b>Tipo</b></button></th>
@@ -215,8 +215,8 @@
                                             <th><button class="btn botonFalso"><b>Activo</b></button></th>
                                           </tr>
                                         </thead>
-                                        <tbody ng-repeat="tipo in tipoModulo | orderBy:'Nombre'">
-                                          <tr>
+                                        <tbody >
+                                          <tr ng-repeat="tipo in tipoModulo | orderBy:'Nombre'">
                                             <td>{{tipo.Nombre}}</td>
 
                                             <td class="text-center">
@@ -254,7 +254,7 @@
                         <div class="row">
                             <div class="col-md-11 col-xs-10">
                                 <div class="table-responsive TablaUnidadNegocio">
-                                    <table class="table table-hover">
+                                    <table class="table table-hover table-striped table-condensed">
                                         <thead class="TituloTabla">
                                           <tr>
                                             <th><button class="btn botonOrdenar" ng-click="CambiarOrdenarConsumible('Nombre')"><b>Nombre </b><b ng-if="ordenarPorConsumible === 'Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPorConsumible === '-Nombre'" class="fa fa-arrow-down"></b></button></th>
@@ -263,8 +263,8 @@
                                             <th><button class="btn botonFalso"><b>Activo</b></button></th>
                                           </tr>
                                         </thead>
-                                        <tbody ng-repeat="consumible in consumible | orderBy:[ordenarPorConsumible, 'Nombre']">
-                                          <tr>
+                                        <tbody >
+                                          <tr ng-repeat="consumible in consumible | orderBy:[ordenarPorConsumible, 'Nombre']">
                                             <td>{{consumible.Nombre}}</td>
                                             <td>{{consumible.Costo}}</td>
 
