@@ -246,4 +246,37 @@ function EditarGrupoColorCubierta()
     }
 }
 
+function GetGrupoPorColorTodo()
+{
+    global $app;
+    global $session_expiration_time;
+
+    $request = \Slim\Slim::getInstance()->request();
+    
+    
+    $sql = "SELECT * FROM GrupoColorCubiertaVista WHERE Activo = 1 ORDER BY Nombre";
+    
+    try 
+    {
+        $db = getConnection();
+        $stmt = $db->query($sql);
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $db = null;
+        
+        foreach ($response as $img) 
+        {
+            $img->Imagen =  base64_encode($img->Imagen);
+        }
+        
+        echo json_encode($response);  
+    } 
+    catch(PDOException $e) 
+    {
+        //echo $e;
+        echo '[ { "Estatus": "Fallo" } ]';
+        $app->status(409);
+        $app->stop();
+    }
+}
+
 ?>

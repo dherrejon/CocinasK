@@ -196,6 +196,31 @@ function GetModulo($http, $q, CONFIG)
     return q.promise;
 }
 
+function GetModuloPresupuesto($http, $q, CONFIG)     
+{
+    var q = $q.defer();
+
+    $http({      
+          method: 'GET',
+          url: CONFIG.APIURL + '/GetModuloPresupuesto',
+
+      }).success(function(data)
+        {
+            var modulo = []; 
+            
+            for(var k=0; k<data.length; k++)
+            {
+                modulo[k] = new Modulo();
+                modulo[k] = SetModulo(data[k]);
+            }
+        
+            q.resolve(modulo);  
+        }).error(function(data, status){
+            q.resolve(status);
+     }); 
+    return q.promise;
+}
+
 //copia los datos del modulo
 function SetModulo(data)
 {
@@ -441,6 +466,50 @@ function GetMedidasPorModulo($http, $q, CONFIG, id)    // obtener las medidas de
     return q.promise;
 }
 
+function GetMedidasModulo($http, $q, CONFIG, id)    // obtener las medidas de un módulo
+{
+    var q = $q.defer();
+    
+    var moduloId = [];
+    moduloId[0] = id;
+
+    $http({      
+          method: 'GET',
+          url: CONFIG.APIURL + '/GetMedidasModulo',
+          data: moduloId
+
+      }).success(function(data)
+        {
+            /*var medidaPorModulo = [];*/
+            
+            for(var k=0; k<data.length; k++)
+            {
+                data[k].AnchoNumero = FraccionADecimal(data[k].Ancho);
+                data[k].AltoNumero = FraccionADecimal(data[k].Alto);
+                data[k].ProfundoNumero = FraccionADecimal(data[k].Profundo);
+            }
+            q.resolve(data);   
+        }).error(function(data){
+            q.resolve(data);
+     }); 
+    
+    return q.promise;
+}
+
+function FraccionADecimal(valor)
+{
+    if(valor.includes(' '))
+    {
+        var fraccion = valor.split(' ');
+
+        return parseInt(fraccion[0]) + eval(fraccion[1]);
+    }
+    else
+    {
+        return eval(valor);
+    }
+};
+
 function SetMedidaPorModulo(datos)
 {
     var medidaPorModulo = new MedidasPorModulo();
@@ -662,21 +731,39 @@ function GetSeccionPorModulo($http, $q, CONFIG, id)    // obtener los componente
     var moduloId = [];
     moduloId[0] = id;
     var seccionPorModulo = []; 
+    
+    var servicio = "";
+    
+    if(id == "-1")
+    {
+        servicio = "/GetSeccionPorModuloPresupuesto";
+    }
+    else
+    {
+        servicio = "/GetSeccionPorModulo";   
+    }
 
     $http({      
           method: 'POST',
-          url: CONFIG.APIURL + '/GetSeccionPorModulo',
+          url: CONFIG.APIURL + servicio,
           data: moduloId
 
       }).success(function(data)
         {   
-            for(var k=0; k<data.length; k++)
+            if(id == "-1")
             {
-                seccionPorModulo[k] = new SeccionPorModulo();
-                seccionPorModulo[k] = SetSeccionPorModulo(data[k]);
+                q.resolve(data);
             }
-        
-            q.resolve(seccionPorModulo);   
+            else
+            {
+                for(var k=0; k<data.length; k++)
+                {
+                    seccionPorModulo[k] = new SeccionPorModulo();
+                    seccionPorModulo[k] = SetSeccionPorModulo(data[k]);
+                }
+
+                q.resolve(seccionPorModulo);
+            }
         }).error(function(data){
             q.resolve(data);
      }); 
@@ -860,4 +947,46 @@ function GetTipoParte()
     return parte;
 }
 
+function GetModuloImagen($http, $q, CONFIG, moduloId)     
+{
+    var q = $q.defer();
 
+    $http({      
+          method: 'GET',
+          url: CONFIG.APIURL + '/GetModuloImagen/' + moduloId,
+
+      }).success(function(data)
+        {
+            
+            if(data[0].Estatus == "Exito")
+            {   
+                q.resolve(data[1].Imagen[0].Imagen); 
+            }
+            else
+            {
+                q.resolve(null); 
+            }
+             
+        }).error(function(data, status){
+            q.resolve(status);
+     }); 
+    return q.promise;
+}
+
+
+/*--------------------------------- módulo------------------------------*/
+class ModuloPresupuesto
+{
+    constructor()
+    {
+        this.ModuloId = "";
+        this.TipoModulo = new TipoModulo(); 
+        this.Nombre = "";
+        this.Imagen = "";
+        this.Alto = "";
+        this.Ancho = "";
+        this.Profundo = "";
+        this.Activo = true;
+
+    }
+}

@@ -8,9 +8,9 @@
                       <tr>
                         <th><button class="btn btn-block botonOrdenar" ng-click="CambiarOrdenarServicio('Nombre')"><b>Nombre </b><b ng-if="ordenarServicio === 'Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarServicio === '-Nombre'" class="fa fa-arrow-down"></b></button></th>
                         <th><button class="btn botonOrdenar" ng-click="CambiarOrdenarServicio('CostoUnidad')"><b>Costo Unidad </b><b ng-if="ordenarServicio === 'CostoUnidad'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarServicio === '-CostoUnidad'" class="fa fa-arrow-down"></b></button></th>
-                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenarServicio('PrecioVenta')"><b>Precio Venta </b><b ng-if="ordenarServicio === 'PrecioVenta'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarServicio === '-PrecioVenta'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenarServicio('PrecioVenta')"><b>Margen </b><b ng-if="ordenarServicio === 'PrecioVenta'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarServicio === '-PrecioVenta'" class="fa fa-arrow-down"></b></button></th>
                         <th><button class="btn botonFalso"><b>Editar</b></button></th>
-                        <th><button class="btn botonFalso"><b>Obligatorio</b></button></th>
+                        <th><button class="btn botonFalso"><b>Por Defecto</b></button></th>
                         <th><button class="btn botonFalso"><b>Activo</b></button></th>
                       </tr>
                     </thead>
@@ -20,7 +20,7 @@
                           
                           <td>${{servicio.CostoUnidad}}</td>
                           
-                          <td>${{servicio.PrecioVenta}}</td>
+                          <td>{{servicio.PrecioVenta}}</td>
 
                             <td class="text-center">
                                 <a ng-if="permisoUsuario.servicio.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirServicio('Editar', servicio)">
@@ -124,11 +124,11 @@
                         
                         <br class="hidden-sm hidden-md hidden-lg">
                         <div class="hidden-sm hidden-md hidden-lg" style="margin-top:10px"></div>
-                        <!-- Precio venta -->
+                        <!-- Margen -->
                         <div class="col-sm-6">
                              <div class="entrada2">
                                 <input ng-pattern="erNumeroDecimal" type="text" required class="{{claseServicio.precio}} form-control" name="precio" ng-model="nuevoServicio.PrecioVenta"/>
-                                <label>Precio Venta</label>
+                                <label>Margen</label>
                             </div>
                         </div>
                         

@@ -32,6 +32,39 @@ function GetAccesorio()
     }
 }
 
+function GetAccesorioPresupuesto()
+{
+    global $app;
+    global $session_expiration_time;
+
+    $request = \Slim\Slim::getInstance()->request();
+
+    $sql = "SELECT TipoAccesorioId, MuestrarioId, Nombre, Imagen, CostoUnidad, ConsumoUnidad, Contable, Obligatorio FROM AccesorioVista 
+            WHERE Activo = 1 ORDER BY Nombre";
+
+    try 
+    {
+
+        $db = getConnection();
+        $stmt = $db->query($sql);
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $db = null;
+        
+        foreach ($response as $aux) 
+        {
+            $aux->Imagen =  base64_encode($aux->Imagen);
+        }
+        
+        echo json_encode($response);  
+    } 
+    catch(PDOException $e) 
+    {
+        echo($e);
+        $app->status(409);
+        $app->stop();
+    }
+}
+
 function GetAccesorioClase()
 {
     global $app;
@@ -403,6 +436,34 @@ function GetTipoAccesorio()
     }
 }
 
+
+function GetTipoAccesorioPresupuesto()
+{
+    global $app;
+    global $session_expiration_time;
+
+    $request = \Slim\Slim::getInstance()->request();
+
+    $sql = "SELECT TipoAccesorioId, ClaseAccesorioId, Nombre FROM TipoAccesorioVista WHERE Activo = 1";
+
+    try 
+    {
+
+        $db = getConnection();
+        $stmt = $db->query($sql);
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $db = null;
+        
+        echo json_encode($response);  
+    } 
+    catch(PDOException $e) 
+    {
+        echo($e);
+        $app->status(409);
+        $app->stop();
+    }
+}
+
 function AgregarTipoAccesorio()
 {
     $request = \Slim\Slim::getInstance()->request();
@@ -510,6 +571,36 @@ function GuardarInstrucciones($id)
         
         //echo $e;
         echo '[{"Estatus": "Fallido"}]';
+        $app->status(409);
+        $app->stop();
+    }
+}
+
+/*---------- instrucciones -------------*/
+function GetInstruccionesTipoAccesorio($id)
+{
+    global $app;
+    global $session_expiration_time;
+
+    $request = \Slim\Slim::getInstance()->request();
+
+    $sql = "SELECT Instrucciones FROM TipoAccesorio WHERE TipoAccesorioId = ".$id;
+
+    try 
+    {
+        $db = getConnection();
+        $stmt = $db->query($sql);
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+        
+        $response[0]->Instrucciones =  base64_encode($response[0]->Instrucciones);
+        
+        echo '[ { "Estatus": "Exito"}, {"Instrucciones":'.json_encode($response).'} ]'; 
+        $db = null;
+    } 
+    catch(PDOException $e) 
+    {
+        //echo($e);
+        echo '[ { "Estatus": "Fallo" } ]';
         $app->status(409);
         $app->stop();
     }

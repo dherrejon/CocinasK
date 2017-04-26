@@ -548,6 +548,10 @@ app.factory('DOMICILIO',function($rootScope)
       {
           $rootScope.$broadcast('DomicilioAgregadoFiscal');
       }
+      else if(this.fuente == "Proyecto")
+      {
+          $rootScope.$broadcast('DomicilioAgregadoProyecto');
+      }
       else
       {
           $rootScope.$broadcast('DomicilioAgregado');
@@ -617,11 +621,16 @@ function SetDomicilio(data)
     domicilio.Colonia = data.Colonia;
     domicilio.Activo = data.Activo;
     
-    domicilio.Pais.PaisId = data.Pais.PaisId;
-    
-    
-    domicilio.TipoMedioContacto.TipoMedioContactoId = data.TipoMedioContacto.TipoMedioContactoId;
-    domicilio.TipoMedioContacto.Nombre = data.TipoMedioContacto.Nombre;
+    if(data.Pais !== undefined)
+    {
+         domicilio.Pais.PaisId = data.Pais.PaisId;
+    }
+   
+    if(data.TipoMedioContacto !== undefined)
+    {
+        domicilio.TipoMedioContacto.TipoMedioContactoId = data.TipoMedioContacto.TipoMedioContactoId;
+        domicilio.TipoMedioContacto.Nombre = data.TipoMedioContacto.Nombre;
+    }
     
     return domicilio;
 }

@@ -17,13 +17,23 @@ class Accesorio
 }
 
 //obtiene los compoenetes para los módulos
-function GetAccesorio($http, $q, CONFIG)     
+function GetAccesorio($http, $q, CONFIG, conf)     
 {
     var q = $q.defer();
     
+    var servicio = "";
+    if(conf == "presupuesto")
+    {
+        servicio = '/GetAccesorioPresupuesto';
+    }
+    else
+    {
+        servicio = '/GetAccesorio';
+    }
+    
     $http({      
           method: 'GET',
-          url: CONFIG.APIURL + '/GetAccesorio',
+          url: CONFIG.APIURL + servicio,
 
       }).success(function(data)
         {
@@ -76,8 +86,10 @@ function SetAccesorio(data)
     accesorio.AccesorioId = data.AccesorioId;
     accesorio.Nombre = data.Nombre;
     accesorio.Imagen = data.Imagen;
-    accesorio.CostoUnidad = data.CostoUnidad;
-    accesorio.ConsumoUnidad = data.ConsumoUnidad;
+    accesorio.MuestrarioId = data.MuestrarioId;
+    
+    accesorio.CostoUnidad = parseFloat(data.CostoUnidad);
+    accesorio.ConsumoUnidad = parseFloat(data.ConsumoUnidad);
     
     accesorio.TipoAccesorio.TipoAccesorioId = data.TipoAccesorioId;
     accesorio.TipoAccesorio.Nombre = data.NombreTipoAccesorio;
@@ -254,13 +266,24 @@ class TipoAccesorio
     }
 }
 
-function GetTipoAccesorio($http, $q, CONFIG)    // obtener las piezas del componente indicado
+function GetTipoAccesorio($http, $q, CONFIG, conf)    // obtener las piezas del componente indicado
 {
     var q = $q.defer();
-
+    
+    var servicio = "";
+    
+    if(conf == "presupuesto")
+    {
+        servicio = '/GetTipoAccesorioPresupuesto';
+    }
+    else
+    {
+        servicio = '/GetTipoAccesorio';
+    }
+    
     $http({      
           method: 'Get',
-          url: CONFIG.APIURL + '/GetTipoAccesorio'
+          url: CONFIG.APIURL + servicio
 
       }).success(function(data)
         {
@@ -518,4 +541,29 @@ function SetCombinacionPorAccesorio(data)
     }
     
     return combinacion;
+}
+
+/*---------- Get Instrucciones -------------------*/
+function GetInstruccionesTipoAccesorio($http, $q, CONFIG, id)     
+{
+    var q = $q.defer();
+    
+    $http({      
+          method: 'GET',
+          url: CONFIG.APIURL + '/GetInstruccionesTipoAccesorio/'+id,
+      }).success(function(data)
+        {
+            if(data[0].Estatus == "Exito")
+            {
+                q.resolve(data[1].Instrucciones[0]);  
+            }
+            else
+            {
+                q.resolve([]);      
+            }
+            
+        }).error(function(data, status){
+            q.resolve([]);
+     }); 
+    return q.promise;
 }

@@ -1,0 +1,121 @@
+.stepwizard-step p 
+{
+    margin-top: 10px;    
+}
+
+.stepwizard-row 
+{
+    display: table-row;
+}
+
+.stepwizard 
+{
+    display: table;     
+    width: 100%;
+    position: relative;
+}
+
+.stepwizard-step button[disabled] 
+{
+    opacity: 1 !important;
+    filter: alpha(opacity=100) !important;
+}
+
+.stepwizard-row:before 
+{
+    top: 14px;
+    bottom: 0;
+    position: absolute;
+    content: " ";
+    height: 3px;
+    background-color: rgba(250, 97, 21, 1.0); 
+}
+
+
+.stepwizard-step 
+{    
+    display: table-cell;
+    text-align: center;
+    position: relative;;
+    width: 20%;
+}
+
+.btn-circle 
+{
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    padding: 6px 0;
+    font-size: 12px;
+    line-height: 1.428571429;
+    border-radius: 15px;
+    border-color: rgb(42, 45, 51);
+    background-color: white;  
+    cursor: default;
+}
+
+.btn-circle.active
+{
+    border-color: rgba(250, 97, 21, 1.0);
+    background-color: rgba(250, 97, 21, 1.0);
+    color:white;
+}
+
+.btn-circle:disabled 
+{
+    cursor:  default;
+}
+
+.stepwizard-rowActivo
+{
+    display: table-row;
+}
+
+.stepwizard-rowActivo:before 
+{
+    top: 14px;
+    bottom: 0;
+    position: absolute;
+    content: " ";
+    height: 3px;
+    background-color: rgb(42, 45, 51);
+    width: 100%;
+}
+
+.stepwizard-row.paso1:before 
+{
+    width: 10%; 
+}
+
+.stepwizard-row.paso2:before 
+{
+    width: 30%; 
+}
+
+.stepwizard-row.paso3:before 
+{
+    width: 50%; 
+}
+
+.stepwizard-row.paso4:before 
+{
+    width: 70%; 
+}
+
+.stepwizard-row.paso5:before 
+{
+    width: 90%; 
+}
+
+.stepwizard-row.paso6:before 
+{
+    width: 100%; 
+}
+
+.divisorNaranja
+{
+    height: 3px;
+    background-color:  rgba(250, 97, 21, 1.0); 
+    width: 100%;
+    margin-bottom: 5px;
+}

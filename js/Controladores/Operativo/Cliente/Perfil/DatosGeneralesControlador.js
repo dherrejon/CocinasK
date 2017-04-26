@@ -48,7 +48,6 @@ app.controller("DatosClienteControlador", function($scope, $rootScope, CITA, $ht
         GetContactoAdicional($http, $q, CONFIG, id).then(function(data)
         {
             $rootScope.persona.ContactoAdicional = data;
-            console.log($rootScope.persona);
         }).catch(function(error)
         {
             alert(error);

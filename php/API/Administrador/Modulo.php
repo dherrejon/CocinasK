@@ -139,6 +139,33 @@ function GetModulo()
     }
 }
 
+function GetModuloPresupuesto()
+{
+    global $app;
+    global $session_expiration_time;
+
+    $request = \Slim\Slim::getInstance()->request();
+
+    $sql = "SELECT ModuloId, TipoModuloId, Nombre, Activo, NombreTipoModulo, Desperdicio, Margen, NumeroSeccion FROM ModuloVista WHERE Activo = 1";
+
+    try 
+    {
+
+        $db = getConnection();
+        $stmt = $db->query($sql);
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $db = null;
+        
+        echo json_encode($response);  
+    } 
+    catch(PDOException $e) 
+    {
+        echo($e);
+        $app->status(409);
+        $app->stop();
+    }
+}
+
 function AgregarModulo()
 {
     $request = \Slim\Slim::getInstance()->request();
@@ -785,6 +812,35 @@ function GetMedidasPorModulo()
     }
 }
 
+function GetMedidasModulo()
+{
+    global $app;
+    global $session_expiration_time;
+
+    $request = \Slim\Slim::getInstance()->request();
+    $moduloId = json_decode($request->getBody());
+    
+    
+    $sql = "SELECT Ancho, Alto, Profundo, ModuloId FROM MedidasPorModulo WHERE Activo = 1";
+    
+    try 
+    {
+        $db = getConnection();
+        $stmt = $db->query($sql);
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $db = null;
+        
+        echo json_encode($response);  
+    } 
+    catch(PDOException $e) 
+    {
+        //echo $e;
+        echo '[ { "Estatus": "Fallo" } ]';
+        $app->status(409);
+        $app->stop();
+    }
+}
+
 function ActivarDesactivarMedidasPorModulo()
 {
     global $app;
@@ -951,6 +1007,35 @@ function GetSeccionPorModulo()
     }
 }
 
+function GetSeccionPorModuloPresupuesto()
+{
+    global $app;
+    global $session_expiration_time;
+
+    $request = \Slim\Slim::getInstance()->request();
+    $moduloId = json_decode($request->getBody());
+    
+    
+    $sql = "SELECT * FROM SeccionPorModuloVistaPresupuesto ";
+    
+    try 
+    {
+        $db = getConnection();
+        $stmt = $db->query($sql);
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $db = null;
+        
+        echo json_encode($response);  
+    } 
+    catch(PDOException $e) 
+    {
+        //echo $e;
+        echo '[ { "Estatus": "Fallo" } ]';
+        $app->status(409);
+        $app->stop();
+    }
+}
+
 function GetLuzPorSeccion()
 {
     global $app;
@@ -975,6 +1060,36 @@ function GetLuzPorSeccion()
     {
         echo $e;
         //echo '[ { "Estatus": "Fallo" } ]';
+        $app->status(409);
+        $app->stop();
+    }
+}
+
+function GetModuloImagen($id)
+{
+    global $app;
+    global $session_expiration_time;
+
+    $request = \Slim\Slim::getInstance()->request();
+
+    $sql = "SELECT Imagen FROM Modulo WHERE ModuloId = ".$id;
+
+    try 
+    {
+        $db = getConnection();
+        $stmt = $db->query($sql);
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+        
+        $response[0]->Imagen =  base64_encode($response[0]->Imagen);
+        
+        echo '[ { "Estatus": "Exito"}, {"Imagen":'.json_encode($response).'} ]'; 
+        $db = null;
+ 
+    } 
+    catch(PDOException $e) 
+    {
+        echo($e);
+        echo '[ { "Estatus": "Fallo" } ]';
         $app->status(409);
         $app->stop();
     }

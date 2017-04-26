@@ -1,26 +1,26 @@
-<div ng-controller="CitaControlador as cita">
+<div ng-controller="ProyectoControlador as proyecto">
 
      <!-- Modal para mensajes -->
-    <div class="modal fade" id="agregarCitaModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="true" data-backdrop="static">
+    <div class="modal fade" id="agregarPresupuestoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="true" data-backdrop="static">
         <br>    <br>   <br>
-        <div class="modal-dialog modalPrincipal">
+        <div class="modal-dialog modal-lg modalPrincipal" >
            
             <div class="row">
                 <div class="col-xs-12">
-                    <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarCitaModal()"><span aria-hidden="true">&times;</span></button>
-                    <span ng-if="operacion == 'Agregar'" class="tituloModal">Agregar Cita</span>
-                    <span ng-if="operacion == 'Editar'" class="tituloModal">Editar Cita</span>
+                    <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarPresupuestoModal()"><span aria-hidden="true">&times;</span></button>
+                    <span ng-if="operacion == 'Agregar'" class="tituloModal">Agregar Presupuesto</span>
+                    <span ng-if="operacion == 'Editar'" class="tituloModal">Editar Presupuesto</span>
                 </div>
             </div>
-            <br><br><br>
+            <br><br>
             
             <!-- Paso 1 -->
-            <form name="cita1Forma" ng-show="pasoCita == 1">
+            <form name="presupuesto1Forma" ng-show="pasoPresupuesto == 1">
                 <!-- nombre -->
                 <div class="row"> 
                     <div class="col-sm-12">
                        <div class="entrada2">
-                            <input  ng-disabled=" personaSeleccionada" ng-pattern="erNombrePersonal" ng-blur="GoToPeople()" type="text" required class="{{claseCita.paso1.nombre}} form-control" name="nombre" ng-model="nuevaCita.Persona.Nombre" ng-maxlength="255"/>
+                            <input  ng-disabled=" personaSeleccionada" ng-pattern="erNombrePersonal" ng-blur="GoToPeople()" type="text" required class="{{clasePresupuesto.paso1.nombre}} form-control" name="nombre" ng-model="presupuesto.Persona.Nombre" ng-maxlength="255"/>
                             <label>Nombre*</label>
                         </div>
                    </div>             
@@ -30,7 +30,7 @@
                 <div class="row"> 
                     <div class="col-sm-6">
                        <div class="entrada2">
-                            <input ng-disabled=" personaSeleccionada" ng-pattern="erNombrePersonal" ng-blur="GoToPeople()" type="text" required class="{{claseCita.paso1.apellido1}} form-control" name="apellido1" ng-model="nuevaCita.Persona.PrimerApellido" ng-maxlength="120"/>
+                            <input ng-disabled=" personaSeleccionada" ng-pattern="erNombrePersonal" ng-blur="GoToPeople()" type="text" required class="{{clasePresupuesto.paso1.apellido1}} form-control" name="apellido1" ng-model="presupuesto.Persona.PrimerApellido" ng-maxlength="120"/>
                             <label>Primer Apellido*</label>
                         </div>
                    </div>
@@ -39,7 +39,7 @@
                    
                    <div class="col-sm-6">
                        <div class="entrada2">
-                            <input required ng-disabled=" personaSeleccionada" type="text" class="{{claseCita.paso1.apellido2}} form-control" name="apellido2" ng-model="nuevaCita.Persona.SegundoApellido" ng-maxlength="120"/>
+                            <input required ng-disabled=" personaSeleccionada" type="text" class="{{clasePresupuesto.paso1.apellido2}} form-control" name="apellido2" ng-model="presupuesto.Persona.SegundoApellido" ng-maxlength="120"/>
                             <label>Segundo Apellido</label>
                         </div>
                    </div>       
@@ -52,8 +52,8 @@
                          <label>Medio de captación*</label>
                          <div class="dropdown">
 
-                            <button ng-disabled=" personaSeleccionada" class="dropdown-toggle  {{claseCita.paso1.captacion}} " data-toggle="dropdown">
-                                <span>{{nuevaCita.Persona.MedioCaptacion.Nombre}}</span>
+                            <button ng-disabled=" personaSeleccionada" class="dropdown-toggle  {{clasePresupuesto.paso1.captacion}} " data-toggle="dropdown">
+                                <span>{{presupuesto.Persona.MedioCaptacion.Nombre}}</span>
                                 <span class="caret"></span>
                             </button>
                             
@@ -74,11 +74,11 @@
                         </div>
                     </div>
                         
-                    <div ng-if="nuevaCita.Persona.MedioCaptacion.MedioCaptacionId == '0'" class="hidden-sm hidden-md hidden-lg"> <br> </div>
+                    <div ng-if="presupuesto.Persona.MedioCaptacion.MedioCaptacionId == '0'" class="hidden-sm hidden-md hidden-lg"> <br> </div>
                    
-                    <div class="col-sm-6" ng-if="nuevaCita.Persona.MedioCaptacion.MedioCaptacionId == '0'">
+                    <div class="col-sm-6" ng-if="presupuesto.Persona.MedioCaptacion.MedioCaptacionId == '0'">
                        <div class="entrada2">
-                            <input ng-disabled=" personaSeleccionada"  ng-pattern="erNombreGeneral" type="text" required class="{{claseCita.paso1.otro}} form-control" name="nombreMedioCaptacion" ng-model="nuevaCita.Persona.NombreMedioCaptacion" ng-maxlength="120"/>
+                            <input ng-disabled=" personaSeleccionada"  ng-pattern="erNombreGeneral" type="text" required class="{{clasePresupuesto.paso1.otro}} form-control" name="nombreMedioCaptacion" ng-model="presupuesto.Persona.NombreMedioCaptacion" ng-maxlength="120"/>
                             <label>Nombre Medio de Captación*</label>
                         </div>
                    </div>             
@@ -88,77 +88,79 @@
                 <!--  -->
                 <div class="row">
                     <div class="col-xs-12">
-                        <button class="btn btn-block botonAcordion" ng-click="MostrarContenido('unidad')" ng-show="permisoOperativo.verTodosCliente" ng-disabled="cita1Forma.nombre.$invalid || cita1Forma.apellido1.$invalid"><!--  -->
-                            <span class="pull-left " >
-                                <span ></span><span>Unidades de Negocio</span> 
+                        <button class="btn btn-block botonAcordion" ng-class="GetClaseDropdown(mostrarContenido.unidad)" ng-click="MostrarContenido('unidad')" ng-show="permisoOperativo.verTodosCliente" ng-disabled="presupuesto1Forma.nombre.$invalid || presupuesto1Forma.apellido1.$invalid"><!--  -->
+                            
+                            <span  class="pull-left">
+                                <span ng-show="!mostrarContenido.unidad" style="width:20px;" class="fa fa-chevron-right"></span>
+                                <span ng-show="mostrarContenido.unidad" style="width:20px;" class="fa fa-chevron-up"></span>
+                               
+                                <span> Unidades de Negocio</span> 
                             </span>
-                            <span ng-if="!mostrarContenido.unidad" class="pull-right fa fa-chevron-down"></span>
-                            <span ng-if="mostrarContenido.unidad" class="pull-right fa fa-chevron-up"></span>
+                            
                         </button>
                     </div>
                     
                 </div>
                 
-                <div class="row" ng-if="mostrarContenido.unidad" > 
-                    
+                <div class="row" ng-if="mostrarContenido.unidad" >
                     <div class="col-xs-12">
-                        
-                        <div class="row" >
-                           <br>
-                            <div class="col-xs-12" >
-            
-                                <div class="panel panelOpciones tablaResponsable" >
-                                    <table class="table table-hover table-responsive table-striped table-condensed">
-                                      <tbody  style="cursor: pointer">
-                                        <tr ng-repeat="unidad in unidadNegocio | filter: { Nombre:buscarUnidad} | orderBy:'Nombre'" ng-show="unidad.show">
-                                          <td ng-click="SetReponsable(unidad, 'UnidadNegocio')">
-                                              {{unidad.NombreTipoUnidadNegocio}} - {{unidad.Nombre}}
-                                              
-                                               <a class="pull-right BotonOperacion text-center" href="" style="font-size:16pt" ng-click="AgregarUnidadNegocio(unidad)">
-                                                    <span class="fa fa-plus "></span>
-                                                </a>
-                                            
-                                          </td>
-                                        </tr>
-                                      </tbody>
-                                    </table>
-                                </div>
-                                        
-                            </div> 
-                        </div>
-                        
-                        <!-- unidades de negocio agregadas -->
-                        <div class="row" ng-if="nuevaCita.Persona.UnidadNegocio.length > 0">
-                            <div class="col-xs-12">
-                                <div class="table-responsive TablaModal">
-                                    <table class="table table-hover table-striped table-condensed">
-                                        <thead class="TituloTabla">
-                                          <tr>
-                                            <th>Unidad Negocio</th>
-                                            <th class="text-center">Quitar </th>
-                                          </tr>
-                                        </thead>
-                                        <tbody >
-                                          <tr ng-repeat="unidad in nuevaCita.Persona.UnidadNegocio | orderBy:['NombreTipoUnidadNegocio','Nombre'] ">
-                                            <td>{{unidad.NombreTipoUnidadNegocio}} - {{unidad.Nombre}}</td>
+                        <div class="margenDropdownlistContenido">
+                            <div class="row" >
+                               <br>
+                                <div class="col-xs-12" >
+                                    Selecciona una unidad de negocio
+                                    <div class="panel panelOpciones tablaResponsable" >
+                                        <table class="table table-hover table-responsive table-striped table-condensed">
+                                          <tbody  style="cursor: pointer">
+                                            <tr ng-repeat="unidad in unidadNegocio | orderBy:'Nombre'" ng-show="unidad.show">
+                                              <td>
+                                                  {{unidad.NombreTipoUnidadNegocio}} - {{unidad.Nombre}}
 
-                                            <td class="text-center">
-                                                <a  class="BotonOperacion" href=""  ng-click="QuitarUnidadNegocio(unidad)">
-                                                    <span class="fa fa-times fa-2x"></span>
-                                                </a>
-                                            </td>
-                                            
-                                          </tr>   
+                                                   <a class="pull-right BotonOperacion text-center" href="" style="font-size:16pt" ng-click="AgregarUnidadNegocio(unidad)">
+                                                        <span class="fa fa-plus "></span>
+                                                    </a>
 
-                                        </tbody>
-                                    </table>
+                                              </td>
+                                            </tr>
+                                          </tbody>
+                                        </table>
+                                    </div>
+
+                                </div> 
+                            </div>
+
+                            <!-- unidades de negocio agregadas -->
+                            <div class="row" ng-if="presupuesto.Persona.UnidadNegocio.length > 0">
+                                <div class="col-xs-12">
+                                    <div class="table-responsive TablaModal">
+                                        <table class="table table-hover table-striped table-condensed">
+                                            <thead class="TituloTabla">
+                                              <tr>
+                                                <th>Unidad Negocio</th>
+                                                <th class="text-center">Quitar </th>
+                                              </tr>
+                                            </thead>
+                                            <tbody >
+                                              <tr ng-repeat="unidad in presupuesto.Persona.UnidadNegocio | orderBy:['NombreTipoUnidadNegocio','Nombre'] ">
+                                                <td>{{unidad.NombreTipoUnidadNegocio}} - {{unidad.Nombre}}</td>
+
+                                                <td class="text-center">
+                                                    <a  class="BotonOperacion" href=""  ng-click="QuitarUnidadNegocio(unidad)">
+                                                        <span class="fa fa-times fa-2x"></span>
+                                                    </a>
+                                                </td>
+
+                                              </tr>   
+
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        
-                    </div>   
-                        
+
+
+                        </div>   
+                    </div>
                 </div>
                 <br><br ng-if="mostrarResponsable">
             
@@ -166,94 +168,96 @@
                 <!-- Medios de contacto -->
                 <div class="row">
                     <div class="col-xs-12">
-                        <button class="btn btn-block botonAcordion" ng-click="MostrarContenido('contacto')" ng-disabled="cita1Forma.nombre.$invalid || cita1Forma.apellido1.$invalid"><!--  -->
-                            <span class="pull-left " >
-                                <span class="fa fa-address-book"></span><span> Medio de contacto</span> 
+                        <button class="btn btn-block botonAcordion" ng-class="GetClaseDropdown(mostrarContenido.contacto)" ng-click="MostrarContenido('contacto')" ng-disabled="presupuesto1Forma.nombre.$invalid || presupuesto1Forma.apellido1.$invalid"><!--  -->
+                            <span class="pull-left ">
+                                <span ng-show="!mostrarContenido.contacto" style="width:20px" class="fa fa-chevron-right"></span>
+                                <span ng-show="mostrarContenido.contacto" style="width:20px" class="fa fa-chevron-up"></span>
+                                <span> Medio de contacto</span>     
                             </span>
-                            <span ng-if="!mostrarContenido.contacto" class="pull-right fa fa-chevron-down"></span>
-                            <span ng-if="mostrarContenido.contacto" class="pull-right fa fa-chevron-up"></span>
+                            
                         </button>
                     </div>
                     
                 </div>
                 
-                <div class="row" ng-if="mostrarContenido.contacto && (!cita1Forma.nombre.$invalid && !cita1Forma.apellido1.$invalid)">
+                <div class="row" ng-if="mostrarContenido.contacto && (!presupuesto1Forma.nombre.$invalid && !presupuesto1Forma.apellido1.$invalid)">
                     <div class="col-xs-12">
-                       <br>
-                       <div class="row">
-                           <div class="col-xs-12">
-                                <button class="btn botonAgregarAcordion pull-right" ng-click="AgregarMedioContacto()" >
-                                    <span>
-                                        <span class="fa fa-plus"></span>
-                                        <span> Nuevo</span> 
-                                    </span>
-                                </button>
-                           </div>
-                        </div>
+                        <div class="margenDropdownlistContenido">
                         
-                        <!-- Medios de contacto agregados -->
-                        <div class="row" ng-if="nuevaCita.Persona.Contacto.length +  nuevaCita.Persona.NuevoContacto.length > 0">
-                            <div class="col-xs-12">
-                                <div class="table-responsive TablaModal">
-                                    <table class="table table-hover table-striped table-condensed">
-                                        <thead class="TituloTabla">
-                                          <tr>
-                                            <th>Medio de Contacto</th>
-                                            <th>Tipo </th>
-                                            <th>Contacto </th>
-                                            <th class="text-center">Editar</th>
-                                            <th class="text-center">Quitar </th>
-                                          </tr>
-                                        </thead>
-                                        <tbody >
-                                          <tr ng-repeat="contacto in nuevaCita.Persona.Contacto | orderBy:['MedioContacto.Nombre','TipoMedioContacto.Nombre'] " ng-show="contacto.Activo && MostrarMedioContacto(contacto.TipoMedioContacto.TipoMedioContactoId)">
-                                            <td>{{contacto.MedioContacto.Nombre}}</td>
-                                            <td>{{contacto.TipoMedioContacto.Nombre}}</td>
-                                            
-                                            
-                                            <td ng-if="contacto.MedioContacto.MedioContactoId == '2'">{{contacto.Contacto | tel}}</td>
-                                            <td ng-if="contacto.MedioContacto.MedioContactoId == '1'">{{contacto.Contacto}}</td>
+                           <div class="row">
+                               <div class="col-xs-12">
+                                    <button class="btn botonAgregarAcordion pull-right" ng-click="AgregarMedioContacto()" >
+                                        <span>
+                                            <span class="fa fa-plus"></span>
+                                            <span> Nuevo</span> 
+                                        </span>
+                                    </button>
+                               </div>
+                            </div>
 
-                                            <td class="text-center">
-                                                <a  class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="EditarContactoAgregado(contacto,'Registrado')" >
-                                                    <span class="fa fa-pencil fa-2x"></span>
-                                                </a>
-                                            </td>
+                            <!-- Medios de contacto agregados -->
+                            <div class="row" ng-if="presupuesto.Persona.Contacto.length +  presupuesto.Persona.NuevoContacto.length > 0">
+                                <div class="col-xs-12">
+                                    <div class="table-responsive TablaModal">
+                                        <table class="table table-hover table-striped table-condensed">
+                                            <thead class="TituloTabla">
+                                              <tr>
+                                                <th>Medio de Contacto</th>
+                                                <th>Tipo </th>
+                                                <th>Contacto </th>
+                                                <th class="text-center">Editar</th>
+                                                <th class="text-center">Quitar </th>
+                                              </tr>
+                                            </thead>
+                                            <tbody >
+                                              <tr ng-repeat="contacto in presupuesto.Persona.Contacto | orderBy:['MedioContacto.Nombre','TipoMedioContacto.Nombre'] " ng-show="contacto.Activo && MostrarMedioContacto(contacto.TipoMedioContacto.TipoMedioContactoId)">
+                                                <td>{{contacto.MedioContacto.Nombre}}</td>
+                                                <td>{{contacto.TipoMedioContacto.Nombre}}</td>
 
-                                            <td class="text-center">
-                                                <!--<a  disabled class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirModalEliminarContacto(telefono)">
-                                                    <span class="fa fa-times fa-2x"></span>
-                                                </a>-->
-                                            </td>
-                                          </tr>
 
-                                          <!-- medios agregados sin registro en la base de datos -->
-                                          <tr ng-repeat="contacto in nuevaCita.Persona.NuevoContacto | orderBy:['MedioContacto.Nombre', 'TipoMedioContacto.Nombre'] ">
-                                            <td>{{contacto.MedioContacto.Nombre}}</td>
-                                            <td>{{contacto.TipoMedioContacto.Nombre}}</td>
-                                            
-                                              <td ng-if="contacto.MedioContacto.MedioContactoId == '2'">{{contacto.Contacto | tel}}</td>
-                                              <td ng-if="contacto.MedioContacto.MedioContactoId == '1'">{{contacto.Contacto}}</td>
+                                                <td ng-if="contacto.MedioContacto.MedioContactoId == '2'">{{contacto.Contacto | tel}}</td>
+                                                <td ng-if="contacto.MedioContacto.MedioContactoId == '1'">{{contacto.Contacto}}</td>
 
-                                            <td class="text-center">
-                                                <a  class="BotonOperacion" href=""  ng-click="EditarContactoAgregado(contacto, 'Nuevo')">
-                                                    <span class="fa fa-pencil fa-2x"></span>
-                                                </a>
-                                            </td>
+                                                <td class="text-center">
+                                                    <a  class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="EditarContactoAgregado(contacto,'Registrado')" >
+                                                        <span class="fa fa-pencil fa-2x"></span>
+                                                    </a>
+                                                </td>
 
-                                            <td class="text-center">
-                                                <a  class="BotonOperacion" href=""  ng-click="BorrarContactoAgregado(contacto)">
-                                                    <span class="fa fa-times fa-2x"></span>
-                                                </a>
-                                            </td>
-                                          </tr>    
+                                                <td class="text-center">
+                                                    <!--<a  disabled class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirModalEliminarContacto(telefono)">
+                                                        <span class="fa fa-times fa-2x"></span>
+                                                    </a>-->
+                                                </td>
+                                              </tr>
 
-                                        </tbody>
-                                    </table>
+                                              <!-- medios agregados sin registro en la base de datos -->
+                                              <tr ng-repeat="contacto in presupuesto.Persona.NuevoContacto | orderBy:['MedioContacto.Nombre', 'TipoMedioContacto.Nombre'] ">
+                                                <td>{{contacto.MedioContacto.Nombre}}</td>
+                                                <td>{{contacto.TipoMedioContacto.Nombre}}</td>
+
+                                                  <td ng-if="contacto.MedioContacto.MedioContactoId == '2'">{{contacto.Contacto | tel}}</td>
+                                                  <td ng-if="contacto.MedioContacto.MedioContactoId == '1'">{{contacto.Contacto}}</td>
+
+                                                <td class="text-center">
+                                                    <a  class="BotonOperacion" href=""  ng-click="EditarContactoAgregado(contacto, 'Nuevo')">
+                                                        <span class="fa fa-pencil fa-2x"></span>
+                                                    </a>
+                                                </td>
+
+                                                <td class="text-center">
+                                                    <a  class="BotonOperacion" href=""  ng-click="BorrarContactoAgregado(contacto)">
+                                                        <span class="fa fa-times fa-2x"></span>
+                                                    </a>
+                                                </td>
+                                              </tr>    
+
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        
                     </div>
                 </div>
                 
@@ -308,329 +312,171 @@
                 <!---- botones de operacion -->
                 <div class="row">
                     <div class="col-xs-6">
-                        <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarCitaModal()">CANCELAR</button>
+                        <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarPresupuestoModal()">CANCELAR</button>
                     </div>
 
                     <div class="col-xs-6">
-                        <button focus class="btn botonOperacionModal btn-block" ng-click="TerminarCita1(cita1Forma.nombre.$invalid, cita1Forma.apellido1.$invalid, cita1Forma.nombreMedioCaptacion.$invalid)">SIGUIENTE &gt;&gt;</button>
+                        <button focus class="btn botonOperacionModal btn-block" ng-click="TerminarPaso1(presupuesto1Forma.nombre.$invalid, presupuesto1Forma.apellido1.$invalid, presupuesto1Forma.nombreMedioCaptacion.$invalid)">SIGUIENTE &gt;&gt;</button>
                     </div>
                 </div>
             <br>
             </form>
             <!-- Paso 2 -->
-            <form name="cita2Forma" ng-show="pasoCita == 2">
-               <!-- Tarea -->
+            <form name="presupuesto2Forma" ng-show="pasoPresupuesto == 2">
+               
+                <!-- Tipo de proyecto -->
                 <div class="row">
+                  
                     <div class="col-sm-6 etiquetaDropdownList">
-                         <label>Tarea</label>
+                         <label>Proyecto*</label>
                          <div class="dropdown">
 
-                            <button class="dropdown-toggle  {{claseCita.paso2.tarea}}" data-toggle="dropdown">
-                                <span>{{nuevaCita.Tarea.Nombre}}</span>
+                            <button class="dropdown-toggle  {{clasePresupuesto.paso2.tipoProyecto}} " data-toggle="dropdown">
+                                <span>{{presupuesto.Proyecto.TipoProyecto.Nombre}}</span>
                                 <span class="caret"></span>
                             </button>
                             
-                            <ul class="dropdown-menu listaOpcionesDropdownList " >
-                                <li ng-repeat="tarea in tareaCita | orderBy:'Nombre'" style="overflow: scroll">
-                                    <a  href="" class="dropdownOpcionModal" ng-click="CambiarTarea(tarea)">
-                                        <span>{{tarea.Nombre}}</span>
+                            <ul class="dropdown-menu listaOpcionesDropdownList" >                                
+                                <li ng-repeat="tipo in tipoProyecto | orderBy:'Nombre'">
+                                    <a  href="" class="dropdownOpcionModal" ng-click="CambiarTipoProyecto(tipo)">
+                                        <span>{{tipo.Nombre}}</span>
                                     </a>
                                 </li>
                             </ul>
 
                         </div>
-                    </div>          
-                </div>
-                <br><br>
-                <!-- Asunto -->
-                <div class="row"> 
-                    <div class="col-sm-12 etiquetaDropdownList">
+                    </div>
+                        
+                    <div class="hidden-sm hidden-md hidden-lg"> <br> </div>
+                   
+                    <div class="col-sm-6">
                        <div class="entrada2">
-                            <input  type="text" required class="{{claseCita.paso2.asunto}} form-control" name="asunto" ng-model="nuevaCita.Asunto" ng-maxlength="255"/>
-                            <label>Asunto</label>
+                            <input ng-pattern="erNombreGeneral" type="text" required class="entrada form-control" name="nombreMedioCaptacion" ng-model="presupuesto.Proyecto.Nombre" ng-maxlength="120"/>
+                            <label>Nombre del Proyecto*</label>
                         </div>
                    </div>             
                 </div>
+                <div class="hidden-sm hidden-md hidden-lg"> <br> </div>
                 
                 <!-- Domicilios -->
                 <div class="row">
                     <div class="col-xs-12">
-                        <button class="btn btn-block botonAcordion" ng-click="MostrarContenido('direccion')" ng-show="nuevaCita.Tarea.TareaCitaId == '1'"><!--  -->
+                        <button class="btn btn-block botonAcordion" ng-class="GetClaseDropdown(mostrarContenido.direccion)" ng-click="MostrarContenido('direccion')"><!--  -->
                             <span class="pull-left " >
-                                <span class="fa fa-map-marker"></span><span> Domicilios</span> 
+                                <span ng-if="!mostrarContenido.direccion" style="width:20px" class="fa fa-chevron-right"></span>
+                                <span ng-if="mostrarContenido.direccion" style="width:20px" class="fa fa-chevron-up"></span>
+                                <span> Domicilios</span> 
                             </span>
-                            <span ng-if="!mostrarContenido.direccion" class="pull-right fa fa-chevron-down"></span>
-                            <span ng-if="mostrarContenido.direccion" class="pull-right fa fa-chevron-up"></span>
+                            
                         </button>
                     </div>
                 </div>
                 
-                <div class="row" ng-if="mostrarContenido.direccion && (nuevaCita.Tarea.TareaCitaId == '1')">
+                <div class="row" ng-if="mostrarContenido.direccion">
                     <div class="col-xs-12">
-                       <br>
-                       <div class="row">
-                           <div class="col-xs-12">
-                                <button class="btn botonAgregarAcordion pull-right" ng-click="AgregarDomicilio()" >
-                                    <span>
-                                        <span class="fa fa-plus"></span>
-                                        <span> Nuevo</span> 
-                                    </span>
-                                </button>
-                           </div>
-                        </div>
-                        
-                        <!-- Domicilios -->
-                        <div class="row" ng-if="nuevaCita.Persona.Domicilio.length +  nuevaCita.Persona.NuevoDomicilio.length > 0">
-                            <div class="col-xs-12">
-                                <div class="table-responsive TablaModal">
-                                    <table class="table table-hover table-striped table-condensed">
-                                        <thead class="TituloTabla">
-                                          <tr>
-                                            <th>Tipo Domicilio</th>
-                                            <th>Domicilio</th>
-                                            <th class="text-center">Detalles</th>
-                                            <th class="text-center">Editar</th>
-                                            <th class="text-center">Quitar </th>
-                                            <th class="text-center">Seleccionar </th>
-                                          </tr>
-                                        </thead>
-                                        <tbody >
-                                          <tr ng-repeat="domicilio in nuevaCita.Persona.Domicilio | orderBy:['TipoMedioContacto.Nombre'] " ng-show="domicilio.Activo">
-                                            <td>{{domicilio.TipoMedioContacto.Nombre}}</td>
-                                            <td>{{domicilio.Domicilio}}</td>
+                       <div class="margenDropdownlistContenido">
+                           <div class="row">
+                               <div class="col-xs-12">
+                                    <button class="btn botonAgregarAcordion pull-right" ng-click="AgregarDomicilio()" >
+                                        <span>
+                                            <span class="fa fa-plus"></span>
+                                            <span>Nuevo</span> 
+                                        </span>
+                                    </button>
+                               </div>
+                            </div>
 
-                                           <td class="text-center">
-                                                <a  class="BotonOperacion" href=""  ng-click="DetalleDomicilio(domicilio)">
-                                                    <span class="fa fa-eye fa-2x"></span>
-                                                </a>
-                                            </td>
+                            <!-- Domicilios -->
+                            <div class="row" ng-if="presupuesto.Persona.Domicilio.length +  presupuesto.Persona.NuevoDomicilio.length > 0">
+                                <div class="col-xs-12">
+                                    <div class="table-responsive TablaModal">
+                                        <table class="table table-hover table-striped table-condensed">
+                                            <thead class="TituloTabla">
+                                              <tr>
+                                                <th>Tipo Domicilio</th>
+                                                <th>Domicilio</th>
+                                                <th class="text-center">Detalles</th>
+                                                <th class="text-center">Editar</th>
+                                                <th class="text-center">Quitar </th>
+                                                <th class="text-center">Seleccionar </th>
+                                              </tr>
+                                            </thead>
+                                            <tbody >
+                                              <tr ng-repeat="domicilio in presupuesto.Persona.Domicilio | orderBy:['TipoMedioContacto.Nombre'] " ng-show="domicilio.Activo">
+                                                <td>{{domicilio.TipoMedioContacto.Nombre}}</td>
+                                                <td>{{domicilio.Domicilio}}</td>
 
-                                            <td class="text-center">
-                                                <a  class="BotonOperacion" href=""  ng-click="EditarDomicilioAgregado(domicilio, 'Registrado')">
-                                                    <span class="fa fa-pencil fa-2x"></span>
-                                                </a>
-                                            </td>
+                                               <td class="text-center">
+                                                    <a  class="BotonOperacion" href=""  ng-click="DetalleDomicilio(domicilio)">
+                                                        <span class="fa fa-eye fa-2x"></span>
+                                                    </a>
+                                                </td>
 
-                                            <td class="text-center">
-                                            </td>
-                                            
-                                            <td class="text-center">
-                                                <div class="checkboxOperativo">
-                                                    <label>
-                                                        <input  ng-model="domicilio.Seleccionado" type="checkbox" value="" ng-click="SeleccionarDomicilio(domicilio)">
-                                                        <span class="cr"><i class="cr-icon fa fa-check"></i></span>
-                                                    </label>
-                                                </div>
-                                            </td>
-                                          </tr>
+                                                <td class="text-center">
+                                                    <a  class="BotonOperacion" href=""  ng-click="EditarDomicilioAgregado(domicilio, 'Registrado')">
+                                                        <span class="fa fa-pencil fa-2x"></span>
+                                                    </a>
+                                                </td>
 
-                                          <!-- domicilios agregados sin registro en la base de datos -->
-                                          <tr ng-repeat="domicilio in nuevaCita.Persona.NuevoDomicilio | orderBy:['TipoMedioContacto.Nombre'] ">
-                                           
-                                            <td>{{domicilio.TipoMedioContacto.Nombre}}</td>
-                                            
-                                            <td>{{domicilio.Domicilio}}</td>
-                                            
-                                            <td class="text-center">
-                                                <a  class="BotonOperacion" href=""  ng-click="DetalleDomicilio(domicilio)">
-                                                    <span class="fa fa-eye fa-2x"></span>
-                                                </a>
-                                            </td>
+                                                <td class="text-center">
+                                                </td>
 
-                                            <td class="text-center">
-                                                <a  class="BotonOperacion" href=""  ng-click="EditarDomicilioAgregado(domicilio, 'Nuevo')">
-                                                    <span class="fa fa-pencil fa-2x"></span>
-                                                </a>
-                                            </td>
+                                                <td class="text-center">
+                                                    <div class="checkboxOperativo">
+                                                        <label>
+                                                            <input  ng-model="domicilio.Seleccionado" type="checkbox" value="" ng-click="SeleccionarDomicilio(domicilio)">
+                                                            <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+                                                        </label>
+                                                    </div>
+                                                </td>
+                                              </tr>
 
-                                            <td class="text-center">
-                                                <a  class="BotonOperacion" href=""  ng-click="BorrarDomicilioAgregado(domicilio)">
-                                                    <span class="fa fa-times fa-2x"></span>
-                                                </a>
-                                            </td>
-                                            
-                                            <td class="text-center">
-                                                <div class="checkboxOperativo">
-                                                    <label>
-                                                        <input  ng-model="domicilio.Seleccionado" type="checkbox" value="" ng-click="SeleccionarDomicilio(domicilio)">
-                                                        <span class="cr"><i class="cr-icon fa fa-check"></i></span>
-                                                    </label>
-                                                </div>
-                                            </td>
-                                            
-                                            
-                                          </tr>    
+                                              <!-- domicilios agregados sin registro en la base de datos -->
+                                              <tr ng-repeat="domicilio in presupuesto.Persona.NuevoDomicilio | orderBy:['TipoMedioContacto.Nombre'] ">
 
-                                        </tbody>
-                                    </table>
+                                                <td>{{domicilio.TipoMedioContacto.Nombre}}</td>
+
+                                                <td>{{domicilio.Domicilio}}</td>
+
+                                                <td class="text-center">
+                                                    <a  class="BotonOperacion" href=""  ng-click="DetalleDomicilio(domicilio)">
+                                                        <span class="fa fa-eye fa-2x"></span>
+                                                    </a>
+                                                </td>
+
+                                                <td class="text-center">
+                                                    <a  class="BotonOperacion" href=""  ng-click="EditarDomicilioAgregado(domicilio, 'Nuevo')">
+                                                        <span class="fa fa-pencil fa-2x"></span>
+                                                    </a>
+                                                </td>
+
+                                                <td class="text-center">
+                                                    <a  class="BotonOperacion" href=""  ng-click="BorrarDomicilioAgregado(domicilio)">
+                                                        <span class="fa fa-times fa-2x"></span>
+                                                    </a>
+                                                </td>
+
+                                                <td class="text-center">
+                                                    <div class="checkboxOperativo">
+                                                        <label>
+                                                            <input  ng-model="domicilio.Seleccionado" type="checkbox" value="" ng-click="SeleccionarDomicilio(domicilio)">
+                                                            <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+                                                        </label>
+                                                    </div>
+                                                </td>
+
+
+                                              </tr>    
+
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        
                     </div>
                 </div>
                 <br><br>
-                
-                <!-- Responsable -->
-                <div class="row"> 
-                    <div class="col-sm-12 etiquetaDropdownList">
-                       <label>Responsable</label>
-                        <a  href="" class="btn {{claseCita.paso2.responsable}} btn-block" ng-click="CambiarMostrarResponsable()">
-                            <span>{{nuevaCita.Responsable.Nombre}} <span class="fa fa-caret-down"></span></span>
-                       </a>
-                   </div>             
-                </div>
-                
-                <div class="row" ng-if="mostrarResponsable"> 
-                    
-                    <div class="col-xs-12">
-                        
-                        <div class="row">
-                            <div class="col-xs-12">
-
-                                <a  href="" class="btn" ng-class="GetClaseTipoResponsable('UnidadNegocio')" ng-click="CambiarTipoResponsable('UnidadNegocio')">
-                                    <span>Unidad de Negocio</span>
-                                </a> 
-                                <a  href="" class="btn" ng-class="GetClaseTipoResponsable('Colaborador')" ng-click="CambiarTipoResponsable('Colaborador')">
-                                    <span>Colaborador</span>
-                                </a> 
-                            </div>
-                        </div> 
-                        
-                        <div class="row"  ng-if="tipoResponsable=='UnidadNegocio'">
-                            <div class="col-xs-12" >
-                                
-                                <div class="panelSelector">
-                                    <div class="row">
-                                
-                                        <div class="col-xs-12">
-                                            <b>Selecciona una unidad de negocio</b>
-                                        </div>
-                                        <br><br>
-                                        
-                                        <div class="col-xs-12">
-                                            <input type="text" class="entrada form-control" placeholder="Buscar Unidad de Negocio" ng-model="buscarUnidad"/><br>
-                                        </div>
-                                        <br>
-                                        
-                                        <div class="col-xs-12">
-                                            <div class="panel panelOpciones tablaResponsable" >
-                                                <table class="table table-hover table-responsive">
-                                                  <tbody  style="cursor: pointer">
-                                                    <tr ng-repeat="unidad in unidadNegocio | filter: { Nombre:buscarUnidad} | orderBy:'Nombre'">
-                                                      <td ng-click="SetReponsable(unidad, 'UnidadNegocio')">
-                                                          {{unidad.NombreTipoUnidadNegocio}} - {{unidad.Nombre}}
-                                                          <span class="pull-right" ng-if="nuevaCita.Responsable.UnidadNegocio && nuevaCita.Responsable.ResponsableId == unidad.UnidadNegocioId">
-                                                              <span class="fa fa-check fa-2x"></span>
-                                                          </span>
-                                                      </td>
-                                                    </tr>
-                                                  </tbody>
-                                                </table>
-                                            </div>
-                                        </div> 
-                                        
-                                        <div class="col-xs-12" ng-show="nuevaCita.Responsable.ResponsableId.length > 0">
-                                           <div class="pull-right">
-                                                <button class="btn botonOperacionModal " ng-click="CambiarMostrarResponsable()">OK</button>
-                                           </div>
-                                        </div>     
-                                    </div>
-                                </div>
-                               
-                            </div> 
-                        </div>
-                        
-                        <div class="row"  ng-if="tipoResponsable=='Colaborador'">
-                            <div class="col-xs-12" >
-                                
-                                <div class="panelSelector">
-                                    <div class="row">
-                                
-                                        <div class="col-xs-12">
-                                            <b>Selecciona un colaborador</b>
-                                        </div>
-                                        <br><br>
-                                        
-                                        <div class="col-xs-12">
-                                            <input type="text" class="entrada form-control" placeholder="Buscar Colaborador" ng-model="buscarColaborador"/><br>
-                                        </div>
-                                        <br>
-                                        
-                                        <div class="col-xs-12">
-                                            <div class="panel panelOpciones tablaResponsable" >
-                                                <table class="table table-hover table-responsive">
-                                                  <tbody  style="cursor: pointer">
-                                                    <tr ng-repeat="colaborador in responsable | filter: { Nombre:buscarColaborador} | orderBy:'Nombre'">
-                                                      <td ng-click="SetReponsable(colaborador, 'Colaborador')">
-                                                          {{colaborador.Nombre}}
-                                                          <span class="pull-right" ng-if="nuevaCita.Responsable.Colaborador && nuevaCita.Responsable.ResponsableId == colaborador.ColaboradorId">
-                                                              <span class="fa fa-check fa-2x"></span>
-                                                          </span>
-                                                      </td>
-                                                    </tr>
-                                                  </tbody>
-                                                </table>
-                                            </div>
-                                        </div> 
-                                        
-                                        <div class="col-xs-12" ng-show="nuevaCita.Responsable.ResponsableId.length > 0">
-                                           <div class="pull-right">
-                                                <button class="btn botonOperacionModal " ng-click="CambiarMostrarResponsable()">OK</button>
-                                           </div>
-                                        </div>       
-                                    </div>
-                                </div>
-                               
-                            </div> 
-                        </div>
-                    </div>   
-                        
-                </div>
-                <br><br ng-if="mostrarResponsable">
-                <!-- Fecha -->
-                <div class="row">
-                      
-                    <div class="col-xs-12 col-sm-6" >
-                        <div class="entrada2">
-                            <input type="text" id="fechaCita" class="form-control {{claseCita.paso2.fecha}}" onchange="angular.element(this).scope().CambiarFecha(this)">
-                            <label>Fecha</label>
-                        </div>
-                    </div>
-
-                </div>
-                <br><br>
-                <!-- Hora -->            
-                <div class="row">
-                    <div class="col-sm-6">
-                       <div class="entrada2">
-                            <input   type="text" id="horaInicio" class="form-control {{claseCita.paso2.horaInicio}}" onchange="angular.element(this).scope().CambiarHoraInicio(this)">
-                            <label>Hora Inicio</label>
-                        </div>
-                   </div>
-                   
-                   <div class="hidden-sm hidden-md hidden-lg"> <br><br> </div>  
-                    
-                    <div class=" col-sm-6" >
-                        <div class="entrada2">
-                            <input  ng-disabled="nuevaCita.HoraInicio.length == 0" type="text" id="horaFin" class="form-control {{claseCita.paso2.horaFin}}" onchange="angular.element(this).scope().CambiarHoraFin(this)">
-                            <label>Hora Fin</label>
-                        </div>
-                    </div>
-
-                </div>
-                <br>
-                <!-- Descripción -->            
-                <div class="row">
-                    <div class="col-sm-12">
-                         <div class="">
-                            <label class="labelEntrada">Descripción</label>
-                            <textarea required type="text"  class="form-control" ng-class="claseCita.paso2.descripcion" name="descripcion" ng-model="nuevaCita.Descripcion" ng-maxlength="255"></textarea>
-                        </div>
-                    </div>
-                </div>
-                <br>
-                       
                 <!-------- mensaje de error ---->
                 <div class="row">
                     <div class="col-xs-12">
@@ -643,19 +489,1306 @@
                 <!---- botones de operacion -->
                 <div class="row">
                     <div class="col-xs-6">
-                        <button class="btn botonOperacionModal btn-block" ng-click="AnteriorCita()">&lt;&lt; ANTERIOR</button>
+                        <button class="btn botonOperacionModal btn-block" ng-click="AnteriorPresupuesto()">&lt;&lt; ANTERIOR</button>
                     </div>
 
                     <div class="col-xs-6">
-                        <button focus class="btn botonOperacionModal btn-block" ng-click="TerminarDatoCita(cita2Forma.asunto.$invalid, cita2Forma.descripcion.$invalid)">TERMINAR</button>
+                        <button focus class="btn botonOperacionModal btn-block" ng-click="TerminarPaso2()">SIGUIENTE &gt;&gt;</button>
+                    </div>
+                </div>
+            <br>
+            </form>
+            
+             <!-- Paso 3 -->
+            <form name="presupuesto3Forma" ng-show="pasoPresupuesto == 3">
+               
+                <div class="stepwizard">
+                  <div class="stepwizard-rowActivo"></div>
+                   
+                    <div class="stepwizard-row" ng-class="GetClaseLineaPaso()">
+                        
+                        <div class="stepwizard-step"  ng-repeat="paso in detallePaso">
+                            <button type="button" class="btn  btn-circle" ng-class="GetClasePaso(paso.numero)" disabled>{{paso.numero}}</button>
+                            <p>{{paso.nombre}}</p>
+                        </div>
+                    </div>
+                </div>
+               
+                <br>
+                <div class="row">
+                    <div class="col-xs-12">
+                        {{presupuesto.Proyecto.TipoProyecto.Nombre}}: {{presupuesto.Persona.Nombre}} {{presupuesto.Persona.PrimerApellido}} {{presupuesto.Persona.SegundoApellido}}
+                        <div class="divisorNaranja"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 tituloPaso">
+                        <span>Datos del Presupuesto</span>
+                    </div>
+                </div>
+                <br>
+                
+                <!-- opciones del presupuesto -->
+                <div class="row">
+                    <!-- Cocina Integral -->
+                    <div class="col-sm-6">
+                        <div class="tituloOpcionPresupuesto active">
+                            <!--<span class="fa fa-circle-o"></span>-->
+                            <span class="fa fa-check-circle-o" style="font-size:26px"></span>
+                            <span class="textoTituloOpcionPresupuesto" style="font-size:20px;"> Cocina Integral</span>
+                        </div>
+                        <div class="panelItemPresupuesto">
+                           <div class="row">
+                               <div class="col-xs-12 text-center">
+                                   <span>¿Qué combinaciones quieres presupuestar?</span>
+                               </div>
+                           </div>
+                            <br>
+                            <div class="row">
+                               <div class="col-xs-12">
+                                                           
+                                    <div ng-repeat="combinacion in combinacion | orderBy:'Nombre'" ng-show="combinacion.Activo">
+                                        <div class="checkbox checkboxOperativo itemPresupuesto" style="margin-left: 0px" ng-class="{itemPresupuestoPrimero: $first}">
+                                            <label style="width:100%">
+                                                <input  ng-model="combinacion.PorDefecto" type="checkbox" >
+                                                <span class="cr"> <i class="cr-icon fa fa-check"></i> </span>
+                                                <span>{{combinacion.Nombre}}</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                            
+                               </div>
+                           </div>
+                           
+                        </div>
+                    </div>
+                    
+                    <!-- Cubierta -->
+                    <div class="col-sm-6">
+                        <div class="tituloOpcionPresupuesto">
+                            <span class="fa fa-circle-thin" style="font-size:26px"></span>
+                            <!--<span class="fa fa-check-circle-o" style="font-size:26px"></span>-->
+                            <span class="textoTituloOpcionPresupuesto" style="font-size:20px;"> Cubierta</span>
+                        </div>
+                        
+                        <div class="panelItemPresupuesto">
+                           <div class="row">
+                               <div class="col-xs-12 text-center">
+                                   <span>¿Qué tipo de cubierta quieres presupuestar?</span>
+                               </div>
+                           </div>
+                            <br>
+                            <div class="row">
+                               <div class="col-xs-12">
+                                                           
+                                    <div ng-repeat="tipo in tipoCubierta | orderBy:'Nombre'">
+                                        <div class="checkbox checkboxOperativo itemPresupuesto" style="margin-left: 0px" ng-class="{itemPresupuestoPrimero: $first}">
+                                            <label style="width:100%">
+                                                <input  ng-model="tipo.PorDefecto" type="checkbox" >
+                                                <span class="cr"> <i class="cr-icon fa fa-check"></i> </span>
+                                                <span>{{tipo.Nombre}}</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                            
+                               </div>
+                           </div>
+                           
+                        </div>
+                           
+                    </div>
+                </div>
+                <br>
+                
+                <!-------- mensaje de error ---->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div ng-repeat="error in mensajeError">
+                            <span class="textoError">{{error}}</span>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <!---- botones de operacion -->
+                <div class="row">
+                    <div class="col-xs-6">
+                        <button class="btn botonOperacionModal btn-block" ng-click="AnteriorPresupuesto()">&lt;&lt; ANTERIOR</button>
+                    </div>
+
+                    <div class="col-xs-6">
+                        <button focus class="btn botonOperacionModal btn-block" ng-click="TerminarPaso3()">SIGUIENTE &gt;&gt;</button>
+                    </div>
+                </div>
+            <br>
+            </form>
+            
+            <!-- Paso 4 -->
+            <form name="presupuesto4Forma" ng-show="pasoPresupuesto == 4">
+               
+                <div class="stepwizard">
+                  <div class="stepwizard-rowActivo"></div>
+                   
+                    <div class="stepwizard-row" ng-class="GetClaseLineaPaso()">
+                        
+                        <div class="stepwizard-step"  ng-repeat="paso in detallePaso">
+                            <button type="button" class="btn  btn-circle" ng-class="GetClasePaso(paso.numero)" disabled>{{paso.numero}}</button>
+                            <p>{{paso.nombre}}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <br>
+                <div class="row">
+                    <div class="col-xs-12">
+                        {{presupuesto.Proyecto.TipoProyecto.Nombre}}: {{presupuesto.Persona.Nombre}} {{presupuesto.Persona.PrimerApellido}} {{presupuesto.Persona.SegundoApellido}}
+                        <div class="divisorNaranja"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 tituloPaso">
+                        <span>Módulos</span>
+                    </div>
+                </div>
+                <br><br>
+                
+                <div class="row">
+                   
+                   <!-- imagen -->
+                    <div class="col-sm-6 hidden-md hidden-sm hidden-lg">
+                          
+                       <div class="" ng-if="moduloAgregar.Imagen.length > 0">
+                            <div>
+                                <img class="imagenModuloPresupuesto center-block" ng-src="data:image/PNG;base64,{{moduloAgregar.Imagen}}"/>
+                            </div>
+                        </div>
+
+                        <!-- Imagen -->
+                       <div class="marcoImagenPresupuesto" ng-if="moduloAgregar.Imagen.length == 0">
+                            <div class="imagenModuloVaciaPresupuesto">Módulo</div>
+                        </div>
+                    </div>
+                    <div class="hidden-md hidden-sm hidden-lg"><br><br></div>
+                    
+                    <!-- Módulo -->
+                    <div class="col-sm-6">
+                        
+                        <!-- Tipo de módulo-->
+                        <div class="row">
+                            <div class="col-xs-12 etiquetaDropdownList">
+                                <label>Tipo de Módulo</label>
+                                 <div class="dropdown">
+
+                                    <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown">
+                                        <span>{{moduloAgregar.TipoModulo.Nombre}}</span>
+                                        <span class="caret"></span>
+                                    </button>
+
+                                    <ul class="dropdown-menu listaOpcionesDropdownList" >                                
+                                        <li ng-repeat="tipo in tipoModulo | orderBy:'Nombre'" ng-show="tipo.Activo">
+                                            <a  href="" class="dropdownOpcionModal" ng-click="CambiarTipoModulo(tipo)">
+                                                <span>{{tipo.Nombre}}</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+
+                                </div>
+                            </div>
+                        </div>
+                        <br><br class="hidden-xs">
+                        <!-- Módulo -->
+                        <div class="row">
+                            <div class="col-xs-12 etiquetaDropdownList">
+                                <label>Módulo</label>
+                                 <div class="dropdown">
+
+                                    <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown" ng-disabled="moduloAgregar.TipoModulo.TipoModuloId.length == 0">
+                                        <span>{{moduloAgregar.Nombre}}</span>
+                                        <span class="caret"></span>
+                                    </button>
+
+                                    <ul class="dropdown-menu listaOpcionesDropdownList" >                                
+                                        <li ng-repeat="modulo in modulo | orderBy:'Nombre' | filter:{TipoModuloId:moduloAgregar.TipoModulo.TipoModuloId}:true">
+                                            <a  href="" class="dropdownOpcionModal" ng-click="CambiarModulo(modulo)">
+                                                <span>{{modulo.Nombre}}</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+
+                                </div>
+                            </div>
+                        </div>
+                         
+                    </div>
+                    
+                    <!-- imagen -->
+                    <div class="col-sm-6 hidden-xs">
+                          
+                       <div class="" ng-if="moduloAgregar.Imagen.length > 0">
+                            <div>
+                                <img class="imagenModuloPresupuesto center-block" ng-src="data:image/PNG;base64,{{moduloAgregar.Imagen}}"/>
+                            </div>
+                        </div>
+
+                        <!-- Imagen -->
+                       <div class="marcoImagenPresupuesto" ng-if="moduloAgregar.Imagen.length == 0">
+                            <div class="imagenModuloVaciaPresupuesto">Módulo</div>
+                        </div>
+                    </div>
+                    
+                </div>
+                <br><br>
+                
+                <div class="row">
+                   
+                   <!-- ancho -->
+                    <div class="col-xs-6 col-sm-3 etiquetaDropdownList">
+                        <label>Ancho</label>
+                         <div class="dropdown">
+
+                            <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown" ng-disabled="moduloAgregar.ModuloId.length == 0">
+                                <span>{{moduloAgregar.Ancho}}</span>
+                                <span class="caret"></span>
+                            </button>
+                            
+                            <ul class="dropdown-menu listaOpcionesDropdownList" >                                
+                                <li ng-repeat="ancho in moduloAgregar.Medida | orderBy:'AnchoNumero' | filter:{show:true} | unique: 'Ancho'">
+                                    <a  href="" class="dropdownOpcionModal" ng-click="CambiarAncho(ancho.Ancho)">
+                                        <span>{{ancho.Ancho}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div>
+                    
+                    <!-- alto -->
+                    <div class="col-xs-6 col-sm-3 etiquetaDropdownList">
+                        <label>Alto</label>
+                         <div class="dropdown">
+
+                            <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown" ng-disabled="moduloAgregar.Ancho.length == 0">
+                                <span>{{moduloAgregar.Alto}}</span>
+                                <span class="caret"></span>
+                            </button>
+
+                            <ul class="dropdown-menu listaOpcionesDropdownList" >                                
+                                <li ng-repeat="alto in moduloAgregar.Medida | orderBy:'AltoNumero' | filter:{Ancho:moduloAgregar.Ancho, show:true}:true | unique: 'Alto'">
+                                    <a  href="" class="dropdownOpcionModal" ng-click="CambiarAlto(alto.Alto)">
+                                        <span>{{alto.Alto}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div>
+                
+                    <div class="row hidden-sm hidden-md hidden-lg">
+                       <div class="col-xs-12 "><br></div>
+                    </div>
+                    
+                    <!-- Profundo -->
+                    <div class="col-xs-6 col-sm-3 etiquetaDropdownList">
+                        <label>Profundo</label>
+                         <div class="dropdown">
+
+                            <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown" ng-disabled="moduloAgregar.Alto.length == 0">
+                                <span>{{moduloAgregar.Profundo}}</span>
+                                <span class="caret"></span>
+                            </button>
+
+                            <ul class="dropdown-menu listaOpcionesDropdownList" >                                
+                                <li ng-repeat="profundo in moduloAgregar.Medida | orderBy:'ProfundoNumero' | filter:{Ancho:moduloAgregar.Ancho, Alto:moduloAgregar.Alto, show:true}:true">
+                                    <a  href="" class="dropdownOpcionModal" ng-click="CambiarProfundo(profundo.Profundo)">
+                                        <span>{{profundo.Profundo}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div>
+                    
+                    <!-- Agregar Módulo -->
+                    <div class="col-xs-6 col-sm-3">
+                        <button class="btn botonAgregarAcordion center-block" ng-disabled="!(moduloAgregar.Profundo.length > 0)" ng-click="AgregarModulo()"> <span class="fa fa-plus"></span> </button>
+                    </div>
+                </div>
+                
+                <!-- Contador de tipo de módulo -->
+                <div class="row">
+                    <div class="col-xs-6 col-sm-4 col-md-3" ng-repeat="tipo in tipoModuloAgregar | orderBy:'Nombre'" style="margin-bottom:10px">
+                        <span class="textoNumeroTipoModulo">{{tipo.Cantidad}}</span>
+                        <spna class="textoTipoModulo"> {{tipo.Nombre}}(s)</spna> 
+                    </div>
+                </div>
+                
+                <div class="table-responsive tablePerfilClienteDatos" ng-show="presupuesto.Modulo.length > 0">
+                    <table class="table table-hover table-striped table-condensed">
+                        <thead class="TituloTabla">
+                          <tr>
+                            <th><span class=""><b>Módulo</b></span></th>
+                            <th class="text-center"><span><b>Ancho</b></span></th>
+                            <th class="text-center"><span><b>Alto</b></span></th>
+                            <th class="text-center"><span><b>Profundo</b></span></th>
+                            <th class="text-center"><span><b>Cantidad</b></span></th>
+                            <th class="text-center"><span><b>Quitar</b></span></th>
+                            
+                          </tr>
+                        </thead>
+                        <tbody >
+                          <tr ng-repeat="modulo in presupuesto.Modulo">
+
+                             <td>{{modulo.TipoModulo.Nombre}} {{modulo.Nombre}}</td>
+                             <td class="text-center">{{modulo.Ancho}}</td>
+                             <td class="text-center">{{modulo.Alto}}</td>
+                             <td class="text-center">{{modulo.Profundo}}</td>
+                             
+                             
+                             <td class="text-center">
+                                 <span>{{modulo.Cantidad}}</span>
+                                 <div class="btn-group" role="group" aria-label="...">
+                                  <a type="button" class="btn botonSumarRestarCantidadModulo" ng-click="ReducirCantidad(modulo)"><span class="fa fa-minus"></span></a>
+                                  <a type="button" class="btn botonSumarRestarCantidadModulo" ng-click="AgregarCantidad(modulo)"><span class="fa fa-plus"></span></a>
+                                </div>
+                             </td>
+
+                            <td class="text-center">
+                                <a  class="BotonOperacion" href=""  ng-click="QuitarModulo(modulo)" >
+                                    <span class="fa fa-times fa-2x"></span>
+                                </a>
+                            </td>
+
+                          </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-------- mensaje de error ---->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div ng-repeat="error in mensajeError">
+                            <span class="textoError">{{error}}</span>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <!---- botones de operacion -->
+                <div class="row">
+                    <div class="col-xs-6">
+                        <button class="btn botonOperacionModal btn-block" ng-click="AnteriorPresupuesto()">&lt;&lt; ANTERIOR</button>
+                    </div>
+
+                    <div class="col-xs-6">
+                        <button ng-disabled="presupuesto.Modulo.length == 0" focus class="btn botonOperacionModal btn-block" ng-click="TerminarPaso4()">SIGUIENTE &gt;&gt;</button>
+                    </div>
+                </div>
+            <br>
+            </form>
+            
+            <!-- Paso 5 -->
+            <form name="presupuesto5Forma" ng-show="pasoPresupuesto == 5">
+               
+                <div class="stepwizard">
+                  <div class="stepwizard-rowActivo"></div>
+                   
+                    <div class="stepwizard-row" ng-class="GetClaseLineaPaso()">
+                        
+                        <div class="stepwizard-step"  ng-repeat="paso in detallePaso">
+                            <button type="button" class="btn  btn-circle" ng-class="GetClasePaso(paso.numero)" disabled>{{paso.numero}}</button>
+                            <p>{{paso.nombre}}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <br>
+                <div class="row">
+                    <div class="col-xs-12">
+                        {{presupuesto.Proyecto.TipoProyecto.Nombre}}: {{presupuesto.Persona.Nombre}} {{presupuesto.Persona.PrimerApellido}} {{presupuesto.Persona.SegundoApellido}}
+                        <div class="divisorNaranja"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 tituloPaso">
+                        <span>Servicios y Puertas</span>
+                    </div>
+                </div>
+                <br><br>
+                
+                <!-- SERVICIOS -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <a class="btn btn-block botonAcordionPerfil" ng-class="GetClaseTab('Servicio')" ng-click="CambiarTab('Servicio')">
+                            <span class="fa fa-chevron-right" style="width:20px;" ng-if="tabSeleccionada != 'Servicio'"></span>
+                            <span class="fa fa-chevron-up" style="width:20px;" ng-if="tabSeleccionada == 'Servicio'"></span>
+                            Servicios
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="row" ng-show="tabSeleccionada == 'Servicio'">
+                   <div class="col-xs-12">
+                       <div class="contenedorAcordio">
+                           
+                           <span class="textoInstruccion"> Cantidad Sugerida: {{presupuesto.Superficie}}</span>
+                           <br><br>
+                           
+                            <div class="table-responsive tablePerfilClienteDatos">
+                                <table class="table table-hover table-striped table-condensed">
+                                    <thead class="TituloTabla">
+                                      <tr>
+                                        <th><span><b>Presupuestar</b></span></th>
+                                        <th><span class=""><b>Servicio</b></span></th>
+                                        <th class="text-center"><span><b>Cantidad</b></span></th>
+                                      </tr>
+                                    </thead>
+                                    <tbody >
+                                      <tr ng-repeat="servicio in servicio | orderBy:'Nombre'" ng-show="servicio.Activo">
+
+                                            <td>
+                                                <div class="checkboxOperativo" style="margin-left:0px !important">
+                                                    <label>
+                                                        <input  ng-model="servicio.Obligatorio" type="checkbox" value="">
+                                                        <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+                                                    </label>
+                                                </div>
+                                            </td>
+
+                                            <td>{{servicio.Nombre}}</td>
+
+                                            <td style="max-width:100px" class="text-center">
+                                                <input style="max-width:90px" required ng-pattern="erNumeroDecimal" type="text" ng-model="servicio.Cantidad" class="text-right entrada"/>
+                                            </td>
+
+                                      </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                           
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Puertas -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <a class="btn btn-block botonAcordionPerfil" ng-class="GetClaseTab('Puertas')" ng-click="CambiarTab('Puertas')">
+                            <span class="fa fa-chevron-right" style="width:20px;" ng-if="tabSeleccionada != 'Puertas'"></span>
+                            <span class="fa fa-chevron-up" style="width:20px;" ng-if="tabSeleccionada == 'Puertas'"></span>
+                            Puertas
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="row" ng-show="tabSeleccionada == 'Puertas'">
+                   <div class="col-xs-12">
+                      
+                       <div class="contenedorAcordio">
+                           <br>
+                           
+                           <div class="row">
+                              <div class="col-xs-6">
+                                  <div class="entrada2">
+                                      <input required ng-pattern="erNumeroEntero" type="text" class="entrada form-control" ng-model="presupuesto.NumeroPuerta">
+                                      <label># Puertas</label>
+                                  </div>
+                              </div>
+
+                              <div class="col-xs-6">
+                                  <div class="entrada2">
+                                      <input required ng-pattern="erNumeroEntero" type="text" class="entrada form-control" ng-model="presupuesto.NumeroCajon">
+                                      <label># Cajones</label>
+                                  </div>
+                              </div>
+                         </div>
+                          <br>
+                           
+                            <div class="row">
+                                <div ng-repeat="muestrario in muestrario | orderBy:'Nombre'" ng-show="muestrario.Activo && muestrario.Puerta.length > 0">
+                                    <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4" style="margin-bottom:10px">
+                            
+                                        <!--<div class="input-group">-->
+
+                                           <label class="btn checkBoxActivoPre" ng-class="{checkBoxActivoPreNaranja: muestrario.PorDefecto}">
+                                               <input  type="checkbox" class="badgeboxPre" ng-model="muestrario.PorDefecto" ng-change="ChambiarClasePuerta(muestrario.Nombre, muestrario.PorDefecto);">
+                                               <span class="badge">&check;</span>
+                                               <span> {{muestrario.Nombre}}</span> 
+                                           </label>
+
+                                          <!--<span class="input-group-btn">
+                                            <button class="btn btn-default dropdownPuertaNegro" ng-class="{dropdownPuertaNaranja: muestrario.PorDefecto}"><span class="fa fa-caret-down"></span></button>
+                                          </span>-->
+                                        <!--</div>-->
+                                        
+                                        <div class="panelItemPresupuesto itemPuerta">
+                                       
+                                            <div ng-repeat="puerta in muestrario.Puerta | orderBy:'Nombre'" ng-show="puerta.Activo">
+                                                <div class="checkbox checkboxOperativo itemPresupuesto" style="margin-left: 0px" ng-class="{itemPresupuestoPrimero: $first}">
+                                                    <label style="width:100%">
+                                                        <span>{{puerta.Nombre}}</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <!-------- mensaje de error ---->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div ng-repeat="error in mensajeError">
+                            <span class="textoError">{{error}}</span>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <!---- botones de operacion -->
+                <div class="row">
+                    <div class="col-xs-6">
+                        <a class="btn botonOperacionModal btn-block" ng-click="AnteriorPresupuesto()">&lt;&lt; ANTERIOR</a>
+                    </div>
+
+                    <div class="col-xs-6">
+                        <a focus class="btn botonOperacionModal btn-block" ng-click="TerminarPaso5()">SIGUIENTE &gt;&gt;</a>
+                    </div>
+                </div>
+            <br>
+            </form>
+            
+            <!-- Paso 6 -->
+            <form name="presupuesto6Forma" ng-show="pasoPresupuesto == 6">
+               
+                <div class="stepwizard">
+                  <div class="stepwizard-rowActivo"></div>
+                   
+                    <div class="stepwizard-row" ng-class="GetClaseLineaPaso()">
+                        
+                        <div class="stepwizard-step"  ng-repeat="paso in detallePaso">
+                            <button type="button" class="btn  btn-circle" ng-class="GetClasePaso(paso.numero)" disabled>{{paso.numero}}</button>
+                            <p>{{paso.nombre}}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <br>
+                <div class="row">
+                    <div class="col-xs-12">
+                        {{presupuesto.Proyecto.TipoProyecto.Nombre}}: {{presupuesto.Persona.Nombre}} {{presupuesto.Persona.PrimerApellido}} {{presupuesto.Persona.SegundoApellido}}
+                        <div class="divisorNaranja"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 tituloPaso">
+                        <span>Maqueo y Accesorios</span>
+                    </div>
+                </div>
+                <br><br>
+                
+                <!-- Maqueo -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <a class="btn btn-block botonAcordionPerfil" ng-class="GetClaseTab('Maqueo')" ng-click="CambiarTab('Maqueo')">
+                            <span class="fa fa-chevron-right" style="width:20px;" ng-if="tabSeleccionada != 'Maqueo'"></span>
+                            <span class="fa fa-chevron-up" style="width:20px;" ng-if="tabSeleccionada == 'Maqueo'"></span>
+                            Maqueo
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="row" ng-show="tabSeleccionada == 'Maqueo'">
+                   <div class="col-xs-12">
+                       <div class="contenedorAcordio">
+                           
+                           <span class="textoInstruccion"> Cantidad Sugerida: {{presupuesto.Superficie}}</span>
+                           <br><br>
+                           
+                           <div class="row">
+                                  <div class="col-xs-6">
+                                      <div class="entrada2">
+                                          <input required ng-pattern="erNumeroDecimal" type="text" class="entrada form-control" ng-model="presupuesto.CantidadMaqueo">
+                                          <label>Cantidad Maqueo</label>
+                                      </div>
+                                  </div>
+                            </div>
+                            <br>
+                           
+                            <div class="row">
+                                <div ng-repeat="(key, maqueo) in maqueo | orderBy:'Nombre'" ng-show="maqueo.Activo && maqueo.Color.length > 0">
+                                    <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4" style="margin-bottom:10px">
+                            
+                                        <!--<div class="input-group">-->
+
+                                           <label class="btn checkBoxActivoPre" ng-class="{checkBoxActivoPreNaranja: maqueo.PorDefecto}">
+                                               <input  type="checkbox" class="badgeboxPre" ng-model="maqueo.PorDefecto">
+                                               <span class="badge">&check;</span>
+                                               <span> {{maqueo.Nombre}}</span> 
+                                           </label>
+
+                                          <!--<span class="input-group-btn">
+                                            <button class="btn btn-default dropdownPuertaNegro" ng-class="{dropdownPuertaNaranja: muestrario.PorDefecto}"><span class="fa fa-caret-down"></span></button>
+                                          </span>-->
+                                        <!--</div>-->
+                                        
+                                        <div class="panelItemPresupuesto">
+                                       
+                                            <div>
+                                               
+                                               <section  class="">
+                                                   
+                                                    <div class="carousel slide" data-ride="carousel" id="{{maqueo.MaqueoId}}">
+
+                                                        <div class="carousel-inner itemMaqueo" >
+
+                                                            <div data-target="#{{maqueo.MaqueoId}}" ng-repeat="color in maqueo.Color | orderBy:'Nombre'"  class= "text-center item" ng-class="{active: $first}" ng-show="color.Activo">
+                                                                <div class="crop-carousel">
+                                                                    <img ng-if="color.Imagen.length > 0" class="img-responsive center-block imagenPresupuesto" ng-src="data:image/PNG;base64,{{color.Imagen}}" ng-click="AbrirModalVerImagenes(maqueo.Color, $index, maqueo.Nombre)"/>
+                                                                    <div ng-if="color.Imagen.length == 0" class="img-responsive center-block iconoImagenPresupuesto" ng-click="AbrirModalVerImagenes(maqueo.Color, $index, maqueo.Nombre)"><span class="fa fa-image"></span></div>
+                                                                </div>
+                                                                <span>{{color.Nombre}}</span>
+                                                            </div>
+                                                        </div>
+
+                                                        <a class="left carousel-control"   data-target="#{{maqueo.MaqueoId}}" data-slide="prev">
+                                                            <span class="glyphicon glyphicon-chevron-left"></span>
+                                                        </a>
+
+                                                        <a class="right carousel-control" data-target="#{{maqueo.MaqueoId}}" data-slide="next">
+                                                            <span class="glyphicon glyphicon-chevron-right"></span>
+                                                        </a>
+                                                    </div>
+
+                                                </section>
+                                                <!--<div class=" itemPresupuesto" style="margin-left: 0px" ng-class="{itemPresupuestoPrimero: $first}">
+                                                    <label style="width:100%">
+                                                       <img class="img-responsive center-block" ng-src="data:image/PNG;base64,{{color.Imagen}}"/>
+                                                        <span>{{color.Nombre}}</span>
+                                                    </label>
+                                                </div>-->
+                                            </div>
+
+                                        </div>
+                                    
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                           
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <!-- Accesorios -->
+                <div class="row"><div class="col-xs-12 "> <div class="sepradorGris"> </div> </div></div><br>
+                <div class="row"><div class="col-xs-12 "> <div class="tituloAccesorioPre"> Accesorios </div> </div></div><br>
+                
+                <span class="textoInstruccion"> Cantidad Sugerida: {{presupuesto.NumeroJaladera}} Jaladeras, {{presupuesto.NumeroRiel}} Rieles, {{presupuesto.NumeroVisagra}} Visagras.</span>
+                <br>
+                
+                <div class="row">
+                    <div class="col-xs-12">
+                       <div ng-repeat="tipo in tipoAccesorio | orderBy:'Nombre'" ng-show="tipo.Muestrario.length > 0">
+                            <a class="btn btn-block botonAcordionPerfil" ng-class="GetClaseTab(tipo.Nombre)" ng-click="CambiarTab(tipo.Nombre)">
+                                <span class="fa fa-chevron-right" style="width:20px;" ng-if="tabSeleccionada != tipo.Nombre"></span>
+                                <span class="fa fa-chevron-up" style="width:20px;" ng-if="tabSeleccionada == tipo.Nombre"></span>
+                                {{tipo.Nombre}}
+                            </a>
+                            
+                            <div class="row" ng-show="tabSeleccionada == tipo.Nombre">
+                               <div class="col-xs-12">
+
+                                   <div class="contenedorAcordio">
+                                       <br>
+
+                                       <div class="row">
+                                          <div class="col-xs-6">
+                                              <div class="entrada2">
+                                                  <input required ng-pattern="erNumeroEntero" type="text" class="entrada form-control" ng-model="tipo.Cantidad">
+                                                  <label>Cantidad</label>
+                                              </div>
+                                          </div>
+                                          
+                                          <div class="col-xs-6">
+                                              <div class="entrada2">
+                                                  <a class="btn botonAgregarAcordion pull-right" href="" ng-click="DescargarInstrucciones(tipo)">
+                                                      <span class="fa fa-info-circle"></span>
+                                                  </a>
+                                              </div>
+                                          </div>
+                                     </div>
+                                      <br>
+
+                                        <div class="row">
+                                            <div ng-repeat="muestrario in tipo.Muestrario | orderBy:'Nombre'" ng-show=" muestrario.Accesorio.length > 0">
+                                                <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4" style="margin-bottom:10px">
+
+                                                    <!--<div class="input-group">-->
+
+                                                       <label class="btn checkBoxActivoPre" ng-class="{checkBoxActivoPreNaranja: muestrario.PorDefecto}">
+                                                           <input  type="checkbox" class="badgeboxPre" ng-model="muestrario.PorDefecto" ng-change="ChambiarClasePuerta(muestrario.Nombre, muestrario.PorDefecto);">
+                                                           <span class="badge">&check;</span>
+                                                           <span> {{muestrario.Nombre}}</span> 
+                                                       </label>
+
+                                                      <!--<span class="input-group-btn">
+                                                        <button class="btn btn-default dropdownPuertaNegro" ng-class="{dropdownPuertaNaranja: muestrario.PorDefecto}"><span class="fa fa-caret-down"></span></button>
+                                                      </span>-->
+                                                    <!--</div>-->
+
+                                                    <div class="panelItemPresupuesto">
+                                       
+                                                        <div>
+
+                                                           <section  class="">
+
+                                                                <div class="carousel slide" data-ride="carousel" id="{{muestrario.MuestrarioId}}">
+
+                                                                    <div class="carousel-inner itemMaqueo" >
+
+                                                                        <div data-target="#{{muestrario.MuestrarioId}}" ng-repeat="accesorio in muestrario.Accesorio | orderBy:'Nombre'"  class= "text-center item" ng-class="{active: $first}" >
+                                                                            <div class="crop-carousel">
+                                                                                <img ng-if="accesorio.Imagen.length > 0" class="img-responsive center-block imagenPresupuesto" ng-src="data:image/PNG;base64,{{accesorio.Imagen}}" ng-click="AbrirModalVerImagenes(muestrario.Accesorio, $index, tipo.Nombre + ' - ' + muestrario.Nombre)"/>
+                                                                                <div ng-if="accesorio.Imagen.length == 0" class="img-responsive center-block iconoImagenPresupuesto" ng-click="AbrirModalVerImagenes(muestrario.Accesorio, $index, tipo.Nombre + ' - ' + muestrario.Nombre)"><span class="fa fa-image"></span></div>
+                                                                            </div>
+                                                                            <span>{{accesorio.Nombre}}</span>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <a class="left carousel-control"  data-target="#{{muestrario.MuestrarioId}}" data-slide="prev">
+                                                                        <span class="glyphicon glyphicon-chevron-left"></span>
+                                                                    </a>
+
+                                                                    <a class="right carousel-control" data-target="#{{muestrario.MuestrarioId}}" data-slide="next">
+                                                                        <span class="glyphicon glyphicon-chevron-right"></span>
+                                                                    </a>
+                                                                </div>
+
+                                                            </section>
+                                                            <!--<div class=" itemPresupuesto" style="margin-left: 0px" ng-class="{itemPresupuestoPrimero: $first}">
+                                                                <label style="width:100%">
+                                                                   <img class="img-responsive center-block" ng-src="data:image/PNG;base64,{{color.Imagen}}"/>
+                                                                    <span>{{color.Nombre}}</span>
+                                                                </label>
+                                                            </div>-->
+                                                        </div>
+
+                                                    </div>
+                                                        
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-------- mensaje de error ---->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div ng-repeat="error in mensajeError">
+                            <span class="textoError">{{error}}</span>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <!---- botones de operacion -->
+                <div class="row">
+                    <div class="col-xs-6">
+                        <a class="btn botonOperacionModal btn-block" ng-click="AnteriorPresupuesto()">&lt;&lt; ANTERIOR</a>
+                    </div>
+
+                    <div class="col-xs-6">
+                        <a focus class="btn botonOperacionModal btn-block" ng-click="TerminarPaso6()">SIGUIENTE &gt;&gt;</a>
+                    </div>
+                </div>
+            <br>
+            </form>
+            
+            <!-- Paso 7 -->
+            <form name="presupuesto7Forma" ng-show="pasoPresupuesto == 7">
+               
+                <div class="stepwizard">
+                  <div class="stepwizard-rowActivo"></div>
+                   
+                    <div class="stepwizard-row" ng-class="GetClaseLineaPaso()">
+                        
+                        <div class="stepwizard-step"  ng-repeat="paso in detallePaso">
+                            <button type="button" class="btn  btn-circle" ng-class="GetClasePaso(paso.numero)" disabled>{{paso.numero}}</button>
+                            <p>{{paso.nombre}}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <br>
+                <div class="row">
+                    <div class="col-xs-12">
+                        {{presupuesto.Proyecto.TipoProyecto.Nombre}}: {{presupuesto.Persona.Nombre}} {{presupuesto.Persona.PrimerApellido}} {{presupuesto.Persona.SegundoApellido}}
+                        <div class="divisorNaranja"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 tituloPaso">
+                        <span>Cubierta de Aglomerado</span>
+                    </div>
+                </div>
+                <br><br>
+                
+                <!-- ubicaciones -->
+                <div class="row">
+                   <div class="col-xs-12 ">
+                       <span class="textoInstruccion">Selecciona las ubicaciones a presupuestar.</span>
+                   </div>
+               </div>
+                <br>
+                <div class="row">
+                  
+                   <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4" style="margin-bottom:15px" ng-repeat="ubicacion in ubicacion | orderBy:'Nombre'" ng-show="ubicacion.Activo">
+                          
+                       <label class="btn checkBoxActivoPre" ng-class="{checkBoxActivoPreNaranja: ubicacion.SeleccionadoAglomerado}">
+                           <input  type="checkbox" class="badgeboxPre" ng-model="ubicacion.SeleccionadoAglomerado">
+                           <span class="badge">&check;</span>
+                           <span> {{ubicacion.Nombre}}</span> 
+                       </label>
+                           
+                    </div>
+                    
+                </div>
+                <br>
+                
+                <!--  cantidad -->
+                <div class="row">
+                   <div class="col-xs-12 ">
+                       <span class="textoInstruccion">Indica la cantidad a presupuestar de cada cubieta.</span>
+                   </div>
+               </div>
+                <br>
+                
+                <div class="row">
+                    <div class="col-xs-12">
+                       <div ng-repeat="ubicacion in ubicacion | orderBy:'Nombre'" >
+                           
+                           <div class="input-group">
+                               <span class="input-group-addon etiquetaUbicacion" ng-class="{disabled: !ubicacion.SeleccionadoAglomerado}"><b>{{ubicacion.Nombre}}</b></span>
+                               <input ng-disabled="!ubicacion.SeleccionadoAglomerado" required ng-pattern="erNumeroEntero" type="text" class="form-control cantidadUbicacion" placeholder="Cantidad" ng-model="ubicacion.CantidadAglomerado">
+                            </div>
+                            <br>
+                        
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Materiales de cubierta de piedra -->
+                <div class="row">
+                   <div class="col-xs-12 ">
+                       <span class="textoInstruccion">Selecciona los materiales a presupuestar.</span>
+                   </div>
+               </div>
+                <br>
+                <div class="row">
+                  
+                   <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4" style="margin-bottom:15px" ng-repeat="cubierta in cubierta | orderBy:'Material.Nombre'" ng-show="cubierta.Material.Activo && MostrarMaterial(cubierta.Grupo) && MostarPorUbicacion(cubierta.Ubicacion)" ng-if="cubierta.TipoCubierta.TipoCubiertaId == '1'">
+                        <div class="tituloOpcionPresupuesto">
+                            <span class="textoTituloOpcionPresupuesto" style="font-size:20px;"> {{cubierta.Material.Nombre}}</span>
+                        </div>
+                        
+                        <div class="panelItemPresupuesto itemPuerta">
+                        
+                            <div class="row" style="margin-bottom: 10px">
+                               <div class="col-xs-12">
+                                   <span ng-repeat="disponible in cubierta.Ubicacion" class="textoInstruccion">
+                                       <span ng-if="!$last">{{disponible.Nombre}},</span>
+                                       <span ng-if="$last">{{disponible.Nombre}}</span>
+                                   </span>
+                               </div>
+                            </div>
+                        
+                            <div class="row">
+                               <div class="col-xs-12">
+                                                           
+                                    <div  ng-repeat="grupo in cubierta.Grupo | orderBy:'Grupo.Nombre'" ng-show="grupo.Grupo.Activo && grupo.Color.length > 0">
+                                        <div class=" itemPresupuesto" style="margin-left: 0px" ng-class="{itemPresupuestoPrimero: $first}">
+                                        
+                                               
+                                            <span class="checkbox checkboxOperativo">
+                                                <label style="width:100%">
+                                                    <input  ng-model="grupo.PorDefecto" type="checkbox" >
+                                                    <span class="cr"> <i class="cr-icon fa fa-check"></i> </span>
+                                                    <span>{{grupo.Grupo.Nombre}}</span>
+                                                    
+                                                    <a class="btn botonIconoFa pull-right" href="" ng-click="AbrirModalVerImagenes(grupo.Color, 0, grupo.Grupo.Nombre)">
+                                                        <span class="fa fa-eye"></span>
+                                                    </a>
+                                                                                            
+                                                </label>
+                                            </span>
+                                            
+                                            
+                                        </div>
+                                        
+                                        
+                                    </div>
+                                            
+                               </div>
+                           </div>
+                           
+                        </div>
+                           
+                    </div>
+                    
+                </div>
+               
+                
+                
+                <!-------- mensaje de error ---->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div ng-repeat="error in mensajeError">
+                            <span class="textoError">{{error}}</span>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <!---- botones de operacion -->
+                <div class="row">
+                    <div class="col-xs-6">
+                        <a class="btn botonOperacionModal btn-block" ng-click="AnteriorPresupuesto()">&lt;&lt; ANTERIOR</a>
+                    </div>
+
+                    <div class="col-xs-6">
+                        <a focus class="btn botonOperacionModal btn-block" ng-click="TerminarPaso3()">SIGUIENTE &gt;&gt;</a>
                     </div>
                 </div>
             <br>
             </form> 
+               
+             <!-- Paso 8 -->
+            <form name="presupuesto8Forma" ng-show="pasoPresupuesto == 8">
+               
+                <div class="stepwizard">
+                  <div class="stepwizard-rowActivo"></div>
+                   
+                    <div class="stepwizard-row" ng-class="GetClaseLineaPaso()">
+                        
+                        <div class="stepwizard-step"  ng-repeat="paso in detallePaso">
+                            <button type="button" class="btn  btn-circle" ng-class="GetClasePaso(paso.numero)" disabled>{{paso.numero}}</button>
+                            <p>{{paso.nombre}}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <br>
+                <div class="row">
+                    <div class="col-xs-12">
+                        {{presupuesto.Proyecto.TipoProyecto.Nombre}}: {{presupuesto.Persona.Nombre}} {{presupuesto.Persona.PrimerApellido}} {{presupuesto.Persona.SegundoApellido}}
+                        <div class="divisorNaranja"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 tituloPaso">
+                        <span>Cubierta de Piedra</span>
+                    </div>
+                </div>
+                <br><br>
+                
+                <!-- ubicaciones -->
+                <div class="row">
+                   <div class="col-xs-12 ">
+                       <span class="textoInstruccion">Selecciona las ubicaciones a presupuestar.</span>
+                   </div>
+               </div>
+                <br>
+                <div class="row">
+                  
+                   <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4" style="margin-bottom:15px" ng-repeat="ubicacion in ubicacion | orderBy:'Nombre'" ng-show="ubicacion.Activo">
+                          
+                       <label class="btn checkBoxActivoPre" ng-class="{checkBoxActivoPreNaranja: ubicacion.Seleccionado}">
+                           <input  type="checkbox" class="badgeboxPre" ng-model="ubicacion.Seleccionado">
+                           <span class="badge">&check;</span>
+                           <span> {{ubicacion.Nombre}}</span> 
+                       </label>
+                           
+                    </div>
+                    
+                </div>
+                <br>
+                
+                 <!--  elemento -->
+                <div class="row">
+                   <div class="col-xs-12 ">
+                       <span class="textoInstruccion">Indica las secciones de cada cubierta.</span>
+                   </div>
+               </div>
+                <br>
+                
+                <div class="row">
+                    <div class="col-xs-12">
+                       <div ng-repeat="ubicacion in ubicacion | orderBy:'Nombre'" >
+                            <a href="" class="btn btn-block botonAcordionPerfil {{GetClaseTab(ubicacion.Nombre)}}" ng-class="{disabled: !ubicacion.Seleccionado}" ng-click="CambiarTab(ubicacion.Nombre)">
+                                <span class="fa fa-chevron-right" style="width:20px;" ng-if="tabSeleccionada != ubicacion.Nombre"></span>
+                                <span class="fa fa-chevron-up" style="width:20px;" ng-if="tabSeleccionada == ubicacion.Nombre"></span>
+                                {{ubicacion.Nombre}}
+                            </a>
+                            
+                            <div class="row" ng-show="tabSeleccionada == ubicacion.Nombre && ubicacion.Seleccionado">
+                               <div class="col-xs-12">
+
+                                   <div class="contenedorAcordio">
+                                       <br>
+
+                                       <div class="row">
+                                          <div class="col-xs-5">
+                                              <div class="entrada2">
+                                                  <input required ng-pattern="erNumeroFraccion" type="text" class="entrada form-control" ng-model="ubicacion.Lado1">
+                                                  <label>Lado 1(pulg)</label>
+                                              </div>
+                                          </div>
+                                          
+                                          <div class="col-xs-5">
+                                              <div class="entrada2">
+                                                  <input required ng-pattern="erNumeroFraccion" type="text" class="entrada form-control" ng-model="ubicacion.Lado2">
+                                                  <label>Lado 2(pulg)</label>
+                                              </div>
+                                          </div>
+                                          
+                                          <div class="col-xs-2">
+                                              <div class="entrada2">
+                                                  <a class="btn botonAgregarAcordion pull-right" href="" ng-click="AgregarElementoUbicacion(ubicacion)">
+                                                      <span class="fa fa-plus"></span>
+                                                  </a>
+                                              </div>
+                                          </div>
+                                     </div>
+                                     
+                                     <br>
+                                     <div class="row">
+                                         <div class="col-xs-12">
+                                             <span class="textoError">{{ubicacion.MensajeError}}</span>
+                                         </div>
+                                     </div>
+                                      <br>
+                                      
+                                      <!-- Contador de secciones por cubierta -->
+                                    <div class="row" ng-if="ubicacion.Elemento.length > 0">
+                                        <div class="col-xs-12">
+                                            <span class="textoNumeroTipoModulo">{{ubicacion.Elemento.length}}</span>
+                                            <spna class="textoTipoModulo" ng-if="ubicacion.Elemento.length == 1"> Sección</spna> 
+                                            <spna class="textoTipoModulo" ng-if="ubicacion.Elemento.length > 1"> Secciones</spna> 
+                                        </div>
+                                    </div>
+
+                                     <div class="table-responsive tablePerfilClienteDatos" ng-show="ubicacion.Elemento.length > 0">
+                                        <table class="table table-hover table-striped table-condensed">
+                                            <thead class="TituloTabla">
+                                              <tr>
+                                                <th><span><b>Lado 1</b></span></th>
+                                                <th><span><b>Lado 2</b></span></th>
+                                                <th class="text-center"><span><b>Quitar</b></span></th>
+
+                                              </tr>
+                                            </thead>
+                                            <tbody >
+                                              <tr ng-repeat="elemento in ubicacion.Elemento">
+
+                                                 <td>{{elemento.Lado1}}</td>
+                                                 <td>{{elemento.Lado2}}</td>
+
+                                                <td class="text-center">
+                                                    <a  class="BotonOperacion" href=""  ng-click="QuitarElementoUbicacion(ubicacion, $index)" >
+                                                        <span class="fa fa-times fa-2x"></span>
+                                                    </a>
+                                                </td>
+
+                                              </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                
+                <!-- Materiales de cubierta de piedra -->
+                <div class="row">
+                   <div class="col-xs-12 ">
+                       <span class="textoInstruccion">Selecciona los materiales a presupuestar.</span>
+                   </div>
+               </div>
+               <br>
+                
+                <div class="row">
+                  
+                   <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4" style="margin-bottom:15px" ng-repeat="cubierta in cubierta | orderBy:'Material.Nombre'" ng-if="cubierta.TipoCubierta.TipoCubiertaId == '2'" ng-show="cubierta.Material.Activo && MostrarMaterial(cubierta.Grupo)" >
+                        <div class="tituloOpcionPresupuesto">
+                            <span class="textoTituloOpcionPresupuesto" style="font-size:20px;"> {{cubierta.Material.Nombre}}</span>
+                        </div>
+                        
+                        <div class="panelItemPresupuesto itemPuerta">
+                        
+                            <div class="row">
+                               <div class="col-xs-12">
+                                                           
+                                    <div  ng-repeat="grupo in cubierta.Grupo | orderBy:'Grupo.Nombre'" ng-show="grupo.Grupo.Activo && grupo.Color.length > 0">
+                                        <div class=" itemPresupuesto" style="margin-left: 0px" ng-class="{itemPresupuestoPrimero: $first}">
+                                        
+                                               
+                                            <span class="checkbox checkboxOperativo">
+                                                <label style="width:100%">
+                                                    <input  ng-model="grupo.PorDefecto" type="checkbox" >
+                                                    <span class="cr"> <i class="cr-icon fa fa-check"></i> </span>
+                                                    <span>{{grupo.Grupo.Nombre}}</span>
+                                                    
+                                                    <a class="btn botonIconoFa pull-right" href="" ng-click="AbrirModalVerImagenes(grupo.Color, 0, grupo.Grupo.Nombre)">
+                                                        <span class="fa fa-eye"></span>
+                                                    </a>
+                                                                                            
+                                                </label>
+                                            </span>
+                                            
+                                            
+                                        </div>
+                                        
+                                        
+                                    </div>
+                                            
+                               </div>
+                           </div>
+                           
+                        </div>
+                           
+                    </div>
+                    
+                </div>
+                
+                <br>
+
+                <!-------- mensaje de error ---->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div ng-repeat="error in mensajeError">
+                            <span class="textoError">{{error}}</span>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <!---- botones de operacion -->
+                <div class="row">
+                    <div class="col-xs-6">
+                        <a class="btn botonOperacionModal btn-block" ng-click="AnteriorPresupuesto()">&lt;&lt; ANTERIOR</a>
+                    </div>
+
+                    <div class="col-xs-6">
+                        <a focus class="btn botonOperacionModal btn-block" ng-click="TerminarPaso3()">SIGUIENTE &gt;&gt;</a>
+                    </div>
+                </div>
+                <br>
+            </form>
             
+            <!-- Paso 9 -->
+            <div name="presupuesto9Forma" ng-show="pasoPresupuesto == 9">
+              
+                <!-- Descripción Cliente -->            
+                <div class="row">
+                    <div class="col-sm-12">
+                         <div class="">
+                            <label class="labelEntrada">Descripción Cliente</label>
+                            <textarea required type="text"  class="form-control descripcionArea" name="descripcionCliente" ng-model="presupuesto.DescripcionCliente" ng-maxlength="500" style="min-height: 100px"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                
+                <!-- Descripción Interna -->            
+                <div class="row">
+                    <div class="col-sm-12">
+                         <div class="">
+                            <label class="labelEntrada">Descripción Interna</label>
+                            <textarea type="text"  class="form-control descripcionArea" name="descripcionInterna" ng-model="presupuesto.DescripcionInterna" ng-maxlength="500" style="min-height: 100px"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                
+                <!-------- mensaje de error ---->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div ng-repeat="error in mensajeError">
+                            <span class="textoError">{{error}}</span>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <!---- botones de operacion -->
+                <div class="row">
+                    <div class="col-xs-6">
+                        <a class="btn botonOperacionModal btn-block" ng-click="AnteriorPresupuesto()">&lt;&lt; ANTERIOR</a>
+                    </div>
+
+                    <div class="col-xs-6">
+                        <a focus class="btn botonOperacionModal btn-block" ng-click="TerminarPaso6()">SIGUIENTE &gt;&gt;</a>
+                    </div>
+                </div>
+                <br>
+               
+            </div> 
+                
         </div>
     </div> 
     
+    <!-- Ver Imagen -->
+    <div class="modal fade sombraDivModal" id="ImagenPresupuestoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <br>    <br>   <br>
+        <div class="modal-dialog modalPrincipal">
+              
+                <div class="row">
+                    <div class="col-xs-12">
+                        <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarDatosFiscales()"><span aria-hidden="true">&times;</span></button>
+                        <span class="tituloModal">{{nombreMuestrario}}</span>
+                    </div>
+                </div>
+                <br>
+                
+                <div class="row">
+                    <div class="col-xs-12 text-center">
+                        <img  ng-if="muestrarioVerImagen[indiceImagen].Imagen.length > 0" class="img-responsive center-block" ng-src="data:image/PNG;base64,{{muestrarioVerImagen[indiceImagen].Imagen}}"/>
+                        
+                        <span ng-if="muestrarioVerImagen[indiceImagen].Imagen.length == 0" id="PrevisualizarImagenColorDetalles"><span style="font-size:30pt" class="fa fa-image"></span></span>
+                    </div>
+                </div>
+                <br>
+                
+                <div class="row">
+                   <div class="col-xs-12 text-center">
+                       <span style="font-size: 14pt">{{muestrarioVerImagen[indiceImagen].Nombre}}</span>
+                   </div>
+                </div>
+                <br>
+                
+                <div class="row">
+                   <div class="pull-right ">
+                        <a ng-click="CambiarVerImagen(-1);" class="cambiarImagenPresupuesto"> <span class="fa fa-chevron-left  changeImage"></span></a>
+                        <a ng-click="CambiarVerImagen(1);" class="cambiarImagenPresupuesto"> <span class="fa fa-chevron-right changeImage"></span></a>
+                   </div>
+                </div>
+
+        </div>
+    </div>
     
     <!-- Modal para mensajes -->
     <div class="modal fade sombraDivModal" id="mensajeCita" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

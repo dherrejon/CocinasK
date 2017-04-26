@@ -90,6 +90,7 @@
     background: white;
     border-width: 0px 0px 3px 0px;
     border-bottom: 3px solid #262626;
+    font-size: 12pt;
     
     outline: none !important;
     box-shadow: none;
@@ -98,6 +99,12 @@
 .botonAcordion:disabled, .botonAcordion:disabled:hover
 {
     background: rgb(234, 234, 234);
+}
+
+.botonAcordion.active
+{
+    background:  #262626;
+    color: white;
 }
 
 .botonAgregarAcordion, .botonAgregarAcordion:active, .botonAgregarAcordion:focus
@@ -191,5 +198,13 @@
     background: rgba(38,38, 38, 0.2);
 }
 
+/*------------- margen dropdonwlist -------------------*/
+.margenDropdownlistContenido
+{
+    padding: 10px;
+    border-width: 0px 2px 2px 2px;
+    border-style: solid;
+    border-color: #262626;
+}
 
 

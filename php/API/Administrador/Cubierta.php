@@ -316,6 +316,33 @@ function GetCubiertaUbicacion()
     }
 }
 
+function GetCubiertaUbicacionTodo()
+{
+    global $app;
+    global $session_expiration_time;
+
+    $request = \Slim\Slim::getInstance()->request();
+    
+    $sql = "SELECT mu.MaterialId, mu.UbicacionCubiertaId, u.Nombre FROM MaterialPorUbicacion mu, UbicacionCubierta u WHERE mu.UbicacionCubiertaId = u.UbicacionCubiertaId";
+    
+    try 
+    {
+        $db = getConnection();
+        $stmt = $db->query($sql);
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $db = null;
+        
+        echo json_encode($response);  
+    } 
+    catch(PDOException $e) 
+    {
+        echo $e;
+        echo '[ { "Estatus": "Fallo" } ]';
+        $app->status(409);
+        $app->stop();
+    }
+}
+
 function GetGrupoColorCubierta()
 {
     global $app;
@@ -326,6 +353,35 @@ function GetGrupoColorCubierta()
     
     
     $sql = "SELECT * FROM ColorPorMaterialCubiertaVista WHERE MaterialId ='".$materialId[0]."'";
+    
+    try 
+    {
+        $db = getConnection();
+        $stmt = $db->query($sql);
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $db = null;
+        
+        echo json_encode($response);  
+    } 
+    catch(PDOException $e) 
+    {
+        //echo $e;
+        echo '[ { "Estatus": "Fallo" } ]';
+        $app->status(409);
+        $app->stop();
+    }
+}
+
+
+function GetGrupoColorCubiertaTodo()
+{
+    global $app;
+    global $session_expiration_time;
+
+    $request = \Slim\Slim::getInstance()->request();
+    
+    
+    $sql = "SELECT * FROM ColorPorMaterialCubiertaVista";
     
     try 
     {

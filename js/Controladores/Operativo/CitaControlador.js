@@ -169,6 +169,19 @@ app.controller("CitaControlador", function($scope, $rootScope, CITA, $http, $q, 
     };
     
     /*----------------------------   Agregar Cita ------------------------*/
+    /*----------- interfaz -----------*/
+    $scope.GetClaseDropdown = function(valor)
+    {
+        if(valor)
+        {
+            return "active";
+        }
+        else
+        {
+            return "";     
+        }
+    };
+    
     /*--------- Paso 1 -------------*/
     $scope.TerminarCita1 = function(nombreInvalido, apellidoInvalido, medioInvalido)
     {

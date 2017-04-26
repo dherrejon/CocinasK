@@ -43,6 +43,7 @@ function SetColor(data)
     color.ColorId = data.ColorId;
     color.Nombre = data.Nombre;
     color.Imagen = data.Imagen;
+    color.GrupoId = data.GrupoId;
     
     if(data.Activo == "1")
     {
@@ -195,10 +196,20 @@ function GetGrupoPorColor($http, $q, CONFIG, id)
 
     var datos = [];
     datos[0] = id;
+    var servicio = "";
+    
+    if(id == "-1")
+    {
+        servicio = "/GetGrupoPorColorTodo";
+    }
+    else
+    {
+        servicio = "/GetGrupoPorColor";
+    }
         
     $http({      
           method: 'POST',
-          url: CONFIG.APIURL + '/GetGrupoPorColor',
+          url: CONFIG.APIURL + servicio,
           data: datos
       }).success(function(data)
         {

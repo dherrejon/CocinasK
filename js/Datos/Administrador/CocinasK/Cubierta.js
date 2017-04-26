@@ -164,9 +164,11 @@ function GetTipoCubierta()
     
     tipoCubierta[0].TipoCubiertaId = "1";
     tipoCubierta[0].Nombre = "Formaica";
+    tipoCubierta[0].PorDefecto = true;
     
     tipoCubierta[1].TipoCubiertaId = "2";
     tipoCubierta[1].Nombre = "Granito";
+    tipoCubierta[1].PorDefecto = false;
     
     return tipoCubierta;
 }
@@ -189,9 +191,19 @@ function GetCubiertaUbicacion($http, $q, CONFIG, id)
     var datos = [];
     datos[0] = id;
         
+    var servicio = "";
+    if(id == "-1")
+    {
+        servicio = "/GetCubiertaUbicacionTodo";
+    }
+    else
+    {
+        servicio = "/GetCubiertaUbicacion";
+    }
+    
     $http({      
           method: 'POST',
-          url: CONFIG.APIURL + '/GetCubiertaUbicacion',
+          url: CONFIG.APIURL + servicio,
           data: datos
       }).success(function(data)
         {
@@ -220,21 +232,39 @@ function GetGrupoColorCubierta($http, $q, CONFIG, id)
 
     var datos = [];
     datos[0] = id;
+    
+    var servicio = "";
+    if(id == "-1")
+    {
+        servicio = '/GetGrupoColorCubiertaTodo';
+    }
+    else
+    {
+        servicio = '/GetGrupoColorCubierta';
+    }
         
     $http({      
           method: 'POST',
-          url: CONFIG.APIURL + '/GetGrupoColorCubierta',
+          url: CONFIG.APIURL + servicio,
           data: datos
       }).success(function(data)
         {
-            var colorPorMaterial = []; 
-            for(var k=0; k<data.length; k++)
+            if(id == "-1")
             {
-                colorPorMaterial[k] = new ColorPorMaterialCubierta();
-                colorPorMaterial[k] = SetColorPorMaterialCubierta(data[k]);
+                q.resolve(data); 
+            }
+            else
+            {
+                var colorPorMaterial = []; 
+                for(var k=0; k<data.length; k++)
+                {
+                    colorPorMaterial[k] = new ColorPorMaterialCubierta();
+                    colorPorMaterial[k] = SetColorPorMaterialCubierta(data[k]);
+                }
+                q.resolve(colorPorMaterial); 
             }
     
-            q.resolve(colorPorMaterial);  
+             
         }).error(function(data, status){
             q.resolve(status);
      }); 

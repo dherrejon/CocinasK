@@ -32,6 +32,7 @@
     /*------------Operativo-----------*/
     require 'Operativo/Cita.php';
     require 'Operativo/Persona.php';
+    require 'Operativo/Proyecto.php';
 
     /*------------General----------*/
     require 'General/Direccion.php';
@@ -286,6 +287,7 @@
 
     /*------------------------ Modulo ----------------------------*/
     $app->get('/GetModulo', $seguridad, $ChecarSesion, 'GetModulo');
+    $app->get('/GetModuloPresupuesto', $seguridad, $ChecarSesion, 'GetModuloPresupuesto');
     $app->post('/AgregarModulo', $seguridad, $ChecarSesion, 'AgregarModulo');
     $app->put('/EditarModulo', $seguridad, $ChecarSesion, 'EditarModulo');
     $app->post('/ActivarDesactivarModulo', $seguridad, $ChecarSesion, 'ActivarDesactivarModulo');
@@ -296,10 +298,13 @@
     $app->post('/GetComponentePorModulo', $seguridad, $ChecarSesion, 'GetComponentePorModulo');
     $app->post('/GetPartePorModulo', $seguridad, $ChecarSesion, 'GetPartePorModulo');
     $app->post('/GetSeccionPorModulo', $seguridad, $ChecarSesion, 'GetSeccionPorModulo');
+    $app->post('/GetSeccionPorModuloPresupuesto', $seguridad, $ChecarSesion, 'GetSeccionPorModuloPresupuesto');
     $app->post('/GetLuzPorSeccion', $seguridad, $ChecarSesion, 'GetLuzPorSeccion');
 
     $app->put('/EditarMedidaPorModulo', $seguridad, $ChecarSesion, 'EditarMedidaPorModulo');
     $app->post('/GuardarImagenModulo/:id', $seguridad, $ChecarSesion, 'GuardarImagenModulo');
+    $app->get('/GetMedidasModulo', $seguridad, $ChecarSesion, 'GetMedidasModulo');
+    $app->get('/GetModuloImagen/:id', $seguridad, $ChecarSesion, 'GetModuloImagen');
 
     /*------------------------Pieza----------------------------*/
     $app->get('/GetPieza', $seguridad, $ChecarSesion, 'GetPieza');
@@ -403,6 +408,7 @@
     $app->post('/AgregarGrupoColorCubierta', $seguridad, $ChecarSesion, 'AgregarGrupoColorCubierta');
     $app->put('/EditarGrupoColorCubierta', $seguridad, $ChecarSesion, 'EditarGrupoColorCubierta');
     $app->post('/GetGrupoPorColor', $seguridad, $ChecarSesion, 'GetGrupoPorColor');
+    $app->post('/GetGrupoPorColorTodo', $seguridad, $ChecarSesion, 'GetGrupoPorColorTodo');
 
     /*----------------- Get Fabricacion Cubierta -----------------------------*/
     $app->get('/GetFabricacionCubierta', $seguridad, $ChecarSesion, 'GetFabricacionCubierta');
@@ -424,16 +430,20 @@
     $app->post('/AgregarCubierta', $seguridad, $ChecarSesion, 'AgregarCubierta');
     $app->put('/EditarCubierta', $seguridad, $ChecarSesion, 'EditarCubierta');
 
-    $app->post('/GetCubiertaUbicacion', $seguridad, $ChecarSesion, 'GetCubiertaUbicacion');
+    $app->post('/GetCubiertaUbicacion', $seguridad, $ChecarSesion, 'GetCubiertaUbicacion'); 
+    $app->post('/GetCubiertaUbicacionTodo', $seguridad, $ChecarSesion, 'GetCubiertaUbicacionTodo');
     $app->post('/GetGrupoColorCubierta', $seguridad, $ChecarSesion, 'GetGrupoColorCubierta');
+    $app->post('/GetGrupoColorCubiertaTodo', $seguridad, $ChecarSesion, 'GetGrupoColorCubiertaTodo');
 
     /*------------------------Tipo Accesorio----------------------------*/
     $app->get('/GetTipoAccesorio', $seguridad, $ChecarSesion, 'GetTipoAccesorio');
+    $app->get('/GetTipoAccesorioPresupuesto', $seguridad, $ChecarSesion, 'GetTipoAccesorioPresupuesto');
     $app->post('/AgregarTipoAccesorio', $seguridad, $ChecarSesion, 'AgregarTipoAccesorio');
     $app->put('/EditarTipoAccesorio', $seguridad, $ChecarSesion, 'EditarTipoAccesorio');
     $app->post('/ActivarDesactivarTipoAccesorio', $seguridad, $ChecarSesion, 'ActivarDesactivarTipoAccesorio');
 
     $app->post('/GuardarInstrucciones/:id', $seguridad, $ChecarSesion, 'GuardarInstrucciones');
+    $app->get('/GetInstruccionesTipoAccesorio/:id', $seguridad, $ChecarSesion, 'GetInstruccionesTipoAccesorio');
 
     /*------------------ Servicio ------------------------------*/
     $app->get('/GetServicio', $seguridad, $ChecarSesion, 'GetServicio');
@@ -450,6 +460,7 @@
 
     /*------------------ Accesorio ------------------------------*/
     $app->get('/GetAccesorio', $seguridad, $ChecarSesion, 'GetAccesorio');
+    $app->get('/GetAccesorioPresupuesto', $seguridad, $ChecarSesion, 'GetAccesorioPresupuesto');
     $app->post('/AgregarAccesorio', $seguridad, $ChecarSesion, 'AgregarAccesorio');
     $app->put('/EditarAccesorio', $seguridad, $ChecarSesion, 'EditarAccesorio');
     $app->post('/ActivarDesactivarAccesorio', $seguridad, $ChecarSesion, 'ActivarDesactivarAccesorio');

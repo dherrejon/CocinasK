@@ -47,6 +47,7 @@ function SetMuestrario(data)
     muestrario.Nombre = data.Nombre;
     muestrario.Margen = parseFloat(data.Margen);
     muestrario.ActivoN = data.Activo;
+     muestrario.TipoAccesorioId = data.TipoAccesorioId;
     
     muestrario.TipoAccesorio.TipoAccesorioId = data.TipoAccesorioId;
     muestrario.TipoAccesorio.Nombre = data.NombreTipoAccesorio;

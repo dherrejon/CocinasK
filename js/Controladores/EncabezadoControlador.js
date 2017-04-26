@@ -1,4 +1,4 @@
-app.controller("EncabezadoControlador", function($scope, $rootScope, $http, CONFIG, $q, $window, datosUsuario, datosPerfil, md5, CITA)
+app.controller("EncabezadoControlador", function($scope, $rootScope, $http, CONFIG, $q, $window, datosUsuario, datosPerfil, md5, CITA, PRESUPUESTO)
 {   
     $rootScope.barraNavegacionOpciones = "";      //opciones de la barra de navegación
     $scope.usuario = datosUsuario.getUsuario();
@@ -70,6 +70,10 @@ app.controller("EncabezadoControlador", function($scope, $rootScope, $http, CONF
         else if(funcion == "AgregarCita")
         {
             CITA.AgregarCitaCero(); 
+        }
+        else if(funcion == "AgregarPresupuesto")
+        {
+            PRESUPUESTO.AgregarPresupuestoCero(); 
         }
     };
     
@@ -485,7 +489,7 @@ var OpcionOperativo =
         elemento: [ 
                     { menu: 1, referencia: "#Cliente", texto:"Perfil Clientes",  show:false, tipo:"enlace", permiso:[{clave:"AdmTerConsultar"}]},
                     { divider: true, menu: 2, texto:"Agregar Cita", funcion:"AgregarCita", show:true, tipo:"funcion"},
-                    { menu: 2, referencia: "#PlanPago", texto:"Agregar Presupuesto", show:false, tipo:"enlace", permiso:[{clave:"AdmPlNConsultar"}]}
+                    { menu: 2, texto:"Agregar Presupuesto", funcion:"AgregarPresupuesto", show:true, tipo:"funcion"}
                   ]                      
     },
     
