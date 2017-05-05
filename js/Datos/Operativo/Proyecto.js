@@ -8,8 +8,8 @@ class Presupuesto
         this.Persona = new Persona();
         
         this.Modulo = [];
-        this.NumeroPuerta = 0;
-        this.NumeroCajon = 0;
+        this.NumeroPuerta = "0";
+        this.NumeroCajon = "0";
         this.NumeroSeccionVacia = 0;
         this.CantidadMaqueo = "";
         

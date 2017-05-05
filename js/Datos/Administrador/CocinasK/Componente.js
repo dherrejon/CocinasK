@@ -211,17 +211,44 @@ function GetPiezaPorComponente($http, $q, CONFIG, id)    // obtener las piezas d
 
       }).success(function(data)
         {
-            var piezaPorComponente = []; 
-            
-            for(var k=0; k<data.length; k++)
+            if(componenteId != "-1" )
             {
-                piezaPorComponente[k] = new PiezaPorComponente();
-                piezaPorComponente[k] = SetPiezaPorComponente(data[k]);
+                var piezaPorComponente = []; 
+
+                for(var k=0; k<data.length; k++)
+                {
+                    piezaPorComponente[k] = new PiezaPorComponente();
+                    piezaPorComponente[k] = SetPiezaPorComponente(data[k]);
+                }
+
+                q.resolve(piezaPorComponente);
             }
-        
-            q.resolve(piezaPorComponente);   
+            else
+            {
+                q.resolve(data);
+            }
         }).error(function(data){
             q.resolve(data);
+     }); 
+    
+    return q.promise;
+}
+
+function GetComponenteEspecial($http, $q, CONFIG)
+{
+    var q = $q.defer();
+    
+
+    $http({      
+          method: 'GET',
+          url: CONFIG.APIURL + '/GetComponenteEspecial',
+
+      }).success(function(data)
+        {
+           q.resolve(data);
+
+        }).error(function(data){
+            q.resolve([{Estatus: data}]);
      }); 
     
     return q.promise;

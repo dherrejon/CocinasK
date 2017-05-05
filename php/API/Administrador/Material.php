@@ -279,11 +279,13 @@ function GetCostoMaterial()
     global $session_expiration_time;
 
     $request = \Slim\Slim::getInstance()->request();
-    $material = json_decode($request->getBody());
+    //$material = json_decode($request->getBody());
     
     
-    $sql = "SELECT IF(COUNT(*)=0, m.CostoUnidad, gm.CostoUnidad) as CostoUnidad FROM GruesoMaterial gm, Material m 
-            WHERE gm.MaterialId = m.MaterialId AND m.MaterialId = ".$material[0]." AND gm.Grueso = '".$material[1]."'";
+    /*$sql = "SELECT IF(COUNT(*)=0, m.CostoUnidad, gm.CostoUnidad) as CostoUnidad FROM GruesoMaterial gm, Material m 
+            WHERE gm.MaterialId = m.MaterialId AND m.MaterialId = ".$material[0]." AND gm.Grueso = '".$material[1]."'";*/
+    
+    $sql = "SELECT * FROM CostoMaterialVista";
     
     try 
     {

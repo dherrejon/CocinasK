@@ -17,6 +17,13 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
     $scope.cubierta = [];
     $scope.ubicacion = [];
     
+    $scope.componente = [];
+    $scope.pieza = [];
+    $scope.parteModulo = [];
+    $scope.costoCombinacion = [];
+    $scope.componenteEspecial = [];
+    $scope.consumible = [];
+    
     $scope.personaSeleccionada = false;
     
     $scope.detallePaso = pasoPresupuesto;
@@ -68,7 +75,126 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         //$scope.GetCubierta();
         $scope.GetUbicacionCubierta();
         
+        
+        //modulos
+        $scope.GetCombinacionMaterialCosto();
+        $scope.GetComponentePorModulo();
+        $scope.GetPiezaPorComponente();
+        $scope.GetPartePorModulo();
+        $scope.GetComponenteEspecial();
+        $scope.GetConsumiblePorModulo();
+        
         $scope.usuario = datosUsuario.getUsuario();
+    };
+    
+    /*--------------- Cátalogos de módulos ----------------------*/
+    $scope.GetComponentePorModulo = function()
+    {
+        GetComponentePorModulo($http, $q, CONFIG, "-1").then(function(data)
+        {
+            $scope.componente = data;
+    
+        }).catch(function(error)
+        {
+            alert("Ha ocurrido un error." + error);
+            return;
+        });
+        
+    };
+    
+    $scope.GetPiezaPorComponente = function()
+    {
+        
+        GetPiezaPorComponente($http, $q, CONFIG, "-1").then(function(data)
+        {
+            $scope.pieza = data;
+            console.log(data);
+        }).catch(function(error)
+        {
+            alert("Ha ocurrido un error al obtener las piezas del componente." + error);
+            return;
+        });
+    };
+    
+    $scope.GetPartePorModulo = function()
+    {
+
+        GetPartePorModulo($http, $q, CONFIG, "-1").then(function(data)
+        {
+            $scope.parteModulo = data;
+
+        }).catch(function(error)
+        {
+            alert("Ha ocurrido un error." + error);
+            return;
+        });
+    };
+    
+    $scope.GetCombinacionMaterialCosto = function()
+    {
+        GetCombinacionMaterialCosto($http, $q, CONFIG).then(function(data)
+        {
+            if(data[0].Estatus == "Exitoso")
+            {
+               $scope.costoCombinacion = data[1].Costo; 
+            }
+            else
+            {
+                $scope.costoCombinacion = [];
+            }
+    
+        }).catch(function(error)
+        {
+            $scope.costoCombinacion  = [];
+            alert("Ha ocurrido un error." + error);
+            return;
+        });
+        
+    };
+    
+    $scope.GetComponenteEspecial = function()
+    {
+        GetComponenteEspecial($http, $q, CONFIG).then(function(data)
+        {
+            if(data[0].Estatus == "Exitoso")
+            {
+               $scope.componenteEspecial = data[1].Componente; 
+            }
+            else
+            {
+                $scope.componenteEspecial = [];
+            }
+    
+        }).catch(function(error)
+        {
+            $scope.componenteEspecial  = [];
+            alert("Ha ocurrido un error." + error);
+            return;
+        });
+        
+    };
+    
+    $scope.GetConsumiblePorModulo = function()
+    {
+        GetConsumiblePorModulo($http, $q, CONFIG, "-1").then(function(data)
+        {
+            if(data[0].Estatus == "Exitoso")
+            {
+                $scope.consumible = data[1].Consumible;
+            }
+            else
+            {
+                $scope.consumible = [];
+            }
+            
+            console.log(data);
+            
+        }).catch(function(error)
+        {
+            $scope.consumible = [];
+            alert("Ha ocurrido un error." + error);
+            return;
+        });
     };
     
     /*------------------------------ catálogos --------------------------------*/
@@ -405,6 +531,18 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         GetAccesorio($http, $q, CONFIG, "presupuesto").then(function(data)
         {
             $scope.accesorio = data;
+            $scope.GetAccesorioCosto();
+        }).catch(function(error)
+        {
+            alert(error);
+        });
+    };
+    
+    $scope.GetAccesorioCosto = function()      
+    {
+        GetAccesorioCosto($http, $q, CONFIG).then(function(data)
+        {
+            $scope.accesorioCostos = data;
             $scope.SetDatosAccesorio();
         }).catch(function(error)
         {
@@ -415,7 +553,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
     $scope.SetDatosAccesorio = function()
     {
         // Muestrarios en tipo de accesorios
-        var sqlBase = "Select MuestrarioId, Nombre, Margen, PorDefecto From ? WHERE TipoAccesorioId = '";
+        var sqlBase = "Select MuestrarioId, Nombre, Margen, PorDefecto, Activo From ? WHERE TipoAccesorioId = '";
         var sql = "";
 
         for(var k=0; k<$scope.tipoAccesorio.length; k++)
@@ -427,7 +565,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         }
         
         // Accesorios en muestrarios
-        sqlBase = "Select TipoAccesorioId, Nombre, Imagen, CostoUnidad, ConsumoUnidad, Contable, Obligatorio From ? WHERE MuestrarioId = '";
+        sqlBase = "Select AccesorioId, TipoAccesorioId, Nombre, Imagen, CostoUnidad, ConsumoUnidad, Contable, Obligatorio From ? WHERE MuestrarioId = '";
         
         for(var k=0; k<$scope.tipoAccesorio.length; k++)
         {
@@ -439,6 +577,24 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                 $scope.tipoAccesorio[k].Muestrario[i].Accesorio = alasql(sql,[$scope.accesorio]);
             }
         }
+        
+        sqlBase = "Select * From ? WHERE AccesorioId = '";
+        
+        for(var k=0; k<$scope.tipoAccesorio.length; k++)
+        {
+            for(var i=0; i<$scope.tipoAccesorio[k].Muestrario.length; i++)
+            {
+                for(var j=0; j<$scope.tipoAccesorio[k].Muestrario[i].Accesorio.length; j++)
+                {
+                    sql = sqlBase;
+                    sql +=  $scope.tipoAccesorio[k].Muestrario[i].Accesorio[j].AccesorioId + "'";
+
+                    $scope.tipoAccesorio[k].Muestrario[i].Accesorio[j].Costo = alasql(sql,[$scope.accesorioCostos]);
+                }
+            }
+        }
+        
+        //console.log($scope.tipoAccesorio);
     };
     
     $scope.GetCubierta = function()
@@ -459,8 +615,33 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         GetUbicacionCubierta($http, $q, CONFIG).then(function(data)
         {
             $scope.ubicacion = data;
-            //$scope.ubicacionAglomerado = data;
+            $scope.GetDatosUbicacion();
             
+        }).catch(function(error)
+        {
+            alert(error);
+        });
+    };
+    
+    $scope.GetDatosUbicacion = function()
+    {
+        GetDatosUbicacion($http, $q, CONFIG, "-1").then(function(data)
+        {   
+            $scope.ubicacionDatos = data;
+            $scope.GetConsumiblePorFabricacion();
+            
+        }).catch(function(error)
+        {
+            alert(error);
+        });
+    };
+    
+    $scope.GetConsumiblePorFabricacion = function()
+    {
+        GetConsumiblePorFabricacion($http, $q, CONFIG, "-1").then(function(data)
+        {
+            $scope.fabricacionConsumible = data;
+            $scope.SetUbicacionDatos();
         }).catch(function(error)
         {
             alert(error);
@@ -492,6 +673,46 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         { 
             alert(error);
         });
+    };
+    
+    $scope.SetUbicacionDatos = function()
+    {           
+        //Fabricacion Ubicacion
+        for(var k=0; k<$scope.ubicacion.length; k++)
+        {
+            $scope.ubicacion[k].Fabricacion = [];
+            for(var i=0; i<$scope.ubicacionDatos.length; i++)
+            {
+                if($scope.ubicacion[k].UbicacionCubiertaId == $scope.ubicacionDatos[i].UbicacionCubierta.UbicacionCubiertaId)
+                {
+                    var index = $scope.ubicacion[k].Fabricacion.length;
+                    $scope.ubicacion[k].Fabricacion[index] = new Object();
+                    $scope.ubicacion[k].Fabricacion[index].TipoCubiertaId = $scope.ubicacionDatos[i].TipoCubierta.TipoCubiertaId;
+                    $scope.ubicacion[k].Fabricacion[index].FabricacionCubiertaId = $scope.ubicacionDatos[i].FabricacionCubierta.FabricacionCubiertaId;
+                }
+            }
+        }
+        
+        // consumible Fabricacion
+        var sqlBase = "Select Cantidad, Costo From ? WHERE FabricacionCubiertaId = '";
+        var sql = "";
+
+        for(var k=0; k<$scope.ubicacion.length; k++)
+        {
+            for(var i=0; i<$scope.ubicacion[k].Fabricacion.length; i++)
+            {
+                sql = sqlBase;
+                sql +=  $scope.ubicacion[k].Fabricacion[i].FabricacionCubiertaId + "'";
+
+                $scope.ubicacion[k].Fabricacion[i].Consumible = alasql(sql,[$scope.fabricacionConsumible]);
+            }
+            
+        }
+        
+        //console.log($scope.ubicacion);
+        //console.log($scope.ubicacionDatos);
+        //console.log($scope.fabricacionConsumible);
+    
     };
     
     $scope.SetColorMaterialCubierta = function()
@@ -1166,10 +1387,13 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
             $scope.moduloAgregar.Alto = "";
             $scope.moduloAgregar.Profundo = "";
             
+            $scope.moduloAgregar.Desperdicio = modulo.Desperdicio;
+            $scope.moduloAgregar.Margen = modulo.Margen;
+            
+            console.log(modulo);
+            
             //Ir por imagen
             $scope.GetModuloImagen($scope.moduloAgregar);
-            
-            console.log($scope.moduloAgregar);
         }
     };
     
@@ -1180,6 +1404,9 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
             $scope.moduloAgregar.Ancho = ancho;
             $scope.moduloAgregar.Alto = "";
             $scope.moduloAgregar.Profundo = "";
+            
+            
+            $scope.moduloAgregar.AnchoNumero = FraccionADecimal(ancho);
         }
     };
     
@@ -1189,6 +1416,8 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         {
             $scope.moduloAgregar.Alto = alto;
             $scope.moduloAgregar.Profundo = "";
+            
+            $scope.moduloAgregar.AltoNumero= FraccionADecimal(alto);
         }
     };
     
@@ -1197,6 +1426,8 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         if($scope.moduloAgregar.Profundo != profundo)
         {
             $scope.moduloAgregar.Profundo = profundo;
+            
+            $scope.moduloAgregar.ProfundoNumero = FraccionADecimal(profundo);
         }
     };
     
@@ -1220,6 +1451,14 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         m.Ancho = modulo.Ancho;
         m.Alto = modulo.Alto;
         m.Profundo = modulo.Profundo;
+        
+        m.AnchoNumero = modulo.AnchoNumero;
+        m.AltoNumero = modulo.AltoNumero;
+        m.ProfundoNumero = modulo.ProfundoNumero;
+        
+        m.Margen = modulo.Margen;
+        m.Desperdicio = modulo.Desperdicio;
+        
         m.Cantidad = 1;
         
         m.TipoModulo.Nombre = modulo.TipoModulo.Nombre;
@@ -1323,7 +1562,9 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
     {
         $scope.CalcularCantidadesPropuestas();
         
-        $scope.pasoPresupuesto++;
+        $scope.pasoPresupuesto = 10;
+        
+        $scope.CalcularPrecioVenta();
     };
     
     $scope.CalcularCantidadesPropuestas = function()
@@ -1332,12 +1573,92 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         var sqlBase = "Select SeccionModuloId, Nombre, NumeroPiezas, ModuloId, PeinazoVertical, Luz, NumeroEntrepano From ? WHERE ModuloId = '";
         var sql = "";
         
+        var sqlBaseConsumible = "Select * From ? WHERE ModuloId = '";
+        var sqlBaseComponente = "Select ComponenteId, Cantidad, NombreComponente as Nombre From ? WHERE ModuloId = '";
+        var sqlBaseParte = "Select TipoParteId as ParteId , Ancho From ? WHERE ModuloId = '";
+            
+        
         for(var k=0; k<$scope.presupuesto.Modulo.length; k++)
         {
+            //secciones
             sql = sqlBase;
             sql +=  $scope.presupuesto.Modulo[k].ModuloId + "' AND AltoModulo = '" + $scope.presupuesto.Modulo[k].Alto  + "'";
             
             $scope.presupuesto.Modulo[k].Seccion = alasql(sql,[$scope.seccionModulo]);
+            
+            //consumibles
+            sql = sqlBaseConsumible;
+            sql +=  $scope.presupuesto.Modulo[k].ModuloId + "'";
+            
+            $scope.presupuesto.Modulo[k].Consumible = alasql(sql,[$scope.consumible]);
+            
+            //componentes
+            sql = sqlBaseComponente;
+            sql +=  $scope.presupuesto.Modulo[k].ModuloId + "'";
+            
+            $scope.presupuesto.Modulo[k].Componente = alasql(sql,[$scope.componente]);
+            
+            //parte
+            sql = sqlBaseParte;
+            sql +=  $scope.presupuesto.Modulo[k].ModuloId + "'";
+            
+            $scope.presupuesto.Modulo[k].Parte = alasql(sql,[$scope.parteModulo]);
+            
+            
+            //Componentes especiales
+            $scope.presupuesto.Modulo[k].ComponenteEspecial = $scope.componenteEspecial;
+        }
+        
+        var sqlBaseCombinacion = "Select * From ? WHERE ComponenteId = '";
+        var sqlBasePieza = "Select * FROM ? WHERE ComponenteId = '";
+        
+        
+        sql = "SELECT CombinacionMaterialId FROM ? WHERE Activo = true AND PorDefecto = true ";
+        var combinacion = alasql(sql,[$scope.combinacion]);
+        
+        for(var k=0; k<$scope.presupuesto.Modulo.length; k++)
+        {
+            for(var i=0; i<$scope.presupuesto.Modulo[k].Componente.length; i++)
+            {
+                //combinaciones
+                $scope.presupuesto.Modulo[k].Componente[i].Combinacion = [];
+                
+                sql = sqlBaseCombinacion;
+                sql +=  ($scope.presupuesto.Modulo[k].Componente[i].ComponenteId + "' AND CombinacionMaterialId = '");
+                
+                for(var j=0; j<combinacion.length; j++)
+                {
+                    var sqlCombinacionSeleccionada = sql;
+                    sqlCombinacionSeleccionada += (combinacion[j].CombinacionMaterialId + "'");
+                    
+                    var res = alasql(sqlCombinacionSeleccionada,[$scope.costoCombinacion]);
+                    $scope.presupuesto.Modulo[k].Componente[i].Combinacion.push(res[0]);
+                }
+                
+                //piezas
+                sql = sqlBasePieza;
+                sql +=  $scope.presupuesto.Modulo[k].Componente[i].ComponenteId + "'";
+
+                $scope.presupuesto.Modulo[k].Componente[i].Pieza = alasql(sql,[$scope.pieza]);
+            }
+            
+            for(var i=0; i<$scope.presupuesto.Modulo[k].ComponenteEspecial.length; i++)
+            {
+                //combinaciones
+                sql = sqlBaseCombinacion;
+                sql +=  $scope.presupuesto.Modulo[k].ComponenteEspecial[i].ComponenteId + "' AND CombinacionMaterialId = '";
+
+                $scope.presupuesto.Modulo[k].ComponenteEspecial[i].Combinacion = [];
+                
+                for(var j=0; j<combinacion.length; j++)
+                {
+                    var sqlCombinacionSeleccionada = sql;
+                    sqlCombinacionSeleccionada += (combinacion[j].CombinacionMaterialId + "'");
+                    
+                    var res = alasql(sqlCombinacionSeleccionada,[$scope.costoCombinacion]);
+                    $scope.presupuesto.Modulo[k].ComponenteEspecial[i].Combinacion.push(res[0]);
+                }
+            }
         }
         
         //Calcular Valores
@@ -1395,6 +1716,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         }
         
         $scope.presupuesto.Superficie = $scope.presupuesto.Superficie.toFixed(2);
+        
         if($scope.presupuesto.NumeroPuerta === 0)
         {
             $scope.presupuesto.NumeroPuerta = "0";
@@ -1403,7 +1725,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         {
             $scope.presupuesto.NumeroCajon = "0";
         }
-         console.log($scope.presupuesto);
+        console.log($scope.presupuesto);
         
     };
     
@@ -1569,6 +1891,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         else
         {
             $scope.pasoPresupuesto++;
+            //$scope.CalcularPrecioVenta();
         }
     };
     
@@ -1720,6 +2043,297 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
     $scope.QuitarElementoUbicacion = function(ubicacion, index)
     {
         ubicacion.Elemento.splice(index, 1);
+    };
+    
+    /*----------------------------- Paso 9 -------------------------------------*/
+    $scope.TerminarPaso9 = function()
+    {
+        $scope.pasoPresupuesto++;
+        $scope.CalcularPrecioVenta();
+    };
+    
+    /*----------------------------- Paso 10 -------------------------------------*/
+    $scope.CalcularPrecioVenta = function()
+    {
+        /*console.log($scope.servicio);
+        console.log($scope.maqueo);
+        console.log($scope.tipoAccesorio);
+        console.log($scope.cubierta);
+        console.log($scope.ubicacion);*/
+        
+        
+        for(var k=0; k<$scope.presupuesto.Modulo.length; k++)
+        {
+            CalcularCostoModulo($scope.presupuesto.Modulo[k], $scope.combinacion);
+        }
+        
+        console.log($scope.combinacion);
+        
+        
+        //Servicios
+        for(var k=0; k<$scope.servicio.length; k++)
+        {
+            if($scope.servicio[k].Activo && $scope.servicio[k].Obligatorio)
+            {
+                $scope.servicio[k].CostoTotal = $scope.servicio[k].CostoUnidad*parseFloat($scope.servicio[k].Cantidad);
+                $scope.servicio[k].Subtotal = $scope.servicio[k].CostoTotal + ($scope.servicio[k].CostoTotal*($scope.servicio[k].PrecioVenta/100));
+                $scope.servicio[k].Subtotal = $scope.servicio[k].Subtotal.toFixed(2);
+            }
+        }
+        
+        //Maqueo
+        for(var k=0; k<$scope.maqueo.length; k++)
+        {
+            if($scope.maqueo[k].Activo && $scope.maqueo[k].PorDefecto)
+            {
+                $scope.maqueo[k].CostoTotal = $scope.maqueo[k].CostoUnidad*parseFloat($scope.presupuesto.CantidadMaqueo);
+                $scope.maqueo[k].Subtotal = $scope.maqueo[k].CostoTotal + ($scope.maqueo[k].CostoTotal*($scope.maqueo[k].Margen/100));
+                $scope.maqueo[k].Subtotal = $scope.maqueo[k].Subtotal.toFixed(2);
+            }
+        }
+        
+        //Accesorios
+        for(var k=0; k<$scope.tipoAccesorio.length; k++)
+        {
+            $scope.tipoAccesorio[k].showPrecio = false;
+            //accesorio Compra - Venta
+            if($scope.tipoAccesorio[k].ClaseAccesorio.ClaseAccesorioId == "1")
+            {
+                for(var i=0; i<$scope.tipoAccesorio[k].Muestrario.length; i++)
+                {
+                    if($scope.tipoAccesorio[k].Muestrario[i].Activo && $scope.tipoAccesorio[k].Muestrario[i].PorDefecto && $scope.tipoAccesorio[k].Muestrario[i].Accesorio.length > 0)
+                    {
+                        $scope.tipoAccesorio[k].showPrecio = true;
+                        
+                        $scope.tipoAccesorio[k].Muestrario[i].CostoUnidad = 0;
+                        
+                        for(var j=0; j<$scope.tipoAccesorio[k].Muestrario[i].Accesorio.length; j++)
+                        {
+                            if($scope.tipoAccesorio[k].Muestrario[i].Accesorio[j].CostoUnidad > $scope.tipoAccesorio[k].Muestrario[i].CostoUnidad)
+                            {
+                                $scope.tipoAccesorio[k].Muestrario[i].CostoUnidad = $scope.tipoAccesorio[k].Muestrario[i].Accesorio[j].CostoUnidad;
+                            }
+                        }
+                        
+                        $scope.tipoAccesorio[k].Muestrario[i].CostoTotal = $scope.tipoAccesorio[k].Muestrario[i].CostoUnidad*parseInt($scope.tipoAccesorio[k].Cantidad);
+                        $scope.tipoAccesorio[k].Muestrario[i].Subtotal = $scope.tipoAccesorio[k].Muestrario[i].CostoTotal + ($scope.tipoAccesorio[k].Muestrario[i].CostoTotal*($scope.tipoAccesorio[k].Muestrario[i].Margen/100)); 
+                        $scope.tipoAccesorio[k].Muestrario[i].Subtotal = $scope.tipoAccesorio[k].Muestrario[i].Subtotal.toFixed(2);
+                    }
+                }
+            }
+            
+            //Accesorio de madera
+            if($scope.tipoAccesorio[k].ClaseAccesorio.ClaseAccesorioId == "2")
+            {
+                for(var i=0; i<$scope.tipoAccesorio[k].Muestrario.length; i++)
+                {
+                    if($scope.tipoAccesorio[k].Muestrario[i].Activo && $scope.tipoAccesorio[k].Muestrario[i].PorDefecto && $scope.tipoAccesorio[k].Muestrario[i].Accesorio.length > 0)
+                    {
+                        $scope.tipoAccesorio[k].showPrecio = true;
+                        
+                        $scope.tipoAccesorio[k].Muestrario[i].Combinacion = [];
+                        
+                        for(var m=0; m<$scope.combinacion.length; m++)
+                        {
+                            if($scope.combinacion[m].Activo && $scope.combinacion[m].PorDefecto)
+                            {
+                                var ind = $scope.tipoAccesorio[k].Muestrario[i].Combinacion.length;
+                                $scope.tipoAccesorio[k].Muestrario[i].Combinacion[ind] = new Object();
+                                $scope.tipoAccesorio[k].Muestrario[i].Combinacion[ind].CombinacionId = $scope.combinacion[m].CombinacionMaterialId;
+                                $scope.tipoAccesorio[k].Muestrario[i].Combinacion[ind].Nombre = $scope.combinacion[m].Nombre;
+                                $scope.tipoAccesorio[k].Muestrario[i].Combinacion[ind].CostoUnidad = 0;
+                                
+                                for(var j=0; j<$scope.tipoAccesorio[k].Muestrario[i].Accesorio.length; j++)
+                                {
+                                    for(var n=0; n<$scope.tipoAccesorio[k].Muestrario[i].Accesorio[j].Costo.length; n++)
+                                    {
+                                        if($scope.tipoAccesorio[k].Muestrario[i].Accesorio[j].Costo[n].CombinacionMaterialId == $scope.combinacion[m].CombinacionMaterialId)
+                                        {
+                                            
+                                            var costo = parseFloat($scope.tipoAccesorio[k].Muestrario[i].Accesorio[j].ConsumoUnidad) * parseFloat($scope.tipoAccesorio[k].Muestrario[i].Accesorio[j].Costo[n].CostoUnidad);
+                                            if(costo > $scope.tipoAccesorio[k].Muestrario[i].Combinacion[ind].CostoUnidad)
+                                            {
+                                               $scope.tipoAccesorio[k].Muestrario[i].Combinacion[ind].CostoUnidad = costo;
+                                            }
+
+                                            break;
+                                        }
+                                    }
+                                    
+                                    $scope.tipoAccesorio[k].Muestrario[i].Combinacion[ind].CostoTotal = $scope.tipoAccesorio[k].Muestrario[i].Combinacion[ind].CostoUnidad * parseInt($scope.tipoAccesorio[k].Cantidad);
+                                    $scope.tipoAccesorio[k].Muestrario[i].Combinacion[ind].Subtotal = $scope.tipoAccesorio[k].Muestrario[i].Combinacion[ind].CostoTotal + ($scope.tipoAccesorio[k].Muestrario[i].Combinacion[ind].CostoTotal*($scope.tipoAccesorio[k].Muestrario[i].Margen/100));
+                                    $scope.tipoAccesorio[k].Muestrario[i].Combinacion[ind].Subtotal = $scope.tipoAccesorio[k].Muestrario[i].Combinacion[ind].Subtotal.toFixed(2);
+                                }
+                            }
+                            
+                            
+                        }
+                    }
+                }
+            }
+        }
+        
+        
+      //Limpiar ubicacion grupo cubier
+        for(var j=0; j<$scope.cubierta.length; j++)
+        {
+            if($scope.cubierta[j].Material.Activo)
+            {
+                for(var k=0; k<$scope.cubierta[j].Grupo.length; k++)
+                {
+                    if($scope.cubierta[j].Grupo[k].Grupo.Activo && $scope.cubierta[j].Grupo[k].PorDefecto && $scope.cubierta[j].Grupo[k].Color.length > 0)
+                    {
+                        $scope.cubierta[j].Grupo[k].Ubicacion = [];
+                    }
+                }
+                    
+            }
+        }
+        
+        //Cubierta
+        for(var i=0; i<$scope.ubicacion.length; i++)
+        {
+            //costo de consumibles
+            for(var j=0; j<$scope.ubicacion[i].Fabricacion.length; j++)
+            {
+                $scope.ubicacion[i].Fabricacion[j].Costo = 0;
+                
+                for(var k=0; k<$scope.ubicacion[i].Fabricacion[j].Consumible.length; k++)
+                {
+                    $scope.ubicacion[i].Fabricacion[j].Costo += ($scope.ubicacion[i].Fabricacion[j].Consumible[k].Cantidad * $scope.ubicacion[i].Fabricacion[j].Consumible[k].Costo);
+                }
+            }
+            
+            //Cantidad de piedra
+            if($scope.ubicacion[i].Seleccionado === true)
+            {
+                $scope.ubicacion[i].CantidadPiedra = 0;
+                for(var j=0; j<$scope.ubicacion[i].Elemento.length; j++)
+                {
+                    $scope.ubicacion[i].CantidadPiedra += (FraccionADecimal($scope.ubicacion[i].Elemento[j].Lado1) * FraccionADecimal($scope.ubicacion[i].Elemento[j].Lado2));
+                }
+                
+                $scope.ubicacion[i].CantidadPiedra  = $scope.ubicacion[i].CantidadPiedra*0.00064516;
+            }
+            
+            //$scope.ubicacion[i].Material = [];
+            
+            //Costo por material
+            for(var j=0; j<$scope.cubierta.length; j++)
+            {
+                // cubierta de piedra
+                if($scope.cubierta[j].TipoCubierta.TipoCubiertaId == "2" && $scope.ubicacion[i].Seleccionado)
+                {
+                    if($scope.cubierta[j].Material.Activo)
+                    {
+                        var CantidadTotal = $scope.ubicacion[i].CantidadPiedra + ($scope.ubicacion[i].CantidadPiedra *($scope.cubierta[j].Desperdicio/100));
+                    
+                        for(var k=0; k<$scope.cubierta[j].Grupo.length; k++)
+                        {
+                            /*if($scope.cubierta[j].Grupo[k].Ubicacion === undefined)
+                            {
+                                $scope.cubierta[j].Grupo[k].Ubicacion = [];
+                            }*/
+                            
+                            if($scope.cubierta[j].Grupo[k].Grupo.Activo && $scope.cubierta[j].Grupo[k].PorDefecto && $scope.cubierta[j].Grupo[k].Color.length > 0)
+                            {            
+                                var ind = $scope.cubierta[j].Grupo[k].Ubicacion.length;
+                                $scope.cubierta[j].Grupo[k].Ubicacion[ind] = new Object();
+                                $scope.cubierta[j].Grupo[k].Ubicacion[ind].UbicacionId = $scope.ubicacion[i].UbicacionCubiertaId;
+                                $scope.cubierta[j].Grupo[k].Ubicacion[ind].NombreUbicacion = $scope.ubicacion[i].Nombre;
+
+                                var CostoTotal = CantidadTotal * $scope.cubierta[j].Grupo[k].CostoUnidad;
+
+                                for(var l=0; l<$scope.ubicacion[i].Fabricacion.length; l++)
+                                {
+                                    if($scope.ubicacion[i].Fabricacion[l].TipoCubiertaId == "2")
+                                    {
+                                        $scope.cubierta[j].Grupo[k].Ubicacion[ind].Cantidad = $scope.ubicacion[i].CantidadPiedra; 
+                                        $scope.cubierta[j].Grupo[k].Ubicacion[ind].Fabricacion = $scope.ubicacion[i].Fabricacion[l].Costo;
+                                        
+                                        CostoTotal += $scope.ubicacion[i].Fabricacion[l].Costo;
+                                        break;
+                                    }
+                                }
+
+                                var Subtotal = CostoTotal + (CostoTotal*($scope.cubierta[j].Margen/100));
+
+                                $scope.cubierta[j].Grupo[k].Ubicacion[ind].CostoTotal = CostoTotal;
+                                $scope.cubierta[j].Grupo[k].Ubicacion[ind].Subtotal = Subtotal.toFixed(2);
+                                
+                                /*var ind2 = $scope.ubicacion[i].Material.length;
+                                $scope.ubicacion[i].Material[ind2] = new Object();
+                                $scope.ubicacion[i].Material[ind2].Nombre = $scope.cubierta[j].Material.Nombre;
+                                $scope.ubicacion[i].Material[ind2].MaterialId = $scope.cubierta[j].Material.MaterialId;
+                                $scope.ubicacion[i].Material[ind2].Grupo = $scope.cubierta[j].Grupo[k].Grupo.Nombre;
+                                $scope.ubicacion[i].Material[ind2].GrupoId = $scope.cubierta[j].Grupo[k].Grupo.GrupoId;
+                                $scope.ubicacion[i].Material[ind2].Subtotal = $scope.cubierta[j].Grupo[k].Ubicacion[ind].Subtotal;*/
+                            }
+                        }
+                    }
+                }
+                // Cubierta de aglomerado
+                else if($scope.cubierta[j].TipoCubierta.TipoCubiertaId == "1" && $scope.ubicacion[i].SeleccionadoAglomerado)
+                {
+                    if($scope.cubierta[j].Material.Activo)
+                    {
+                        var CantidadTotal = FraccionADecimal($scope.ubicacion[i].CantidadAglomerado) + (FraccionADecimal($scope.ubicacion[i].CantidadAglomerado) *($scope.cubierta[j].Desperdicio/100));
+                    
+                        for(var k=0; k<$scope.cubierta[j].Grupo.length; k++)
+                        {
+                            if($scope.cubierta[j].Grupo[k].Ubicacion === undefined)
+                            {
+                                primeroAglomerado = false;
+                                $scope.cubierta[j].Grupo[k].Ubicacion = [];
+                            }
+                            
+                            var calcularCosto = false;
+                            for(var l=0; l<$scope.cubierta[j].Ubicacion.length; l++)
+                            {
+                                if($scope.cubierta[j].Ubicacion[l].UbicacionCubiertaId == $scope.ubicacion[i].UbicacionCubiertaId)
+                                {
+                                    calcularCosto = true;
+                                    break;
+                                }
+                            }
+                            
+                            var ind = $scope.cubierta[j].Grupo[k].Ubicacion.length;
+                            $scope.cubierta[j].Grupo[k].Ubicacion[ind] = new Object();
+                            $scope.cubierta[j].Grupo[k].Ubicacion[ind].UbicacionId = $scope.ubicacion[i].UbicacionCubiertaId;
+                            $scope.cubierta[j].Grupo[k].Ubicacion[ind].NombreUbicacion = $scope.ubicacion[i].Nombre;
+                            
+                            if($scope.cubierta[j].Grupo[k].Grupo.Activo && $scope.cubierta[j].Grupo[k].PorDefecto && $scope.cubierta[j].Grupo[k].Color.length > 0 && calcularCosto)
+                            {            
+                                var CostoTotal = CantidadTotal * $scope.cubierta[j].Grupo[k].CostoUnidad;
+
+                                for(var l=0; l<$scope.ubicacion[i].Fabricacion.length; l++)
+                                {
+                                    if($scope.ubicacion[i].Fabricacion[l].TipoCubiertaId == "2")
+                                    {
+                                        $scope.cubierta[j].Grupo[k].Ubicacion[ind].Cantidad = $scope.ubicacion[i].CantidadAglomerado; 
+                                        $scope.cubierta[j].Grupo[k].Ubicacion[ind].Fabricacion = $scope.ubicacion[i].Fabricacion[l].Costo;
+                                        
+                                        CostoTotal += $scope.ubicacion[i].Fabricacion[l].Costo;
+                                        break;
+                                    }
+                                }
+
+                                var Subtotal = CostoTotal + (CostoTotal*($scope.cubierta[j].Margen/100));
+
+                                $scope.cubierta[j].Grupo[k].Ubicacion[ind].CostoTotal = CostoTotal;
+                                $scope.cubierta[j].Grupo[k].Ubicacion[ind].Subtotal = Subtotal.toFixed(2);
+                            }
+                            else
+                            {
+                                $scope.cubierta[j].Grupo[k].Ubicacion[ind].Subtotal = "Sin Valor";
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        console.log($scope.ubicacion);
+        console.log($scope.cubierta);
     };
     
     /*--------------- ---------------------------------*/

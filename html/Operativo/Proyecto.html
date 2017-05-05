@@ -1189,7 +1189,7 @@
                 <div class="row"><div class="col-xs-12 "> <div class="sepradorGris"> </div> </div></div><br>
                 <div class="row"><div class="col-xs-12 "> <div class="tituloAccesorioPre"> Accesorios </div> </div></div><br>
                 
-                <span class="textoInstruccion"> Cantidad Sugerida: {{presupuesto.NumeroJaladera}} Jaladeras, {{presupuesto.NumeroRiel}} Rieles, {{presupuesto.NumeroVisagra}} Visagras.</span>
+                <span class="textoInstruccion"> Cantidad Sugerida: {{presupuesto.NumeroJaladera}} Jaladeras, {{presupuesto.NumeroRiel}} Rieles, {{presupuesto.NumeroVisagra}} Bisagras.</span>
                 <br>
                 
                 <div class="row">
@@ -1226,7 +1226,7 @@
                                       <br>
 
                                         <div class="row">
-                                            <div ng-repeat="muestrario in tipo.Muestrario | orderBy:'Nombre'" ng-show=" muestrario.Accesorio.length > 0">
+                                            <div ng-repeat="muestrario in tipo.Muestrario | orderBy:'Nombre'" ng-show=" muestrario.Accesorio.length > 0 && muestrario.Activo">
                                                 <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4" style="margin-bottom:10px">
 
                                                     <!--<div class="input-group">-->
@@ -1741,12 +1741,347 @@
                     </div>
 
                     <div class="col-xs-6">
+                        <a focus class="btn botonOperacionModal btn-block" ng-click="TerminarPaso9()">SIGUIENTE &gt;&gt;</a>
+                    </div>
+                </div>
+                <br>
+               
+            </div>
+               
+            <!-- Paso 10 -->
+            <div name="presupuesto10Forma" ng-show="pasoPresupuesto == 10">
+              
+                <!-- Servicios -->
+                <div class="row">
+                   <div class="col-xs-12">
+                            <div class="table-responsive tablePerfilClienteDatos">
+                                <table class="table table-hover table-striped table-condensed">
+                                    <thead class="TituloTabla">
+                                      <tr>
+                                        <th><span class=""><b>Servicio</b></span></th>
+                                        <th class="text-center"><span><b>Costo Unidad</b></span></th>
+                                        <th class="text-center"><span><b>Cantidad</b></span></th>
+                                        <th class="text-center"><span><b>Margen</b></span></th>
+                                        <th class="text-center"><span><b>Costo Total</b></span></th>
+                                        <th class="text-center"><span><b>Subtotal</b></span></th>
+                                      </tr>
+                                    </thead>
+                                    <tbody >
+                                      <tr ng-repeat="servicio in servicio | orderBy:'Nombre'" ng-show="servicio.Activo && servicio.Obligatorio">
+                                           
+                                            <td>{{servicio.Nombre}}</td>
+                                            <td class="text-center">{{servicio.CostoUnidad}}</td>
+                                            <td class="text-center">{{servicio.Cantidad}}</td>
+                                            <td class="text-center">{{servicio.PrecioVenta}}</td>
+                                            <td class="text-center">{{servicio.CostoTotal}}</td>
+                                            <td class="text-center">{{servicio.Subtotal}}</td>
+                                            
+                                      </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                    </div>
+                </div>
+                
+                <!-- Maqueo -->
+                <div class="row">
+                   <div class="col-xs-12">
+                            <div class="table-responsive tablePerfilClienteDatos">
+                                <table class="table table-hover table-striped table-condensed">
+                                    <thead class="TituloTabla">
+                                      <tr>
+                                        <th><span class=""><b>Maqueo</b></span></th>
+                                        <th class="text-center"><span><b>Costo Unidad</b></span></th>
+                                        <th class="text-center"><span><b>Cantidad</b></span></th>
+                                        <th class="text-center"><span><b>Margen</b></span></th>
+                                        <th class="text-center"><span><b>Costo Total</b></span></th>
+                                        <th class="text-center"><span><b>Subtotal</b></span></th>
+                                      </tr>
+                                    </thead>
+                                    <tbody >
+                                      <tr ng-repeat="maqueo in maqueo | orderBy:'Nombre'" ng-show="maqueo.Activo && maqueo.PorDefecto">
+                                           
+                                            <td>{{maqueo.Nombre}}</td>
+                                            <td class="text-center">{{maqueo.CostoUnidad}}</td>
+                                            <td class="text-center">{{presupuesto.CantidadMaqueo}}</td>
+                                            <td class="text-center">{{maqueo.Margen}}</td>
+                                            <td class="text-center">{{maqueo.CostoTotal}}</td>
+                                            <td class="text-center">{{maqueo.Subtotal}}</td>
+                                            
+                                      </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                    </div>
+                </div>
+                                
+                <!-- Accesorios Compra Venta -->
+                <div class="row">
+                   <div class="col-xs-12">
+                       <span> Accesorios de compra - venta </span>
+                        <br><br>
+                        <div ng-repeat="tipo in tipoAccesorio | orderBy:'Nombre'" ng-show="tipo.showPrecio" ng-if="tipo.ClaseAccesorio.ClaseAccesorioId == '1'">
+                        
+                           <b> {{tipo.Nombre}}</b>
+                           
+                            <div class="table-responsive tablePerfilClienteDatos">
+                                <table class="table table-hover table-striped table-condensed">
+                                    <thead class="TituloTabla">
+                                      <tr>
+                                        <th><span class=""><b>Muestrario</b></span></th>
+                                        <th class="text-center"><span><b>Costo Unidad</b></span></th>
+                                        <th class="text-center"><span><b>Cantidad</b></span></th>
+                                        <th class="text-center"><span><b>Margen</b></span></th>
+                                        <th class="text-center"><span><b>Costo Total</b></span></th>
+                                        <th class="text-center"><span><b>Subtotal</b></span></th>
+                                      </tr>
+                                    </thead>
+                                    <tbody >
+                                      <tr ng-repeat="muestrario in tipo.Muestrario | orderBy:'Nombre'" ng-show="muestrario.Activo && muestrario.PorDefecto">
+                                           
+                                            <td>{{muestrario.Nombre}}</td>
+                                            <td class="text-center">{{muestrario.CostoUnidad}}</td>
+                                            <td class="text-center">{{tipo.Cantidad}}</td>
+                                            <td class="text-center">{{muestrario.Margen}}</td>
+                                            <td class="text-center">{{muestrario.CostoTotal}}</td>
+                                            <td class="text-center">{{muestrario.Subtotal}}</td>
+                                            
+                                      </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                           
+                       </div>
+                            
+                    </div>
+                </div>
+                
+                <!-- Accesorios Compra Madera -->
+                <div class="row">
+                   <div class="col-xs-12">
+                       <span> Accesorios de Madera </span>
+                        <br><br>
+                        <div ng-repeat="tipo in tipoAccesorio | orderBy:'Nombre'" ng-show="tipo.showPrecio" ng-if="tipo.ClaseAccesorio.ClaseAccesorioId == '2'">
+                        
+                           <b> {{tipo.Nombre}}</b>
+                           <div  ng-repeat="muestrario in tipo.Muestrario | orderBy:'Nombre'" ng-show="muestrario.Activo && muestrario.PorDefecto">
+                               {{muestrario.Nombre}}<br>
+                                <div class="table-responsive tablePerfilClienteDatos">
+                                    <table class="table table-hover table-striped table-condensed">
+                                        <thead class="TituloTabla">
+                                          <tr>
+                                            <th><span class=""><b>Combinacion</b></span></th>
+                                            <th class="text-center"><span><b>Costo Unidad</b></span></th>
+                                            <th class="text-center"><span><b>Cantidad</b></span></th>
+                                            <th class="text-center"><span><b>Margen</b></span></th>
+                                            <th class="text-center"><span><b>Costo Total</b></span></th>
+                                            <th class="text-center"><span><b>Subtotal</b></span></th>
+                                          </tr>
+                                        </thead>
+                                        <tbody >
+                                          <tr ng-repeat="combinacion in muestrario.Combinacion | orderBy:'Nombre'" >
+
+                                                <td>{{combinacion.Nombre}}</td>
+                                                <td class="text-center">{{combinacion.CostoUnidad}}</td>
+                                                <td class="text-center">{{tipo.Cantidad}}</td>
+                                                <td class="text-center">{{muestrario.Margen}}</td>
+                                                <td class="text-center">{{combinacion.CostoTotal}}</td>
+                                                <td class="text-center">{{combinacion.Subtotal}}</td>
+
+                                          </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                           
+                       </div>
+                            
+                    </div>
+                </div>
+                
+                <!-- Accesorios Compra Madera -->
+                <div class="row">
+                   <div class="col-xs-12">
+                       <span> Accesorios de Madera </span>
+                        <br><br>
+                        <div ng-repeat="tipo in tipoAccesorio | orderBy:'Nombre'" ng-show="tipo.showPrecio" ng-if="tipo.ClaseAccesorio.ClaseAccesorioId == '2'">
+                        
+                           <b> {{tipo.Nombre}}</b>
+                             
+                               
+                            <div class="table-responsive tablePerfilClienteDatos">
+                                <table class="table table-hover table-striped table-condensed">
+                                    <thead class="TituloTabla">
+                                      <tr>
+                                        <th><span class=""><b>Muestrario</b></span></th>
+
+
+
+                                        <th class="text-center"  ng-repeat="combinacion in combinacion | orderBy:'Nombre'" ng-if="combinacion.Activo && combinacion.PorDefecto">
+                                            <b>{{combinacion.Nombre}}</b>
+                                        </th>
+
+
+                                      </tr>
+                                    </thead>
+                                    <tbody ng-repeat="muestrario in tipo.Muestrario | orderBy:'Nombre'" ng-show="muestrario.Activo && muestrario.PorDefecto">
+                                      <tr>
+
+                                            <td>{{muestrario.Nombre}}</td>
+                                            <td class="text-center" ng-repeat="combinacion in muestrario.Combinacion | orderBy:'Nombre'" >
+                                                ${{combinacion.Subtotal}}
+                                            </td>
+
+                                      </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                       </div>
+                            
+                    </div>
+                </div>
+                
+                <!-- Cubiertas Aglomerado-->
+                <br>
+                <div class="row">
+                   <div class="col-xs-12">
+                       <b> Cubiertas de Aglomerado</b>
+                        <br><br>
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped table-condensed">
+                                <thead class="TituloTabla">
+                                  <tr>
+                                    <th><span class=""><b>Material</b></span></th>
+                                    <th class="text-center" ng-repeat="ubicacion in ubicacion | orderBy:'Nombre'" ng-show="ubicacion.Activo && ubicacion.SeleccionadoAglomerado">
+                                        <span><b>{{ubicacion.Nombre}}</b></span>
+                                    </th>
+                                  </tr>
+                                </thead>
+                                <tbody ng-repeat="cubierta in cubierta | orderBy:'Material.Nombre'"  ng-if="cubierta.Material.Activo && MostrarMaterial(cubierta.Grupo) && cubierta.TipoCubierta.TipoCubiertaId == '1'">
+                                  <tr ng-repeat="grupo in cubierta.Grupo | orderBy:'Grupo.Nombre'" ng-if="grupo.Grupo.Activo && grupo.Color.length > 0 && grupo.PorDefecto">
+
+                                        <td>{{cubierta.Material.Nombre}} - {{grupo.Grupo.Nombre}}</td>
+                                        <td class="text-center" ng-repeat="ubicacion in grupo.Ubicacion | orderBy:'NombreUbicacion'">
+                                            <span ng-if="ubicacion.Subtotal != 'Sin Valor'">${{ubicacion.Subtotal}}</span>
+                                            <span ng-if="ubicacion.Subtotal == 'Sin Valor'" style="background: black; width: 100%; height: 100%; color:black">"Sin valor"</span>
+                                        </td>
+
+                                  </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Cubiertas Piedra-->
+                <br>
+                <div class="row">
+                   <div class="col-xs-12">
+                       <b> Cubiertas de Piedra</b>
+                        <br><br>
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped table-condensed">
+                                <thead class="TituloTabla">
+                                  <tr>
+                                    <th><span class=""><b>Material</b></span></th>
+                                    <th class="text-center" ng-repeat="ubicacion in ubicacion | orderBy:'Nombre'" ng-show="ubicacion.Activo && ubicacion.Seleccionado">
+                                        <span><b>{{ubicacion.Nombre}}</b></span>
+                                    </th>
+                                  </tr>
+                                </thead>
+                                <tbody ng-repeat="cubierta in cubierta | orderBy:'Material.Nombre'"  ng-if="cubierta.Material.Activo && MostrarMaterial(cubierta.Grupo) && cubierta.TipoCubierta.TipoCubiertaId == '2'">
+                                  <tr ng-repeat="grupo in cubierta.Grupo | orderBy:'Grupo.Nombre'" ng-if="grupo.Grupo.Activo && grupo.Color.length > 0 && grupo.PorDefecto">
+
+                                        <td>{{cubierta.Material.Nombre}} - {{grupo.Grupo.Nombre}}</td>
+                                        <td class="text-center" ng-repeat="ubicacion in grupo.Ubicacion | orderBy:'NombreUbicacion'">
+                                            ${{ubicacion.Subtotal}}
+                                        </td>
+
+                                  </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                
+                
+                
+                
+                <!-- Cubiertas -->
+                <br>
+                <div class="row">
+                   <div class="col-xs-12">
+                       <span> Cubiertas de piedra </span>
+                        <br><br>
+                        <!-- ng-if="cubierta.TipoCubierta.TipoCubiertaId == '2'" -->
+                        <div ng-repeat="cubierta in cubierta | orderBy:'Material.Nombre'"  ng-show="cubierta.Material.Activo && MostrarMaterial(cubierta.Grupo)">
+                            
+                            <div ng-repeat="grupo in cubierta.Grupo | orderBy:'Grupo.Nombre'" ng-show="grupo.Grupo.Activo && grupo.Color.length > 0 && grupo.PorDefecto">
+                               <b> {{cubierta.Material.Nombre}} - {{grupo.Grupo.Nombre}}</b>
+
+                                <div class="table-responsive tablePerfilClienteDatos">
+                                    <table class="table table-hover table-striped table-condensed">
+                                        <thead class="TituloTabla">
+                                          <tr>
+                                            <th><span class=""><b>Ubicacion</b></span></th>
+                                            <th class="text-center"><span><b>Cantidad</b></span></th>
+                                            <th class="text-center"><span><b>Fabricación</b></span></th>
+                                            <th class="text-center"><span><b>Costo Unidad</b></span></th>
+                                            <th class="text-center"><span><b>Deperdicio</b></span></th>
+                                            <th class="text-center"><span><b>Margen</b></span></th>
+                                            <th class="text-center"><span><b>CostosTotal</b></span></th>
+                                            <th class="text-center"><span><b>Subtotal</b></span></th>
+                                          </tr>
+                                        </thead>
+                                        <tbody >
+                                          <tr ng-repeat="ubicacion in grupo.Ubicacion | orderBy:'NombreUbicacion'">
+
+                                                <td>{{ubicacion.NombreUbicacion}}</td>
+                                                
+                                                <td class="text-center">{{ubicacion.Cantidad}}</td>
+                                                <td class="text-center">{{ubicacion.Fabricacion}}</td>
+                                                
+                                                <td class="text-center">{{grupo.CostoUnidad}}</td>
+                                                <td class="text-center">{{cubierta.Desperdicio}}</td>
+                                                <td class="text-center">{{cubierta.Margen}}</td>
+                                                <td class="text-center">{{ubicacion.CostoTotal}}</td>
+                                                <td class="text-center">{{ubicacion.Subtotal}}</td>
+
+                                          </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                           
+                       </div>
+                            
+                    </div>
+                </div>
+                
+                <!-------- mensaje de error ---->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div ng-repeat="error in mensajeError">
+                            <span class="textoError">{{error}}</span>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <!---- botones de operacion -->
+                <div class="row">
+                    <div class="col-xs-6">
+                        <a class="btn botonOperacionModal btn-block" ng-click="AnteriorPresupuesto()">&lt;&lt; ANTERIOR</a>
+                    </div>
+
+                    <div class="col-xs-6">
                         <a focus class="btn botonOperacionModal btn-block" ng-click="TerminarPaso6()">SIGUIENTE &gt;&gt;</a>
                     </div>
                 </div>
                 <br>
                
             </div> 
+               
                 
         </div>
     </div> 

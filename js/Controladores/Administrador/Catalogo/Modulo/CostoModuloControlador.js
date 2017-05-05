@@ -20,6 +20,7 @@ app.controller("CostoModuloControlador", function($scope, $http, $q, CONFIG, dat
     $scope.tipoModulo = [];
     $scope.combinacion = [];
     $scope.puerta = [];
+    $scope.costoMaterial;
     
     $scope.costosMedidas = null;
     $scope.costosPuerta = null;
@@ -290,25 +291,46 @@ app.controller("CostoModuloControlador", function($scope, $http, $q, CONFIG, dat
         });
         return q.promise;
     };
-        
-    $scope.GetCostoMaterial = function(materialId, grueso, combinacion)
+    
+    $scope.GetCostoMaterialTodos = function()
     {
         var q = $q.defer();
         
-        var datos = [];
-        datos[0] = materialId;
-        datos[1] = grueso;
-        
-        GetCostoMaterial($http, $q, CONFIG, datos).then(function(data)
+        GetCostoMaterial($http, $q, CONFIG).then(function(data)
         {
-            combinacion.CostoUnidad = parseFloat(data[0].CostoUnidad);
-                
+            
+            $scope.costoMaterial = data;
             q.resolve("listo");
         }).catch(function(error)
         {
             alert(error);
             q.resolve(error);
         });
+        return q.promise;
+    };
+        
+    $scope.GetCostoMaterial = function(materialId, grueso, combinacion)
+    {
+        var q = $q.defer();
+        
+        var sql = "SELECT * FROM ? WHERE MaterialId = '" + materialId + "'";
+        
+        var costo = alasql(sql, [$scope.costoMaterial]);
+        
+        if(costo.length  == 1)
+        {
+            combinacion.CostoUnidad = parseFloat(costo[0].CostoUnidad);
+        }
+        else
+        {
+            sql = "SELECT CostoUnidad FROM ? WHERE Grueso = '" + grueso + "'";
+            costo = alasql(sql,[costo]);
+            
+            combinacion.CostoUnidad = parseFloat(costo[0].CostoUnidad);
+        }
+        
+        q.resolve("listo");
+        
         return q.promise;
     };
     
@@ -1571,6 +1593,7 @@ app.controller("CostoModuloControlador", function($scope, $http, $q, CONFIG, dat
         $scope.GetTipoModulo();
         $scope.GetCombinacionMaterial();
         $scope.GetPuerta();
+        $scope.GetCostoMaterialTodos();
     };
 
     /*------------------Indentifica cuando los datos del usuario han cambiado-------------------*/

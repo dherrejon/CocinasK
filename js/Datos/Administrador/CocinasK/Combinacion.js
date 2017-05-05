@@ -246,6 +246,26 @@ function GetCombinacionPorMaterialComponente($http, $q, CONFIG, id, modulo)    /
     return q.promise;
 }
 
+function GetCombinacionMaterialCosto($http, $q, CONFIG)    // obtener los componentes del módulo
+{
+    var q = $q.defer();
+    
+
+    $http({      
+          method: 'GET',
+          url: CONFIG.APIURL + '/GetCombinacionMaterialCosto',
+
+      }).success(function(data)
+        {
+            q.resolve(data);
+            
+        }).error(function(data){
+            q.resolve([{Estatus: data}]);
+     }); 
+    
+    return q.promise;
+}
+
 //copia los datos de una combinacion de materiales por componente
 function SetCombinacionPorMaterialComponente(data, modulo)
 {

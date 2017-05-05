@@ -579,15 +579,23 @@ function GetConsumiblePorModulo($http, $q, CONFIG, id)    // obtener los consumi
 
       }).success(function(data)
         {
-            var consumiblePorModulo = []; 
-            
-            for(var k=0; k<data.length; k++)
+            if(id != "-1")
             {
-                consumiblePorModulo[k] = new ConsumiblePorModulo();
-                consumiblePorModulo[k] = SetConsumiblePorModulo(data[k]);
+                var consumiblePorModulo = []; 
+            
+                for(var k=0; k<data.length; k++)
+                {
+                    consumiblePorModulo[k] = new ConsumiblePorModulo();
+                    consumiblePorModulo[k] = SetConsumiblePorModulo(data[k]);
+                }
+
+                q.resolve(consumiblePorModulo); 
             }
-        
-            q.resolve(consumiblePorModulo);   
+            else
+            {
+                q.resolve(data);
+            }
+              
         }).error(function(data){
             q.resolve(data);
      }); 
@@ -638,15 +646,23 @@ function GetComponentePorModulo($http, $q, CONFIG, id)    // obtener los compone
 
       }).success(function(data)
         {
-            var componentePorModulo = []; 
-            
-            for(var k=0; k<data.length; k++)
+            if(moduloId != "-1")
             {
-                componentePorModulo[k] = new ComponentePorModulo();
-                componentePorModulo[k] = SetComponentePorModulo(data[k]);
+                var componentePorModulo = []; 
+
+
+                for(var k=0; k<data.length; k++)
+                {
+                    componentePorModulo[k] = new ComponentePorModulo();
+                    componentePorModulo[k] = SetComponentePorModulo(data[k]);
+                }
+
+                q.resolve(componentePorModulo);
             }
-        
-            q.resolve(componentePorModulo);   
+            else
+            {
+                q.resolve(data);
+            }
         }).error(function(data){
             q.resolve(data);
      }); 

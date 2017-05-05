@@ -899,8 +899,14 @@ function GetConsumiblePorModulo()
     $request = \Slim\Slim::getInstance()->request();
     $moduloId = json_decode($request->getBody());
     
-    
-    $sql = "SELECT * FROM ConsumiblePorModuloVista WHERE ModuloId='".$moduloId[0]."'";
+    if($moduloId[0] != "-1")
+    {
+        $sql = "SELECT * FROM ConsumiblePorModuloVista WHERE ModuloId='".$moduloId[0]."'";
+    }
+    else
+    {
+        $sql = "SELECT ModuloId, ConsumibleId, Cantidad, Costo FROM ConsumiblePorModuloVista";
+    }
     
     try 
     {
@@ -909,7 +915,16 @@ function GetConsumiblePorModulo()
         $response = $stmt->fetchAll(PDO::FETCH_OBJ);
         $db = null;
         
-        echo json_encode($response);  
+        if($moduloId[0] != "-1")
+        {
+            echo json_encode($response);  
+        }
+        else
+        {
+            echo '[ { "Estatus": "Exitoso" }, {"Consumible":' .json_encode($response). '} ]'; 
+        }
+        
+        
     } 
     catch(PDOException $e) 
     {
@@ -928,8 +943,15 @@ function GetComponentePorModulo()
     $request = \Slim\Slim::getInstance()->request();
     $moduloId = json_decode($request->getBody());
     
+    if($moduloId[0] != "-1" )
+    {
+        $sql = "SELECT * FROM ComponentePorModuloVista WHERE ModuloId='".$moduloId[0]."'";
+    }
+    else
+    {
+        $sql = "SELECT * FROM ComponentePorModuloVista";
+    }
     
-    $sql = "SELECT * FROM ComponentePorModuloVista WHERE ModuloId='".$moduloId[0]."'";
     
     try 
     {
@@ -957,8 +979,15 @@ function GetPartePorModulo()
     $request = \Slim\Slim::getInstance()->request();
     $moduloId = json_decode($request->getBody());
     
+    if($moduloId[0] != "-1")
+    {
+        $sql = "SELECT * FROM PartePorModuloVista WHERE ModuloId='".$moduloId[0]."'";
+    }
+    else
+    {
+        $sql = "SELECT * FROM PartePorModuloVista";
+    }
     
-    $sql = "SELECT * FROM PartePorModuloVista WHERE ModuloId='".$moduloId[0]."'";
     
     try 
     {

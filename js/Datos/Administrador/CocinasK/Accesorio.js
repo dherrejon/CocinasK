@@ -567,3 +567,27 @@ function GetInstruccionesTipoAccesorio($http, $q, CONFIG, id)
      }); 
     return q.promise;
 }
+
+function GetAccesorioCosto($http, $q, CONFIG)     
+{
+    var q = $q.defer();
+
+    
+    $http({      
+          method: 'GET',
+          url: CONFIG.APIURL + '/GetAccesorioCosto',
+
+      }).success(function(data)
+        {
+            if(data[0].Estatus === "Exito")
+            {
+                q.resolve(data[1].Costo);  
+            }
+            
+        
+            q.resolve([]);  
+        }).error(function(data, status){
+            q.resolve([]);
+     }); 
+    return q.promise;
+}

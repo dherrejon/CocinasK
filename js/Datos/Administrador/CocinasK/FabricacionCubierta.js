@@ -164,6 +164,7 @@ function GetConsumiblePorFabricacion($http, $q, CONFIG, id)
             {
                 consumible[k] = new Consumible();
                 consumible[k] = SetConsumible(data[k]);
+                consumible[k].FabricacionCubiertaId = data[k].FabricacionCubiertaId;
                 consumible[k].Cantidad = parseInt(data[k].Cantidad);
             }
     

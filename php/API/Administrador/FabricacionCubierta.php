@@ -218,8 +218,14 @@ function GetConsumiblePorFabricacion()
     $request = \Slim\Slim::getInstance()->request();
     $fabricacionId = json_decode($request->getBody());
     
-    
-    $sql = "SELECT * FROM ConsumiblePorFabricacionVista WHERE FabricacionCubiertaId ='".$fabricacionId[0]."'";
+    if($fabricacionId[0] == "-1")
+    {
+        $sql = "SELECT * FROM ConsumiblePorFabricacionVista";
+    }
+    else
+    {
+        $sql = "SELECT * FROM ConsumiblePorFabricacionVista WHERE FabricacionCubiertaId ='".$fabricacionId[0]."'";
+    }
     
     try 
     {

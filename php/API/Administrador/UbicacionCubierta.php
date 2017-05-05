@@ -123,8 +123,14 @@ function GetDatosUbicacion()
     $request = \Slim\Slim::getInstance()->request();
     $ubicacionId = json_decode($request->getBody());
     
-    
-    $sql = "SELECT * FROM UbicacionPorFabricacionTipoCubiertaVista WHERE UbicacionCubiertaId ='".$ubicacionId[0]."'";
+    if($ubicacionId[0] == "-1")
+    {
+        $sql = "SELECT * FROM UbicacionPorFabricacionTipoCubiertaVista";
+    }
+    else
+    {
+        $sql = "SELECT * FROM UbicacionPorFabricacionTipoCubiertaVista WHERE UbicacionCubiertaId ='".$ubicacionId[0]."'";
+    }
     
     try 
     {

@@ -39,7 +39,7 @@ function GetAccesorioPresupuesto()
 
     $request = \Slim\Slim::getInstance()->request();
 
-    $sql = "SELECT TipoAccesorioId, MuestrarioId, Nombre, Imagen, CostoUnidad, ConsumoUnidad, Contable, Obligatorio FROM AccesorioVista 
+    $sql = "SELECT AccesorioId, TipoAccesorioId, MuestrarioId, Nombre, Imagen, CostoUnidad, ConsumoUnidad, Contable, Obligatorio FROM AccesorioVista 
             WHERE Activo = 1 ORDER BY Nombre";
 
     try 
@@ -595,6 +595,33 @@ function GetInstruccionesTipoAccesorio($id)
         $response[0]->Instrucciones =  base64_encode($response[0]->Instrucciones);
         
         echo '[ { "Estatus": "Exito"}, {"Instrucciones":'.json_encode($response).'} ]'; 
+        $db = null;
+    } 
+    catch(PDOException $e) 
+    {
+        //echo($e);
+        echo '[ { "Estatus": "Fallo" } ]';
+        $app->status(409);
+        $app->stop();
+    }
+}
+
+function GetAccesorioCosto()
+{
+    global $app;
+    global $session_expiration_time;
+
+    $request = \Slim\Slim::getInstance()->request();
+
+    $sql = "SELECT * FROM CostoAccesorioVista";
+
+    try 
+    {
+        $db = getConnection();
+        $stmt = $db->query($sql);
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+        
+        echo '[ { "Estatus": "Exito"}, {"Costo":'.json_encode($response).'} ]'; 
         $db = null;
     } 
     catch(PDOException $e) 

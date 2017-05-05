@@ -322,6 +322,7 @@
     $app->post('/ActivarDesactivarComponente', $seguridad, $ChecarSesion, 'ActivarDesactivarComponente');
 
     $app->post('/GetPiezaPorComponente', $seguridad, $ChecarSesion, 'GetPiezaPorComponente');
+    $app->get('/GetComponenteEspecial', $seguridad, $ChecarSesion, 'GetComponenteEspecial');
 
     /*------------------------Tipo Material----------------------------*/
     $app->get('/GetTipoMaterial', $seguridad, $ChecarSesion, 'GetTipoMaterial');
@@ -353,6 +354,7 @@
     $app->put('/EditarCombinacionMaterial', $seguridad, $ChecarSesion, 'EditarCombinacionMaterial');
     $app->post('/ActivarDesactivarCombinacionMaterial', $seguridad, $ChecarSesion, 'ActivarDesactivarCombinacionMaterial');
 
+    $app->get('/GetCombinacionMaterialCosto', $seguridad, $ChecarSesion, 'GetCombinacionMaterialCosto');
     $app->post('/GetCombinacionPorMaterialComponente', $seguridad, $ChecarSesion, 'GetCombinacionPorMaterialComponente');
     $app->post('/GetCombinacionPorMaterialComponentePorComponente', $seguridad, $ChecarSesion, 'GetCombinacionPorMaterialComponentePorComponente');
     $app->post('/GetCombinacionPorMaterialComponentePorPuerta', $seguridad, $ChecarSesion, 'GetCombinacionPorMaterialComponentePorPuerta');
@@ -468,6 +470,7 @@
     $app->post('/GetAccesorioClase', $seguridad, $ChecarSesion, 'GetAccesorioClase');
     $app->post('/GetCombinacionPorAccesorio', $seguridad, $ChecarSesion, 'GetCombinacionPorAccesorio');
     $app->post('/GuardarImagenAccesorio/:id', $seguridad, $ChecarSesion, 'GuardarImagenAccesorio');
+    $app->get('/GetAccesorioCosto', $seguridad, $ChecarSesion, 'GetAccesorioCosto');
     
     /*------------------ Promoción ------------------------------*/
     $app->get('/GetPromocion', $seguridad, $ChecarSesion, 'GetPromocion');

@@ -1,5 +1,4 @@
 /*----------------------------------Material ----------------------------------*/
-
 class Material
 {
     constructor()
@@ -171,7 +170,7 @@ function GetCostoMaterial($http, $q, CONFIG, material)
     $http({      
           method: 'POST',
           url: CONFIG.APIURL + '/GetCostoMaterial',
-          data: material
+          //data: material
       }).success(function(data)
         {
             var material = []; 
