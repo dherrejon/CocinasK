@@ -28,6 +28,7 @@
     require 'Administrador/Promocion.php';
     require 'Administrador/PlanPago.php';
     require 'Administrador/MedioCaptacion.php';
+    require 'Administrador/TipoProyecto.php';
 
     /*------------Operativo-----------*/
     require 'Operativo/Cita.php';
@@ -452,6 +453,12 @@
     $app->post('/AgregarServicio', $seguridad, $ChecarSesion, 'AgregarServicio');
     $app->put('/EditarServicio', $seguridad, $ChecarSesion, 'EditarServicio');
     $app->post('/ActivarDesactivarServicio', $seguridad, $ChecarSesion, 'ActivarDesactivarServicio');
+
+    /*------------------ TipoProyecto ------------------------------*/
+    $app->get('/GetTipoProyecto', $seguridad, $ChecarSesion, 'GetTipoProyecto');
+    $app->post('/AgregarTipoProyecto', $seguridad, $ChecarSesion, 'AgregarTipoProyecto');
+    $app->put('/EditarTipoProyecto', $seguridad, $ChecarSesion, 'EditarTipoProyecto');
+    $app->post('/ActivarDesactivarTipoProyecto', $seguridad, $ChecarSesion, 'ActivarDesactivarTipoProyecto');
 
 
     /*------------------ Maqueo ------------------------------*/

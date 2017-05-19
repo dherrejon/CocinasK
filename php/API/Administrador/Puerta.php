@@ -544,8 +544,14 @@ function GetComponentePorPuerta()
     $request = \Slim\Slim::getInstance()->request();
     $puertaId = json_decode($request->getBody());
     
-    
-    $sql = "SELECT * FROM ComponentePorPuertaVista WHERE PuertaId='".$puertaId[0]."'";
+    if($puertaId[0] != "-1")
+    {
+        $sql = "SELECT * FROM ComponentePorPuertaVista WHERE PuertaId='".$puertaId[0]."'";
+    }
+    else
+    {
+        $sql = "SELECT PuertaId, ComponenteId, PiezaId, Cantidad, FormulaAncho, FormulaLargo FROM ComponentePorPuertaVista";
+    }
     
     try 
     {

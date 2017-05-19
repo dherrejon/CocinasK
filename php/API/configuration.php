@@ -8,7 +8,7 @@
     
     $db_password = "";
     
-    $db_name = "cocinask";
+    $db_name = "cocinask"; /*cocinasketapa1*/
 
     /*$db_host = "us-cdbr-azure-southcentral-f.cloudapp.net";
     

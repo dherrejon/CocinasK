@@ -88,16 +88,16 @@
                 <!--  -->
                 <div class="row">
                     <div class="col-xs-12">
-                        <button class="btn btn-block botonAcordion" ng-class="GetClaseDropdown(mostrarContenido.unidad)" ng-click="MostrarContenido('unidad')" ng-show="permisoOperativo.verTodosCliente" ng-disabled="presupuesto1Forma.nombre.$invalid || presupuesto1Forma.apellido1.$invalid"><!--  -->
+                        <a class="btn btn-block botonAcordion textoIzquierda {{GetClaseDropdown(mostrarContenido.unidad)}}" ng-class="{disabled: (presupuesto1Forma.nombre.$invalid || presupuesto1Forma.apellido1.$invalid)}" ng-click="MostrarContenido('unidad')" ng-show="permisoOperativo.verTodosCliente"><!--  -->
                             
-                            <span  class="pull-left">
+                            <span  class="">
                                 <span ng-show="!mostrarContenido.unidad" style="width:20px;" class="fa fa-chevron-right"></span>
                                 <span ng-show="mostrarContenido.unidad" style="width:20px;" class="fa fa-chevron-up"></span>
                                
                                 <span> Unidades de Negocio</span> 
                             </span>
                             
-                        </button>
+                        </a>
                     </div>
                     
                 </div>
@@ -168,14 +168,14 @@
                 <!-- Medios de contacto -->
                 <div class="row">
                     <div class="col-xs-12">
-                        <button class="btn btn-block botonAcordion" ng-class="GetClaseDropdown(mostrarContenido.contacto)" ng-click="MostrarContenido('contacto')" ng-disabled="presupuesto1Forma.nombre.$invalid || presupuesto1Forma.apellido1.$invalid"><!--  -->
-                            <span class="pull-left ">
+                        <a class="btn btn-block botonAcordion textoIzquierda {{GetClaseDropdown(mostrarContenido.contacto)}}" ng-click="MostrarContenido('contacto')" ng-class="{disabled: (presupuesto1Forma.nombre.$invalid || presupuesto1Forma.apellido1.$invalid)}"><!--  -->
+                            <span class="">
                                 <span ng-show="!mostrarContenido.contacto" style="width:20px" class="fa fa-chevron-right"></span>
                                 <span ng-show="mostrarContenido.contacto" style="width:20px" class="fa fa-chevron-up"></span>
                                 <span> Medio de contacto</span>     
                             </span>
                             
-                        </button>
+                        </a>
                     </div>
                     
                 </div>
@@ -326,7 +326,7 @@
                
                 <!-- Tipo de proyecto -->
                 <div class="row">
-                  
+                    <!-- tipo de proyecto -->
                     <div class="col-sm-6 etiquetaDropdownList">
                          <label>Proyecto*</label>
                          <div class="dropdown">
@@ -337,7 +337,7 @@
                             </button>
                             
                             <ul class="dropdown-menu listaOpcionesDropdownList" >                                
-                                <li ng-repeat="tipo in tipoProyecto | orderBy:'Nombre'">
+                                <li ng-repeat="tipo in tipoProyecto | orderBy:'Nombre'" ng-if="tipo.Activo">
                                     <a  href="" class="dropdownOpcionModal" ng-click="CambiarTipoProyecto(tipo)">
                                         <span>{{tipo.Nombre}}</span>
                                     </a>
@@ -348,10 +348,10 @@
                     </div>
                         
                     <div class="hidden-sm hidden-md hidden-lg"> <br> </div>
-                   
+                   <!-- nombre -->
                     <div class="col-sm-6">
                        <div class="entrada2">
-                            <input ng-pattern="erNombreGeneral" type="text" required class="entrada form-control" name="nombreMedioCaptacion" ng-model="presupuesto.Proyecto.Nombre" ng-maxlength="120"/>
+                            <input type="text" required class="entrada form-control" name="nombre" ng-model="presupuesto.Proyecto.Nombre" ng-maxlength="120"/>
                             <label>Nombre del Proyecto*</label>
                         </div>
                    </div>             
@@ -361,14 +361,14 @@
                 <!-- Domicilios -->
                 <div class="row">
                     <div class="col-xs-12">
-                        <button class="btn btn-block botonAcordion" ng-class="GetClaseDropdown(mostrarContenido.direccion)" ng-click="MostrarContenido('direccion')"><!--  -->
-                            <span class="pull-left " >
+                        <a class="btn btn-block botonAcordion {{GetClaseDropdown(mostrarContenido.direccion)}} textoIzquierda" ng-click="MostrarContenido('direccion')"><!--  -->
+                            <span class=" " >
                                 <span ng-if="!mostrarContenido.direccion" style="width:20px" class="fa fa-chevron-right"></span>
                                 <span ng-if="mostrarContenido.direccion" style="width:20px" class="fa fa-chevron-up"></span>
                                 <span> Domicilios</span> 
                             </span>
                             
-                        </button>
+                        </a>
                     </div>
                 </div>
                 
@@ -493,15 +493,15 @@
                     </div>
 
                     <div class="col-xs-6">
-                        <button focus class="btn botonOperacionModal btn-block" ng-click="TerminarPaso2()">SIGUIENTE &gt;&gt;</button>
+                        <button focus class="btn botonOperacionModal btn-block" ng-click="TerminarPaso2(presupuesto2Forma.nombre.$invalid)">SIGUIENTE &gt;&gt;</button>
                     </div>
                 </div>
             <br>
             </form>
             
-             <!-- Paso 3 -->
-            <form name="presupuesto3Forma" ng-show="pasoPresupuesto == 3">
-               
+            <!-- pasos -->
+            <div ng-show="pasoPresupuesto > 2 && pasoPresupuesto < 9">
+                
                 <div class="stepwizard">
                   <div class="stepwizard-rowActivo"></div>
                    
@@ -513,14 +513,21 @@
                         </div>
                     </div>
                 </div>
-               
+                
                 <br>
                 <div class="row">
                     <div class="col-xs-12">
-                        {{presupuesto.Proyecto.TipoProyecto.Nombre}}: {{presupuesto.Persona.Nombre}} {{presupuesto.Persona.PrimerApellido}} {{presupuesto.Persona.SegundoApellido}}
+                        {{presupuesto.Proyecto.TipoProyecto.Nombre}} - {{presupuesto.Proyecto.Nombre}}: {{presupuesto.Persona.Nombre}} {{presupuesto.Persona.PrimerApellido}} {{presupuesto.Persona.SegundoApellido}}
                         <div class="divisorNaranja"></div>
                     </div>
                 </div>
+                
+            </div>
+            
+             <!-- Paso 3 -->
+            <form name="presupuesto3Forma" ng-show="pasoPresupuesto == 3">
+               
+                
                 <div class="row">
                     <div class="col-xs-12 tituloPaso">
                         <span>Datos del Presupuesto</span>
@@ -532,12 +539,12 @@
                 <div class="row">
                     <!-- Cocina Integral -->
                     <div class="col-sm-6">
-                        <div class="tituloOpcionPresupuesto active">
-                            <!--<span class="fa fa-circle-o"></span>-->
-                            <span class="fa fa-check-circle-o" style="font-size:26px"></span>
+                        <div class="tituloOpcionPresupuesto" ng-class="{active: presupuesto.Proyecto.TipoProyecto.Mueble}">
+                            <span ng-if="!presupuesto.Proyecto.TipoProyecto.Mueble" class="fa fa-circle-thin" style="font-size:26px"></span>
+                            <span ng-if="presupuesto.Proyecto.TipoProyecto.Mueble" class="fa fa-check-circle-o" style="font-size:26px"></span>
                             <span class="textoTituloOpcionPresupuesto" style="font-size:20px;"> Cocina Integral</span>
                         </div>
-                        <div class="panelItemPresupuesto">
+                        <div class="panelItemPresupuesto" ng-class="{disabled: !presupuesto.Proyecto.TipoProyecto.Mueble}">
                            <div class="row">
                                <div class="col-xs-12 text-center">
                                    <span>¿Qué combinaciones quieres presupuestar?</span>
@@ -550,7 +557,7 @@
                                     <div ng-repeat="combinacion in combinacion | orderBy:'Nombre'" ng-show="combinacion.Activo">
                                         <div class="checkbox checkboxOperativo itemPresupuesto" style="margin-left: 0px" ng-class="{itemPresupuestoPrimero: $first}">
                                             <label style="width:100%">
-                                                <input  ng-model="combinacion.PorDefecto" type="checkbox" >
+                                                <input  ng-model="combinacion.PorDefecto" type="checkbox" ng-disabled=" !presupuesto.Proyecto.TipoProyecto.Mueble">
                                                 <span class="cr"> <i class="cr-icon fa fa-check"></i> </span>
                                                 <span>{{combinacion.Nombre}}</span>
                                             </label>
@@ -565,13 +572,13 @@
                     
                     <!-- Cubierta -->
                     <div class="col-sm-6">
-                        <div class="tituloOpcionPresupuesto">
-                            <span class="fa fa-circle-thin" style="font-size:26px"></span>
-                            <!--<span class="fa fa-check-circle-o" style="font-size:26px"></span>-->
+                        <div class="tituloOpcionPresupuesto" ng-class="{active:(presupuesto.Proyecto.TipoProyecto.CubiertaAglomerado || presupuesto.Proyecto.TipoProyecto.CubiertaPiedra)}">
+                            <span ng-if="!(presupuesto.Proyecto.TipoProyecto.CubiertaAglomerado || presupuesto.Proyecto.TipoProyecto.CubiertaPiedra)" class="fa fa-circle-thin" style="font-size:26px"></span>
+                            <span ng-if="(presupuesto.Proyecto.TipoProyecto.CubiertaAglomerado || presupuesto.Proyecto.TipoProyecto.CubiertaPiedra)" class="fa fa-check-circle-o" style="font-size:26px"></span>
                             <span class="textoTituloOpcionPresupuesto" style="font-size:20px;"> Cubierta</span>
                         </div>
                         
-                        <div class="panelItemPresupuesto">
+                        <div class="panelItemPresupuesto" ng-class="{disabled: !(presupuesto.Proyecto.TipoProyecto.CubiertaAglomerado || presupuesto.Proyecto.TipoProyecto.CubiertaPiedra)}">
                            <div class="row">
                                <div class="col-xs-12 text-center">
                                    <span>¿Qué tipo de cubierta quieres presupuestar?</span>
@@ -582,9 +589,9 @@
                                <div class="col-xs-12">
                                                            
                                     <div ng-repeat="tipo in tipoCubierta | orderBy:'Nombre'">
-                                        <div class="checkbox checkboxOperativo itemPresupuesto" style="margin-left: 0px" ng-class="{itemPresupuestoPrimero: $first}">
+                                        <div class="checkbox checkboxOperativo itemPresupuesto" style="margin-left: 0px" ng-class="{itemPresupuestoPrimero: $first}" >
                                             <label style="width:100%">
-                                                <input  ng-model="tipo.PorDefecto" type="checkbox" >
+                                                <input  ng-model="tipo.PorDefecto" type="checkbox" ng-disabled="(tipo.TipoCubiertaId=='1' && !presupuesto.Proyecto.TipoProyecto.CubiertaAglomerado) || (tipo.TipoCubiertaId=='2' && !presupuesto.Proyecto.TipoProyecto.CubiertaPiedra)">
                                                 <span class="cr"> <i class="cr-icon fa fa-check"></i> </span>
                                                 <span>{{tipo.Nombre}}</span>
                                             </label>
@@ -624,26 +631,7 @@
             
             <!-- Paso 4 -->
             <form name="presupuesto4Forma" ng-show="pasoPresupuesto == 4">
-               
-                <div class="stepwizard">
-                  <div class="stepwizard-rowActivo"></div>
-                   
-                    <div class="stepwizard-row" ng-class="GetClaseLineaPaso()">
-                        
-                        <div class="stepwizard-step"  ng-repeat="paso in detallePaso">
-                            <button type="button" class="btn  btn-circle" ng-class="GetClasePaso(paso.numero)" disabled>{{paso.numero}}</button>
-                            <p>{{paso.nombre}}</p>
-                        </div>
-                    </div>
-                </div>
                 
-                <br>
-                <div class="row">
-                    <div class="col-xs-12">
-                        {{presupuesto.Proyecto.TipoProyecto.Nombre}}: {{presupuesto.Persona.Nombre}} {{presupuesto.Persona.PrimerApellido}} {{presupuesto.Persona.SegundoApellido}}
-                        <div class="divisorNaranja"></div>
-                    </div>
-                </div>
                 <div class="row">
                     <div class="col-xs-12 tituloPaso">
                         <span>Módulos</span>
@@ -886,26 +874,7 @@
             
             <!-- Paso 5 -->
             <form name="presupuesto5Forma" ng-show="pasoPresupuesto == 5">
-               
-                <div class="stepwizard">
-                  <div class="stepwizard-rowActivo"></div>
-                   
-                    <div class="stepwizard-row" ng-class="GetClaseLineaPaso()">
-                        
-                        <div class="stepwizard-step"  ng-repeat="paso in detallePaso">
-                            <button type="button" class="btn  btn-circle" ng-class="GetClasePaso(paso.numero)" disabled>{{paso.numero}}</button>
-                            <p>{{paso.nombre}}</p>
-                        </div>
-                    </div>
-                </div>
                 
-                <br>
-                <div class="row">
-                    <div class="col-xs-12">
-                        {{presupuesto.Proyecto.TipoProyecto.Nombre}}: {{presupuesto.Persona.Nombre}} {{presupuesto.Persona.PrimerApellido}} {{presupuesto.Persona.SegundoApellido}}
-                        <div class="divisorNaranja"></div>
-                    </div>
-                </div>
                 <div class="row">
                     <div class="col-xs-12 tituloPaso">
                         <span>Servicios y Puertas</span>
@@ -987,14 +956,14 @@
                            <div class="row">
                               <div class="col-xs-6">
                                   <div class="entrada2">
-                                      <input required ng-pattern="erNumeroEntero" type="text" class="entrada form-control" ng-model="presupuesto.NumeroPuerta">
+                                      <input required ng-pattern="erNumeroEntero" type="text" class="entrada form-control" disabled ng-model="presupuesto.NumeroPuerta">
                                       <label># Puertas</label>
                                   </div>
                               </div>
 
                               <div class="col-xs-6">
                                   <div class="entrada2">
-                                      <input required ng-pattern="erNumeroEntero" type="text" class="entrada form-control" ng-model="presupuesto.NumeroCajon">
+                                      <input required ng-pattern="erNumeroEntero" type="text" class="entrada form-control" disabled ng-model="presupuesto.NumeroCajon">
                                       <label># Cajones</label>
                                   </div>
                               </div>
@@ -1064,26 +1033,6 @@
             
             <!-- Paso 6 -->
             <form name="presupuesto6Forma" ng-show="pasoPresupuesto == 6">
-               
-                <div class="stepwizard">
-                  <div class="stepwizard-rowActivo"></div>
-                   
-                    <div class="stepwizard-row" ng-class="GetClaseLineaPaso()">
-                        
-                        <div class="stepwizard-step"  ng-repeat="paso in detallePaso">
-                            <button type="button" class="btn  btn-circle" ng-class="GetClasePaso(paso.numero)" disabled>{{paso.numero}}</button>
-                            <p>{{paso.nombre}}</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <br>
-                <div class="row">
-                    <div class="col-xs-12">
-                        {{presupuesto.Proyecto.TipoProyecto.Nombre}}: {{presupuesto.Persona.Nombre}} {{presupuesto.Persona.PrimerApellido}} {{presupuesto.Persona.SegundoApellido}}
-                        <div class="divisorNaranja"></div>
-                    </div>
-                </div>
                 <div class="row">
                     <div class="col-xs-12 tituloPaso">
                         <span>Maqueo y Accesorios</span>
@@ -1319,26 +1268,7 @@
             
             <!-- Paso 7 -->
             <form name="presupuesto7Forma" ng-show="pasoPresupuesto == 7">
-               
-                <div class="stepwizard">
-                  <div class="stepwizard-rowActivo"></div>
-                   
-                    <div class="stepwizard-row" ng-class="GetClaseLineaPaso()">
-                        
-                        <div class="stepwizard-step"  ng-repeat="paso in detallePaso">
-                            <button type="button" class="btn  btn-circle" ng-class="GetClasePaso(paso.numero)" disabled>{{paso.numero}}</button>
-                            <p>{{paso.nombre}}</p>
-                        </div>
-                    </div>
-                </div>
                 
-                <br>
-                <div class="row">
-                    <div class="col-xs-12">
-                        {{presupuesto.Proyecto.TipoProyecto.Nombre}}: {{presupuesto.Persona.Nombre}} {{presupuesto.Persona.PrimerApellido}} {{presupuesto.Persona.SegundoApellido}}
-                        <div class="divisorNaranja"></div>
-                    </div>
-                </div>
                 <div class="row">
                     <div class="col-xs-12 tituloPaso">
                         <span>Cubierta de Aglomerado</span>
@@ -1355,7 +1285,7 @@
                 <br>
                 <div class="row">
                   
-                   <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4" style="margin-bottom:15px" ng-repeat="ubicacion in ubicacion | orderBy:'Nombre'" ng-show="ubicacion.Activo">
+                   <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4" style="margin-bottom:15px" ng-repeat="ubicacion in ubicacion | orderBy:'UbicacionCubiertaId'" ng-show="ubicacion.Activo">
                           
                        <label class="btn checkBoxActivoPre" ng-class="{checkBoxActivoPreNaranja: ubicacion.SeleccionadoAglomerado}">
                            <input  type="checkbox" class="badgeboxPre" ng-model="ubicacion.SeleccionadoAglomerado">
@@ -1378,7 +1308,7 @@
                 
                 <div class="row">
                     <div class="col-xs-12">
-                       <div ng-repeat="ubicacion in ubicacion | orderBy:'Nombre'" >
+                       <div ng-repeat="ubicacion in ubicacion | orderBy:'UbicacionCubiertaId'" >
                            
                            <div class="input-group">
                                <span class="input-group-addon etiquetaUbicacion" ng-class="{disabled: !ubicacion.SeleccionadoAglomerado}"><b>{{ubicacion.Nombre}}</b></span>
@@ -1468,34 +1398,14 @@
                     </div>
 
                     <div class="col-xs-6">
-                        <a focus class="btn botonOperacionModal btn-block" ng-click="TerminarPaso3()">SIGUIENTE &gt;&gt;</a>
+                        <a focus class="btn botonOperacionModal btn-block" ng-click="TerminaPaso7()">SIGUIENTE &gt;&gt;</a>
                     </div>
                 </div>
             <br>
             </form> 
                
              <!-- Paso 8 -->
-            <form name="presupuesto8Forma" ng-show="pasoPresupuesto == 8">
-               
-                <div class="stepwizard">
-                  <div class="stepwizard-rowActivo"></div>
-                   
-                    <div class="stepwizard-row" ng-class="GetClaseLineaPaso()">
-                        
-                        <div class="stepwizard-step"  ng-repeat="paso in detallePaso">
-                            <button type="button" class="btn  btn-circle" ng-class="GetClasePaso(paso.numero)" disabled>{{paso.numero}}</button>
-                            <p>{{paso.nombre}}</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <br>
-                <div class="row">
-                    <div class="col-xs-12">
-                        {{presupuesto.Proyecto.TipoProyecto.Nombre}}: {{presupuesto.Persona.Nombre}} {{presupuesto.Persona.PrimerApellido}} {{presupuesto.Persona.SegundoApellido}}
-                        <div class="divisorNaranja"></div>
-                    </div>
-                </div>
+            <form name="presupuesto8Forma" ng-show="pasoPresupuesto == 8"> 
                 <div class="row">
                     <div class="col-xs-12 tituloPaso">
                         <span>Cubierta de Piedra</span>
@@ -1512,7 +1422,7 @@
                 <br>
                 <div class="row">
                   
-                   <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4" style="margin-bottom:15px" ng-repeat="ubicacion in ubicacion | orderBy:'Nombre'" ng-show="ubicacion.Activo">
+                   <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4" style="margin-bottom:15px" ng-repeat="ubicacion in ubicacion | orderBy:'UbicacionCubiertaId'" ng-show="ubicacion.Activo">
                           
                        <label class="btn checkBoxActivoPre" ng-class="{checkBoxActivoPreNaranja: ubicacion.Seleccionado}">
                            <input  type="checkbox" class="badgeboxPre" ng-model="ubicacion.Seleccionado">
@@ -1535,7 +1445,7 @@
                 
                 <div class="row">
                     <div class="col-xs-12">
-                       <div ng-repeat="ubicacion in ubicacion | orderBy:'Nombre'" >
+                       <div ng-repeat="ubicacion in ubicacion | orderBy:'UbicacionCubiertaId'" >
                             <a href="" class="btn btn-block botonAcordionPerfil {{GetClaseTab(ubicacion.Nombre)}}" ng-class="{disabled: !ubicacion.Seleccionado}" ng-click="CambiarTab(ubicacion.Nombre)">
                                 <span class="fa fa-chevron-right" style="width:20px;" ng-if="tabSeleccionada != ubicacion.Nombre"></span>
                                 <span class="fa fa-chevron-up" style="width:20px;" ng-if="tabSeleccionada == ubicacion.Nombre"></span>
@@ -1664,7 +1574,6 @@
                                             
                                         </div>
                                         
-                                        
                                     </div>
                                             
                                </div>
@@ -1694,7 +1603,7 @@
                     </div>
 
                     <div class="col-xs-6">
-                        <a focus class="btn botonOperacionModal btn-block" ng-click="TerminarPaso3()">SIGUIENTE &gt;&gt;</a>
+                        <a focus class="btn botonOperacionModal btn-block" ng-click="TerminarPaso8()">SIGUIENTE &gt;&gt;</a>
                     </div>
                 </div>
                 <br>
@@ -1702,12 +1611,32 @@
             
             <!-- Paso 9 -->
             <div name="presupuesto9Forma" ng-show="pasoPresupuesto == 9">
+             
+               <div ng-if="presupuesto.Proyecto.TipoProyecto.Mueble">
+                <!-- Descripción Combinacion -->        
+                    <div class="row">
+                        <div class="col-sm-12" ng-repeat="tipo in tipoCombinacion" ng-if="tipo.Combinacion > 0">
+                             <div class="">
+                                <label class="labelEntrada">
+                                    Descripción para las combinaciones: 
+                                    <span ng-repeat="comibinacion in tipo.Combinacion">
+                                        <span ng-if="$first">{{comibinacion.Nombre}}, </span>
+                                        <span ng-if="$first">{{comibinacion.Nombre}}.</span>
+                                    </span>
+                                </label>
+                                
+                                <textarea required type="text"  class="form-control descripcionArea" ng-model="tipo.Descripcion" ng-maxlength="1000" style="min-height: 100px"></textarea>
+                            </div>
+                            <br>
+                        </div>
+                    </div>
+                </div>
               
                 <!-- Descripción Cliente -->            
                 <div class="row">
                     <div class="col-sm-12">
                          <div class="">
-                            <label class="labelEntrada">Descripción Cliente</label>
+                            <label class="labelEntrada">Descripción Cliente*</label>
                             <textarea required type="text"  class="form-control descripcionArea" name="descripcionCliente" ng-model="presupuesto.DescripcionCliente" ng-maxlength="500" style="min-height: 100px"></textarea>
                         </div>
                     </div>
@@ -1718,7 +1647,7 @@
                 <div class="row">
                     <div class="col-sm-12">
                          <div class="">
-                            <label class="labelEntrada">Descripción Interna</label>
+                            <label class="labelEntrada">Nota Interna</label>
                             <textarea type="text"  class="form-control descripcionArea" name="descripcionInterna" ng-model="presupuesto.DescripcionInterna" ng-maxlength="500" style="min-height: 100px"></textarea>
                         </div>
                     </div>
@@ -1747,71 +1676,361 @@
                 <br>
                
             </div>
-               
+              
             <!-- Paso 10 -->
             <div name="presupuesto10Forma" ng-show="pasoPresupuesto == 10">
+                
+                
+                <div class=" row">
+                    <div class="col-xs-12">
+                        <div class="textoInstruccion">Selecciona las opciones elegidas por {{presupuesto.Persona.Nombre}}</div>
+                    </div>
+                </div><br>
+                    
+                
+                <!-- Divisor -->
+                <div ng-if="presupuesto.Proyecto.TipoProyecto.Mueble">
+                    <div class="divisorNaranja1"></div>
+
+                    <!-- Combinacion -->
+                    <div class="tituloOptPresupuesto"> Combinación </div><br>  
+                    <div class="row">
+                        <div ng-repeat="combinacion in combinacion | orderBy:'PrecioVentaModulo'" ng-show="combinacion.Activo && combinacion.PorDefecto">
+                            <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3" style="margin-bottom:10px">
+
+                                <!--<div class="input-group">-->
+
+                                   <label class="btn checkBoxActivoPre text-center" ng-class="{checkBoxActivoPreNaranja: combinacion.Presupuesto}">
+                                       <input  type="checkbox" class="badgeboxPre" ng-model="combinacion.Presupuesto" ng-change="CambiarCombinacionPresupuesto(combinacion);">
+                                       <span class="badge">&check;</span>
+                                       <span> {{combinacion.Nombre}}</span> 
+                                   </label>
+
+
+                                <div class="panelItemPresupuesto itemPuerta text-center price">
+
+                                    ${{combinacion.PrecioVentaModulo}}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                
+                <!-- Divisor -->
+                    <div class="divisorNaranja1"></div>
+
+                    <!-- Puertas -->
+                    <div class="tituloOptPresupuesto"> Puertas </div><br>
+                    <div class="row">
+                        <div ng-repeat="muestrario in muestrario | orderBy:'PrecioVenta'" ng-show="muestrario.Activo && muestrario.PorDefecto">
+                            <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3" style="margin-bottom:10px">
+
+                                <!--<div class="input-group">-->
+
+                                   <label class="btn checkBoxActivoPre" ng-class="{checkBoxActivoPreNaranja: muestrario.Presupuesto}">
+                                       <input  type="checkbox" class="badgeboxPre" ng-model="muestrario.Presupuesto" ng-change="CambiarMuestrarioPresupuesto(muestrario);">
+                                       <span class="badge">&check;</span>
+                                       <span> {{muestrario.Nombre}}</span> 
+                                   </label>
+
+                                    <div class="panelItemPresupuesto itemPuerta" style="height: auto">
+
+                                        <div ng-repeat="combinacion in muestrario.Combinacion | orderBy:'PrecioVenta'" ng-class="{opcionSeleccionadaPresupuesto: (combinacion.CombinacionMaterialId == combinacionSeleccionada)}">
+                                            <div class="checkbox checkboxOperativo itemPresupuesto" style="margin-left: 0px" ng-class="{itemPresupuestoPrimero: $first}">
+                                                <label style="width:100%">
+                                                    <span>{{combinacion.Nombre}}</span>
+                                                    <span class="pull-right">${{combinacion.PrecioVenta}}</span>
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                
+                    <!-- Divisor -->
+                    <div ng-if="(servicio | filter:{Activo:true, Obligatorio:true}).length > 0">
+                        <div class="divisorNaranja1"></div>
+
+                        <!-- Servicios -->
+                        <div class="tituloOptPresupuesto"> Servicios </div><br>
+                        <div class="row">
+                            <div ng-repeat="servicio in servicio | orderBy:'Nombre'" ng-show="servicio.Obligatorio && servicio.Activo">
+                                <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3" style="margin-bottom:10px">
+
+                                    <!--<div class="input-group">-->
+
+                                       <label class="btn checkBoxActivoPre" ng-class="{checkBoxActivoPreNaranja: servicio.Presupuesto}">
+                                           <input  type="checkbox" class="badgeboxPre" ng-model="servicio.Presupuesto">
+                                           <span class="badge">&check;</span>
+                                           <span> {{servicio.Nombre}}</span> 
+                                       </label>
+
+                                    <div>
+                                        <div class="panelItemPresupuesto itemPuerta text-center price">
+
+                                            ${{servicio.Subtotal}}
+
+                                        </div>
+                                    </div>
+
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                
+                    <!-- Divisor -->
+                    <div class="divisorNaranja1"></div>
+
+                     <!-- Maqueo -->
+                    <div class="tituloOptPresupuesto"> Maqueo </div><br>
+                    <div class="row">
+                        <div ng-repeat="maqueo in maqueo | orderBy:'Subtotal'" ng-show="maqueo.PorDefecto && maqueo.Activo">
+                            <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3" style="margin-bottom:10px">
+
+                                <!--<div class="input-group">-->
+
+                                   <label class="btn checkBoxActivoPre" ng-class="{checkBoxActivoPreNaranja: maqueo.Presupuesto}">
+                                       <input  type="checkbox" class="badgeboxPre" ng-model="maqueo.Presupuesto" ng-change="CambiarMaqueoPresupuesto(maqueo)">
+                                       <span class="badge">&check;</span>
+                                       <span> {{maqueo.Nombre}}</span> 
+                                   </label>
+
+                                <div>
+                                    <div class="panelItemPresupuesto itemPuerta text-center price">
+
+                                        ${{maqueo.Subtotal}}
+
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                        </div>
+
+                    </div> 
+                
+                <!-- Divisor -->
+                    <div class="divisorNaranja1"></div>
+
+                    <!-- Accesorios -->
+                    <div ng-repeat="tipo in tipoAccesorio | orderBy:'Nombre'">
+                        <div class="row">
+                            <div ng-repeat="muestrario in tipo.Muestrario | orderBy:'Subtotal'" ng-show=" muestrario.Accesorio.length > 0 && muestrario.Activo && muestrario.PorDefecto" >
+
+                               <span ng-if="$first"><div class="tituloOptPresupuesto col-xs-12" > {{tipo.Nombre}} {{tipo.Cantidad}}</div><br><br></span>
+
+                                <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3" style="margin-bottom:10px">
+
+                                    <!--<div class="input-group">-->
+
+                                       <label class="btn checkBoxActivoPre" ng-class="{checkBoxActivoPreNaranja: muestrario.Presupuesto}">
+                                           <input  type="checkbox" class="badgeboxPre" ng-model="muestrario.Presupuesto" ng-change="CambiarAccesorioPresupuesto(tipo, muestrario.MuestrarioId)">
+                                           <span class="badge">&check;</span>
+                                           <span> {{muestrario.Nombre}}</span> 
+                                       </label>
+
+                                    <div ng-if="tipo.ClaseAccesorio.ClaseAccesorioId == '1'">
+                                        <div class="panelItemPresupuesto itemPuerta text-center price">
+
+                                            ${{muestrario.Subtotal}}
+
+                                        </div>
+                                    </div>
+
+                                    <div ng-if="tipo.ClaseAccesorio.ClaseAccesorioId == '2'">
+                                        <div class="panelItemPresupuesto itemPuerta" style="height: auto">
+
+                                            <div ng-repeat="combinacion in muestrario.Combinacion | orderBy:'Subtotal'" ng-class="{opcionSeleccionadaPresupuesto: (combinacion.CombinacionId == combinacionSeleccionada)}">
+                                                <div class="checkbox checkboxOperativo itemPresupuesto" style="margin-left: 0px" ng-class="{itemPresupuestoPrimero: $first}">
+                                                    <label style="width:100%">
+                                                        <span>{{combinacion.Nombre}}</span>
+                                                        <span class="pull-right">${{combinacion.Subtotal}}</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- Divisor -->
+                        <div class="divisorNaranja1"></div> 
+                    </div>
+                </div>
+                
+                <!-- Cubiertas -->
+                
+                <div ng-if="presupuesto.Proyecto.TipoProyecto.CubiertaAglomerado || presupuesto.Proyecto.TipoProyecto.CubiertaPiedra">
+                   <span class="tituloOptPresupuesto"> Cubierta </span><br>
+
+                   <span class="textoInstruccion">Selecciona el tipo de cubierta</span><br>
+                   <div class="row">
+                      <div ng-repeat="tipo in tipoCubierta | orderBy:'Nombre'">
+                           <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4" style="margin-bottom:15px">
+
+                               <label class="btn checkBoxActivoPre" ng-class="{checkBoxActivoPreNaranja: tipo.Presupuesto}">
+                                   <input  type="checkbox" class="badgeboxPre" ng-model="tipo.Presupuesto" ng-click="CambiarTipoCubiertaPresupuesto(tipo)">
+                                   <span class="badge">&check;</span>
+                                   <span> {{tipo.Nombre}}</span> 
+                               </label>
+
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+
+                    <span class="textoInstruccion">Selecciona la ubicación de la cubierta</span><br>
+                    <div class="row">
+                      <div ng-repeat="ubicacion in ubicacion | orderBy:'Nombre'" ng-show="ubicacion.Activo && ubicacion.Seleccionado && tipoCubiertaPresupuesto == '2'">
+                           <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4" style="margin-bottom:15px">
+
+                               <label class="btn checkBoxActivoPre" ng-class="{checkBoxActivoPreNaranja: ubicacion.Presupuesto}">
+                                   <input  type="checkbox" class="badgeboxPre" ng-model="ubicacion.Presupuesto" ng-click="CalcularPrecioVentaCubiertaPiedra()">
+                                   <span class="badge">&check;</span>
+                                   <span> {{ubicacion.Nombre}}</span> 
+                               </label>
+
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                
+                    <span class="textoInstruccion">Selecciona un material</span><br>
+                    <div class="row">
+                      <div ng-repeat="cubierta in cubierta | orderBy:'Material.Nombre'" ng-show=" tipoCubiertaPresupuesto == '2' && cubierta.TipoCubierta.TipoCubiertaId == '2'">
+                           <div ng-repeat="grupo in cubierta.Grupo | orderBy:'Total'" ng-show="grupo.PorDefecto && grupo.Grupo.Activo && grupo.Color.length > 0">
+                               <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4" style="margin-bottom:15px">
+
+                                   <label class="btn checkBoxActivoPre" ng-class="{checkBoxActivoPreNaranja: grupo.Presupuesto}">
+                                       <input  type="checkbox" class="badgeboxPre" ng-model="grupo.Presupuesto">
+                                       <span class="badge">&check;</span>
+                                       <span> {{cubierta.Material.Nombre}} {{grupo.Grupo.Nombre}}</span> 
+                                   </label>
+
+                                   <div>
+                                        <div class="panelItemPresupuesto itemPuerta text-center price">
+
+                                            ${{grupo.Total}}
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                          </div>
+                        </div>
+                    </div>
+
+                    <!-- Divisor -->
+                    <div class="divisorNaranja1"></div> 
+
+                </div>
+                
+                <br>
+
+                <!-------- mensaje de error ---->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div ng-repeat="error in mensajeError">
+                            <span class="textoError">{{error}}</span>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <!---- botones de operacion -->
+                <div class="row">
+                    <div class="col-xs-6">
+                        <a class="btn botonOperacionModal btn-block" ng-click="AnteriorPresupuesto()">&lt;&lt; ANTERIOR</a>
+                    </div>
+
+                    <div class="col-xs-6">
+                        <a focus class="btn botonOperacionModal btn-block" ng-click="TerminarPaso9()">SIGUIENTE &gt;&gt;</a>
+                    </div>
+                </div>
+                <br>
+            </div>
+               
+            <!-- Paso 11 -->
+            <div name="presupuesto10Forma" ng-show="pasoPresupuesto == 11">
               
                 <!-- Servicios -->
                 <div class="row">
                    <div class="col-xs-12">
-                            <div class="table-responsive tablePerfilClienteDatos">
-                                <table class="table table-hover table-striped table-condensed">
-                                    <thead class="TituloTabla">
-                                      <tr>
-                                        <th><span class=""><b>Servicio</b></span></th>
-                                        <th class="text-center"><span><b>Costo Unidad</b></span></th>
-                                        <th class="text-center"><span><b>Cantidad</b></span></th>
-                                        <th class="text-center"><span><b>Margen</b></span></th>
-                                        <th class="text-center"><span><b>Costo Total</b></span></th>
-                                        <th class="text-center"><span><b>Subtotal</b></span></th>
-                                      </tr>
-                                    </thead>
-                                    <tbody >
-                                      <tr ng-repeat="servicio in servicio | orderBy:'Nombre'" ng-show="servicio.Activo && servicio.Obligatorio">
-                                           
-                                            <td>{{servicio.Nombre}}</td>
-                                            <td class="text-center">{{servicio.CostoUnidad}}</td>
-                                            <td class="text-center">{{servicio.Cantidad}}</td>
-                                            <td class="text-center">{{servicio.PrecioVenta}}</td>
-                                            <td class="text-center">{{servicio.CostoTotal}}</td>
-                                            <td class="text-center">{{servicio.Subtotal}}</td>
-                                            
-                                      </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                        <div class="table-responsive tablePerfilClienteDatos">
+                            <table class="table table-hover table-striped table-condensed">
+                                <thead class="TituloTabla">
+                                  <tr>
+                                    <th><span class=""><b>Servicio</b></span></th>
+                                    <th class="text-center"><span><b>Costo Unidad</b></span></th>
+                                    <th class="text-center"><span><b>Cantidad</b></span></th>
+                                    <th class="text-center"><span><b>Margen</b></span></th>
+                                    <th class="text-center"><span><b>Costo Total</b></span></th>
+                                    <th class="text-center"><span><b>Subtotal</b></span></th>
+                                  </tr>
+                                </thead>
+                                <tbody >
+                                  <tr ng-repeat="servicio in servicio | orderBy:'Nombre'" ng-show="servicio.Activo && servicio.Obligatorio">
+
+                                        <td>{{servicio.Nombre}}</td>
+                                        <td class="text-center">{{servicio.CostoUnidad}}</td>
+                                        <td class="text-center">{{servicio.Cantidad}}</td>
+                                        <td class="text-center">{{servicio.PrecioVenta}}</td>
+                                        <td class="text-center">{{servicio.CostoTotal}}</td>
+                                        <td class="text-center">{{servicio.Subtotal}}</td>
+
+                                  </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
                 
                 <!-- Maqueo -->
                 <div class="row">
                    <div class="col-xs-12">
-                            <div class="table-responsive tablePerfilClienteDatos">
-                                <table class="table table-hover table-striped table-condensed">
-                                    <thead class="TituloTabla">
-                                      <tr>
-                                        <th><span class=""><b>Maqueo</b></span></th>
-                                        <th class="text-center"><span><b>Costo Unidad</b></span></th>
-                                        <th class="text-center"><span><b>Cantidad</b></span></th>
-                                        <th class="text-center"><span><b>Margen</b></span></th>
-                                        <th class="text-center"><span><b>Costo Total</b></span></th>
-                                        <th class="text-center"><span><b>Subtotal</b></span></th>
-                                      </tr>
-                                    </thead>
-                                    <tbody >
-                                      <tr ng-repeat="maqueo in maqueo | orderBy:'Nombre'" ng-show="maqueo.Activo && maqueo.PorDefecto">
-                                           
-                                            <td>{{maqueo.Nombre}}</td>
-                                            <td class="text-center">{{maqueo.CostoUnidad}}</td>
-                                            <td class="text-center">{{presupuesto.CantidadMaqueo}}</td>
-                                            <td class="text-center">{{maqueo.Margen}}</td>
-                                            <td class="text-center">{{maqueo.CostoTotal}}</td>
-                                            <td class="text-center">{{maqueo.Subtotal}}</td>
-                                            
-                                      </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                        <div class="table-responsive tablePerfilClienteDatos">
+                            <table class="table table-hover table-striped table-condensed">
+                                <thead class="TituloTabla">
+                                  <tr>
+                                    <th><span class=""><b>Maqueo</b></span></th>
+                                    <th class="text-center"><span><b>Costo Unidad</b></span></th>
+                                    <th class="text-center"><span><b>Cantidad</b></span></th>
+                                    <th class="text-center"><span><b>Margen</b></span></th>
+                                    <th class="text-center"><span><b>Costo Total</b></span></th>
+                                    <th class="text-center"><span><b>Subtotal</b></span></th>
+                                  </tr>
+                                </thead>
+                                <tbody >
+                                  <tr ng-repeat="maqueo in maqueo | orderBy:'Nombre'" ng-show="maqueo.Activo && maqueo.PorDefecto">
+
+                                        <td>{{maqueo.Nombre}}</td>
+                                        <td class="text-center">{{maqueo.CostoUnidad}}</td>
+                                        <td class="text-center">{{presupuesto.CantidadMaqueo}}</td>
+                                        <td class="text-center">{{maqueo.Margen}}</td>
+                                        <td class="text-center">{{maqueo.CostoTotal}}</td>
+                                        <td class="text-center">{{maqueo.Subtotal}}</td>
+
+                                  </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
                                 
@@ -2003,9 +2222,6 @@
                         </div>
                     </div>
                 </div>
-                
-                
-                
                 
                 
                 <!-- Cubiertas -->

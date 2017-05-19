@@ -469,6 +469,12 @@ var OpcionAdministrador =
                                        ]
                         }, 
             
+                        { menu: 2, referencia: "", texto:"Proyectos", show:false, tipo:"dropdownlist", id:"ConfigurarProyectos", clase:"dropdown-submenu",
+                                opcion:[
+                                            { referencia: "#ConfigurarProyecto", texto:"Configuración", show:false, permiso:[{clave:"ConTPRActivar"}]}
+                                       ]
+                        }, 
+            
                         { menu: 2, referencia: "#ConfigurarMedioContacto", texto:"Medios de Contacto", show:false, tipo:"enlace", permiso:[{clave:"ConTMCConsultar"}]}
                   ]                      
     },

@@ -1,0 +1,298 @@
+<div ng-controller="TipoProyectoControlador as tipoProyecto">
+   
+    <div class="row">
+        <div class="col-md-11 col-xs-10">
+            <div class="table-responsive TablaUnidadNegocio">
+                <table class="table table-hover table-striped table-condensed">
+                    <thead class="TituloTabla">
+                      <tr>
+                        <th><button class="btn btn-block botonOrdenar" ng-click="CambiarOrdenarTipoProyecto('Nombre')"><b>Nombre </b><b ng-if="ordenarTipoProyecto === 'Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarTipoProyecto === '-Nombre'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonFalso"><b>Muebles</b></button></th>
+                        <th><button class="btn botonFalso"><b>Cubierta de Aglomerado</b></button></th>
+                        <th><button class="btn botonFalso"><b>Cubierta de Piedra</b></button></th>
+                        <th><button class="btn botonFalso"><b>Incluye IVA</b></button></th>
+                        <th><button class="btn botonFalso"><b>Liberar IVA</b></button></th>
+                        
+                        <th><button class="btn botonFalso"><b>Editar</b></button></th>
+                        <th><button class="btn botonFalso"><b>Activo</b></button></th>
+                      </tr>
+                    </thead>
+                    <tbody >
+                      <tr ng-repeat="tipo in tipoProyecto | orderBy:[ordenarTipoProyecto] | filter:buscarTipoProyecto">
+                          <td>{{tipo.Nombre}}</td>
+                          
+                          <td class="text-center">
+                              <span ng-if="tipo.Mueble">Si</span>
+                              <span ng-if="!tipo.Mueble">No</span>
+                          </td>
+                          
+                          <td class="text-center">
+                              <span ng-if="tipo.CubiertaAglomerado">Si</span>
+                              <span ng-if="!tipo.CubiertaAglomerado">No</span>
+                          </td>
+                            
+                          <td class="text-center">
+                              <span ng-if="tipo.CubiertaPiedra">Si</span>
+                              <span ng-if="!tipo.CubiertaPiedra">No</span>
+                          </td>
+                            
+                          <td class="text-center">
+                              <span ng-if="tipo.IVA">Si</span>
+                              <span ng-if="!tipo.IVA">No</span>
+                          </td>
+                            
+                          <td class="text-center">
+                              <span ng-if="tipo.LibreIVA">Si</span>
+                              <span ng-if="!tipo.LibreIVA">No</span>
+                          </td>
+
+                            <td class="text-center">
+                                <a ng-if="permisoUsuario.tipoProyecto.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirTipoProyecto('Editar', tipo)">
+                                    <span class="fa fa-pencil fa-2x" ></span>
+                                </a>
+
+                                <span ng-if="!permisoUsuario.tipoProyecto.editar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
+                            </td>
+
+                            <td class="text-center">
+                                <div class="checkbox">
+                                    <label>
+                                        <input  ng-disabled="!permisoUsuario.tipoProyecto.activar" ng-model="tipo.Activo" type="checkbox" value="" ng-click="ActivarDesactivarTipoProyecto(tipo)">
+                                        <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+                                    </label>
+                                </div>
+                            </td>
+
+                      </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-xs-2 col-md-1">
+            
+            <!-- Agregar -->
+             <button ng-disabled="!permisoUsuario.tipoProyecto.agregar"  class="btn btn-block botonOperacion fa fa-plus text-center" data-toggle="tooltip" data-placement="bottom" title="Agregar Tipo Módulo" ng-click="AbrirTipoProyecto('Agregar', null)"></button>
+             
+             <br><br>
+             <!-- Boton buscar -->
+            <div class="dropdown">
+                
+                <button class="btn btn btn-block botonOperacion fa fa-search text-center" data-toggle="dropdown" ></button>
+                    
+                <ul class="dropdown-menu dropdown-menu-right operacionPanel">
+
+                    <li style="width: 225px; height: 35px !important;">
+
+                        <form role="buscar" style="max-width: 200px; height: 25px !important;">
+                            <div class="input-group" >
+                              <input  type="text" class="form-control operacionPanelEntrada" placeholder="Buscar" style="margin-left: 5px; width: 175px;" ng-model="buscarTipoProyecto">
+                              <span class="input-group-btn" style="width: 25px;">
+                                <button class="btn operacionPanelBoton" type="button">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                              </span>
+                            </div>
+                        </form>
+                    </li>
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+                     
+    <!------------------------------------ Modales -------------------------------------------------------------------->
+    <!---- Agregar y editar muestrario -->
+    <div class="modal fade" id="tipoProyectoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static" >
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <!-- encabezado del modal -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarTipoProyectoForma()"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center" ng-if="operacion === 'Agregar'">Agregar Tipo de Proyecto</h3>
+                            <h3 class="text-center" ng-if="operacion === 'Editar'">Editar Tipo de Proyecto</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+                <br>
+
+                <form class="modal-body" name="tipoProyectoForma">
+                <!-- Datos -->
+                    <div class="row">
+                        <!-- Nombre -->
+                        <div class="col-sm-6">
+                             <div class="entrada2">
+                                <input type="text" required class="entrada form-control" name="nombre" ng-model="nuevoTipoProyecto.Nombre"/>
+                                <label>Nombre</label>
+                            </div>
+                         
+                        </div>
+                        
+                        <br class="hidden-sm hidden-md hidden-lg">
+                        <!-- Activo -->
+                        <div class="col-sm-6">
+                             <label class="btn checkBoxActivo">Tipo proyecto Activo <input type="checkbox" class="badgebox" ng-model="nuevoTipoProyecto.Activo"><span class="badge">&check;</span></label>
+                         </div>
+                        
+                    </div> 
+                    <br>
+                    <!-- mueble -->
+                    <div class="row">
+                        <div class="col-sm-12">
+                           <div class="panelPregunta">
+                                <span class="text-center">¿En este proyecto se presupuestan módulos?</span><br>
+                                <div class="btn-group" style="margin-top:5px">
+                                    <a class="btn btnSiNo" ng-class="{active: nuevoTipoProyecto.Mueble}" ng-click="CambiarMueble(true)">Si</a>
+                                    <a class="btn btnSiNo" ng-class="{active: !nuevoTipoProyecto.Mueble}" ng-click="CambiarMueble(false)">No</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <br>
+                    <!-- cubierta de aglomerado -->
+                    <div class="row">
+                        <div class="col-sm-12">
+                           <div class="panelPregunta">
+                                <span class="text-center">¿En este proyecto se presupuestan cubiertas de aglomerado?</span><br>
+                                <div class="btn-group" style="margin-top:5px">
+                                    <a class="btn btnSiNo" ng-class="{active: nuevoTipoProyecto.CubiertaAglomerado}" ng-click="CambiarCubietaAglomerado(true)">Si</a>
+                                    <a class="btn btnSiNo" ng-class="{active: !nuevoTipoProyecto.CubiertaAglomerado}" ng-click="CambiarCubietaAglomerado(false)">No</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <br>
+                    <!-- cubierta de aglomerado -->
+                    <div class="row">
+                        <div class="col-sm-12">
+                           <div class="panelPregunta">
+                                <span class="text-center">¿En este proyecto se presupuestan cubiertas de piedra?</span><br>
+                                <div class="btn-group" style="margin-top:5px">
+                                    <a class="btn btnSiNo" ng-class="{active: nuevoTipoProyecto.CubiertaPiedra}" ng-click="CambiarCubietaPiedra(true)">Si</a>
+                                    <a class="btn btnSiNo" ng-class="{active: !nuevoTipoProyecto.CubiertaPiedra}" ng-click="CambiarCubietaPiedra(false)">No</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <br>
+                    <!-- cubierta de aglomerado -->
+                    <div class="row">
+                        <div class="col-sm-12">
+                           <div class="panelPregunta">
+                                <span class="text-center">¿En este proyecto se cobra el IVA?</span><br>
+                                <div class="btn-group" style="margin-top:5px">
+                                    <a class="btn btnSiNo" ng-class="{active: nuevoTipoProyecto.IVA}" ng-click="CambiarIVA(true)">Si</a>
+                                    <a class="btn btnSiNo" ng-class="{active: !nuevoTipoProyecto.IVA}" ng-click="CambiarIVA(false)">No</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <br>
+                    <!-- cubierta de aglomerado -->
+                    <div class="row">
+                        <div class="col-sm-12">
+                           <div class="panelPregunta">
+                                <span class="text-center">¿En este proyecto se descuenta el IVA?</span><br>
+                                <div class="btn-group" style="margin-top:5px">
+                                    <a class="btn btnSiNo" ng-class="{active: nuevoTipoProyecto.LibreIVA, disabled: !nuevoTipoProyecto.IVA}" ng-click="CambiarLiberarIVA(true)">Si</a>
+                                    <a class="btn btnSiNo" ng-class="{active: !nuevoTipoProyecto.LibreIVA, disabled: !nuevoTipoProyecto.IVA}" ng-click="CambiarLiberarIVA(false)">No</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    
+                    
+                    <!-------- mensaje de error ---->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div ng-repeat="error in mensajeError">
+                                <span class="textoError">{{error}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!---- botones de operacion --->
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <button class="btn botonCancelar btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarTipoProyectoForma()">CANCELAR</button>
+                        </div>
+                        
+                        <div class="col-xs-6">
+                            <button ng-disabled="terminar" focus class="btn botonAvanzar btn-block" ng-click="TerminarTipoProyecto(tipoProyectoForma.nombre.$invalid)">TERMINAR</button>
+                        </div>
+                    </div>
+                    <br> 
+                </form>
+            </div>
+            <br><br><br>
+        </div>
+    </div>
+    
+    <!-- Desactivar Modal -->
+    <div class="modal fade" id="modalActivarDesactivarTipoProyecto" data-keyboard="false" data-backdrop="static">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                
+                <div class="modal-body">
+                    <br>
+                    <div class="panel panel-default modalMensaje">
+                        <br>
+                        <b>{{mensajeAdvertencia}}</b>
+                        <br><br>
+
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <button class="btn botonCancelar" data-dismiss="modal" aria-label="Close" ng-click="CancelarEstatusActivoTipoProyecto()">No</button>
+                            </div>
+                            <div class="col-xs-6">
+                                <button class="btn botonAvanzar" data-dismiss="modal" aria-label="Close" ng-click="ConfirmarActualizarTipoProyecto()">Si</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div> 
+    
+    <!-- Modal para mensajes -->
+    <div class="modal fade" id="mensajeTipoProyecto">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                
+                <div class="modal-body">
+                    <div class="panel panel-default modalMensaje">
+                        <br>
+                        <b>{{mensaje}}</b>
+
+                        <br><br>
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <button class="btn  botonAvanzar" data-dismiss="modal" aria-label="Close">Aceptar</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>             
+    
+                        
+</div>
+
+     

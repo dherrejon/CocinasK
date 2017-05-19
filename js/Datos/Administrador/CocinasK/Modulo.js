@@ -498,15 +498,22 @@ function GetMedidasModulo($http, $q, CONFIG, id)    // obtener las medidas de un
 
 function FraccionADecimal(valor)
 {
-    if(valor.includes(' '))
+    if(typeof valor == "string")
     {
-        var fraccion = valor.split(' ');
+        if(valor.includes(' '))
+        {
+            var fraccion = valor.split(' ');
 
-        return parseInt(fraccion[0]) + eval(fraccion[1]);
+            return parseInt(fraccion[0]) + eval(fraccion[1]);
+        }
+        else
+        {
+            return eval(valor);
+        }
     }
     else
     {
-        return eval(valor);
+        return valor;
     }
 };
 

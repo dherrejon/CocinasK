@@ -947,7 +947,6 @@ app.controller("CitaControlador", function($scope, $rootScope, CITA, $http, $q, 
         
     };
     /*--------------- ---------------------------------*/
-    
     $scope.CerrarCitaModal = function()
     {
         $scope.mensajeError = [];

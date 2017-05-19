@@ -36,7 +36,7 @@ class Proyecto
 
 /*---------------------- Sub catálogos de proyecto ----------------------------*/
 
-class TipoProyecto
+/*class TipoProyecto
 {
     constructor()
     {
@@ -70,7 +70,7 @@ function GetTipoProyecto()
     tipo[2].Activo = true;
     
     return tipo;
-}
+}*/
 
 class EstatusProyecto
 {

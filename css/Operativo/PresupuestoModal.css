@@ -32,6 +32,12 @@
     padding: 10px;
 }
 
+.panelItemPresupuesto.disabled
+{
+    cursor: not-allowed !important;
+    opacity: 0.7;
+}
+
 .itemPresupuesto
 {
     padding-top: 5px;
@@ -330,4 +336,35 @@
     
     outline: none !important;
     box-shadow: none;
+}
+
+
+.price
+{
+    height: auto;
+    font-size: 16pt;
+}
+
+.divisorNaranja1
+{
+    height: 1px;
+    background: rgba(250, 97, 21, 1.0);
+    border-bottom: 10px;
+}
+
+.tituloOptPresupuesto
+{
+    font-size: 16pt;
+    color: rgba(250, 97, 21, 1.0);
+}
+
+.opcionSeleccionadaPresupuesto
+{
+    background: rgba(250, 97, 21, 0.5);
+    font-weight: bold;
+}
+
+.textoIzquierda
+{
+    text-align: left;
 }

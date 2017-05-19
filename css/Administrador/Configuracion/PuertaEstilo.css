@@ -240,3 +240,46 @@
     border:solid 2px rgb(250, 97, 21);
     max-width:100%;
 }
+
+/*---------------------------*/
+.btnSiNo, .btnSiNo:focus, .btnSiNo:active
+{
+    background: white;
+    color: #262626;
+    border:solid 2px #262626;
+    font-size: 12pt;
+
+    outline: none !important;
+    box-shadow: none;
+}
+
+.btnSiNo:hover
+{
+    background: rgb(237, 237, 237);
+    color: #262626;
+}
+
+.btnSiNo.active
+{
+    color: white;
+    background: #262626;
+}
+
+btnSiNo.disabled 
+{
+    cursor: not-allowed;
+}
+
+.panelPregunta
+{
+    border-radius: 0px;
+    border-width: 0px 0px 0px 5px;
+    border-style: solid;
+    border-color: rgb(250, 97, 21);
+    background: rgb(237, 237, 237);
+    padding: 15px;
+    
+    color:  #262626;
+    font-size: 14pt;
+    text-align: center;
+}

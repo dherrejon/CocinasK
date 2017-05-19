@@ -91,20 +91,22 @@
     border-width: 0px 0px 3px 0px;
     border-bottom: 3px solid #262626;
     font-size: 12pt;
+    color: #262626 !important;
     
     outline: none !important;
     box-shadow: none;
 }
 
-.botonAcordion:disabled, .botonAcordion:disabled:hover
+.botonAcordion:disabled, .botonAcordion:disabled:hover, botonAcordion.disabled
 {
     background: rgb(234, 234, 234);
+    cursor: not-allowed;
 }
 
 .botonAcordion.active
 {
     background:  #262626;
-    color: white;
+    color: white !important;
 }
 
 .botonAgregarAcordion, .botonAgregarAcordion:active, .botonAgregarAcordion:focus

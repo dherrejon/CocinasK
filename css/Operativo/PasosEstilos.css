@@ -61,6 +61,13 @@
     color:white;
 }
 
+.btn-circle.negro
+{
+    border-color: rgb(127, 127, 127);
+    background-color: rgb(127, 127, 127);
+    color:white;
+}
+
 .btn-circle:disabled 
 {
     cursor:  default;

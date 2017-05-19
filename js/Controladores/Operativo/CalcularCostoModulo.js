@@ -57,10 +57,12 @@ function CalcularCostoModulo(modulo, combinacion)
         {
             SustituirFormulaCompleta(modulo, combinacion[k].CombinacionMaterialId); //componente y pieza
             combinacion[k].PrecioVentaModulo = CalcularPrecioVenta(modulo, combinacion[k].CombinacionMaterialId);
+            
+            combinacion[k].PrecioVentaModulo = Math.round(combinacion[k].PrecioVentaModulo);
         }
     }
     
-    console.log(modulo);
+   // console.log(modulo);
     
 }
 
@@ -291,7 +293,7 @@ function SustituirFormulaCompleta(modulo, combinacion)
         }
     }
     
-    console.log(modulo.Componente);
+    //console.log(modulo.Componente);
 }
 
 function SustituirComponenteValor (formula, componente, especial, combinacion)
@@ -378,11 +380,12 @@ function SustituirComponenteValor (formula, componente, especial, combinacion)
 }
 
 function SustituirValorPieza(formula, pieza)
-{
+{   
     var piezaId;
     var medidaPieza;
 
     var index = formula.indexOf("[Pieza]");
+    
 
     while(index > -1)
     {
@@ -408,13 +411,13 @@ function SustituirValorPieza(formula, pieza)
             }
         }
         
+        var medida = "[Pieza][" + piezaId + "][" + medidaPieza + "]";
+        
         for(var j=0; j<pieza.length; j++)
         {
             if(pieza[j].PiezaId == piezaId)
             {
-                var medida = "[Pieza][" + piezaId + "][" + medidaPieza + "]";
-
-
+                
                 if(medidaPieza == "Largo")
                 {
                     if(pieza[j].nLargo > -1)
@@ -429,6 +432,7 @@ function SustituirValorPieza(formula, pieza)
                 }
                 else if(medidaPieza == "Ancho")
                 {
+                    
                     if(pieza[j].nAncho > -1)
                     {
                         formula = formula.replace(medida, pieza[j].nAncho);
@@ -444,7 +448,7 @@ function SustituirValorPieza(formula, pieza)
             }
 
         }
-
+        
         index = formula.indexOf("[Pieza]");
 
     }
@@ -486,6 +490,7 @@ function CalcularPrecioVenta(modulo, combinacion)
             if(modulo.ComponenteEspecial[i].Combinacion[j].CombinacionMaterialId == combinacion)
             {
                 CostoTotal += (modulo.ComponenteEspecial[i].Consumo * parseFloat(modulo.ComponenteEspecial[i].Combinacion[j].CostoUnidad));
+
                 break;
             }
         }
@@ -495,6 +500,7 @@ function CalcularPrecioVenta(modulo, combinacion)
     CostoTotal+= modulo.CostoConsumible;
     PrecioVenta = CostoTotal + (CostoTotal * (modulo.Margen/100));
     PrecioVenta *= modulo.Cantidad;
+    
     
     return PrecioVenta;
     

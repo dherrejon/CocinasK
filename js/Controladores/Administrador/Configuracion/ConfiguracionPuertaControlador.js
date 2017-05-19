@@ -278,6 +278,7 @@ app.controller("ConfiguracionPuertaControlador", function($scope, $http, $q, CON
         $scope.GetComponentePorPuerta(puerta.PuertaId);
         $scope.GetCombinacionPorPuerta(puerta.PuertaId);
         
+        
         $('#DetallesComponentePuerta').modal('toggle');
     };
     
