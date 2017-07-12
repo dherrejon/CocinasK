@@ -169,6 +169,34 @@ function GetUnidadNegocionPorPromocion($http, $q, CONFIG, id)
     return q.promise;
 }
 
+function GetPromocionPorUnidadNegocio($http, $q, CONFIG, id)     
+{
+    var q = $q.defer();
+
+    var datos = [];
+    datos[0] = id;
+        
+    $http({      
+          method: 'POST',
+          url: CONFIG.APIURL + '/GetPromocionPorUnidadNegocio',
+          data: datos
+      }).success(function(data)
+        {
+            var promocion = []; 
+            
+            for(var k=0; k<data.length; k++)
+            {
+                promocion[k] = new Promocion();
+                promocion[k] = SetPromocion(data[k]);
+            }
+        
+            q.resolve(promocion);
+        }).error(function(data, status){
+            q.resolve(status);
+     }); 
+    return q.promise;
+}
+
 
 /*--------------------Tipo Venta y Tipo Promocion ----------------------------------*/
 class TipoVenta

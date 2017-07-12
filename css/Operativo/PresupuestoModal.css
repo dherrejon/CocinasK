@@ -368,3 +368,176 @@
 {
     text-align: left;
 }
+
+.textoOculto
+{
+    background: #F2F2F2;
+    color: transparent;
+}
+
+.itemPresupuestoEstatico
+{
+    padding-top: 5px;
+    height: 35px;
+    border-bottom: 1px solid #7F7F7F;
+    border-top: none;
+}
+
+.opcionSeleccionadaPresupuestoEst
+{
+    background: rgba(250, 97, 21, 0.5);
+}
+
+.vertical-center 
+{
+    height: 100%;
+    
+    top: 47% !important;
+    left: 47% !important;
+    position: absolute;
+}
+
+.miCocinaTitulo
+{
+    background: #262626;
+    color: white;
+    font-size: 16pt;
+    text-align: center;
+    padding: 5px 10px 5px 10px;
+}
+
+.panelMiCocina
+{
+    border-radius: 0px;
+    border: 2px solid #262626;
+    padding: 10px;
+}
+
+.tituloSeccion
+{
+    font-size: 15pt;
+}
+
+.separadorGris1
+{
+    height: 1px;
+    background: #7F7F7F;
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+.listaMiCocina
+{
+    font-size: 14pt;
+}
+
+.textoNaraja
+{
+    color: rgba(250, 97, 21, 1.0);
+}
+
+.planPagoSel
+{
+    padding: 0px 15px 0px 15px;
+    background: rgba(250, 97, 21, 1.0);
+    color: white;
+}
+
+.planPagoHeader
+{
+    border-top: 3px solid #262626;
+    border-bottom: 3px solid #262626;
+    background: white;
+    color: #262626;
+}
+
+.fuente14
+{
+    font-size: 14pt;
+}
+
+.fuente12
+{
+    font-size: 12pt;
+}
+
+.buttonLabel, .buttonLabel:hover, .buttonLabel:focus, .buttonLabel:active, .buttonLabel:disabled
+{
+    background: transparent;
+    border-width: 0px;
+    cursor: default;
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.dropPromo, .dropPromo:focus, .dropPromo:active
+{
+    background: transparent;
+    border-width: 0px;
+    border-radius: 0px;
+    text-align: left;
+    cursor: pointer;
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.dropPromo:hover
+{
+    background: rgba(0,0,0,0.2);
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.marcoDetalleTop
+{
+    border-top: 2px solid #262626;
+}
+
+.marcoDetalleLeft
+{
+    border-left: 2px solid #262626;
+}
+
+.tituloDetallePlan
+{
+    background: rgb(237, 237, 237);
+    border-top: 2px solid #262626;
+    border-bottom: 2px solid #262626;
+}
+
+.radioOpt, .radioOpt:active, .radioOpt:focus
+{
+    border: 2px solid #262626;
+    color: #262626;
+    background: white;
+    border-radius: 0px;
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.radioOpt:hover
+{
+    border: 2px solid #262626;
+    color: #262626;
+    background: white;
+    border-radius: 0px;
+    
+    outline: none !important;
+    box-shadow: inset 0px 0px 5px;
+}
+
+.radioOpt.Active
+{
+    border: 2px solid #262626;
+    color: white;
+    background: #262626;
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+

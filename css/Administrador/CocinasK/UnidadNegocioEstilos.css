@@ -127,6 +127,7 @@
 .BotonOperacion, .BotonOperacion:focus
 {
     color: #262626;
+    cursor: pointer;
 }
 
 .BotonOperacion:hover
@@ -436,13 +437,15 @@
 
 /*-------- check box ---------*/
 
-.checkBoxActivo
+.checkBoxActivo, .checkBoxActivo:focus
 {
     color: #262626;
     border: 2px solid #262626;
     width: 100%;
     display: block;
     background: white;
+    outline: none !important;
+    box-shadow: none;
 }
 
 .checkBoxActivo:disabled

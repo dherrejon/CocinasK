@@ -1,0 +1,143 @@
+<div ng-controller="VariableControlador as variable" class="container-fluid">
+
+<br><br>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="tituloModulo">
+                <span>Variables del Sistema</span>
+            </div>
+        </div>
+    </div>
+    <br>
+   
+    <div class="row fuente12">
+       <div class="col-xs-12 ">
+            <div class="marcoDetalleTop">
+            </div>
+      </div>
+                      
+        <div class="col-xs-12">
+           <b style="font-size:16pt">IVA</b>
+           <div class="pull-right">
+               <a class="BotonOperacion" ng-click="AbrirIVA('Editar', iva)">
+                   <span class="fa fa-pencil"></span> Editar
+               </a>
+            </div>
+        </div>
+        <br><br>
+        
+        <div class="col-xs-12 ">
+            <b>Valor: </b> {{iva.IVA}}%
+        </div>
+        
+        <div class="col-xs-12 ">
+            <b>Incluido: </b>
+            <span ng-if="iva.Incluye">Si</span>
+            <span ng-if="!iva.Incluye">No</span>
+        </div>
+        
+        <div class="col-xs-12 ">
+            <div class="marcoDetalleTop">
+            </div>
+        </div>
+        
+    </div>
+    
+    <!-- ----------------------Modales ----------------------------------- -->
+
+
+    <!---- Agregar y editar muestrario -->
+    <div class="modal fade" id="IVAModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static" >
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <!-- encabezado del modal -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarPlanPagoForma()"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center" ng-if="operacion === 'Agregar'">Agregar IVA</h3>
+                            <h3 class="text-center" ng-if="operacion === 'Editar'">Editar IVA</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+                <br>
+
+                <form class="modal-body" name="ivaForma">
+                <!-- Datos -->
+                    <div class="row">
+                        <!-- Nombre -->
+                        <div class="col-sm-6">
+                             <div class="entrada2">
+                                <input ng-pattern="erNumeroDecimal" type="text" required class="entrada form-control" name="iva" ng-model="nuevoIVA.IVA"/>
+                                <label>IVA</label>
+                            </div>
+                        </div>
+                        
+                        <br class="hidden-sm hidden-md hidden-lg"><br class="hidden-sm hidden-md hidden-lg">
+                        
+                        <div class="col-sm-6">
+                             <label class="btn checkBoxActivo">Incluido <input type="checkbox" class="badgebox" ng-model="nuevoIVA.Incluye"><span class="badge">&check;</span></label>
+                         </div>
+            
+                    </div>                     
+                   <br>
+                   
+                    <!-------- mensaje de error ---->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div ng-repeat="error in mensajeError">
+                                <span class="textoError">{{error}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!---- botones de operacion --->
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <button class="btn botonCancelar btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarIVA()">CANCELAR</button>
+                        </div>
+                        
+                        <div class="col-xs-6">
+                            <button ng-disabled="terminar" focus class="btn botonAvanzar btn-block" ng-click="TerminarIVA(ivaForma.iva.$invalid)">TERMINAR</button>
+                        </div>
+                    </div>
+                    <br> 
+                </form>
+            </div>
+            <br><br><br>
+        </div>
+    </div>
+
+    
+    
+    <!-- Modal para mensajes -->
+    <div class="modal fade" id="mensajeVariable">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                
+                <div class="modal-body">
+                    <div class="panel panel-default modalMensaje">
+                        <br>
+                        <b>{{mensaje}}</b>
+
+                        <br><br>
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <button class="btn  botonAvanzar" data-dismiss="modal" aria-label="Close">Aceptar</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div> 
+
+</div>
+
+     

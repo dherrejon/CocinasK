@@ -29,6 +29,7 @@
     require 'Administrador/PlanPago.php';
     require 'Administrador/MedioCaptacion.php';
     require 'Administrador/TipoProyecto.php';
+    require 'Administrador/Variable.php';
 
     /*------------Operativo-----------*/
     require 'Operativo/Cita.php';
@@ -214,6 +215,7 @@
     $app->put('/EditarUnidadNegocio', $seguridad, $ChecarSesion, 'EditarUnidadNegocio');
     
     $app->get('/GetUnidadNegocioSencilla', $seguridad, $ChecarSesion, 'GetUnidadNegocioSencilla');
+    $app->get('/GetUnidadNegocioSencillaPresupuesto', $seguridad, $ChecarSesion, 'GetUnidadNegocioSencillaPresupuesto');
     $app->get('/GetResponsable', $seguridad, $ChecarSesion, 'GetResponsable');
 
     /*-----------------------Empresa------------------*/
@@ -486,6 +488,7 @@
     $app->post('/ActivarDesactivarPromocion', $seguridad, $ChecarSesion, 'ActivarDesactivarPromocion'); 
 
     $app->post('/GetUnidadNegocionPorPromocion', $seguridad, $ChecarSesion, 'GetUnidadNegocionPorPromocion');
+    $app->post('/GetPromocionPorUnidadNegocio', $seguridad, $ChecarSesion, 'GetPromocionPorUnidadNegocio');
 
     /*------------------ Plan Pago ------------------------------*/
     $app->get('/GetPlanPago', $seguridad, $ChecarSesion, 'GetPlanPago');
@@ -535,6 +538,15 @@
     $app->put('/EditarDatoFiscalPersona', $seguridad, $ChecarSesion, 'EditarDatoFiscalPersona');
 
     $app->delete('/DeleteUnidadNegocioPersona', $seguridad, $ChecarSesion, 'DeleteUnidadNegocioPersona');
+
+    $app->post('/GetMargenDireccion', $seguridad, $ChecarSesion, 'GetMargenDireccion');
+
+    /*------------------ Variable del sistema ----------------------------------------------*/
+    $app->get('/GetIVA', $seguridad, $ChecarSesion, 'GetIVA');
+    $app->put('/EditarIVA', $seguridad, $ChecarSesion, 'EditarIVA');
+    
+    /*------------------------- Proyecto ------------------------------*/
+    $app->post('/GetProyectoPersona', $seguridad, $ChecarSesion, 'GetProyectoPersona'); 
 
     $app->run(); 
 

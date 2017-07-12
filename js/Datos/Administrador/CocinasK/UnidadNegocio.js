@@ -509,10 +509,32 @@ function ActivarDesactivarUnidad($http, $q, CONFIG, datos)
 function GetUnidadNegocioSencilla($http, $q, CONFIG)    
 {
     var q = $q.defer();
+    
+    
 
     $http({      
           method: 'GET',
           url: CONFIG.APIURL + '/GetUnidadNegocioSencilla',
+
+      }).success(function(data)
+        {
+            q.resolve(data);  
+        }).error(function(data, status){
+            q.resolve(status);
+
+     }); 
+    return q.promise;
+}
+
+function GetUnidadNegocioSencillaPresupuesto($http, $q, CONFIG)    
+{
+    var q = $q.defer();
+    
+    
+
+    $http({      
+          method: 'GET',
+          url: CONFIG.APIURL + '/GetUnidadNegocioSencillaPresupuesto',
 
       }).success(function(data)
         {

@@ -107,8 +107,11 @@ app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpPro
      when('/Promocion',{
         templateUrl: 'html/Administrador/CocinasK/Promocion.html'
     }).
-     when('/PlanPago',{
+    when('/PlanPago',{
         templateUrl: 'html/Administrador/CocinasK/PlanPago.html'
+    }).
+    when('/VariableSistema',{
+        templateUrl: 'html/Administrador/CocinasK/Variables.html'
     }).
     //Configuración
     when('/ConfigurarUnidadNegocio',{
@@ -256,9 +259,11 @@ app.run(function($rootScope, $location, $window, $http, CONFIG, $q, datosUsuario
     $rootScope.erDecimal = /^[0-9]+(\.[0-9][0-9]?)?$/;   //expresion regular para RFC de una empresa
     $rootScope.erNombrePersonal = /^(([A-Z]|Ñ|[a-z]|[ñáéíóú]|[ÁÉÍÓÚ]){2,120}\s?)+$/;   //expresion regular para los apellido y el nombre de una persona
     $rootScope.erNombreUsuario = /^(\w|ñ){4}(\w|ñ)*$/;   //expresion regular para el nombre de usurio
-    $rootScope.erNumeroDecimal = /^[0-9]+(\.[0-9][0-9]?)?$/;   //expresion regular para un número decimal
+    $rootScope.erNumeroDecimal = /^([1-9][0-9]*(\.[0-9][0-9]?)?)|(0(\.[0-9][0-9]?))$/;   //expresion regular para un número decimal
     $rootScope.erNumeroFraccion = /^((([0-9]\s)*([1-9]\/[1-9]{1,2}))|([0-9]))+$/;   //expresion regular para un número fraccional
     $rootScope.erNumeroEntero = /^[0-9]+$/;   //expresion regular para un número entero
+    $rootScope.erNumeroEnteroSinCero = /^[1-9][0-9]*$/;   //expresion regular para un número entero
+    $rootScope.erNumeroFraccionSinCero = /^((([1-9][0-9]*\s)?([1-9][0-9]*\/[1-9]{1,2}))|([1-9][0-9]*))$/;   //expresion regular para un número fraccional
     $rootScope.erPassword = /^(\w){6}(\w)*$/;   //expresion regular para un número entero
     
     /*---------------------------------- Mantener la barra de navegacion visible-----------------------*/

@@ -39,7 +39,7 @@ function GetAccesorioPresupuesto()
 
     $request = \Slim\Slim::getInstance()->request();
 
-    $sql = "SELECT AccesorioId, TipoAccesorioId, MuestrarioId, Nombre, Imagen, CostoUnidad, ConsumoUnidad, Contable, Obligatorio FROM AccesorioVista 
+    $sql = "SELECT AccesorioId, TipoAccesorioId, MuestrarioId, Nombre, Imagen, CostoUnidad, ConsumoUnidad FROM AccesorioVista 
             WHERE Activo = 1 ORDER BY Nombre";
 
     try 
@@ -106,14 +106,14 @@ function AgregarAccesorio()
     
     if($accesorio->TipoAccesorio->ClaseAccesorio->ClaseAccesorioId == "1")
     {
-        $sql = "INSERT INTO Accesorio (TipoAccesorioId, MuestrarioId, Nombre, CostoUnidad,  Contable, Obligatorio, Activo) 
-                            VALUES( :TipoAccesorioId, :MuestrarioId, :Nombre, :CostoUnidad, :Contable, :Obligatorio, :Activo)";
+        $sql = "INSERT INTO Accesorio (TipoAccesorioId, MuestrarioId, Nombre, CostoUnidad, Activo) 
+                            VALUES( :TipoAccesorioId, :MuestrarioId, :Nombre, :CostoUnidad, :Activo)";
     }
     
     if($accesorio->TipoAccesorio->ClaseAccesorio->ClaseAccesorioId == "2")
     {
-        $sql = "INSERT INTO Accesorio (TipoAccesorioId, MuestrarioId, Nombre, ConsumoUnidad,  Contable, Obligatorio, Activo) 
-                            VALUES( :TipoAccesorioId, :MuestrarioId, :Nombre, :ConsumoUnidad, :Contable, :Obligatorio, :Activo)";
+        $sql = "INSERT INTO Accesorio (TipoAccesorioId, MuestrarioId, Nombre, ConsumoUnidad, Activo) 
+                            VALUES( :TipoAccesorioId, :MuestrarioId, :Nombre, :ConsumoUnidad, :Activo)";
     }
 
     $db;
@@ -129,8 +129,6 @@ function AgregarAccesorio()
         $stmt->bindParam("TipoAccesorioId", $accesorio->TipoAccesorio->TipoAccesorioId);
         $stmt->bindParam("MuestrarioId", $accesorio->Muestrario->MuestrarioId);
         $stmt->bindParam("Nombre", $accesorio->Nombre);
-        $stmt->bindParam("Contable", $accesorio->Contable);
-        $stmt->bindParam("Obligatorio", $accesorio->Obligatorio);
         $stmt->bindParam("Activo", $accesorio->Activo);
         
         if($accesorio->TipoAccesorio->ClaseAccesorio->ClaseAccesorioId == "1")
@@ -215,12 +213,12 @@ function EditarAccesorio()
     
     if($accesorio->TipoAccesorio->ClaseAccesorio->ClaseAccesorioId == "1")
     {
-        $sql = "UPDATE Accesorio SET TipoAccesorioId='".$accesorio->TipoAccesorio->TipoAccesorioId."', MuestrarioId ='".$accesorio->Muestrario->MuestrarioId."', Nombre='".$accesorio->Nombre."', Activo='".$accesorio->Activo."', Contable='".$accesorio->Contable."', Obligatorio='".$accesorio->Obligatorio."', CostoUnidad='".$accesorio->CostoUnidad."' WHERE AccesorioId=".$accesorio->AccesorioId."";
+        $sql = "UPDATE Accesorio SET TipoAccesorioId='".$accesorio->TipoAccesorio->TipoAccesorioId."', MuestrarioId ='".$accesorio->Muestrario->MuestrarioId."', Nombre='".$accesorio->Nombre."', Activo='".$accesorio->Activo."', CostoUnidad='".$accesorio->CostoUnidad."' WHERE AccesorioId=".$accesorio->AccesorioId."";
     }
     
     if($accesorio->TipoAccesorio->ClaseAccesorio->ClaseAccesorioId == "2")
     {
-        $sql = "UPDATE Accesorio SET TipoAccesorioId='".$accesorio->TipoAccesorio->TipoAccesorioId."', MuestrarioId ='".$accesorio->Muestrario->MuestrarioId."', Nombre='".$accesorio->Nombre."', Activo='".$accesorio->Activo."', Contable='".$accesorio->Contable."', Obligatorio='".$accesorio->Obligatorio."', ConsumoUnidad='".$accesorio->ConsumoUnidad."' WHERE AccesorioId=".$accesorio->AccesorioId."";
+        $sql = "UPDATE Accesorio SET TipoAccesorioId='".$accesorio->TipoAccesorio->TipoAccesorioId."', MuestrarioId ='".$accesorio->Muestrario->MuestrarioId."', Nombre='".$accesorio->Nombre."', Activo='".$accesorio->Activo."', ConsumoUnidad='".$accesorio->ConsumoUnidad."' WHERE AccesorioId=".$accesorio->AccesorioId."";
     }
     
     $db;
@@ -444,7 +442,7 @@ function GetTipoAccesorioPresupuesto()
 
     $request = \Slim\Slim::getInstance()->request();
 
-    $sql = "SELECT TipoAccesorioId, ClaseAccesorioId, Nombre FROM TipoAccesorioVista WHERE Activo = 1";
+    $sql = "SELECT TipoAccesorioId, ClaseAccesorioId, Nombre, Contable, Obligatorio FROM TipoAccesorioVista WHERE Activo = 1";
 
     try 
     {
@@ -469,7 +467,7 @@ function AgregarTipoAccesorio()
     $request = \Slim\Slim::getInstance()->request();
     $tipoAccesorio = json_decode($request->getBody());
     global $app;
-    $sql = "INSERT INTO TipoAccesorio (ClaseAccesorioId, Nombre, Activo) VALUES(:ClaseAccesorioId, :Nombre, :Activo)";
+    $sql = "INSERT INTO TipoAccesorio (ClaseAccesorioId, Nombre, Activo, Obligatorio, Contable) VALUES(:ClaseAccesorioId, :Nombre, :Activo, :Obligatorio, :Contable)";
 
     try 
     {
@@ -479,6 +477,8 @@ function AgregarTipoAccesorio()
         $stmt->bindParam("ClaseAccesorioId", $tipoAccesorio->ClaseAccesorio->ClaseAccesorioId);
         $stmt->bindParam("Nombre", $tipoAccesorio->Nombre);
         $stmt->bindParam("Activo", $tipoAccesorio->Activo);
+        $stmt->bindParam("Obligatorio", $tipoAccesorio->Obligatorio);
+        $stmt->bindParam("Contable", $tipoAccesorio->Contable);
 
         $stmt->execute();
         
@@ -489,6 +489,7 @@ function AgregarTipoAccesorio()
 
     } catch(PDOException $e) 
     {
+        echo $e;
         echo '[{"Estatus": "Fallido"}]';
     }
 }
@@ -499,7 +500,7 @@ function EditarTipoAccesorio()
     $request = \Slim\Slim::getInstance()->request();
     $tipoAccesorio = json_decode($request->getBody());
    
-    $sql = "UPDATE TipoAccesorio SET ClaseAccesorioId = ".$tipoAccesorio->ClaseAccesorio->ClaseAccesorioId.", Nombre='".$tipoAccesorio->Nombre."', Activo = '".$tipoAccesorio->Activo."'  WHERE TipoAccesorioId = ".$tipoAccesorio->TipoAccesorioId;
+    $sql = "UPDATE TipoAccesorio SET ClaseAccesorioId = ".$tipoAccesorio->ClaseAccesorio->ClaseAccesorioId.", Nombre='".$tipoAccesorio->Nombre."', Activo = '".$tipoAccesorio->Activo."', Contable = '".$tipoAccesorio->Contable."', Obligatorio = '".$tipoAccesorio->Obligatorio."'  WHERE TipoAccesorioId = ".$tipoAccesorio->TipoAccesorioId;
     
     try 
     {

@@ -60,6 +60,7 @@ app.controller("PromocionControlador", function($scope, $http, $q, CONFIG, $root
             if(data.length > 0)
             {
                 $scope.promocion = data;
+                console.log(data);
                 for(var k=0; k<data.length; k++)
                 {
                     $scope.GetUnidadNegocioPorPromocion( $scope.promocion[k]);

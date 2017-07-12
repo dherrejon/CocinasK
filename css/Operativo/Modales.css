@@ -48,13 +48,16 @@
     width: 100%;
     text-align: left;
     border-radius: 0px 0px 0px 0px;
+    cursor: pointer;
+    
     outline: none !important;
     box-shadow: none !important;
 }
 
-.dropdownlistModal:disabled
+.dropdownlistModal:disabled, .dropdownlistModal.disabled
 {
     background: rgb(234, 234, 234);
+    opacity: 1.0 !important;
 } 
 
 .dropdownlistModal:hover:disabled

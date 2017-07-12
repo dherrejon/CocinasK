@@ -12,6 +12,7 @@ class Presupuesto
         this.NumeroCajon = "0";
         this.NumeroSeccionVacia = 0;
         this.CantidadMaqueo = "";
+        this.Margen = -1;
         
         this.DescripcionCliente = "";
         this.DescripcionInterna = "";
@@ -100,4 +101,75 @@ function GetEstatusProyecto()
     
     return estatus;
 }
+
+function GetProyectoPersona($http, $q, CONFIG, id)    
+{
+    var q = $q.defer();
+    
+    var persona = new Object();
+    persona.PersonaId = id;
+
+    $http({      
+          method: 'POST',
+          url: CONFIG.APIURL + '/GetProyectoPersona',
+          data: persona
+
+      }).success(function(data)
+        {
+            if(data[0].Estatus == "Exito")
+            {
+                var proyecto = [];
+                
+                for(var k=0; k<data[1].Proyecto.length; k++)
+                {
+                    proyecto[k] = SetProyecto(data[1].Proyecto[k]);
+                }
+                
+                q.resolve(proyecto);
+            }
+            else
+            {
+               q.resolve([]);  
+            }
+            
+        }).error(function(data){
+            q.resolve([]);
+     }); 
+    
+    return q.promise;
+}
+
+function SetProyecto(data)
+{
+    var proyecto = new Proyecto();
+    
+    proyecto.ProyectoId = data.ProyectoId;
+    proyecto.Nombre = data.Nombre;
+    
+    proyecto.TipoProyecto = new TipoProyecto();
+    proyecto.TipoProyecto.TipoProyectoId = data.TipoProyectoId;
+    proyecto.TipoProyecto.Nombre = data.NombreTipoProyecto;
+    
+    proyecto.EstatusProyecto = new EstatusProyecto();
+    proyecto.EstatusProyecto.EstatusProyectoId = data.EstatusProyectoId;
+    proyecto.EstatusProyecto.Nombre = data.NombreEstatusProyecto;
+    
+    proyecto.Domicilio = new Domicilio();
+    proyecto.Domicilio.DireccionPersonaId = data.DireccionPersonaId;
+    proyecto.Domicilio.Domicilio = data.Domicilio;
+    proyecto.Domicilio.Codigo = data.Codigo;
+    proyecto.Domicilio.Estado = data.Estado;
+    proyecto.Domicilio.Municipio = data.Municipio;
+    proyecto.Domicilio.Ciudad = data.Ciudad;
+    
+    return proyecto;
+}
+
+
+function GetMesNombre(mes)
+{
+    return Month[mes];
+}
+
+var Month = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Nov", "Dic"];
 

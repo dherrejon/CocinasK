@@ -394,7 +394,8 @@ var OpcionAdministrador =
                     { menu: 1, referencia: "#Plaza", texto:"Plazas", show:false, tipo:"enlace", permiso:[{clave:"AdmPlaConsultar"}]},
                     { menu: 1, referencia: "#Territorio", texto:"Territorios",  show:false, tipo:"enlace", permiso:[{clave:"AdmTerConsultar"}]},
                     { menu: 1, referencia: "#Promocion", texto:"Promociones", show:false, tipo:"enlace", permiso:[{clave:"AdmProConsultar"}]},
-                    { menu: 1, referencia: "#PlanPago", texto:"Plan de pagos", show:false, tipo:"enlace", permiso:[{clave:"AdmPlNConsultar"}]}
+                    { menu: 1, referencia: "#PlanPago", texto:"Plan de pagos", show:false, tipo:"enlace", permiso:[{clave:"AdmPlNConsultar"}]},
+                    { menu: 1, referencia: "#VariableSistema", texto:"Variables del Sistema", show:false, tipo:"enlace", permiso:[{clave:"AdmVaSCon"}]}
                   ]                      
     },
     

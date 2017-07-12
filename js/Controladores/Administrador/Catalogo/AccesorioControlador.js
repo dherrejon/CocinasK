@@ -253,7 +253,7 @@ app.controller("AccesorioModuloControlador", function($scope, $http, $q, CONFIG,
             }   
         }
         
-        if($scope.filtro.contable.contable != $scope.filtro.contable.noContable)
+        /*if($scope.filtro.contable.contable != $scope.filtro.contable.noContable)
         {
             if($scope.filtro.contable.contable)
             {
@@ -287,7 +287,7 @@ app.controller("AccesorioModuloControlador", function($scope, $http, $q, CONFIG,
                     return false;
                 }
             }   
-        }
+        }*/
         
         var cumpleFiltro = false;
         
@@ -448,18 +448,18 @@ app.controller("AccesorioModuloControlador", function($scope, $http, $q, CONFIG,
         {
             $scope.mostrarFiltro.muestrario = !$scope.mostrarFiltro.muestrario;
         }
-        else if(campo == "contable")
-        {
-            $scope.mostrarFiltro.contable = !$scope.mostrarFiltro.contable;
-        }
         else if(campo == "activo")
         {
             $scope.mostrarFiltro.activo = !$scope.mostrarFiltro.activo;
         }
+        /*else if(campo == "contable")
+        {
+            $scope.mostrarFiltro.contable = !$scope.mostrarFiltro.contable;
+        }
         else if(campo == "obligatorio")
         {
             $scope.mostrarFiltro.obligatorio = !$scope.mostrarFiltro.obligatorio;
-        }
+        }*/
     };
     
     /*--------------------------- Detalles -------------------*/
@@ -527,8 +527,8 @@ app.controller("AccesorioModuloControlador", function($scope, $http, $q, CONFIG,
         
         accesorio.AccesorioId = data.AccesorioId;
         accesorio.Nombre = data.Nombre;
-        accesorio.Contable = data.Contable;
-        accesorio.Obligatorio = data.Obligatorio;
+        //accesorio.Contable = data.Contable;
+        //accesorio.Obligatorio = data.Obligatorio;
         accesorio.Activo = data.Activo;
         accesorio.Imagen = data.Imagen;
         accesorio.CostoUnidad = data.CostoUnidad;

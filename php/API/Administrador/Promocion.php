@@ -251,5 +251,40 @@ function GetUnidadNegocionPorPromocion()
     }
 }
 
+function GetPromocionPorUnidadNegocio()
+{
+    global $app;
+    global $session_expiration_time;
+
+    $request = \Slim\Slim::getInstance()->request();
+    $unidadId = json_decode($request->getBody());
+    
+    
+    $sql = "SELECT p.* FROM PromocionVista p
+            INNER JOIN (
+            SELECT pu.PromocionId
+            FROM PromocionPorUnidadNegocio pu
+            WHERE pu.UnidadNegocioId = ".$unidadId[0]."
+            ) x  ON x.PromocionId = p.PromocionId 
+            WHERE p.Activo = 1";
+
+    try 
+    {
+        $db = getConnection();
+        $stmt = $db->query($sql);
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $db = null;
+        
+        echo json_encode($response);  
+    } 
+    catch(PDOException $e) 
+    {
+        //echo $e;
+        echo '[ { "Estatus": "Fallo" } ]';
+        $app->status(409);
+        $app->stop();
+    }
+}
+
     
 ?>

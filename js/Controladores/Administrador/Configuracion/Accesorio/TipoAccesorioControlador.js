@@ -74,6 +74,8 @@ app.controller("TipoAccesorioControlador", function($scope, $http, $q, CONFIG, $
         tipoAccesorio.Instrucciones = data.Instrucciones;
         tipoAccesorio.Activo = data.Activo;
         tipoAccesorio.NombreArchivo = data.NombreArchivo;
+        tipoAccesorio.Obligatorio = data.Obligatorio;
+        tipoAccesorio.Contable = data.Contable;
         
         tipoAccesorio.ClaseAccesorio.ClaseAccesorioId = data.ClaseAccesorio.ClaseAccesorioId ;
         tipoAccesorio.ClaseAccesorio.Nombre = data.ClaseAccesorio.Nombre ;

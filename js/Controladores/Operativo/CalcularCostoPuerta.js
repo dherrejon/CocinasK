@@ -1,4 +1,4 @@
-function CalcularCostoPuerta(muestrario, modulo, combinacion)
+function CalcularCostoPuerta(muestrario, modulo, combinacion, margePresupuesto, iva)
 {
     var puerta;
     var precio;
@@ -44,8 +44,6 @@ function CalcularCostoPuerta(muestrario, modulo, combinacion)
                         }
                     }
                     
-                    
-                    
                     muestrario[j].Combinacion[im].PrecioVenta  = precio;
                     muestrario[j].Combinacion[im].Puerta = puerta;
                 }
@@ -67,6 +65,8 @@ function CalcularCostoPuerta(muestrario, modulo, combinacion)
                     muestrario[j].Combinacion[i].PrecioVenta  += CalcularPrecioVentaPuerta(muestrario[j].Puerta[puerta], muestrario[j].Combinacion[i].CombinacionMaterialId, modulo[k]);
                 }   
                 
+                muestrario[j].Combinacion[i].PrecioVenta += ((muestrario[j].Combinacion[i].PrecioVenta*margePresupuesto)/100);
+                muestrario[j].Combinacion[i].PrecioVenta += ((muestrario[j].Combinacion[i].PrecioVenta*iva)/100);
                 muestrario[j].Combinacion[i].PrecioVenta = Math.round(muestrario[j].Combinacion[i].PrecioVenta);
             }
         }

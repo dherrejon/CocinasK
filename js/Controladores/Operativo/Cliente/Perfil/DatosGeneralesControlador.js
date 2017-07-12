@@ -195,6 +195,21 @@ app.controller("DatosClienteControlador", function($scope, $rootScope, CITA, $ht
         return val;  
     };
     
+    $scope.GetCountMedioContacto = function()
+    {
+        var val = 0;
+        for(var k=0; k<$rootScope.persona.Contacto.length; k++)
+        {
+            if(parseInt($rootScope.persona.Contacto[k].TipoMedioContacto.TipoMedioContactoId) > 0)
+            {
+                val++;
+                break;
+            }
+        }
+        
+        return val;  
+    };
+    
     //------------ UnidadNegocio --------------------
     $scope.AbrirUnidadNegocioPersona = function(unidad)
     {

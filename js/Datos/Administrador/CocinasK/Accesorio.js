@@ -10,8 +10,6 @@ class Accesorio
         this.Imagen = "";
         this.CostoUnidad = "";
         this.ConsumoUnidad = "";
-        this.Contable = true;
-        this.Obligatorio = true;
         this.Activo = true; 
     }
 }
@@ -100,33 +98,9 @@ function SetAccesorio(data)
     accesorio.Muestrario.MuestrarioId = data.MuestrarioId;
     accesorio.Muestrario.Nombre = data.NombreMuestrario;
     
-    if(data.Contable == "1")
-    {
-        accesorio.Contable = true;
-    }
-    else
-    {
-        accesorio.Contable = false;
-    }
-    
-    if(data.Obligatorio == "1")
-    {
-        accesorio.Obligatorio = true;
-    }
-    else
-    {
-        accesorio.Obligatorio = false;
-    }
-    
-    if(data.Activo == "1")
-    {
-        accesorio.Activo = true;
-    }
-    else
-    {
-        accesorio.Activo = false;
-    }
-    
+
+    accesorio.Activo = CambiarDatoEnteroABool(data.Activo);
+
     return accesorio;
 }
 
@@ -137,8 +111,6 @@ function AgregarAccesorio($http, CONFIG, $q, accesorio)
     var q = $q.defer();
     
     accesorio.Activo = CambiarDatoBool(accesorio.Activo);
-    accesorio.Contable = CambiarDatoBool(accesorio.Contable);
-    accesorio.Obligatorio = CambiarDatoBool(accesorio.Obligatorio);
 
     $http({      
           method: 'POST',
@@ -162,8 +134,6 @@ function EditarAccesorio($http, CONFIG, $q, accesorio)
     var q = $q.defer();
     
     accesorio.Activo = CambiarDatoBool(accesorio.Activo);
-    accesorio.Contable = CambiarDatoBool(accesorio.Contable);
-    accesorio.Obligatorio = CambiarDatoBool(accesorio.Obligatorio);
     
     $http({      
           method: 'PUT',
@@ -263,6 +233,8 @@ class TipoAccesorio
         this.Instrucciones = null; 
         this.Activo = true;
         this.NombreArchivo = "";
+        this.Obligatorio = true;
+        this.Contable = true;
     }
 }
 
@@ -312,14 +284,9 @@ function SetTipoAccesorio(data)
     tipoAccesorio.Instrucciones = data.Instrucciones;
     tipoAccesorio.NombreArchivo = data.NombreArchivo;
     
-    if(data.Activo == "1")
-    {
-        tipoAccesorio.Activo = true;
-    }
-    else
-    {
-        tipoAccesorio.Activo = false;
-    }
+    tipoAccesorio.Activo = CambiarDatoEnteroABool(data.Activo);
+    tipoAccesorio.Contable = CambiarDatoEnteroABool(data.Contable);
+    tipoAccesorio.Obligatorio = CambiarDatoEnteroABool(data.Obligatorio);
     
     tipoAccesorio.ClaseAccesorio.ClaseAccesorioId = data.ClaseAccesorioId;
     tipoAccesorio.ClaseAccesorio.Nombre = data.NombreClaseAccesorio;
@@ -331,14 +298,9 @@ function AgregarTipoAccesorio($http, CONFIG, $q, tipo)
 {
     var q = $q.defer();
     
-    if(tipo.Activo)
-    {
-        tipo.Activo = "1";
-    }
-    else
-    {
-        tipo.Activo = "0";
-    }
+    tipo.Activo = CambiarDatoBool(tipo.Activo);
+    tipo.Contable = CambiarDatoBool(tipo.Contable);
+    tipo.Obligatorio = CambiarDatoBool(tipo.Obligatorio);
 
     $http({      
           method: 'POST',
@@ -361,14 +323,9 @@ function EditarTipoAccesorio($http, CONFIG, $q, tipo)
 {
     var q = $q.defer();
     
-    if(tipo.Activo)
-    {
-        tipo.Activo = "1";
-    }
-    else
-    {
-        tipo.Activo = "0";
-    }
+    tipo.Activo = CambiarDatoBool(tipo.Activo);
+    tipo.Contable = CambiarDatoBool(tipo.Contable);
+    tipo.Obligatorio = CambiarDatoBool(tipo.Obligatorio);
     
     $http({      
           method: 'PUT',

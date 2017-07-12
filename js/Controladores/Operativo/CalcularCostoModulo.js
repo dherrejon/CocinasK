@@ -1,4 +1,4 @@
-function CalcularCostoModulo(modulo, combinacion)
+function CalcularCostoModulo(modulo, combinacion, margenPresupuesto, iva)
 {   
     
     SetDatosModulo(modulo);
@@ -58,6 +58,8 @@ function CalcularCostoModulo(modulo, combinacion)
             SustituirFormulaCompleta(modulo, combinacion[k].CombinacionMaterialId); //componente y pieza
             combinacion[k].PrecioVentaModulo = CalcularPrecioVenta(modulo, combinacion[k].CombinacionMaterialId);
             
+            combinacion[k].PrecioVentaModulo += ((combinacion[k].PrecioVentaModulo*margenPresupuesto)/100);
+            combinacion[k].PrecioVentaModulo += ((combinacion[k].PrecioVentaModulo*iva)/100);
             combinacion[k].PrecioVentaModulo = Math.round(combinacion[k].PrecioVentaModulo);
         }
     }

@@ -740,3 +740,31 @@ function EliminarUnidadNegocioPersona($http, $q, CONFIG, id)
      }); 
     return q.promise;
 }
+
+
+function GetMargenDireccion($http, $q, CONFIG, direccion)
+{
+    var q = $q.defer();
+    
+    $http({      
+          method: 'POST',
+          url: CONFIG.APIURL + '/GetMargenDireccion',
+          data: direccion
+
+      }).success(function(data)
+        {
+            if(data[0].Estatus == "Exito") 
+            {
+                q.resolve(data);
+            }
+            else
+            {
+                q.resolve("fallo");
+            }
+            
+        }).error(function(data, status){
+            q.resolve(status);
+
+     }); 
+    return q.promise;
+}

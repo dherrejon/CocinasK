@@ -122,7 +122,7 @@ function AgregarDomicilioPersona()
     $domicilio = json_decode($request->getBody());
     global $app;
     $sql = "INSERT INTO DireccionPersona (TipoMedioContactoId, PersonaId, PaisId, Codigo, Domicilio, Estado, Municipio, Ciudad, Colonia, Activo) 
-            VALUES(:TipoMedioContactoId, :PersonaId, 1, :Codigo, :Domicilio, :Estado, :Municipio, :Ciudad, :Colonia, Activo)";
+            VALUES(:TipoMedioContactoId, :PersonaId, 1, :Codigo, :Domicilio, :Estado, :Municipio, :Ciudad, :Colonia, 1)";
 
     try 
     {
@@ -630,5 +630,48 @@ function GetCitaPersona()
         $app->stop();
     }
 }
+
+function GetMargenDireccion()
+{
+    global $app;
+    global $session_expiration_time;
+
+    $request = \Slim\Slim::getInstance()->request();
+    $domicilio = json_decode($request->getBody());
+    
+    
+    
+   $sql = "SELECT t.Margen, x.UnidadNegocioId FROM Territorio t INNER JOIN  (
+            
+            SELECT p.TerritorioId, p.UnidadNegocioId  FROM Plaza p
+            WHERE p.Estado = '".$domicilio->Estado."' AND p.Municipio = '".$domicilio->Municipio."' AND p.Ciudad = '".$domicilio->Ciudad."') x ON t.TerritorioId = x.TerritorioId";
+    
+    try 
+    {
+        $db = getConnection();
+        $stmt = $db->query($sql);
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $db = null;
+        
+        $size = count($response);
+        
+        if($size == 1)
+        {
+            echo '[ { "Estatus": "Exito"}, {"Margen":'.$response[0]->Margen.'}, {"UnidadNegocioId":'.$response[0]->UnidadNegocioId.'} ]'; 
+        }
+        else
+        {
+            echo '[ { "Estatus": "Exito"}, {"Margen":"-1"}, {"UnidadNegocioId":"0"}]'; 
+        }
+    } 
+    catch(PDOException $e) 
+    {
+        echo $e;
+        echo '[ { "Estatus": "Fallo" } ]';
+        //$app->status(409);
+        $app->stop();
+    }
+}
+
     
 ?>
