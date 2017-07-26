@@ -546,6 +546,7 @@
     $app->put('/EditarIVA', $seguridad, $ChecarSesion, 'EditarIVA');
     
     /*------------------------- Proyecto ------------------------------*/
+    $app->post('/AgregarProyectoPresupuesto', $seguridad, $ChecarSesion, 'AgregarProyectoPresupuesto');
     $app->post('/GetProyectoPersona', $seguridad, $ChecarSesion, 'GetProyectoPersona'); 
 
     $app->run(); 

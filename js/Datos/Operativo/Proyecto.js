@@ -16,6 +16,7 @@ class Presupuesto
         
         this.DescripcionCliente = "";
         this.DescripcionInterna = "";
+        this.Titulo = "";
     }
 }
 
@@ -100,6 +101,33 @@ function GetEstatusProyecto()
 
     
     return estatus;
+}
+
+function AgregarProyectoPresupuesto($http, CONFIG, $q, presupuesto)
+{
+    var q = $q.defer();
+
+    $http({      
+          method: 'POST',
+          url: CONFIG.APIURL + '/AgregarProyectoPresupuesto',
+          data: presupuesto
+
+      }).success(function(data)
+        {
+            if(data[0].Estatus == "Exitoso") 
+            {
+                q.resolve(data);
+            }
+            else
+            {
+                q.resolve([{Estatus:"Fallo"}]);
+            }
+            
+        }).error(function(data, status){
+            q.resolve([{Estatus:status}]);
+
+     }); 
+    return q.promise;
 }
 
 function GetProyectoPersona($http, $q, CONFIG, id)    

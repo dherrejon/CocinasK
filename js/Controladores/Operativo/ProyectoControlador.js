@@ -1,4 +1,4 @@
-app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, $http, $q, CONFIG, MEDIOCONTACTO, DOMICILIO, datosUsuario)
+app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, $http, $q, CONFIG, $filter, MEDIOCONTACTO, DOMICILIO, datosUsuario)
 {   
     $scope.medioCaptacion = [];
     $scope.persona = [];
@@ -49,6 +49,8 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
     $scope.$on('AgregarPresupuestoCero',function()
     {
         $scope.operacion = "Agregar";
+        $scope.catalogo = {combinacion: false, modulo: false, puerta: false, accesorio:false, cubierta: false, promoPlanPago: false};
+        
         $scope.presupuesto = new Presupuesto();
         
         $scope.presupuesto.Persona.NuevoContacto = [];
@@ -71,9 +73,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         $scope.idPromocion = -1;
         
         $scope.CargarCatalogoPresupuesto();
-        
-        $scope.catalogo = {combinacion: false, modulo: false, puerta: false, accesorio:false, cubierta: false, promoPlanPago: false};
-        
+    
         $('#agregarPresupuestoModal').modal('toggle');
     });
     
@@ -84,6 +84,9 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         $scope.GetMedioCaptacion();
         $scope.GetUnidadNegocio();
         $scope.GetIVA();
+        console.log($scope.usuario);
+        
+        $scope.GetTipoAccesorio();
     };
     
     $scope.GetCombincacionInicio = function()
@@ -94,12 +97,11 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
             $scope.GetCombinacionMaterial();
             $scope.GetTipoCubierta();
             $scope.GetTipoCombinacionMaterial();  
+            $scope.GetColorGrupo();
                   
             
             $scope.catalogo.combinacion = true;
         }
-        
-        $scope.GetColorGrupo();
     };
     
     $scope.GetModuloInicio = function()
@@ -709,7 +711,6 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         {
             $scope.maqueo = data;
             $scope.SetColorMaqueo();
-            //$scope.GetColorGrupoMaqueo();
         }).catch(function(error)
         {
             alert(error);
@@ -806,6 +807,15 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
             sql +=  $scope.tipoAccesorio[k].TipoAccesorioId + "'";
 
             $scope.tipoAccesorio[k].Muestrario = alasql(sql,[$scope.muestrarioAccesorio]);
+            
+            if($scope.tipoAccesorio[k].Obligatorio)
+            {
+                $scope.tipoAccesorio[k].Presupuesto = true;
+            }
+            else
+            {
+                $scope.tipoAccesorio[k].Presupuesto = false;
+            }
         }
         
         // Accesorios en muestrarios
@@ -1095,7 +1105,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                         mes = "0" + mes;
                     }*/
                     
-                    $scope.planPago[k].FechaFin = fechaEnt.getDate() + "/" + GetMesNombre(fechaEnt.getMonth()) + "/" + fechaEnt.getFullYear();
+                    $scope.planPago[k].FechaFin = fechaEnt.getDate() + "/" + GetMesNombre(fechaEnt.getMonth()-1) + "/" + fechaEnt.getFullYear();
                     $scope.planPago[k].FechaFin2 = new Date(fechaEnt.getFullYear(), fechaEnt.getMonth(), fechaEnt.getDate());
                 }
             }
@@ -1633,7 +1643,9 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
     
     $scope.$on('DomicilioAgregadoProyecto',function()
     {
-        $scope.presupuesto.Persona.NuevoDomicilio.push(DOMICILIO.GetDomicilio());
+        var domicilio = DOMICILIO.GetDomicilio();
+        domicilio.Seleccionado = false;
+        $scope.presupuesto.Persona.NuevoDomicilio.push(domicilio);
     });
     
     $scope.BorrarDomicilioAgregado = function(domicilio)
@@ -1725,6 +1737,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         {
             $scope.presupuesto.Domicilio = new Object();
             $scope.presupuesto.Domicilio.DomicilioId = "Unidad";
+            $scope.presupuesto.Proyecto.Domicilio.DomicilioId = null; 
             
             $scope.presupuesto.Margen = -1;
             
@@ -1737,6 +1750,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
             }
             else
             {
+                 $scope.presupuesto.Domicilio.DireccionPersonaId =  domicilio.DireccionPersonaId;
                  $scope.presupuesto.Domicilio.UnidadNegocioId = $scope.usuario.UnidadNegocioId;
             }
         }
@@ -2543,6 +2557,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         }
         
         $scope.presupuesto.Superficie = $scope.presupuesto.Superficie.toFixed(2);
+        $scope.presupuesto.CantidadMaqueo = $scope.presupuesto.Superficie;
         
         if($scope.presupuesto.NumeroPuerta === 0)
         {
@@ -2843,7 +2858,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         {
             $scope.tipoAccesorio[k].showPrecio = false;
             //accesorio Compra - Venta
-            if($scope.tipoAccesorio[k].ClaseAccesorio.ClaseAccesorioId == "1")
+            if($scope.tipoAccesorio[k].ClaseAccesorio.ClaseAccesorioId == "1" && $scope.tipoAccesorio[k].Presupuesto)
             {
                 for(var i=0; i<$scope.tipoAccesorio[k].Muestrario.length; i++)
                 {
@@ -2872,7 +2887,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
             }
             
             //Accesorio de madera
-            if($scope.tipoAccesorio[k].ClaseAccesorio.ClaseAccesorioId == "2")
+            if($scope.tipoAccesorio[k].ClaseAccesorio.ClaseAccesorioId == "2" && $scope.tipoAccesorio[k].Presupuesto)
             {
                 for(var i=0; i<$scope.tipoAccesorio[k].Muestrario.length; i++)
                 {
@@ -2922,6 +2937,8 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                 }
             }
         }
+        
+        console.log($scope.tipoAccesorio);
     };
     
     $scope.ValidarPaso6 = function()
@@ -2949,23 +2966,34 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         
         for(var k=0; k<$scope.tipoAccesorio.length; k++)
         {
-            var muestrarioSeleccionado = false;
-            for(var i=0; i<$scope.tipoAccesorio[k].Muestrario.length; i++)
+            if($scope.tipoAccesorio[k].Presupuesto)
             {
-                if($scope.tipoAccesorio[k].Muestrario[i].PorDefecto && $scope.tipoAccesorio[k].Muestrario[i].Accesorio.length > 0)
+                var muestrarioSeleccionado = false;
+                for(var i=0; i<$scope.tipoAccesorio[k].Muestrario.length; i++)
                 {
-                    muestrarioSeleccionado = true;
-                    if($scope.tipoAccesorio[k].Cantidad === "" || $scope.tipoAccesorio[k].Cantidad === undefined)
+                    if($scope.tipoAccesorio[k].Muestrario[i].PorDefecto && $scope.tipoAccesorio[k].Muestrario[i].Accesorio.length > 0)
                     {
-                        $scope.mensajeError[$scope.mensajeError.length] = "*Escribe una cantidad válida para " + $scope.tipoAccesorio[k].Nombre + ".";
+                        muestrarioSeleccionado = true;
                         break;
                     }
                 }
+
+                if(!muestrarioSeleccionado)
+                {
+                    $scope.mensajeError[$scope.mensajeError.length] = "*Debes de seleccionar al menos un muestrario para " + $scope.tipoAccesorio[k].Nombre + ".";
+                }
+                
+                if($scope.tipoAccesorio[k].Cantidad === "" || $scope.tipoAccesorio[k].Cantidad === undefined)
+                {
+                    $scope.mensajeError[$scope.mensajeError.length] = "*Escribe una cantidad válida para " + $scope.tipoAccesorio[k].Nombre + ".";
+                }
             }
-            
-            if(!muestrarioSeleccionado && $scope.tipoAccesorio[k].Obligatorio)
+            else
             {
-                $scope.mensajeError[$scope.mensajeError.length] = "*Debes de seleccionar al menos un muestrario para " + $scope.tipoAccesorio[k].Nombre + ".";
+                if($scope.tipoAccesorio[k].Obligatorio)
+                {
+                    $scope.mensajeError[$scope.mensajeError.length] = "*Debes presupuestar " + $scope.tipoAccesorio[k].Nombre + ".";
+                }
             }
         }
         
@@ -3000,6 +3028,51 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         {
             alert(error);
         });
+    };
+    
+    $scope.PresupuestoTipoAccesorio = function(tipo)
+    {
+        if(tipo.Obligatorio)
+        {
+            tipo.Presupuesto = true;
+        }
+        else
+        {
+            tipo.Presupuesto = !tipo.Presupuesto;
+        }
+        
+        
+        if(tipo.Presupuesto)
+        {
+            var muestrarioSeleccionado = false;
+            for(var k=0; k<tipo.Muestrario.length; k++)
+            {
+                if(tipo.Muestrario[k].Activo && tipo.Muestrario[k].Accesorio.length > 0 && tipo.Muestrario[k].PorDefecto)
+                {
+                    muestrarioSeleccionado = true;
+                    break;
+                }
+            }
+
+            if(!muestrarioSeleccionado)
+            {
+                $scope.CambiarTab(tipo.Nombre);
+            }
+            
+            $scope.SetFocusElement("Tipo"+tipo.TipoAccesorioId)
+        }
+        else
+        {
+            if($scope.tabSeleccionada == tipo.Nombre)
+            {
+                $scope.tabSeleccionada  = "";
+            }
+        }
+    };
+    
+    $scope.SetFocusElement = function(id)
+    {
+        document.getElementById(id).focus();
     };
     
     /*------------------------ Paso 7 -----------------------*/
@@ -3294,8 +3367,8 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
             
                 if(!$scope.crearBasico)
                 {
-                    $scope.crearBasico = true;
                     $scope.CrearPresupuestoBasico();
+                    $scope.crearBasico = true;
                 }
             }
             else if($scope.presupuesto.Proyecto.TipoProyecto.CubiertaPiedra)
@@ -3323,6 +3396,18 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
     $scope.ValidarPaso9 = function()
     {
         $scope.mensajeError = [];
+        
+        if($scope.presupuesto.Titulo !== undefined)
+        {
+            if($scope.presupuesto.Titulo.length == 0)
+            {
+                $scope.mensajeError[$scope.mensajeError.length] = "*Escribe el título del presupuesto.";
+            }
+        }
+        else
+        {
+            $scope.mensajeError[$scope.mensajeError.length] = "*Escribe el título del presupuesto.";
+        }
         
         if($scope.presupuesto.DescripcionCliente !== undefined)
         {
@@ -3534,26 +3619,29 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         
         if($scope.presupuesto.Proyecto.TipoProyecto.Mueble)
         {
-            for(var k=0; k<$scope.combinacion.length; k++)
+            if(!$scope.crearBasico)
             {
-                if($scope.combinacion[k].PorDefecto && $scope.combinacion[k].Activo)
+                for(var k=0; k<$scope.combinacion.length; k++)
                 {
-                    if($scope.combinacion[k].PrecioVentaModulo < precio)
+                    if($scope.combinacion[k].PorDefecto && $scope.combinacion[k].Activo)
                     {
-                        index = k;
-                        precio = $scope.combinacion[k].PrecioVentaModulo;
+                        if($scope.combinacion[k].PrecioVentaModulo < precio)
+                        {
+                            index = k;
+                            precio = $scope.combinacion[k].PrecioVentaModulo;
+                        }
                     }
+
+                    $scope.combinacion[k].Basico = false;
+                    $scope.combinacion[k].Presupuesto = false;
                 }
 
-                $scope.combinacion[k].Basico = false;
-                $scope.combinacion[k].Presupuesto = false;
-            }
-
-            if(index > -1)
-            {
-                $scope.combinacion[index].Basico = true;
-                $scope.combinacion[index].Presupuesto = true;
-                $scope.combinacionSeleccionada = $scope.combinacion[index].CombinacionMaterialId;
+                if(index > -1)
+                {
+                    $scope.combinacion[index].Basico = true;
+                    $scope.combinacion[index].Presupuesto = true;
+                    $scope.combinacionSeleccionada = $scope.combinacion[index].CombinacionMaterialId;
+                }
             }
         
             //puertas
@@ -3631,54 +3719,56 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
             //Accesorios
             for(var i=0; i<$scope.tipoAccesorio.length; i++)
             {
-                index = -1;
-                precio = 99999999999999;
-
-                for(var j=0; j<$scope.tipoAccesorio[i].Muestrario.length; j++)
+                if($scope.tipoAccesorio[i].Presupuesto)
                 {
-                    if($scope.tipoAccesorio[i].Muestrario[j].PorDefecto && $scope.tipoAccesorio[i].Muestrario[j].Activo && ($scope.tipoAccesorio[i].Muestrario[j].Accesorio.length > 0))
-                    {
-                        if($scope.tipoAccesorio[i].ClaseAccesorio.ClaseAccesorioId == "1")
-                        {
-                            if(precio > $scope.tipoAccesorio[i].Muestrario[j].Subtotal)
-                            {
-                                index = j;
-                                precio = $scope.tipoAccesorio[i].Muestrario[j].Subtotal;
-                            }
-                        }
+                    index = -1;
+                    precio = 99999999999999;
 
-                        if($scope.tipoAccesorio[i].ClaseAccesorio.ClaseAccesorioId == "2")
+                    for(var j=0; j<$scope.tipoAccesorio[i].Muestrario.length; j++)
+                    {
+                        if($scope.tipoAccesorio[i].Obligatorio && $scope.tipoAccesorio[i].Muestrario[j].PorDefecto && $scope.tipoAccesorio[i].Muestrario[j].Activo && ($scope.tipoAccesorio[i].Muestrario[j].Accesorio.length > 0))
                         {
-                            for(var k=0; k<$scope.tipoAccesorio[i].Muestrario[j].Combinacion.length; k++)
+                            if($scope.tipoAccesorio[i].ClaseAccesorio.ClaseAccesorioId == "1")
                             {
-                                if($scope.tipoAccesorio[i].Muestrario[j].Combinacion[k].CombinacionId == $scope.combinacionSeleccionada)
+                                if(precio > $scope.tipoAccesorio[i].Muestrario[j].Subtotal)
                                 {
-                                    if(precio > $scope.tipoAccesorio[i].Muestrario[j].Combinacion[k].Subtotal)
+                                    index = j;
+                                    precio = $scope.tipoAccesorio[i].Muestrario[j].Subtotal;
+                                }
+                            }
+
+                            if($scope.tipoAccesorio[i].ClaseAccesorio.ClaseAccesorioId == "2")
+                            {
+                                for(var k=0; k<$scope.tipoAccesorio[i].Muestrario[j].Combinacion.length; k++)
+                                {
+                                    if($scope.tipoAccesorio[i].Muestrario[j].Combinacion[k].CombinacionId == $scope.combinacionSeleccionada)
                                     {
-                                        index = j;
-                                        precio = $scope.tipoAccesorio[i].Muestrario[j].Combinacion[k].Subtotal;
+                                        if(precio > $scope.tipoAccesorio[i].Muestrario[j].Combinacion[k].Subtotal)
+                                        {
+                                            index = j;
+                                            precio = $scope.tipoAccesorio[i].Muestrario[j].Combinacion[k].Subtotal;
+                                        }
+                                        break;
                                     }
-                                    break;
                                 }
                             }
                         }
+
+                        $scope.tipoAccesorio[i].Muestrario[j].Basico = false;
+                        $scope.tipoAccesorio[i].Muestrario[j].Presupuesto = false;
                     }
 
-                    $scope.tipoAccesorio[i].Muestrario[j].Basico = false;
-                    $scope.tipoAccesorio[i].Muestrario[j].Presupuesto = false;
+                    if(index > -1)
+                    {
+                        $scope.tipoAccesorio[i].Muestrario[index].Basico = true;
+                        $scope.tipoAccesorio[i].Muestrario[index].Presupuesto = true;
+                    }
                 }
-
-                if(index > -1)
-                {
-                    $scope.tipoAccesorio[i].Muestrario[index].Basico = true;
-                    $scope.tipoAccesorio[i].Muestrario[index].Presupuesto = true;
-                }
-
             }
         }
     };
     
-    $scope.CambiarCombinacionPresupuesto = function(combinacion)
+    /*$scope.CambiarCombinacionPresupuesto = function(combinacion)
     {
         for(var k=0; k<$scope.combinacion.length; k++)
         {
@@ -3691,7 +3781,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         
         //$scope.SetMuestrarioCombinacion(combinacion);
         //$scope.SetAccesorioMaderaCombinacion(combinacion);
-    };
+    };*/
     
     $scope.CambiarMuestrarioPresupuesto = function(muestrario)
     {
@@ -4065,6 +4155,8 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
             $scope.CalcularTotalProyecto();
             
             $scope.GetPromoPlanPago();
+            
+            console.log($scope.presupuesto);
         }
     };
     
@@ -4073,7 +4165,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         $scope.mensajeError = [];
         //Validar si es que existe una cubierta seleccionada, si este es el caso verificar que se haya seleccionado una ubicacion y un material
         
-        /*if($scope.presupuesto.Proyecto.TipoProyecto.Mueble == true)
+        if($scope.presupuesto.Proyecto.TipoProyecto.Mueble == true)
         {
             var combinacionPresupuesto = false;
             for(var k=0; k<$scope.combinacion.length; k++)
@@ -4091,7 +4183,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                 $scope.mensajeError[$scope.mensajeError.length] = "*Selecciona al menos una combinación.";
                 return false;
             }
-        }*/
+        }
         
         if($scope.tipoCubiertaPresupuesto == "1" || $scope.tipoCubiertaPresupuesto == "2")
         {
@@ -4275,7 +4367,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
             $scope.presupuesto.Accesorio = [];
             for(var k=0; k<$scope.tipoAccesorio.length; k++)
             {
-                if($scope.tipoAccesorio[k].ClaseAccesorio.ClaseAccesorioId == "1")
+                if($scope.tipoAccesorio[k].ClaseAccesorio.ClaseAccesorioId == "1" && $scope.tipoAccesorio[k].Presupuesto)
                 {
                     if($scope.tipoAccesorio[k].Cantidad > 0)
                     {
@@ -4381,7 +4473,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                         var accMadera = false;
                         for(var i=0; i<$scope.tipoAccesorio.length; i++)
                         {
-                            if($scope.tipoAccesorio[i].Cantidad > 0 && $scope.tipoAccesorio[i].ClaseAccesorio.ClaseAccesorioId == "2")
+                            if($scope.tipoAccesorio[i].Cantidad > 0 && $scope.tipoAccesorio[i].ClaseAccesorio.ClaseAccesorioId == "2" && $scope.tipoAccesorio[i].Presupuesto)
                             {
                                 accMadera = false;
                                 for(var j=0; j<$scope.tipoAccesorio[i].Muestrario.length; j++)
@@ -4418,7 +4510,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
             //accesorio de madera
             for(var i=0; i<$scope.tipoAccesorio.length; i++)
             {
-                if($scope.tipoAccesorio[i].Cantidad > 0 && $scope.tipoAccesorio[i].ClaseAccesorio.ClaseAccesorioId == "2")
+                if($scope.tipoAccesorio[i].Cantidad > 0 && $scope.tipoAccesorio[i].ClaseAccesorio.ClaseAccesorioId == "2" && $scope.tipoAccesorio[i].Presupuesto)
                 {
                     for(var j=0; j<$scope.tipoAccesorio[i].Muestrario.length; j++)
                     {
@@ -4482,18 +4574,20 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                     var fecha = new Date();
 
                     fecha.setDate(fecha.getDate()+parseInt($scope.promocion[j].Vigencia));
-                    /*var mes = fecha.getMonth()+1;
+                    var mes = fecha.getMonth()+1;
 
                     if(mes < 10)
                     {
                         mes = "0" + mes;
-                    }*/
-
+                    }
+                    $scope.promocion[j].FechaLimite2 = fecha.getFullYear()+ "/" + mes + "/" + fecha.getDate();
                     $scope.promocion[j].FechaLimite = fecha.getDate() + "/" + GetMesNombre(fecha.getMonth()) + "/" + fecha.getFullYear();
                 }
 
                 if($scope.promocion[j].TipoPromocion.TipoPromocionId == "1")
                 {
+                    $scope.promocion[j].FechaLimite2 = $scope.promocion[j].FechaLimite;
+                    
                     var dia = $scope.promocion[j].FechaLimite.slice(0,2);
                     var mes = $scope.promocion[j].FechaLimite.slice(3,5);
                     var year = $scope.promocion[j].FechaLimite.slice(6,10);
@@ -4529,7 +4623,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
     
     $scope.CalcularTotalPromocion = function()
     {
-        if($scope.presupuesto.Proyecto.TipoProyecto.Mueble)
+        /*if($scope.presupuesto.Proyecto.TipoProyecto.Mueble)
         {
             for(var j=0; j<$scope.promocion.length; j++)
             {
@@ -4554,7 +4648,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                     }
                 }
             }
-        }
+        }*/
         
         if($scope.presupuesto.Proyecto.TipoProyecto.CubiertaPiedra)
         {
@@ -4673,7 +4767,8 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         }
         else
         {
-            $scope.pasoPresupuesto = 14;
+            //$scope.pasoPresupuesto = 14;
+            $scope.TerminarPresupuesto();
         }
         
     }
@@ -4707,38 +4802,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         }
         
         
-        $scope.GetPrecioVentaPresupuesto();
-        
-    };
-    
-    
-    $scope.GetPrecioVentaPresupuesto = function()
-    {
-        $scope.presupuesto.TotalProyecto = 0;
-        var total;
-        console.log($scope.presupuesto);
-        if($scope.presupuesto.Proyecto.TipoProyecto.Mueble)
-        {
-            total = $scope.presupuesto.Combinacion.Total;
-            if($scope.presupuesto.PromocionMueble != "Ninguno")
-            {
-                total = total - ((total*parseFloat($scope.presupuesto.PromocionMueble.DescuentoMinimo))/100);
-            }
-            $scope.presupuesto.TotalProyecto += total;
-        }
-        
-        if($scope.presupuesto.Proyecto.TipoProyecto.CubiertaPiedra && $scope.tipoCubiertaPresupuesto == "2")
-        {
-            total = $scope.presupuesto.CubiertaPiedra.Total;
-            
-            if($scope.presupuesto.PromocionCubierta != "Ninguno")
-            {
-                total = total - ((total*parseFloat($scope.presupuesto.PromocionCubierta.DescuentoMinimo))/100);
-            }
-            
-            $scope.presupuesto.TotalProyecto += total;
-        }
-        
+        //$scope.GetPrecioVentaPresupuesto();
         if($scope.presupuesto.PlanPago != undefined && $scope.presupuesto.PlanPago != null)
         {
             if($scope.presupuesto.PlanPago.Abono != undefined && $scope.presupuesto.PlanPago.Abono != null)
@@ -4749,6 +4813,42 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                 } 
             }
         }
+        
+    };
+    
+    $scope.GetPrecioVentaPresupuesto = function(combinacionTotal)
+    {
+        $scope.presupuesto.TotalProyecto = 0;
+        var subtotal;
+        var total = 0;
+        
+        if($scope.presupuesto.Proyecto.TipoProyecto.Mueble)
+        {
+            if($scope.presupuesto.PromocionMueble != "Ninguno")
+            {
+                subtotal = combinacionTotal - ((combinacionTotal*parseFloat($scope.presupuesto.PromocionMueble.DescuentoMinimo))/100);
+            }
+            else
+            {
+                subtotal = combinacionTotal;
+            }
+            
+            total += subtotal;
+        }
+        
+        if($scope.presupuesto.Proyecto.TipoProyecto.CubiertaPiedra && $scope.tipoCubiertaPresupuesto == "2")
+        {
+            subtotal = $scope.presupuesto.CubiertaPiedra.Total;
+            
+            if($scope.presupuesto.PromocionCubierta != "Ninguno")
+            {
+                subtotal = subtotal - ((subtotal*parseFloat($scope.presupuesto.PromocionCubierta.DescuentoMinimo))/100);
+            }
+            
+            total += subtotal;
+        }
+        
+        return total;
     };
     
     //--------------------- Paso 13 --------------------------
@@ -4785,24 +4885,43 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
     {
         var fecha, mes;
         var total;
+        var abono;
         
-        total = $scope.presupuesto.TotalProyecto;
         
         for(var k=0; k<plan.Abono.length; k++)
         {
             fecha = new Date();
             fecha.setDate(fecha.getDate() + parseInt(plan.Abono[k].Dias));
             
-            mes = fecha.getMonth() + 1;
+            mes = fecha.getMonth();
+            /*mes = fecha.getMonth() + 1;
             if(mes < 10)
             {
                 mes = "0" + mes;
-            }
+            }*/
             
-            plan.Abono[k].FechaCompromiso = fecha.getDate()+ "/" + mes + "/" + fecha.getFullYear();
-            plan.Abono[k].Pago = (total*parseFloat(plan.Abono[k].Abono))/100;
-            
+            plan.Abono[k].FechaCompromiso = fecha.getDate()+ "/" + Month[mes] + "/" + fecha.getFullYear();
+            //plan.Abono[k].Pago = (total*parseFloat(plan.Abono[k].Abono))/100;
         }
+        
+        for(var k=0; k<$scope.combinacion.length; k++)
+        {
+            if($scope.combinacion[k].Presupuesto == true)
+            {
+                $scope.combinacion[k].Abono = [];
+                total = $scope.GetPrecioVentaPresupuesto($scope.combinacion[k].Total);
+                $scope.combinacion[k].TotalProyecto = total;
+                
+                for(var i=0; i<plan.Abono.length; i++)
+                {
+                    $scope.combinacion[k].Abono[i] = new Object();
+                    $scope.combinacion[k].Abono[i].FechaCompromiso = plan.Abono[i].FechaCompromiso;
+                    $scope.combinacion[k].Abono[i].Pago = (total*parseFloat(plan.Abono[i].Abono))/100;
+                }
+            }
+        }
+        
+        console.log($scope.combinacion);
     };
     
     $scope.CambiarPromocionCubierta = function(promo)
@@ -4810,7 +4929,8 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         if(promo != $scope.presupuesto.PromocionCubierta)
         {
             $scope.presupuesto.PromocionCubierta = promo;
-            $scope.GetPrecioVentaPresupuesto();
+            $scope.CalcularAbono($scope.presupuesto.PlanPago);
+            //$scope.GetPrecioVentaPresupuesto();
         }
     }
     
@@ -4819,7 +4939,8 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         if(promo != $scope.presupuesto.PromocionMueble)
         {
             $scope.presupuesto.PromocionMueble = promo;
-            $scope.GetPrecioVentaPresupuesto();
+            $scope.CalcularAbono($scope.presupuesto.PlanPago);
+            //$scope.GetPrecioVentaPresupuesto();
         }
     }
     
@@ -4861,7 +4982,959 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         }
     }
     
+    $scope.TerminarPaso13 = function()
+    {
+        if($scope.ValidarPaso13())
+        {
+            $scope.TerminarPresupuesto();
+        }
+    };
+    
+    $scope.ValidarPaso13 = function()
+    {
+        var selPal = false;
+        for(var k=0; k<$scope.planPago.length; k++)
+        {
+            if($scope.planPago[k].Presupuesto == true)
+            {
+                selPal =  true;
+                break;
+            }
+        }
+        
+        if(selPal)
+        {
+            return true;
+        }
+        else
+        {
+            $scope.mensajeError = [];
+            $scope.mensajeError[0] = "*Selecciona un plan de pagos.";
+            //console.log($scope.mesajeError);
+            return false;
+        }
+    };
+    
+    /*$scope.GenerarPDF = function()
+    {
+        console.log("entra");
+        
+        html2canvas(document.getElementById('Hoja3'),{
+            onrendered: function (canvas) {
+                var data = canvas.toDataURL();
+                var docDefinition = {
+                    content: [{
+                        image: data,
+                        width: 500,
+                    }]
+                };
+                pdfMake.createPdf(docDefinition).download("Score_Details.pdf");
+            }
+        });
+        
+    };*/
+    
     //---------------------- Paso 14 ---------------------------
+    $scope.TerminarPresupuesto = function()
+    {
+        var fecha = $scope.GetHoyNumero();
+        
+        //paso 1
+        if(!$scope.personaSeleccionada)
+        {
+            $scope.presupuesto.Persona.PersonaId = "0";
+        }
+        
+        //paso 2
+        if($scope.proyectoNuevo)
+        {
+            $scope.presupuesto.Proyecto.ProyectoId = "0";
+            $scope.presupuesto.Proyecto.FechaCreacion = fecha;
+        }
+        
+        $scope.presupuesto.FechaCreacion = fecha;
+        $scope.presupuesto.UsuarioId = $scope.usuario.UsuarioId;
+        
+        //paso 3 - ...
+        $scope.presupuesto.CombinacionPresupuesto = [];
+        $scope.presupuesto.ServicioPresupuesto = [];
+        $scope.presupuesto.PuertaPresupuesto = [];
+        $scope.presupuesto.MaqueoPresupuesto = [];
+        $scope.presupuesto.AccesorioPresupuesto = [];
+        $scope.presupuesto.CubiertaPresupuesto = [];
+        $scope.presupuesto.Promocion = [];
+        
+        if($scope.presupuesto.Proyecto.TipoProyecto.Mueble)
+        {
+            //paso 3
+            for(var k=0; k<$scope.combinacion.length; k++)
+            {
+                if($scope.combinacion[k].PorDefecto && $scope.combinacion[k].Activo)
+                {
+                    var i = $scope.presupuesto.CombinacionPresupuesto.length;
+                    $scope.presupuesto.CombinacionPresupuesto[i] = new Object();
+                    $scope.presupuesto.CombinacionPresupuesto[i].CombinacionMaterialId = $scope.combinacion[k].CombinacionMaterialId;
+                    $scope.presupuesto.CombinacionPresupuesto[i].PrecioVenta = $scope.combinacion[k].PrecioVentaModulo;
+                }
+            }
+            
+            //paso 4
+            for(var k=0; k<$scope.servicio.length; k++)
+            {
+                if($scope.servicio[k].Obligatorio && $scope.servicio[k].Activo)
+                {
+                    var i = $scope.presupuesto.ServicioPresupuesto.length;
+                    $scope.presupuesto.ServicioPresupuesto[i] = new Object();
+                    $scope.presupuesto.ServicioPresupuesto[i].ServicioId = $scope.servicio[k].ServicioId;
+                    $scope.presupuesto.ServicioPresupuesto[i].Cantidad = $scope.servicio[k].Cantidad;
+                    $scope.presupuesto.ServicioPresupuesto[i].PrecioVenta = $scope.servicio[k].Subtotal;
+                }
+            }
+            
+            for(var k=0; k<$scope.muestrario.length; k++)
+            {
+                if($scope.muestrario[k].PorDefecto && $scope.muestrario[k].Activo)
+                {
+                    var i = $scope.presupuesto.PuertaPresupuesto.length;
+                    $scope.presupuesto.PuertaPresupuesto[i] = new Object();
+                    $scope.presupuesto.PuertaPresupuesto[i].MuestrarioId = $scope.muestrario[k].MuestrarioId;
+                    $scope.presupuesto.PuertaPresupuesto[i].Combinacion = [];
+                    
+                    for(var j=0; j<$scope.muestrario[k].Combinacion.length; j++)
+                    {
+                        $scope.presupuesto.PuertaPresupuesto[i].Combinacion[j] = new Object();
+                        $scope.presupuesto.PuertaPresupuesto[i].Combinacion[j].PuertaPresupuestoId = "-1";
+                        $scope.presupuesto.PuertaPresupuesto[i].Combinacion[j].CombinacionMaterialId = $scope.muestrario[k].Combinacion[j].CombinacionMaterialId;
+                        $scope.presupuesto.PuertaPresupuesto[i].Combinacion[j].PrecioVenta = $scope.muestrario[k].Combinacion[j].PrecioVenta;
+                    }
+                }
+            }
+            
+            
+            //paso 5
+            for(var k=0; k<$scope.maqueo.length; k++)
+            {
+                if($scope.maqueo[k].PorDefecto && $scope.maqueo[k].Activo)
+                {
+                    var i = $scope.presupuesto.MaqueoPresupuesto.length;
+                    $scope.presupuesto.MaqueoPresupuesto[i] = new Object();
+                    $scope.presupuesto.MaqueoPresupuesto[i].MaqueoId = $scope.maqueo[k].MaqueoId;
+                    $scope.presupuesto.MaqueoPresupuesto[i].PrecioVenta = $scope.maqueo[k].Subtotal;
+                }
+            }
+            
+            for(var k=0; k<$scope.tipoAccesorio.length; k++)
+            {
+                if($scope.tipoAccesorio[k].Presupuesto)
+                {
+                    var tipoAgregado = false;
+                    for(var m=0; m<$scope.tipoAccesorio[k].Muestrario.length; m++)
+                    {
+                        if($scope.tipoAccesorio[k].Muestrario[m].PorDefecto && $scope.tipoAccesorio[k].Muestrario[m].Activo && $scope.tipoAccesorio[k].Muestrario[m].Accesorio.length >0)
+                        {
+
+                            if(!tipoAgregado)
+                            {
+                                var i = $scope.presupuesto.AccesorioPresupuesto.length;
+                                $scope.presupuesto.AccesorioPresupuesto[i] = new Object();
+                                $scope.presupuesto.AccesorioPresupuesto[i].TipoAccesorioId = $scope.tipoAccesorio[k].TipoAccesorioId;
+                                $scope.presupuesto.AccesorioPresupuesto[i].Cantidad = $scope.tipoAccesorio[k].Cantidad;
+                                $scope.presupuesto.AccesorioPresupuesto[i].Muestrario = [];
+
+                                tipoAgregado = true;
+
+                            }
+
+                            var j = $scope.presupuesto.AccesorioPresupuesto[i].Muestrario.length;
+                            $scope.presupuesto.AccesorioPresupuesto[i].Muestrario[j] = new Object();
+                            $scope.presupuesto.AccesorioPresupuesto[i].Muestrario[j].MuestrarioId = $scope.tipoAccesorio[k].Muestrario[j].MuestrarioId;
+
+                            if($scope.tipoAccesorio[k].ClaseAccesorio.ClaseAccesorioId == "1")
+                            {
+                                $scope.presupuesto.AccesorioPresupuesto[i].Muestrario[j].Combinacion = [];
+                                $scope.presupuesto.AccesorioPresupuesto[i].Muestrario[j].PrecioVenta = $scope.tipoAccesorio[k].Muestrario[j].Subtotal;
+                            }
+                            else if($scope.tipoAccesorio[k].ClaseAccesorio.ClaseAccesorioId == "2")
+                            {
+                                $scope.presupuesto.AccesorioPresupuesto[i].Muestrario[j].Combinacion = [];
+                                $scope.presupuesto.AccesorioPresupuesto[i].Muestrario[j].PrecioVenta = null;
+
+                                for(var l=0; l<$scope.tipoAccesorio[k].Muestrario[j].Combinacion.length; l++)
+                                {
+                                    $scope.presupuesto.AccesorioPresupuesto[i].Muestrario[j].Combinacion[l] = new Object();
+                                    $scope.presupuesto.AccesorioPresupuesto[i].Muestrario[j].Combinacion[l].MuestrarioAccesorioPresupuestoId = "-1";
+                                    $scope.presupuesto.AccesorioPresupuesto[i].Muestrario[j].Combinacion[l].PrecioVenta = $scope.tipoAccesorio[k].Muestrario[j].Combinacion[l].Subtotal;
+                                    $scope.presupuesto.AccesorioPresupuesto[i].Muestrario[j].Combinacion[l].CombinacionMaterialId = $scope.tipoAccesorio[k].Muestrario[j].Combinacion[l].CombinacionId;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            //paso 11
+            for(var k=0; k<$scope.promocion.length; k++)
+            {
+                if($scope.promocion[k].Activo && $scope.promocion[k].Show && $scope.promocion[k].TipoVenta.TipoVentaId == '1' && $scope.promocion[k].Presupuesto)
+                {
+                    $scope.presupuesto.Promocion.push(jQuery.extend({}, $scope.promocion[k]));
+                }
+            }
+        }
+          
+        if($scope.presupuesto.Proyecto.TipoProyecto.CubiertaAglomerado)
+        {
+            for(var k=0; k<$scope.tipoCubierta.length; k++)
+            {
+                if($scope.tipoCubierta[k].TipoCubiertaId == "1" && $scope.tipoCubierta[k].PorDefecto)
+                {
+                    var i = $scope.presupuesto.CubiertaPresupuesto.length;
+                    $scope.presupuesto.CubiertaPresupuesto[i] = new Object();
+                    $scope.presupuesto.CubiertaPresupuesto[i].TipoCubiertaId = "1";
+                    $scope.presupuesto.CubiertaPresupuesto[i].Ubicacion = [];
+                    $scope.presupuesto.CubiertaPresupuesto[i].Grupo = [];
+                    
+                    for(var m=0; m<$scope.ubicacion.length; m++)
+                    {
+                        if($scope.ubicacion[m].SeleccionadoAglomerado == true)
+                        {
+                            var j = $scope.presupuesto.CubiertaPresupuesto[i].Ubicacion.length;
+                            $scope.presupuesto.CubiertaPresupuesto[i].Ubicacion[j] = new Object();
+                            $scope.presupuesto.CubiertaPresupuesto[i].Ubicacion[j].UbicacionCubiertaId = $scope.ubicacion[m].UbicacionCubiertaId;
+                            $scope.presupuesto.CubiertaPresupuesto[i].Ubicacion[j].Elemento = [];
+                            $scope.presupuesto.CubiertaPresupuesto[i].Ubicacion[j].CantidadAglomerado =  $scope.ubicacion[m].CantidadAglomerado;
+                        }
+                    }
+                    
+                    for(var m=0; m<$scope.cubierta.length; m++)
+                    {
+                        if($scope.cubierta[m].Material.Activo && $scope.cubierta[m].TipoCubierta.TipoCubiertaId == "1")
+                        {
+                            for(var n=0; n<$scope.cubierta[m].Grupo.length; n++)
+                            {
+                                if($scope.cubierta[m].Grupo[n].Grupo.Activo == true && $scope.cubierta[m].Grupo[n].Color.length > 0 && $scope.cubierta[m].Grupo[n].PorDefecto)
+                                {
+                                    var j =  $scope.presupuesto.CubiertaPresupuesto[i].Grupo.length;
+                                    $scope.presupuesto.CubiertaPresupuesto[i].Grupo[j] = new Object();
+                                    $scope.presupuesto.CubiertaPresupuesto[i].Grupo[j].GrupoId = $scope.cubierta[m].Grupo[n].Grupo.GrupoId;
+                                    $scope.presupuesto.CubiertaPresupuesto[i].Grupo[j].MaterialId = $scope.cubierta[m].Material.MaterialId; 
+                                    $scope.presupuesto.CubiertaPresupuesto[i].Grupo[j].Ubicacion = [];
+                                    
+                                    for(var l=0; l<$scope.cubierta[m].Grupo[n].Ubicacion.length; l++)
+                                    {
+                                        if($scope.cubierta[m].Grupo[n].Ubicacion[l].Subtotal != "Sin Valor")
+                                        {
+                                            var li= $scope.presupuesto.CubiertaPresupuesto[i].Grupo[j].Ubicacion.length;
+                                            $scope.presupuesto.CubiertaPresupuesto[i].Grupo[j].Ubicacion[li] =  new Object();
+                                            $scope.presupuesto.CubiertaPresupuesto[i].Grupo[j].Ubicacion[li].MaterialTipoCubiertaPresupuestoId = "-1";
+                                            $scope.presupuesto.CubiertaPresupuesto[i].Grupo[j].Ubicacion[li].UbicacionCubiertaId = $scope.cubierta[m].Grupo[n].Ubicacion[l].UbicacionId;
+                                            $scope.presupuesto.CubiertaPresupuesto[i].Grupo[j].Ubicacion[li].PrecioVenta = $scope.cubierta[m].Grupo[n].Ubicacion[l].Subtotal;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                    break;
+                }
+            
+            }
+        }
+        
+        if($scope.presupuesto.Proyecto.TipoProyecto.CubiertaPiedra)
+        {
+            for(var k=0; k<$scope.tipoCubierta.length; k++)
+            {
+                if($scope.tipoCubierta[k].TipoCubiertaId == "2" && $scope.tipoCubierta[k].PorDefecto)
+                {
+                    var i = $scope.presupuesto.CubiertaPresupuesto.length;
+                    $scope.presupuesto.CubiertaPresupuesto[i] = new Object();
+                    $scope.presupuesto.CubiertaPresupuesto[i].TipoCubiertaId = "2";
+                    $scope.presupuesto.CubiertaPresupuesto[i].Ubicacion = [];
+                    $scope.presupuesto.CubiertaPresupuesto[i].Grupo = [];
+                    
+                    for(var m=0; m<$scope.ubicacion.length; m++)
+                    {
+                        if($scope.ubicacion[m].Seleccionado == true)
+                        {
+                            var j = $scope.presupuesto.CubiertaPresupuesto[i].Ubicacion.length;
+                            $scope.presupuesto.CubiertaPresupuesto[i].Ubicacion[j] = new Object();
+                            $scope.presupuesto.CubiertaPresupuesto[i].Ubicacion[j].UbicacionCubiertaId = $scope.ubicacion[m].UbicacionCubiertaId;
+                            $scope.presupuesto.CubiertaPresupuesto[i].Ubicacion[j].Elemento = [];
+                            $scope.presupuesto.CubiertaPresupuesto[i].Ubicacion[j].CantidadAglomerado =  null;
+                            
+                            for(var n=0; n<$scope.ubicacion[m].Elemento.length; n++)
+                            {
+                                $scope.presupuesto.CubiertaPresupuesto[i].Ubicacion[j].Elemento[n] = new Object();
+                                
+                                $scope.presupuesto.CubiertaPresupuesto[i].Ubicacion[j].Elemento[n].Lado1 = $scope.ubicacion[m].Elemento[n].Lado1; 
+                                $scope.presupuesto.CubiertaPresupuesto[i].Ubicacion[j].Elemento[n].Lado2 = $scope.ubicacion[m].Elemento[n].Lado2; 
+                            }
+                        }
+                    }
+                    
+                    for(var m=0; m<$scope.cubierta.length; m++)
+                    {
+                        if($scope.cubierta[m].Material.Activo && $scope.cubierta[m].TipoCubierta.TipoCubiertaId == "2")
+                        {
+                            for(var n=0; n<$scope.cubierta[m].Grupo.length; n++)
+                            {
+                                if($scope.cubierta[m].Grupo[n].Grupo.Activo == true && $scope.cubierta[m].Grupo[n].Color.length > 0 && $scope.cubierta[m].Grupo[n].PorDefecto)
+                                {
+                                    var j =  $scope.presupuesto.CubiertaPresupuesto[i].Grupo.length;
+                                    $scope.presupuesto.CubiertaPresupuesto[i].Grupo[j] = new Object();
+                                    $scope.presupuesto.CubiertaPresupuesto[i].Grupo[j].GrupoId = $scope.cubierta[m].Grupo[n].Grupo.GrupoId;
+                                    $scope.presupuesto.CubiertaPresupuesto[i].Grupo[j].MaterialId = $scope.cubierta[m].Material.MaterialId;
+                                    $scope.presupuesto.CubiertaPresupuesto[i].Grupo[j].Ubicacion = [];
+                                    
+                                    for(var l=0; l<$scope.cubierta[m].Grupo[n].Ubicacion.length; l++)
+                                    {
+                                        $scope.presupuesto.CubiertaPresupuesto[i].Grupo[j].Ubicacion[l] = new Object();
+                                        $scope.presupuesto.CubiertaPresupuesto[i].Grupo[j].Ubicacion[l].MaterialTipoCubiertaPresupuestoId = "-1";
+                                        $scope.presupuesto.CubiertaPresupuesto[i].Grupo[j].Ubicacion[l].UbicacionCubiertaId = $scope.cubierta[m].Grupo[n].Ubicacion[l].UbicacionId;
+                                        $scope.presupuesto.CubiertaPresupuesto[i].Grupo[j].Ubicacion[l].PrecioVenta = $scope.cubierta[m].Grupo[n].Ubicacion[l].Subtotal;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                    break;
+                }
+            }
+            
+            for(var k=0; k<$scope.promocion.length; k++)
+            {
+                if($scope.promocion[k].Activo && $scope.promocion[k].Show && $scope.promocion[k].TipoVenta.TipoVentaId == '2' && $scope.promocion[k].Presupuesto)
+                {
+                    $scope.presupuesto.Promocion.push(jQuery.extend({}, $scope.promocion[k]));
+                }
+            }
+        }
+        
+        if($scope.operacion == "Agregar")
+        {
+            $scope.AgregarProyectoPresupuesto();
+        }
+        
+        console.log($scope.tipoAccesorio);
+        console.log($scope.presupuesto);
+    };
+    
+    $scope.GetHoyNumero = function()
+    {
+        var hoy = new Date();
+        
+        var dia = hoy.getDate();
+        var mes = hoy.getMonth() +1;
+        var year = hoy.getFullYear();
+        var hora = hoy.getHours();
+        var min = hoy.getMinutes();
+        
+        if(mes < 10)
+        {
+            mes = "0"+mes;
+        }
+        
+        return year + "/" + mes + "/" + dia + " " + hora + ":" + min;
+    };
+    
+    $scope.CubiertaPiedraPersonalizado = function()
+    {
+        var ubicacion = [];
+        for(var k=0; k<$scope.ubicacion.length; k++)
+        {
+            if($scope.ubicacion[k].Presupuesto == true && $scope.ubicacion[k].Seleccionado && $scope.ubicacion[k].UbicacionCubiertaId != '3')
+            {
+                ubicacion.push($scope.ubicacion[k].Nombre);
+            }
+        }
+        
+        var msn = "";
+        for(var k=0; k<(ubicacion.length-1); k++)
+        {
+            msn += (ubicacion[k] + ", ");
+        }
+        
+        msn += (ubicacion[ubicacion.length-1] + ".");
+        
+        return msn;
+    };
+    
+    $scope.GetTextoPresupustoPromo = function(promo)
+    {
+        if(promo == "Mueble")
+        {
+            if($scope.presupuesto.PromocionMueble == "Ninguno")
+            {
+                return "Ninguno.";
+            }
+            else
+            {
+                if($scope.presupuesto.PromocionMueble != undefined )
+                {
+                     return $scope.presupuesto.PromocionMueble.DescuentoMinimo + "% de decuento.";
+                }
+               
+            }
+        }
+        else if(promo == "Cubierta")
+        {
+            if($scope.presupuesto.PromocionCubierta == "Ninguno")
+            {
+                return "Ninguno.";
+            }
+            else
+            {
+                if($scope.presupuesto.PromocionCubierta != undefined )
+                {
+                    return $scope.presupuesto.PromocionCubierta.DescuentoMinimo + "% de decuento.";
+                }
+            }
+        }
+    };
+    
+    /*$scope.GetPromocionMueble = function()
+    {
+        var promo = [];
+        for(var k=0; k<$scope.promocion.length; k++)
+        {
+            if( $scope.promocion[k].Presupuesto == true && $scope.promocion[k].Show == true && $scope.promocion[k].TipoVenta.TipoVentaId == "1")
+            {
+                var index = promo.length;
+                promo[index] = new Object();
+                if($scope.promocion[k].TipoPromocion.TipoPromocionId == "3")
+                {
+                    promo[index].DescuentoMinimo = 0;
+                    promo[index].Texto = $scope.promocion[k].NumeroPagos + " meses sin intereses " + $scope.promocion[k].Descripcion;
+                }
+                else
+                {
+                    promo[index].DescuentoMinimo = $scope.promocion[k].DescuentoMinimo;
+                    promo[index].Texto = $scope.promocion[k].DescuentoMinimo + "% de descuento hasta  " + $scope.promocion[k].FechaLimite + " " + $scope.promocion[k].Descripcion;
+                }
+            }
+        }
+        
+        promo.sort(function(a, b){return a.DescuentoMinimo-b.DescuentoMinimo});
+        
+        
+        for(var k=0; k<(promo.length-1); k++)
+        {
+            promo[k].Texto += " O";
+        }
+        
+        return promo;
+        
+    };
+    
+    $scope.GetPromocionCubierta = function()
+    {
+        var promo = [];
+        for(var k=0; k<$scope.promocion.length; k++)
+        {
+            if( $scope.promocion[k].Presupuesto == true && $scope.promocion[k].Show == true && $scope.promocion[k].TipoVenta.TipoVentaId == "2")
+            {
+                var index = promo.length;
+                console.log(index);
+                promo[index] = new Object();
+                if($scope.promocion[k].TipoPromocion.TipoPromocionId == "3")
+                {
+                    promo[index].DescuentoMinimo = 0;
+                    promo[index].Texto = $scope.promocion[k].NumeroPagos + " meses sin intereses " + $scope.promocion[k].Descripcion;
+                }
+                else
+                {
+                    promo[index].DescuentoMinimo = $scope.promocion[k].DescuentoMinimo;
+                    promo[index].Texto = $scope.promocion[k].DescuentoMinimo + "% de descuento hasta  " + $scope.promocion[k].FechaLimite + " " + $scope.promocion[k].Descripcion;
+                }
+            }
+        }
+        
+        promo.sort(function(a, b){return a.DescuentoMinimo-b.DescuentoMinimo});
+        
+        
+        for(var k=0; k<(promo.length-1); k++)
+        {
+            promo[k].Texto += " O";
+        }
+        
+        return promo;
+        
+    };*/
+    
+    $scope.GetTextoDescripcionPromocion = function(promo)
+    {
+        var texto = "";
+        if(promo.TipoPromocion.TipoPromocionId == "2")
+        {
+
+            texto = promo.NumeroPagos + " meses sin intereses " + promo.Descripcion;
+        }
+        else
+        {
+            texto = promo.DescuentoMinimo + "% de descuento hasta  " + promo.FechaLimite + " " + promo.Descripcion;
+        }
+        
+        return texto;
+    };
+    
+    //------ terminar ---------
+    $scope.AgregarProyectoPresupuesto = function()
+    {  
+        AgregarProyectoPresupuesto($http, CONFIG, $q, $scope.presupuesto).then(function(data)
+        {
+            console.log(data);
+            if(data[0].Estatus == "Exitoso")
+            {
+                $scope.presupuesto.PresupuestoId = data[1].PresupuestoId;
+                
+                $scope.pasoPresupuesto = 14;
+                if($scope.presupuesto.Proyecto.TipoProyecto.Mueble)
+                {
+                    $scope.PDFPresupuesto();
+                }
+                else
+                {
+                    $scope.PDFPresupuestoCubierta();
+                }
+                          
+                /*$('#agregarCitaModal').modal('toggle');
+                $scope.mensaje = "La cita se ha agregado.";
+                $scope.CerrarCitaModal();*/
+            }
+            else
+            {
+                //$scope.mensaje = "Ha ocurrido un error. Intente más tarde.";
+            }
+            //$('#mensajeCita').modal('toggle');
+            
+        }).catch(function(error)
+        {
+            $scope.mensaje = "Ha ocurrido un error. Intente más tarde. Error: " + error;
+            $('#mensajePresupuesto').modal('toggle');
+        })
+    };
+    
+    $scope.PDFPresupuesto = function()
+    {
+        var sql = "SELECT * FROM ? ORDER BY TotalProyecto ASC";
+        $scope.combinacion = alasql(sql, [$scope.combinacion]);
+        
+        var doc = new jsPDF();
+        doc.setFontSize(12);
+        
+        var num = "No. " + $scope.presupuesto.PresupuestoId;
+        
+        var pageContent = function (data) 
+        {
+            // HEADER
+            if (base64Img) 
+            {
+                doc.setFontSize(10);
+                doc.addImage(base64Img, 'JPEG', 15, 10, 30, 10);
+            }
+            
+            doc.text($scope.GetHoy() + "     " + num, data.settings.margin.left + 35, 13);
+            doc.text($scope.presupuesto.Persona.Nombre + " " + $scope.presupuesto.Persona.PrimerApellido, data.settings.margin.left + 35, 18);
+        };
+        
+        var tit = doc.autoTableHtmlToJson(document.getElementById("titulo"));
+        var des = doc.autoTableHtmlToJson(document.getElementById("descripcion"));
+        var com = doc.autoTableHtmlToJson(document.getElementById("combinacionTabla"));
+        var inc = doc.autoTableHtmlToJson(document.getElementById("incluye"));
+        var ppInc = doc.autoTableHtmlToJson(document.getElementById("planPagoIncluye"));
+        var promo = doc.autoTableHtmlToJson(document.getElementById("planPagoPromo"));
+        var datos = doc.autoTableHtmlToJson(document.getElementById("datosPresupuesto"));
+        var pMue = doc.autoTableHtmlToJson(document.getElementById("promocionMueble"));
+        var pCub = doc.autoTableHtmlToJson(document.getElementById("promocionCubierta"));
+        
+        var cub = [];
+        var tCub = [];
+        
+
+        if($scope.presupuesto.Proyecto.TipoProyecto.CubiertaPiedra)
+        {
+            for(var i=0; i<$scope.cubierta.length; i++)
+            {
+                if($scope.cubierta[i].TipoCubierta.TipoCubiertaId == "2")
+                {
+                    for(var j=0; j<$scope.cubierta[i].Grupo.length; j++)
+                    {
+                        if($scope.cubierta[i].Grupo[j].Grupo.Activo && $scope.cubierta[i].Grupo[j].PorDefecto && $scope.cubierta[i].Grupo[j].Color.length > 0)
+                        {
+                            var id=  $scope.cubierta[i].Material.MaterialId + "-" + $scope.cubierta[i].Grupo[j].Grupo.GrupoId;
+                            var idc = "Cub"  + id;
+                            var idt = "TitCub" + id;
+                                
+                            tCub[tCub.length] = doc.autoTableHtmlToJson(document.getElementById(idt));
+                            cub[cub.length] = doc.autoTableHtmlToJson(document.getElementById(idc));
+                        }
+                    }
+                }
+            }
+        }
+        
+        //Hoja 1
+        
+        doc.autoTable(tit.columns, tit.data, {
+            margin: {top: 25},
+            addPageContent: pageContent,
+            headerStyles: {fillColor: [255, 255, 255], textColor: 20, fontStyle: 'bold', halign: 'center'}, 
+            styles: {overflow: 'linebreak'},
+            columnStyles: {text: {columnWidth: 'auto'}}
+        });
+
+        doc.autoTable(des.columns, des.data, {
+            margin: {top: 25},
+            startY: doc.autoTable.previous.finalY,
+            addPageContent: pageContent,
+            headerStyles: {fillColor: [255, 255, 255], textColor: 20, fontStyle: 'normal'}, styles: {overflow: 'linebreak', columnWidth: 'wrap'},
+            styles: {overflow: 'linebreak'},
+            columnStyles: {text: {columnWidth: 'auto'}}
+        });
+
+        var options = 
+        {
+            margin: {top: 80},
+            startY: doc.autoTable.previous.finalY + 5,
+            headerStyles: {fillColor: [250, 97, 21]}
+        };
+        
+        doc.autoTable(com.columns, com.data, options);
+
+        let first = doc.autoTable.previous;
+
+         doc.autoTable(inc.columns, inc.data, {
+            startY: first.finalY + 10,
+            showHeader: 'firstPage',
+            margin: {right: 107},
+            headerStyles: {fillColor: [250, 97, 21], fontSize:18, halign: 'center', textColor: [255,255,255]},
+            styles: {textColor: [0,0,0], overflow: 'linebreak', halign:'left'},
+            theme: 'grid',
+             createdCell: function (cell, data) {
+                        if(cell.text[0] == "Incluye" || cell.text[0] == "Servicios" || cell.text[0] == "Accesorios" || cell.text[0] == "Cubierta de aglomerado")
+                        {
+                           cell.styles.fontSize= 10;
+                           cell.styles.textColor = [0, 0, 0];
+                           cell.styles.halign = 'center';
+                           cell.styles.fillColor = [230, 230, 230];
+                           cell.styles.fontStyle = 'bold';
+                        }
+
+                    }
+
+        });
+        
+        doc.autoTable(pMue.columns, pMue.data, {
+                startY: doc.autoTable.previous.finalY + 5,
+                headerStyles: {fillColor: [255, 255, 255], fontSize:0, textColor: [0,0, 0], halign:'center'},
+                styles: { overflow: 'linebreak', fontSize:10, fillColor: [255, 255, 255], textColor: [0, 0, 0], lineWidth: 0},
+                columnStyles: {fillColor: [255, 255, 255]},
+                pageBreak: 'avoid',
+                theme: 'grid',
+         });
+        
+        
+        //Hoja 2
+        if($scope.presupuesto.Proyecto.TipoProyecto.CubiertaPiedra && cub.length > 0)
+        {   
+            doc.addPage();
+            
+            if (base64Img) 
+            {
+                doc.addImage(base64Img, 'JPEG', 15, 10, 30, 10);
+            }
+            
+            doc.autoTable(tCub[0].columns, tCub[0].data, {
+            margin: {top: 25},
+            addPageContent: pageContent,
+            headerStyles: {fillColor: [255, 255, 255], textColor: [0, 0, 0], fontStyle: 'bold', fontSize:14}, styles: {overflow: 'linebreak', columnWidth: 'wrap'},
+            styles: {overflow: 'linebreak'},
+            columnStyles: {text: {columnWidth: 'auto'}}
+            });
+
+            doc.setPage(1 + doc.internal.getCurrentPageInfo().pageNumber - doc.autoTable.previous.pageCount);
+            
+            doc.autoTable(cub[0].columns, cub[0].data,  {
+                startY: doc.autoTable.previous.finalY ,
+                headerStyles: {fillColor: [250, 97, 21], fontStyle: 'normal'}, styles: {overflow: 'linebreak', columnWidth: 'wrap'},
+                styles: {overflow: 'linebreak'},
+                columnStyles: {text: {columnWidth: 'auto'}},
+                pageBreak: 'avoid',
+
+
+                });
+            
+            for(var k=1; k<cub.length; k++)
+            {
+                doc.autoTable(tCub[k].columns, tCub[k].data, {
+                    margin: {top: 80},
+                    startY: doc.autoTable.previous.finalY + 10,
+                    headerStyles: {fillColor: [255, 255, 255], textColor: [0, 0, 0], fontStyle: 'bold', fontSize:14}, styles: {overflow: 'linebreak', columnWidth: 'wrap'},
+                    styles: {overflow: 'linebreak'},
+                 });
+                
+                doc.autoTable(cub[k].columns, cub[k].data, {
+                startY: doc.autoTable.previous.finalY,
+                headerStyles: {fillColor: [250, 97, 21], fontStyle: 'normal'}, styles: {overflow: 'linebreak', columnWidth: 'wrap'},
+                styles: {overflow: 'linebreak'},
+                columnStyles: {text: {columnWidth: 'auto'}},
+                pageBreak: 'avoid',
+
+
+                });
+            }
+            
+            doc.autoTable(pCub.columns, pCub.data, {
+                startY: doc.autoTable.previous.finalY + 5,
+                headerStyles: {fillColor: [255, 255, 255], fontSize:0, textColor: [0,0, 0], halign:'center'},
+                styles: { overflow: 'linebreak', fontSize:10, fillColor: [255, 255, 255], textColor: [0, 0, 0], lineWidth: 0},
+                columnStyles: {fillColor: [255, 255, 255]},
+                pageBreak: 'avoid',
+                theme: 'grid',
+         });
+        }
+        
+        
+        //Hoja 3        
+        doc.addPage();
+        
+        
+        doc.autoTable(datos.columns, datos.data, {
+            margin: {top: 22},
+            addPageContent: pageContent,
+            headerStyles: {fillColor: [255, 255, 255], textColor: 0, fontStyle: 'normal'}, 
+            styles: {overflow: 'linebreak'},
+            theme: 'grid',
+            columnStyles: { 0: {columnWidth: 91}, 1: {columnWidth: 91}},
+        });
+        
+        doc.autoTable(ppInc.columns, ppInc.data,  {
+            startY: doc.autoTable.previous.finalY ,
+            headerStyles: {fillColor: [230, 230, 230], fontSize:10, textColor: [0,0, 0], halign:'center'},
+            styles: { overflow: 'linebreak', fontSize:10},
+            theme: 'grid',
+            columnStyles: {text: {columnWidth: 'auto'}},
+            pageBreak: 'avoid',
+        });
+        
+        doc.autoTable(promo.columns, promo.data,  {
+            startY: doc.autoTable.previous.finalY ,
+            headerStyles: {fillColor: [230, 230, 230], fontSize:10, textColor: [0,0, 0], halign:'center'},
+            styles: { overflow: 'linebreak', fontSize:10},
+            theme: 'grid',
+            columnStyles: {text: {columnWidth: 'auto'}},
+            pageBreak: 'avoid',
+        });
+        
+        
+        var nCom = 1;
+        for(var k=0; k<$scope.combinacion.length; k++)
+        {
+            if($scope.combinacion[k].Presupuesto == true && $scope.combinacion[k].PorDefecto)
+            {
+                
+                var idP = "precio" + $scope.combinacion[k].CombinacionMaterialId; 
+                var idPp = "pp" + $scope.combinacion[k].CombinacionMaterialId;
+                
+                var precio = doc.autoTableHtmlToJson(document.getElementById(idP));
+                var planPago = doc.autoTableHtmlToJson(document.getElementById(idPp));
+                
+                if(nCom%2 > 0)
+                {   
+                    first = doc.autoTable.previous;
+
+                     doc.autoTable(precio.columns, precio.data, {
+                        startY: first.finalY + 10,
+                        showHeader: 'firstPage',
+                        margin: {right: 107},
+                        headerStyles: {fillColor: [0, 0, 0], fontSize:14, textColor: [255,255, 255], halign:'center',},
+                        styles: {fillColor: [250, 97, 21], textColor: [255,255,255], overflow: 'linebreak', halign:'center', fontSize:16},
+                         theme: 'grid',
+                    });
+
+                     doc.autoTable(planPago.columns, planPago.data, {
+                        startY: doc.autoTable.previous.finalY,
+                        showHeader: 'firstPage',
+                        margin: {right: 107},
+                        headerStyles: {fillColor: [230, 230, 230], fontSize:10, textColor: [0,0, 0], fontStyle:'bold'},
+                        styles: {textColor: [0,0,0], overflow: 'linebreak', halign:'left'},
+                         theme: 'grid',
+                    });
+                    
+                    doc.setPage(1 + doc.internal.getCurrentPageInfo().pageNumber - doc.autoTable.previous.pageCount);
+                }
+                else
+                {
+                    doc.autoTable(precio.columns, precio.data, {
+                        startY: first.finalY + 10,
+                        showHeader: 'firstPage',
+                        margin: {left: 107},
+                        headerStyles: {fillColor: [0, 0, 0], fontSize:14, textColor: [255,255, 255], halign:'center',},
+                        styles: {fillColor: [250, 97, 21], textColor: [255,255,255], overflow: 'linebreak', halign:'center', fontSize:16},
+                         theme: 'grid',
+                    });
+
+                    doc.autoTable(planPago.columns, planPago.data, {
+                        startY: doc.autoTable.previous.finalY,
+                        showHeader: 'firstPage',
+                        margin: {left: 107},
+                        headerStyles: {fillColor: [230, 230, 230], fontSize:10, textColor: [0,0, 0], fontStyle:'bold'},
+                        styles: {textColor: [0,0,0], overflow: 'linebreak', halign:'left'},
+                        theme: 'grid',
+                    });
+                }
+                
+                nCom++;
+                
+            }
+        }
+        
+        doc.setPage(1 + doc.internal.getCurrentPageInfo().pageNumber - doc.autoTable.previous.pageCount);
+
+        var nombre = $scope.presupuesto.Persona.Nombre + $scope.presupuesto.Persona.PrimerApellido + $scope.presupuesto.PresupuestoId + ".pdf";
+        
+        doc.save(nombre);
+
+    }
+    
+    $scope.PDFPresupuestoCubierta = function()
+    {
+        var doc = new jsPDF();
+        doc.setFontSize(12);
+        
+        var tit = doc.autoTableHtmlToJson(document.getElementById("titulo"));
+        var des = doc.autoTableHtmlToJson(document.getElementById("descripcion"));
+        var pCub = doc.autoTableHtmlToJson(document.getElementById("promocionCubierta"));
+        var cub = [];
+        var tCub = [];
+        
+        var num = "No. " + $scope.presupuesto.PresupuestoId;
+        
+        var pageContent = function (data) 
+        {
+            // HEADER
+            if (base64Img) 
+            {
+                doc.setFontSize(10);
+                doc.addImage(base64Img, 'JPEG', 15, 10, 30, 10);
+            }
+            
+            doc.text($scope.GetHoy() + "     " + num, data.settings.margin.left + 35, 13);
+            doc.text($scope.presupuesto.Persona.Nombre + " " + $scope.presupuesto.Persona.PrimerApellido, data.settings.margin.left + 35, 18);
+        };
+        
+
+        if($scope.presupuesto.Proyecto.TipoProyecto.CubiertaPiedra)
+        {
+            for(var i=0; i<$scope.cubierta.length; i++)
+            {
+                if($scope.cubierta[i].TipoCubierta.TipoCubiertaId == "2")
+                {
+                    for(var j=0; j<$scope.cubierta[i].Grupo.length; j++)
+                    {
+                        if($scope.cubierta[i].Grupo[j].Grupo.Activo && $scope.cubierta[i].Grupo[j].PorDefecto && $scope.cubierta[i].Grupo[j].Color.length > 0)
+                        {
+                            var id=  $scope.cubierta[i].Material.MaterialId + "-" + $scope.cubierta[i].Grupo[j].Grupo.GrupoId;
+                            var idc = "Cub"  + id;
+                            var idt = "TitCub" + id;
+                                
+                            tCub[tCub.length] = doc.autoTableHtmlToJson(document.getElementById(idt));
+                            cub[cub.length] = doc.autoTableHtmlToJson(document.getElementById(idc));
+                        }
+                    }
+                }
+            }
+        }
+        
+        //Hoja 2
+        
+        doc.autoTable(tit.columns, tit.data, {
+            margin: {top: 25},
+            addPageContent: pageContent,
+            headerStyles: {fillColor: [255, 255, 255], textColor: 20, fontStyle: 'bold', halign: 'center'}, 
+            styles: {overflow: 'linebreak'},
+            columnStyles: {text: {columnWidth: 'auto'}}
+        });
+
+        doc.autoTable(des.columns, des.data, {
+            margin: {top: 25},
+            startY: doc.autoTable.previous.finalY,
+            addPageContent: pageContent,
+            headerStyles: {fillColor: [255, 255, 255], textColor: 20, fontStyle: 'normal'}, styles: {overflow: 'linebreak', columnWidth: 'wrap'},
+            styles: {overflow: 'linebreak'},
+            columnStyles: {text: {columnWidth: 'auto'}}
+        });
+
+        var options = 
+        {
+            margin: {top: 80},
+            addPageContent: pageContent,
+            startY: doc.autoTable.previous.finalY + 6,
+            headerStyles: {fillColor: [255, 255, 255], textColor: [0, 0, 0], fontStyle: 'bold', fontSize:14}, styles: {overflow: 'linebreak', columnWidth: 'wrap'},
+            styles: {overflow: 'linebreak'},
+        };
+        
+
+        
+        doc.setPage(1 + doc.internal.getCurrentPageInfo().pageNumber - doc.autoTable.previous.pageCount);
+        
+        if($scope.presupuesto.Proyecto.TipoProyecto.CubiertaPiedra && cub.length > 0)
+        {   
+            
+            doc.autoTable(tCub[0].columns, tCub[0].data, options);
+            doc.autoTable(cub[0].columns, cub[0].data,  {
+                startY: doc.autoTable.previous.finalY ,
+                headerStyles: {fillColor: [250, 97, 21], fontStyle: 'normal'}, styles: {overflow: 'linebreak', columnWidth: 'wrap'},
+                styles: {overflow: 'linebreak'},
+                columnStyles: {text: {columnWidth: 'auto'}},
+                pageBreak: 'avoid',
+
+
+                });
+            
+            for(var k=1; k<cub.length; k++)
+            {
+                doc.autoTable(tCub[k].columns, tCub[k].data, {
+                    margin: {top: 80},
+                    startY: doc.autoTable.previous.finalY + 6,
+                    headerStyles: {fillColor: [255, 255, 255], textColor: [0, 0, 0], fontStyle: 'bold', fontSize:14}, styles: {overflow: 'linebreak', columnWidth: 'wrap'},
+                    styles: {overflow: 'linebreak'},
+                 });
+                
+                doc.autoTable(cub[k].columns, cub[k].data, {
+                startY: doc.autoTable.previous.finalY,
+                headerStyles: {fillColor: [250, 97, 21], fontStyle: 'normal'}, styles: {overflow: 'linebreak', columnWidth: 'wrap'},
+                styles: {overflow: 'linebreak'},
+                columnStyles: {text: {columnWidth: 'auto'}},
+                pageBreak: 'avoid',
+
+
+                });
+            }
+            
+            doc.autoTable(pCub.columns, pCub.data, {
+                startY: doc.autoTable.previous.finalY + 6,
+                headerStyles: {fillColor: [255, 255, 255], fontSize:0, textColor: [0,0, 0], halign:'center'},
+                styles: { overflow: 'linebreak', fontSize:10, fillColor: [255, 255, 255], textColor: [0, 0, 0], lineWidth: 0},
+                columnStyles: {fillColor: [255, 255, 255]},
+                pageBreak: 'avoid',
+                theme: 'grid',
+            });
+        }
+        
+        var nombre = $scope.presupuesto.Persona.Nombre + $scope.presupuesto.Persona.PrimerApellido + $scope.presupuesto.PresupuestoId + ".pdf";
+        
+        doc.save(nombre);
+    }
+
+    function OrdenarCombinacion(a,b)
+    {
+        return a.Total - b.Total;
+    }
+
     
     /*--------------- ---------------------------------*/
     
@@ -4882,6 +5955,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         $scope.tipoModuloAgregar = [];
         $scope.tabSeleccionada = "";
     };
+
     
 });
 
@@ -4906,6 +5980,4 @@ var pasoPresupuesto =   [
                             {nombre:"Accesorios", numero:4}, 
                             {nombre:"Cubierta", numero:5}
                         ];   
-
-
         

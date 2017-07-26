@@ -1,0 +1,68 @@
+       <page backtop="10mm" backbottom="10mm" backleft="10mm" backright="20mm">
+        <page_header> 
+
+            <div class="row">
+                <div class="col-xs-12">
+                    <div style="background: red; color:white">
+                        <span>Encabezado</span>
+                    </div>
+                </div>
+            </div>
+
+        </page_header>
+
+        <page_footer>
+
+            <div class="row">
+                <div class="col-xs-12">
+                    <div style="background: blue; color:green">
+                        <span>Píe de página</span>
+                    </div>
+                </div>
+            </div>
+
+        </page_footer>
+
+        <!-- Define el cuerpo de la hoja -->
+
+       <div class="row">
+            <div class="col-xs-12">
+                <div >
+                    <span>Primera prueba de convertir a pdf</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-xs-12">
+                <div id="PruebaPresupuesto">
+                    hola: 
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Fin del cuerpo de la hoja -->
+
+    </page>
+    
+    <page backtop="10mm" backbottom="10mm" backleft="10mm" backright="20mm">
+
+
+        <!-- Define el cuerpo de la hoja -->
+
+       <div class="row" ng-controller="PDFPresupuestoControlador as pdf">
+            <div class="col-xs-12">
+                <div >
+                    <span ng-show="false">{{titulo}}</span>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Fin del cuerpo de la hoja -->
+
+    </page>
+
+
+

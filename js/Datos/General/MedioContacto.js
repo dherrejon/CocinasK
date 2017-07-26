@@ -214,6 +214,7 @@ class Domicilio
         this.Pais = new Pais(); 
         this.Codigo = "";
         this.Domicilio = "";
+        this.DomicilioId = null;
         this.Estado = "";
         this.Municipio = "";
         this.Ciudad = "";
