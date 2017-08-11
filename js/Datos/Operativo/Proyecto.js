@@ -37,43 +37,6 @@ class Proyecto
 }
 
 /*---------------------- Sub catálogos de proyecto ----------------------------*/
-
-/*class TipoProyecto
-{
-    constructor()
-    {
-        this.TipoProyectoId = "";
-        this.Nombre = "";
-        this.IVA = true;
-        this.Activo = true;
-    }
-}
-
-function GetTipoProyecto()
-{
-    var tipo = [];
-    
-    tipo[0] = new TipoProyecto();
-    tipo[0].TipoProyectoId = "1";
-    tipo[0].Nombre = "Cocinas Integral";
-    tipo[0].IVA = false;
-    tipo[0].Activo = true;
-    
-    tipo[1] = new TipoProyecto();
-    tipo[1].TipoProyectoId = "2";
-    tipo[1].Nombre = "Cocinas Integral y Cubierta";
-    tipo[1].IVA = false;
-    tipo[1].Activo = true;
-    
-    tipo[2] = new TipoProyecto();
-    tipo[2].TipoProyectoId = "3";
-    tipo[2].Nombre = "Cubierta";
-    tipo[2].IVA = true;
-    tipo[2].Activo = true;
-    
-    return tipo;
-}*/
-
 class EstatusProyecto
 {
     constructor()
@@ -97,8 +60,11 @@ function GetEstatusProyecto()
     
     estatus[2] = new EstatusProyecto();
     estatus[2].EstatusProyectoId = "3";
-    estatus[2].Nombre = "Cancelado";
-
+    estatus[2].Nombre = "Pendiente";
+    
+    estatus[3] = new EstatusProyecto();
+    estatus[3].EstatusProyectoId = "4";
+    estatus[3].Nombre = "Cancelado";
     
     return estatus;
 }
@@ -125,6 +91,33 @@ function AgregarProyectoPresupuesto($http, CONFIG, $q, presupuesto)
             
         }).error(function(data, status){
             q.resolve([{Estatus:status}]);
+
+     }); 
+    return q.promise;
+}
+
+function EditarProyectoPresupuesto($http, CONFIG, $q, presupuesto)
+{
+    var q = $q.defer();
+    
+    $http({      
+          method: 'PUT',
+          url: CONFIG.APIURL + '/EditarProyectoPresupuesto',
+          data: presupuesto
+
+      }).success(function(data)
+        {
+            if(data[0].Estatus == "Exitoso") 
+            {
+                q.resolve(data);
+            }
+            else
+            {
+                q.resolve([{Estatus: "Fallo"}]);
+            }
+            
+        }).error(function(data, status){
+            q.resolve([{Estatus: status}]);
 
      }); 
     return q.promise;
@@ -182,22 +175,193 @@ function SetProyecto(data)
     proyecto.EstatusProyecto.EstatusProyectoId = data.EstatusProyectoId;
     proyecto.EstatusProyecto.Nombre = data.NombreEstatusProyecto;
     
-    proyecto.Domicilio = new Domicilio();
-    proyecto.Domicilio.DireccionPersonaId = data.DireccionPersonaId;
-    proyecto.Domicilio.Domicilio = data.Domicilio;
-    proyecto.Domicilio.Codigo = data.Codigo;
-    proyecto.Domicilio.Estado = data.Estado;
-    proyecto.Domicilio.Municipio = data.Municipio;
-    proyecto.Domicilio.Ciudad = data.Ciudad;
+    if(data.DireccionPersonaId != null)
+    {
+        proyecto.Domicilio = new Domicilio();
+        proyecto.Domicilio.DireccionPersonaId = data.DireccionPersonaId;
+        proyecto.Domicilio.Domicilio = data.Domicilio;
+        proyecto.Domicilio.Codigo = data.Codigo;
+        proyecto.Domicilio.Estado = data.Estado;
+        proyecto.Domicilio.Municipio = data.Municipio;
+        proyecto.Domicilio.Ciudad = data.Ciudad;
+    }
+    else
+    {
+        proyecto.Domicilio = null;
+    }
+    
     
     return proyecto;
 }
 
+function TransformarFecha(fecha)
+{
+    var year = fecha.slice(0,4);
+    var mes = parseInt(fecha.slice(5,7))-1;
+    var dia = fecha.slice(8,10);
+    
+    var d = new Date(year, mes, dia);
+    
+    mes = GetMesNombre(mes);
+    
+    var fechaF = dia + "/"  + mes + "/" + year;
+    
+    return fechaF;
+}
 
 function GetMesNombre(mes)
 {
     return Month[mes];
 }
 
-var Month = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Nov", "Dic"];
+var Month = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
 
+//------------ Operaciones con proyectos ---------------------
+function CambiarEstatusProyecto($http, $q, CONFIG, estatus) 
+{
+    var q = $q.defer();
+
+    $http({      
+          method: 'POST',
+          url: CONFIG.APIURL + '/CambiarEstatusProyecto',
+          data: estatus
+
+      }).success(function(data)
+        {
+            if(data[0].Estatus == "Exitoso")
+            {
+                q.resolve("Exitoso");
+            }
+            else
+            {
+                q.resolve("Fallo");
+            }
+        }).error(function(data, Estatus){
+            q.resolve(Estatus);
+
+     }); 
+    
+    return q.promise;
+}
+
+function EditarProyecto($http, $q, CONFIG, proyecto) 
+{
+    var q = $q.defer();
+
+    $http({      
+          method: 'PUT',
+          url: CONFIG.APIURL + '/EditarProyecto',
+          data: proyecto
+
+      }).success(function(data)
+        {
+            if(data[0].Estatus == "Exitoso")
+            {
+                q.resolve("Exitoso");
+            }
+            else
+            {
+                q.resolve("Fallo");
+            }
+        }).error(function(data, Estatus){
+            q.resolve(Estatus);
+
+     }); 
+    
+    return q.promise;
+}
+
+//----------------------- Presupuesto --------------------
+function GetPresupuestoPorProyecto($http, $q, CONFIG, id)    
+{
+    var q = $q.defer();
+    
+    $http({      
+          method: 'GET',
+          url: CONFIG.APIURL + '/GetPresupuestoPorProyecto/' + id,
+        
+      }).success(function(data)
+        {
+            if(data[0].Estatus == "Exitoso")
+            {
+                var presupuesto = [];
+                
+                for(var k=0; k<data[1].Presupuesto.length; k++)
+                {
+                    presupuesto[k] = SetPresupuesto(data[1].Presupuesto[k]);
+                }
+                
+                q.resolve(presupuesto);
+            }
+            else
+            {
+               q.resolve([]);  
+            }
+            
+        }).error(function(data){
+            q.resolve([]);
+     }); 
+    
+    return q.promise;
+}
+
+function SetPresupuesto(data)
+{
+    var presupuesto = new Presupuesto;
+    
+    presupuesto.PresupuestoId = data.PresupuestoId;
+    presupuesto.ProyectoId = data.ProyectoId;
+    presupuesto.UsuarioId = data.UsuarioId;
+    presupuesto.FechaCreacion = TransformarFecha(data.FechaCreacion);
+    presupuesto.PersonaId = data.PersonaId;
+    presupuesto.DescripcionInterna = data.DescripcionInterna;
+    presupuesto.DescripcionCliente = data.DescripcionCliente;
+    presupuesto.Titulo = data.Titulo;
+    presupuesto.CantidadMaqueo = parseFloat(data.CantidadMaqueo);
+    
+    return presupuesto;
+}
+
+function GetDatosPresupuesto($http, $q, CONFIG, presupuesto)    
+{
+    var q = $q.defer();
+    
+    $http({      
+          method: 'POST',
+          url: CONFIG.APIURL + '/GetDatosPresupuesto',
+          data: presupuesto
+        
+      }).success(function(data)
+        {
+            if(data[0].Estatus == "Exitoso")
+            {
+                
+                /*for(var k=0; k<data[1].Presupuesto.PromocionMueble.length; k++)
+                {
+                    if(data[1].Presupuesto.PromocionMueble[k].TipoPromocionId != "2")
+                    {
+                        data[1].Presupuesto.PromocionMueble[k].FechaLimite = TransformarFecha(data[1].Presupuesto.PromocionMueble[k].FechaLimite);
+                    }
+                }
+                
+                for(var k=0; k<data[1].Presupuesto.PromocionCubierta.length; k++)
+                {
+                    if(data[1].Presupuesto.PromocionCubierta[k].TipoPromocionId != "2")
+                    {
+                        data[1].Presupuesto.PromocionCubierta[k].FechaLimite = TransformarFecha(data[1].Presupuesto.PromocionCubierta[k].FechaLimite);
+                    }
+                }*/
+                
+                q.resolve(data);
+            }
+            else
+            {
+               q.resolve([{Estatus:"Fallo"}]);  
+            }
+            
+        }).error(function(data){
+            q.resolve([{Estatus:"Fallo"}]);
+     }); 
+    
+    return q.promise;
+}

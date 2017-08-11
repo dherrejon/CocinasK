@@ -768,3 +768,47 @@ function GetMargenDireccion($http, $q, CONFIG, direccion)
      }); 
     return q.promise;
 }
+
+function GetPromocionPersona($http, $q, CONFIG, id)    
+{
+    var q = $q.defer();
+    
+    $http({      
+          method: 'GET',
+          url: CONFIG.APIURL + '/GetPromocionPersona/' + id,
+        
+      }).success(function(data)
+        {
+            if(data[0].Estatus == "Exitoso")
+            {
+                for(var k=0; k<data[1].Promocion.PromocionMueble.length; k++)
+                {
+                    data[1].Promocion.PromocionMueble[k].FechaLimite2 = data[1].Promocion.PromocionMueble[k].FechaLimite;
+                    if(data[1].Promocion.PromocionMueble[k].TipoPromocionId != "2")
+                    {
+                        data[1].Promocion.PromocionMueble[k].FechaLimite = TransformarFecha(data[1].Promocion.PromocionMueble[k].FechaLimite);
+                    }
+                }
+                
+                for(var k=0; k<data[1].Promocion.PromocionCubierta.length; k++)
+                {
+                    data[1].Promocion.PromocionCubierta[k].FechaLimite2 = data[1].Promocion.PromocionCubierta[k].FechaLimite;
+                    if(data[1].Promocion.PromocionCubierta[k].TipoPromocionId != "2")
+                    {
+                        data[1].Promocion.PromocionCubierta[k].FechaLimite = TransformarFecha(data[1].Promocion.PromocionCubierta[k].FechaLimite);
+                    }
+                }
+                
+                q.resolve(data);
+            }
+            else
+            {
+               q.resolve([{Estatus: "Fallo"}]);  
+            }
+            
+        }).error(function(data){
+            q.resolve([{Estatus: "Fallo"}]);
+     }); 
+    
+    return q.promise;
+}

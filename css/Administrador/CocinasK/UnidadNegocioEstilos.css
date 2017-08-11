@@ -19,8 +19,9 @@
 
 .TituloTabla
 {
-    color: #D9D9D9;
+    color: white;
     background: #262626;
+    border: 1px solid #262626;
 }
 
 .botonOperacion
@@ -262,6 +263,7 @@
     border-bottom-style: solid;
     border-bottom-width: 1px;
     border-bottom-color: rgba(38,38,38,0.4);
+    cursor: pointer;
 }
 
 .dropdownOpcionModal:hover

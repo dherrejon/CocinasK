@@ -7,6 +7,9 @@
     margin-bottom: 5px;
     text-align: left;
     font-weight: bold;
+    cursor: pointer;
+    
+    overflow: hidden;
     
     outline: none !important;
     box-shadow: none;
@@ -98,3 +101,132 @@
 {
     color: rgb(250, 97, 21);
 }
+
+/*----------------proyecto----------*/
+.btnStatusProyecto, .btnStatusProyecto:active, .btnStatusProyecto:focus
+{
+    border-radius: 0px;
+    background: white;
+    border: 2px solid lightgray;
+    text-align: left;
+    min-width: 115px;
+    cursor: pointer;
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.btnStatusProyecto:hover
+{
+    background: lightgray;
+}
+
+.btnStatusProyecto.Seleccionado
+{
+    border: 2px solid #262626;
+    background: #262626;
+    color: white;
+}
+
+
+.btnStatusProyecto.Activo
+{
+    border: 2px solid #08088A;
+    color: #08088A;
+}
+
+.btnStatusProyecto.Cancelado
+{
+    border: 2px solid #B40404;
+    color: #B40404;
+}
+
+.btnStatusProyecto.Contratado
+{
+    border: 2px solid #088A29;
+    color: #088A29;
+}
+
+.btnStatusProyecto.Pendiente
+{
+    border: 2px solid #FF8000;
+    color: #FF8000;
+}
+
+.btnStatusProyecto.Activo:hover
+{
+    background: #08088A;
+    color: white;
+}
+
+.btnStatusProyecto.Cancelado:hover
+{
+    background: #B40404;
+    color: white;
+}
+
+.btnStatusProyecto.Contratado:hover
+{
+    background: #088A29;
+    color: white;
+}
+
+.btnStatusProyecto.Pendiente:hover
+{
+    background: #FF8000;
+    color: white;
+}
+
+.textoInfo
+{
+    color: #848484;
+    text-align: right;
+}
+
+/*--------------------------------- Botón opción -----------------------------*/
+.btnDetallePresupuesto, .btnDetallePresupuesto:active, .btnDetallePresupuesto:focus
+{
+    background: white;
+    border: none;
+    border-radius: 0px;
+    text-align: left;
+    color: #585858;
+    font-weight: bold;
+    padding-left: 0px;
+    
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.btnDetallePresupuesto:hover
+{
+    color: black;
+    font-style: bold;
+}
+
+.cubiertaNoDiponible
+{
+    background: black;
+    color: black;
+    height: 15px;
+    width: 60px;
+}
+
+.tablaResponsiva
+{
+    overflow: visible !important;
+}
+
+@media (max-width: 767px) 
+{ 
+    .tablaResponsiva
+    {
+        overflow: scroll !important;
+    }
+}
+
+

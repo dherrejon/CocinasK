@@ -45,48 +45,185 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
     $scope.moduloAgregar = new ModuloPresupuesto();
     $scope.tipoModuloAgregar = [];
     $scope.tabSeleccionada = "";
+    $scope.opt = "";
     
     $scope.$on('AgregarPresupuestoCero',function()
     {
         $scope.operacion = "Agregar";
-        $scope.catalogo = {combinacion: false, modulo: false, puerta: false, accesorio:false, cubierta: false, promoPlanPago: false};
         
         $scope.presupuesto = new Presupuesto();
+        
+        $scope.copiarPresupuesto = false;
+        $scope.personaSeleccionada = false;
+        $scope.pasoPresupuesto = 1;
+        
+        $scope.proyectoNuevo = true;
+        $scope.EstatusProyecto = "Nuevo";
+        
+        $scope.IniciarPresupuesto();
+       
+        
+        $scope.CargarCatalogoPresupuesto();
+        $scope.pasoMinimo = 1;
+    
+        $('#agregarPresupuestoModal').modal('toggle');
+    });
+    
+    $scope.$on('EditarPresupuesto',function()
+    {
+        $scope.operacion = "Editar";
+        
+        $scope.presupuesto = new Presupuesto();
+        
+        $scope.copiarPresupuesto = true; //bandera que indica que despues de obtener los catálogos se deberan de copiar los datos de algun presupuesto
+        $scope.personaSeleccionada = true;
+        $scope.pasoPresupuesto = 3;
+        
+        $scope.proyectoNuevo = false;
+        $scope.EstatusProyecto = "Registrado";
+         
+        $scope.IniciarPresupuesto();
+         
+        $scope.presupuestoBase = PRESUPUESTO.GetPresupuesto(); // presupuesto a patir del cual se empezará a trabajar
+         
+        $scope.presupuestoBase.Persona.Seleccionado = true;
+        $scope.SeleccionarPersona($scope.presupuestoBase.Persona);
+        $scope.GetCombincacionInicio();
+        $scope.CargarCatalogoPresupuesto();
+        $scope.pasoMinimo = 3;
+        $scope.SetPresupuestoBaseDatos();
+    
+        $('#agregarPresupuestoModal').modal('toggle');
+    });
+    
+    $scope.$on('ClonarPresupuesto',function()
+    {
+        $scope.operacion = "Agregar";
+        $scope.opt = "Clonar";
+        
+        $scope.presupuesto = new Presupuesto();
+        
+        $scope.copiarPresupuesto = true; //bandera que indica que despues de obtener los catálogos se deberan de copiar los datos de algun presupuesto
+        $scope.personaSeleccionada = true;
+        $scope.pasoPresupuesto = 1;
+
+        $scope.IniciarPresupuesto();
+         
+        $scope.presupuestoBase = PRESUPUESTO.GetPresupuesto(); // presupuesto a patir del cual se empezará a trabajar
+         
+        $scope.presupuestoBase.Persona.Seleccionado = true;
+        $scope.presupuestoBase.Persona.MedioCaptacionId = $scope.presupuestoBase.Persona.MedioCaptacion.MedioCaptacionId;
+        $scope.presupuestoBase.Persona.NombreMedioCaptacion = $scope.presupuestoBase.Persona.MedioCaptacion.Nombre;
+        $scope.SeleccionarPersona($scope.presupuestoBase.Persona);
+
+        $scope.CargarCatalogoPresupuesto();
+        $scope.pasoMinimo = 1;
+        $scope.SetPresupuestoBaseDatos();
+        console.log($scope.proyectoNuevo );
+        
+        $scope.persona = [];
+        
+        $scope.persona.push($scope.presupuestoBase.Persona);
+        $scope.proyectoNuevo = false;
+        $scope.EstatusProyecto = "Registrado";
+    
+        $('#agregarPresupuestoModal').modal('toggle');
+    });
+    
+    $scope.$on('AgregarProyecto',function()
+    {
+        $scope.operacion = "Agregar";
+        $scope.opt = "AgregarProyecto";
+        
+        $scope.presupuesto = new Presupuesto();
+        
+        $scope.copiarPresupuesto = false;
+        $scope.personaSeleccionada = false;
+        $scope.pasoPresupuesto = 2;
+        
+        $scope.proyectoNuevo = true;
+        $scope.EstatusProyecto = "Nuevo";
+        
+        $scope.IniciarPresupuesto();
+        
+        var persona = PRESUPUESTO.GetPersona();
+        persona.Seleccionado = true;
+        $scope.SeleccionarPersona(persona);
+       
+        
+        $scope.CargarCatalogoPresupuesto();
+        $scope.pasoMinimo = 2;
+    
+        $('#agregarPresupuestoModal').modal('toggle');
+    });
+    
+    $scope.$on('AgregarPresupuestoProyecto',function()
+    {
+        $scope.operacion = "Agregar";
+        $scope.opt = "AgregarPresupuesto";
+        
+        $scope.presupuesto = new Presupuesto();
+        
+        $scope.copiarPresupuesto = false;
+        $scope.personaSeleccionada = true;
+        $scope.pasoPresupuesto = 3;
+        
+        $scope.proyectoNuevo = false;
+        $scope.EstatusProyecto = "Registrado";
+        
+        $scope.IniciarPresupuesto();
+        
+        var persona = PRESUPUESTO.GetPersona();
+        persona.Seleccionado = true;
+        $scope.SeleccionarPersona(persona);
+        
+        $scope.proyectoBase = PRESUPUESTO.GetProyecto();
+        console.log($scope.proyectoBase);
+       
+        
+        $scope.CargarCatalogoPresupuesto();
+        $scope.GetCombincacionInicio();
+        $scope.pasoMinimo = 3;
+    
+        $('#agregarPresupuestoModal').modal('toggle');
+    });
+    
+    $scope.SetPresupuestoBaseDatos = function()
+    {
+        $scope.presupuesto.Titulo = $scope.presupuestoBase.Titulo;
+        $scope.presupuesto.DescripcionCliente = $scope.presupuestoBase.DescripcionCliente;
+        $scope.presupuesto.DescripcionInterna = $scope.presupuestoBase.DescripcionInterna;
+        $scope.presupuesto.PresupuestoId = $scope.presupuestoBase.PresupuestoId;
+    };
+    
+    $scope.IniciarPresupuesto = function()
+    {
+        $scope.catalogo = {combinacion: false, modulo: false, puerta: false, accesorio:false, cubierta: false, promoPlanPago: false};
         
         $scope.presupuesto.Persona.NuevoContacto = [];
         $scope.presupuesto.Persona.NuevoDomicilio = [];
         $scope.presupuesto.Persona.UnidadNegocio = [];
-        
-        $scope.personaSeleccionada = false;
-        $scope.crearBasico = false;
-        $scope.pasoPresupuesto = 1;
-        
         $scope.persona = [];
-      
+        
+        $scope.crearBasico = false;
         $scope.mostrarContenido = {contacto:false, direccion:false, unidad:false};
         $scope.usuario = datosUsuario.getUsuario();
         $scope.verPromo = false;
         $scope.verPlanPago = true;
         $scope.verPromoCubierta = false;
-        $scope.proyectoNuevo = true;
-        $scope.EstatusProyecto = "Nuevo";
-        $scope.idPromocion = -1;
         
-        $scope.CargarCatalogoPresupuesto();
-    
-        $('#agregarPresupuestoModal').modal('toggle');
-    });
+         $scope.idPromocion = -1;
+        $scope.promoActualizar = false;
+    };
     
     $scope.CargarCatalogoPresupuesto = function()
     {   
         //paso 1-2
-        $scope.GetTipoProyecto();
         $scope.GetMedioCaptacion();
         $scope.GetUnidadNegocio();
         $scope.GetIVA();
+        $scope.GetTipoProyecto();
         console.log($scope.usuario);
-        
-        $scope.GetTipoAccesorio();
     };
     
     $scope.GetCombincacionInicio = function()
@@ -172,33 +309,67 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
             $scope.GetPlanPago();
         }
         
-        if(!$rootScope.permisoOperativo.verTodosCliente)
+        if(!$scope.personaSeleccionada || $scope.promoActualizar)
         {
-            $scope.GetPromocionPorUnidadNegocio($scope.usuario.UnidadNegocioId);
-        }
-        else
-        {
-            if($scope.presupuesto.Persona.UnidadNegocio.length == 1)
+            if(!$rootScope.permisoOperativo.verTodosCliente)
             {
-                $scope.GetPromocionPorUnidadNegocio($scope.presupuesto.Persona.UnidadNegocio[0].UnidadNegocioId);
+                $scope.GetPromocionPorUnidadNegocio($scope.usuario.UnidadNegocioId);
             }
             else
             {
-                var unidad = false;
-                for(var k=0; k<$scope.presupuesto.Persona.UnidadNegocio.length; k++)
+                if($scope.presupuesto.Persona.UnidadNegocio.length == 1)
                 {
-                    if($scope.presupuesto.Persona.UnidadNegocio[k].MargenSel === true)
+                    $scope.GetPromocionPorUnidadNegocio($scope.presupuesto.Persona.UnidadNegocio[0].UnidadNegocioId);
+                }
+                else
+                {
+                    var unidad = false;
+                    for(var k=0; k<$scope.presupuesto.Persona.UnidadNegocio.length; k++)
                     {
-                        $scope.GetPromocionPorUnidadNegocio($scope.presupuesto.Persona.UnidadNegocio[k].UnidadNegocioId);
-                        unidad = true;
-                        break;
+                        if($scope.presupuesto.Persona.UnidadNegocio[k].MargenSel === true)
+                        {
+                            $scope.GetPromocionPorUnidadNegocio($scope.presupuesto.Persona.UnidadNegocio[k].UnidadNegocioId);
+                            unidad = true;
+                            break;
+                        }
+                    }
+
+                    if(!unidad)
+                    {
+                        $scope.GetPromocionPorUnidadNegocio($scope.presupuesto.UnidadNegocioId);
                     }
                 }
-
-                if(!unidad)
-                {
-                    $scope.GetPromocionPorUnidadNegocio($scope.presupuesto.UnidadNegocioId);
-                }
+            }
+        }
+        else
+        {
+            $scope.promocion = [];
+            for(var k=0; k<$scope.PromocionCubierta.length; k++)
+            {
+                $scope.PromocionCubierta[k].Presupuesto = true;
+                $scope.PromocionCubierta[k].Show = true;
+                $scope.PromocionCubierta[k].Activo = true; 
+                $scope.PromocionCubierta[k].TipoVenta = new Object();
+                $scope.PromocionCubierta[k].TipoVenta.TipoVentaId = $scope.PromocionCubierta[k].TipoVentaId;
+                
+                $scope.PromocionCubierta[k].TipoPromocion = new Object();
+                $scope.PromocionCubierta[k].TipoPromocion.TipoPromocionId = $scope.PromocionCubierta[k].TipoPromocionId;
+                
+                $scope.promocion.push($scope.PromocionCubierta[k]);
+            }
+            
+            for(var k=0; k<$scope.PromocionMueble.length; k++)
+            {
+                $scope.PromocionMueble[k].Presupuesto = true;
+                $scope.PromocionMueble[k].Show = true;
+                $scope.PromocionMueble[k].Activo = true; 
+                $scope.PromocionMueble[k].TipoVenta = new Object();
+                $scope.PromocionMueble[k].TipoVenta.TipoVentaId = $scope.PromocionMueble[k].TipoVentaId;
+                
+                $scope.PromocionMueble[k].TipoPromocion = new Object();
+                $scope.PromocionMueble[k].TipoPromocion.TipoPromocionId = $scope.PromocionMueble[k].TipoPromocionId;
+                
+                $scope.promocion.push($scope.PromocionMueble[k]);
             }
         }
     };
@@ -319,6 +490,15 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         GetTipoProyecto($http, $q, CONFIG).then(function(data)
         {
             $scope.tipoProyecto = data;
+            
+            if($scope.copiarPresupuesto)
+            {
+                $scope.CambiarProyectoPersona($scope.presupuestoBase.Proyecto);
+            }
+            if($scope.opt == "AgregarPresupuesto")
+            {
+                $scope.CambiarProyectoPersona($scope.proyectoBase);
+            }
         }).catch(function(error)
         {
             alert(error);
@@ -345,6 +525,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         GetBuscarPersona($http, $q, CONFIG, persona).then(function(data)
         {
             $scope.persona = data;
+            console.log($scope.persona);
         
         }).catch(function(error)
         {
@@ -372,7 +553,6 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                 }
                 
                 $scope.unidadNegocio = data;
-    
             }
             else
             {
@@ -415,6 +595,26 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         {
             console.log(data);
             $scope.presupuesto.Persona.Proyecto = data;
+        
+        }).catch(function(error)
+        {
+            alert(error);
+        });
+    };
+    
+    $scope.GetPromocionPersona = function(id)              
+    {
+        GetPromocionPersona($http, $q, CONFIG, id).then(function(data)
+        {
+            if(data[0].Estatus == "Exitoso")
+            {
+                $scope.PromocionCubierta = data[1].Promocion.PromocionCubierta;
+                $scope.PromocionMueble = data[1].Promocion.PromocionMueble;
+            }
+            else
+            {
+               $scope.presupuesto.Promocion = {promocionMueble: [], promocionCubierta: []};
+            }
         
         }).catch(function(error)
         {
@@ -484,6 +684,22 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
             if(data.length > 0)
             {
                 $scope.combinacion = data;
+                
+                if($scope.copiarPresupuesto)
+                {
+                    for(var k=0; k<$scope.combinacion.length; k++)
+                    {
+                        $scope.combinacion[k].PorDefecto = false;
+                        for(var i=0; i<$scope.presupuestoBase.CombinacionMaterial.length; i++)
+                        {
+                            if($scope.presupuestoBase.CombinacionMaterial[i].CombinacionMaterialId == $scope.combinacion[k].CombinacionMaterialId)
+                            {
+                                $scope.combinacion[k].PorDefecto = true;
+                                break;   
+                            }
+                        }
+                    }
+                }
                 console.log(data);
             }
         }).catch(function(error)
@@ -506,6 +722,23 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
     $scope.GetTipoCubierta = function()          
     {
         $scope.tipoCubierta = GetTipoCubierta();
+        
+        if($scope.copiarPresupuesto)
+        {
+            for(var k=0; k<$scope.tipoCubierta.length; k++)
+            {
+                $scope.tipoCubierta[k].PorDefecto = false;
+                for(var i=0; i<$scope.presupuestoBase.TipoCubierta.length; i++)
+                {
+                    if($scope.tipoCubierta[k].TipoCubiertaId == $scope.presupuestoBase.TipoCubierta[i].TipoCubiertaId)
+                    {
+                        $scope.tipoCubierta[k].PorDefecto = true;
+                        break;
+                    }
+                }
+            }
+        }
+        
     };
     
     $scope.GetModuloPresupuesto = function()          
@@ -552,6 +785,43 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         }
         
         $scope.ValidarModulos([]);
+        
+        if($scope.copiarPresupuesto)
+        {
+            for(var k=0; k<$scope.presupuestoBase.Modulo.length; k++)
+            {
+                $scope.moduloAgregar = $scope.SetModuloPresupuesto($scope.presupuestoBase.Modulo[k]);
+                $scope.AgregarModulo($scope.moduloAgregar.Cantidad);
+                console.log($scope.moduloAgregar);
+            }
+            
+            $scope.moduloAgregar = new ModuloPresupuesto();
+        }
+    };
+    
+    $scope.SetModuloPresupuesto = function(data)
+    {
+        var modulo = new ModuloPresupuesto();
+        
+        modulo.ModuloId = data.ModuloId;
+        modulo.Nombre = data.Nombre;
+        modulo.Cantidad = parseInt(data.Cantidad);
+        
+        modulo.Ancho = data.Ancho;
+        modulo.Alto = data.Alto;
+        modulo.Profundo = data.Profundo;
+        
+        modulo.AnchoNumero = FraccionADecimal(data.Ancho);
+        modulo.AltoNumero = FraccionADecimal(data.Alto);
+        modulo.ProfundoNumero = FraccionADecimal(data.Profundo);
+        
+        modulo.Desperdicio = parseFloat(data.Desperdicio);
+        modulo.Margen = parseFloat(data.Margen);
+        
+        modulo.TipoModulo.TipoModuloId = data.TipoModuloId;
+        modulo.TipoModulo.Nombre = data.NombreTipoModulo;
+        
+        return modulo;
     };
     
     $scope.GetSeccionPorModulo = function()
@@ -594,6 +864,24 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         GetServicio($http, $q, CONFIG).then(function(data)
         {
             $scope.servicio = data;
+            
+            if($scope.copiarPresupuesto)
+            {
+                for(var k=0; k<$scope.servicio.length; k++)
+                {
+                    $scope.servicio[k].Obligatorio = false;
+                    for(var i=0; i<$scope.presupuestoBase.Servicio.length; i++)
+                    {
+                        if($scope.servicio[k].ServicioId == $scope.presupuestoBase.Servicio[i].ServicioId)
+                        {
+                            $scope.servicio[k].Obligatorio = true;
+                            $scope.servicio[k].Cantidad = parseFloat($scope.presupuestoBase.Servicio[i].Cantidad);
+                            break;
+                        }
+                    }
+                }
+            }
+            
         }).catch(function(error)
         {
             alert(error);
@@ -606,6 +894,24 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         {
             $scope.muestrario = data;
             $scope.GetPuerta();
+            
+            if($scope.copiarPresupuesto)
+            {
+                for(var k=0; k<$scope.muestrario.length; k++)
+                {
+                    $scope.muestrario[k].PorDefecto = false;
+                    
+                    for(var i=0; i<$scope.presupuestoBase.Puerta.length; i++)
+                    {
+                        if($scope.muestrario[k].MuestrarioId == $scope.presupuestoBase.Puerta[i].MuestrarioId)
+                        {
+                            $scope.muestrario[k].PorDefecto = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            
         }).catch(function(error)
         {
             alert(error);
@@ -711,6 +1017,23 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         {
             $scope.maqueo = data;
             $scope.SetColorMaqueo();
+            
+            if($scope.copiarPresupuesto)
+            {
+                for(var k=0; k<$scope.maqueo.length; k++)
+                {
+                    $scope.maqueo[k].PorDefecto = false;
+                    for(var i=0; i<$scope.presupuestoBase.Maqueo.length; i++)
+                    {
+                        if($scope.maqueo[k].MaqueoId == $scope.presupuestoBase.Maqueo[i].MaqueoId)
+                        {
+                            $scope.maqueo[k].PorDefecto = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            
         }).catch(function(error)
         {
             alert(error);
@@ -752,7 +1075,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         {
             $scope.tipoAccesorio = data;
             $scope.GetMuestrarioAccesorio();
-        
+                
         }).catch(function(error)
         {
             alert(error);
@@ -845,6 +1168,39 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
 
                     $scope.tipoAccesorio[k].Muestrario[i].Accesorio[j].Costo = alasql(sql,[$scope.accesorioCostos]);
                 }
+            }
+        }
+        
+        
+        if($scope.copiarPresupuesto)
+        {
+            for(var k=0; k<$scope.tipoAccesorio.length; k++)
+            {
+                $scope.tipoAccesorio[k].Presupuesto = false;
+                for(var i=0; i<$scope.presupuestoBase.Accesorio.length; i++)
+                {
+                    if($scope.tipoAccesorio[k].TipoAccesorioId == $scope.presupuestoBase.Accesorio[i].TipoAccesorioId)
+                    {
+                        $scope.tipoAccesorio[k].Presupuesto = true;
+                        $scope.tipoAccesorio[k].Cantidad = parseInt($scope.presupuestoBase.Accesorio[i].Cantidad);
+
+                        for(var l=0; l<$scope.tipoAccesorio[k].Muestrario.length; l++)
+                        {
+                            $scope.tipoAccesorio[k].Muestrario[l].PorDefecto = false;
+                            for(var j=0; j<$scope.presupuestoBase.Accesorio[i].Muestrario.length; j++)
+                            {
+                                if($scope.tipoAccesorio[k].Muestrario[l].MuestrarioId ==$scope.presupuestoBase.Accesorio[i].Muestrario[j].MuestrarioId )
+                                {
+                                    $scope.tipoAccesorio[k].Muestrario[l].PorDefecto = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        break;
+                    }
+                }
+
             }
         }
         
@@ -963,6 +1319,54 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
             
         }
         
+        if($scope.copiarPresupuesto)
+        {
+            for(var k=0; k<$scope.ubicacion.length; k++)
+            {
+                $scope.ubicacion[k].SeleccionadoAglomerado = false;
+                $scope.ubicacion[k].Seleccionado = false;
+
+                for(var i=0; i<$scope.presupuestoBase.TipoCubierta.length; i++)
+                {
+                    if($scope.presupuestoBase.TipoCubierta[i].TipoCubiertaId == "1")
+                    {
+                        for(var j=0; j<$scope.presupuestoBase.TipoCubierta[i].Ubicacion.length; j++)
+                        {
+                            if($scope.presupuestoBase.TipoCubierta[i].Ubicacion[j].UbicacionCubiertaId == $scope.ubicacion[k].UbicacionCubiertaId)
+                            {
+                                $scope.ubicacion[k].SeleccionadoAglomerado = true;
+                                $scope.ubicacion[k].CantidadAglomerado = parseInt($scope.presupuestoBase.TipoCubierta[i].Ubicacion[j].Cantidad);
+                                break;
+                            }
+
+                        }
+                    }
+                    else if($scope.presupuestoBase.TipoCubierta[i].TipoCubiertaId == "2")
+                    {
+                        for(var j=0; j<$scope.presupuestoBase.TipoCubierta[i].Ubicacion.length; j++)
+                        {
+                            if($scope.presupuestoBase.TipoCubierta[i].Ubicacion[j].UbicacionCubiertaId == $scope.ubicacion[k].UbicacionCubiertaId)
+                            {
+                                $scope.ubicacion[k].Seleccionado = true;
+                                $scope.ubicacion[k].Elemento = [];
+
+                                for(var h=0; h<$scope.presupuestoBase.TipoCubierta[i].Ubicacion[j].Seccion.length; h++)
+                                {
+                                    var secc = new Object();
+                                    secc.Lado1 = $scope.presupuestoBase.TipoCubierta[i].Ubicacion[j].Seccion[h].Lado1;
+                                    secc.Lado2 = $scope.presupuestoBase.TipoCubierta[i].Ubicacion[j].Seccion[h].Lado2;
+                                    $scope.ubicacion[k].Elemento.push(secc);
+                                }
+
+                                break;
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+        
         //console.log($scope.ubicacion);
         //console.log($scope.ubicacionDatos);
         //console.log($scope.fabricacionConsumible);
@@ -1009,6 +1413,35 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
             }
         }
         
+        if($scope.copiarPresupuesto)
+        {
+            for(var k=0; k<$scope.cubierta.length; k++)
+            {
+                for(var l=0; l<$scope.cubierta[k].Grupo.length; l++)
+                {
+                    $scope.cubierta[k].Grupo[l].PorDefecto = false;
+                    
+                    for(var i=0; i<$scope.presupuestoBase.TipoCubierta.length; i++)
+                    {
+                        if($scope.presupuestoBase.TipoCubierta[i].TipoCubiertaId == $scope.cubierta[k].TipoCubierta.TipoCubiertaId)
+                        {
+                            for(var j=0; j<$scope.presupuestoBase.TipoCubierta[i].Material.length; j++)
+                            {
+                                if($scope.presupuestoBase.TipoCubierta[i].Material[j].MaterialId == $scope.cubierta[k].Material.MaterialId && $scope.cubierta[k].Grupo[l].Grupo.GrupoId == $scope.presupuestoBase.TipoCubierta[i].Material[j].GrupoId)
+                                {
+
+                                    $scope.cubierta[k].Grupo[l].PorDefecto = true;
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                    
+                }
+            }
+        }
+        
     };
     
     $scope.SetTipoCombinacion = function()
@@ -1042,6 +1475,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
             {
                 $scope.presupuesto.Margen = parseFloat(data[1].Margen);
                 $scope.presupuesto.UnidadNegocioId = data[2].UnidadNegocioId;
+                console.log($scope.presupuesto.Margen);
             }
             else
             {
@@ -1104,8 +1538,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                     {
                         mes = "0" + mes;
                     }*/
-                    
-                    $scope.planPago[k].FechaFin = fechaEnt.getDate() + "/" + GetMesNombre(fechaEnt.getMonth()-1) + "/" + fechaEnt.getFullYear();
+                    $scope.planPago[k].FechaFin = fechaEnt.getDate() + "/" + GetMesNombre(fechaEnt.getMonth()) + "/" + fechaEnt.getFullYear();
                     $scope.planPago[k].FechaFin2 = new Date(fechaEnt.getFullYear(), fechaEnt.getMonth(), fechaEnt.getDate());
                 }
             }
@@ -1342,7 +1775,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
     
     $scope.SeleccionarPersona = function(persona)
     {
-        for(var k=0; k<$scope.persona.length ;k++)
+        for(var k=0; k<$scope.persona.length; k++)
         {
             if($scope.persona[k].PersonaId != persona.PersonaId)
             {
@@ -1357,6 +1790,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
             $scope.GetDireccionPersona(persona.PersonaId);
             $scope.GetUnidadNegocioPersona(persona.PersonaId);
             $scope.GetProyectoPersona(persona.PersonaId);
+            $scope.GetPromocionPersona(persona.PersonaId);
             
             $scope.personaSeleccionada = true;
             
@@ -1388,6 +1822,8 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                 }
             }
         }
+        
+        $scope.ProyectoNuevoRegistrado("Nuevo");
     };
         
     $scope.SetPersona = function(data)
@@ -1715,6 +2151,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                 }
                 else
                 {
+                    $scope.presupuesto.Proyecto.Domicilio =  domicilio;
                     $scope.presupuesto.Proyecto.Domicilio.DomicilioId =  domicilio.DireccionPersonaId;
                 }
             }
@@ -1913,6 +2350,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
     
     $scope.CambiarProyectoPersona = function(proyecto)
     {
+        console.log(proyecto);
         if($scope.proyectoPresupuesto != proyecto)
         {
             $scope.proyectoPresupuesto = proyecto;
@@ -1926,17 +2364,28 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                 }
             }
             
-            console.log(proyecto.Domicilio.DireccionPersonaId);
-            for(var k=0; k<$scope.presupuesto.Persona.Domicilio.length; k++)
+            //console.log(proyecto.Domicilio);
+            if(proyecto.Domicilio !== null && proyecto.Domicilio !== undefined)
             {
-                console.log($scope.presupuesto.Persona.Domicilio[k].DireccionPersonaId);
-                if(proyecto.Domicilio.DireccionPersonaId == $scope.presupuesto.Persona.Domicilio[k].DireccionPersonaId)
+                for(var k=0; k<$scope.presupuesto.Persona.Domicilio.length; k++)
                 {
-                    $scope.presupuesto.Persona.Domicilio[k].Seleccionado = true;
-                    $scope.SeleccionarDomicilio($scope.presupuesto.Persona.Domicilio[k]);
-                    break;
+                    //console.log($scope.presupuesto.Persona.Domicilio[k].DireccionPersonaId);
+                    if(proyecto.Domicilio.DireccionPersonaId == $scope.presupuesto.Persona.Domicilio[k].DireccionPersonaId)
+                    {
+                        $scope.presupuesto.Persona.Domicilio[k].Seleccionado = true;
+                        $scope.SeleccionarDomicilio($scope.presupuesto.Persona.Domicilio[k]);
+                        break;
+                    }
                 }
             }
+            else
+            {
+                var domiciolio = new Domicilio();
+                domiciolio.DomicilioId = "-1";
+                domiciolio.Seleccionado = false;
+                $scope.SeleccionarDomicilio(domiciolio);
+            }
+            
             
             $scope.presupuesto.Proyecto.ProyectoId = proyecto.ProyectoId;
             $scope.presupuesto.Proyecto.Nombre = proyecto.Nombre;
@@ -1957,6 +2406,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
             
             if(val == "Nuevo")
             {
+                console.log("entra");
                 $scope.proyectoNuevo = true;
                 $scope.proyectoPresupuesto = new Proyecto();
             }
@@ -2020,12 +2470,26 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
     
     $scope.TerminarPaso3 = function()
     {
+        console.log($scope.presupuesto.Margen);
         if(!$scope.ValidarPaso3())
         {
             return;
         }
         else
         {
+            if($scope.operacion == "Editar" || $scope.opt == "AgregarPresupuesto")
+            {
+                if(!$scope.ObtenerMargenTerritorio())
+                {
+                    return;
+                }
+                else
+                {
+                    $scope.SetIVAPresupuesto();
+                }
+                console.log($scope.presupuesto.Margen);
+            }
+            
             if($scope.presupuesto.Proyecto.TipoProyecto.Mueble)
             {
                 $scope.GetModuloInicio();
@@ -2209,9 +2673,9 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         }
     };
     
-    $scope.AgregarModulo = function()
+    $scope.AgregarModulo = function(cantidad)
     {
-        $scope.presupuesto.Modulo.push($scope.SetModuloNuevo($scope.moduloAgregar));
+        $scope.presupuesto.Modulo.push($scope.SetModuloNuevo($scope.moduloAgregar, cantidad));
         $scope.HideMedida($scope.moduloAgregar);
         $scope.AgregarTipoModulo($scope.moduloAgregar.TipoModulo);
         
@@ -2220,7 +2684,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         $scope.moduloAgregar.Profundo = "";
     };
     
-    $scope.SetModuloNuevo = function(modulo)
+    $scope.SetModuloNuevo = function(modulo, cantidad)
     {
         var m = new ModuloPresupuesto();
         
@@ -2237,7 +2701,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         m.Margen = modulo.Margen;
         m.Desperdicio = modulo.Desperdicio;
         
-        m.Cantidad = 1;
+        m.Cantidad = cantidad;
         
         m.TipoModulo.Nombre = modulo.TipoModulo.Nombre;
         m.TipoModulo.TipoModuloId = modulo.TipoModulo.TipoModuloId;
@@ -2341,6 +2805,11 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         $scope.GetServicioPuertaInicio();
         $scope.CalcularCantidadesPropuestas();
         $scope.pasoPresupuesto++;
+        
+        for(var k=0; k<$scope.combinacion.length; k++)
+        {
+            $scope.combinacion[k].PrecioVentaModulo = 0;
+        }
         
         for(var k=0; k<$scope.presupuesto.Modulo.length; k++)
         {
@@ -3020,7 +3489,8 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                 }
                 else
                 {
-                    alert("Este tipo de accesorio no cuenta con instrucciones.");
+                    $scope.mensaje = "Este tipo de accesorio no cuenta con instrucciones.";
+                    $('#mensajePresupuesto').modal('toggle');
                 }
             }
 
@@ -3104,15 +3574,18 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
     
     $scope.MostarPorUbicacion = function(ubicacion)
     {
-        for(var i=0; i<$scope.ubicacion.length; i++)
+        if(ubicacion != undefined && ubicacion != null)
         {
-            if($scope.ubicacion[i].SeleccionadoAglomerado)
+            for(var i=0; i<$scope.ubicacion.length; i++)
             {
-                for(var j=0; j<ubicacion.length; j++)
+                if($scope.ubicacion[i].SeleccionadoAglomerado)
                 {
-                    if(ubicacion[j].UbicacionCubiertaId == $scope.ubicacion[i].UbicacionCubiertaId)
+                    for(var j=0; j<ubicacion.length; j++)
                     {
-                        return true;
+                        if(ubicacion[j].UbicacionCubiertaId == $scope.ubicacion[i].UbicacionCubiertaId)
+                        {
+                            return true;
+                        }
                     }
                 }
             }
@@ -4054,11 +4527,14 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
     
     $scope.MostrarCubiertaAglomerado13 = function(ubicacion)
     {
-        for(var k=0; k<ubicacion.length; k++)
+        if(ubicacion != undefined && ubicacion != null)
         {
-            if(ubicacion[k].UbicacionCubiertaId == "1" || ubicacion[k].UbicacionCubiertaId == "3")
+            for(var k=0; k<ubicacion.length; k++)
             {
-                return true;
+                if(ubicacion[k].UbicacionCubiertaId == "1" || ubicacion[k].UbicacionCubiertaId == "3")
+                {
+                    return true;
+                }
             }
         }
         
@@ -4067,11 +4543,14 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
     
     $scope.MostrarCubiertaAglomerado24 = function(ubicacion)
     {
-        for(var k=0; k<ubicacion.length; k++)
+        if(ubicacion != undefined && ubicacion != null)
         {
-            if(ubicacion[k].UbicacionCubiertaId == "2" || ubicacion[k].UbicacionCubiertaId == "4")
+            for(var k=0; k<ubicacion.length; k++)
             {
-                return true;
+                if(ubicacion[k].UbicacionCubiertaId == "2" || ubicacion[k].UbicacionCubiertaId == "4")
+                {
+                    return true;
+                }
             }
         }
         
@@ -4592,7 +5071,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                     var mes = $scope.promocion[j].FechaLimite.slice(3,5);
                     var year = $scope.promocion[j].FechaLimite.slice(6,10);
 
-                    mes = parseInt(mes) -1;
+                    mes = parseInt(mes);
                     
                     var promo = new Date(year, mes, dia, 23, 59, 59);
                     
@@ -4698,6 +5177,12 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                 }
             }
         }
+    };
+    
+    $scope.ActualizarPromocion = function()
+    {
+        $scope.promoActualizar = true;
+        $scope.GetPromoPlanPago();
     };
     
     $scope.TerminarPaso11 = function()
@@ -4992,6 +5477,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
     
     $scope.ValidarPaso13 = function()
     {
+        $scope.mensajeError = [];
         var selPal = false;
         for(var k=0; k<$scope.planPago.length; k++)
         {
@@ -5008,7 +5494,6 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         }
         else
         {
-            $scope.mensajeError = [];
             $scope.mensajeError[0] = "*Selecciona un plan de pagos.";
             //console.log($scope.mesajeError);
             return false;
@@ -5132,7 +5617,6 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                     {
                         if($scope.tipoAccesorio[k].Muestrario[m].PorDefecto && $scope.tipoAccesorio[k].Muestrario[m].Activo && $scope.tipoAccesorio[k].Muestrario[m].Accesorio.length >0)
                         {
-
                             if(!tipoAgregado)
                             {
                                 var i = $scope.presupuesto.AccesorioPresupuesto.length;
@@ -5147,37 +5631,28 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
 
                             var j = $scope.presupuesto.AccesorioPresupuesto[i].Muestrario.length;
                             $scope.presupuesto.AccesorioPresupuesto[i].Muestrario[j] = new Object();
-                            $scope.presupuesto.AccesorioPresupuesto[i].Muestrario[j].MuestrarioId = $scope.tipoAccesorio[k].Muestrario[j].MuestrarioId;
+                            $scope.presupuesto.AccesorioPresupuesto[i].Muestrario[j].MuestrarioId = $scope.tipoAccesorio[k].Muestrario[m].MuestrarioId;
 
                             if($scope.tipoAccesorio[k].ClaseAccesorio.ClaseAccesorioId == "1")
                             {
                                 $scope.presupuesto.AccesorioPresupuesto[i].Muestrario[j].Combinacion = [];
-                                $scope.presupuesto.AccesorioPresupuesto[i].Muestrario[j].PrecioVenta = $scope.tipoAccesorio[k].Muestrario[j].Subtotal;
+                                $scope.presupuesto.AccesorioPresupuesto[i].Muestrario[j].PrecioVenta = $scope.tipoAccesorio[k].Muestrario[m].Subtotal;
                             }
                             else if($scope.tipoAccesorio[k].ClaseAccesorio.ClaseAccesorioId == "2")
                             {
                                 $scope.presupuesto.AccesorioPresupuesto[i].Muestrario[j].Combinacion = [];
                                 $scope.presupuesto.AccesorioPresupuesto[i].Muestrario[j].PrecioVenta = null;
 
-                                for(var l=0; l<$scope.tipoAccesorio[k].Muestrario[j].Combinacion.length; l++)
+                                for(var l=0; l<$scope.tipoAccesorio[k].Muestrario[m].Combinacion.length; l++)
                                 {
                                     $scope.presupuesto.AccesorioPresupuesto[i].Muestrario[j].Combinacion[l] = new Object();
                                     $scope.presupuesto.AccesorioPresupuesto[i].Muestrario[j].Combinacion[l].MuestrarioAccesorioPresupuestoId = "-1";
-                                    $scope.presupuesto.AccesorioPresupuesto[i].Muestrario[j].Combinacion[l].PrecioVenta = $scope.tipoAccesorio[k].Muestrario[j].Combinacion[l].Subtotal;
-                                    $scope.presupuesto.AccesorioPresupuesto[i].Muestrario[j].Combinacion[l].CombinacionMaterialId = $scope.tipoAccesorio[k].Muestrario[j].Combinacion[l].CombinacionId;
+                                    $scope.presupuesto.AccesorioPresupuesto[i].Muestrario[j].Combinacion[l].PrecioVenta = $scope.tipoAccesorio[k].Muestrario[m].Combinacion[l].Subtotal;
+                                    $scope.presupuesto.AccesorioPresupuesto[i].Muestrario[j].Combinacion[l].CombinacionMaterialId = $scope.tipoAccesorio[k].Muestrario[m].Combinacion[l].CombinacionId;
                                 }
                             }
                         }
                     }
-                }
-            }
-            
-            //paso 11
-            for(var k=0; k<$scope.promocion.length; k++)
-            {
-                if($scope.promocion[k].Activo && $scope.promocion[k].Show && $scope.promocion[k].TipoVenta.TipoVentaId == '1' && $scope.promocion[k].Presupuesto)
-                {
-                    $scope.presupuesto.Promocion.push(jQuery.extend({}, $scope.promocion[k]));
                 }
             }
         }
@@ -5303,19 +5778,32 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                     break;
                 }
             }
-            
-            for(var k=0; k<$scope.promocion.length; k++)
+        }
+        
+        //paso 11
+        for(var k=0; k<$scope.promocion.length; k++)
+        {
+            if($scope.promocion[k].Activo && $scope.promocion[k].Show && $scope.promocion[k].TipoVenta.TipoVentaId == '1' && $scope.promocion[k].Presupuesto)
             {
-                if($scope.promocion[k].Activo && $scope.promocion[k].Show && $scope.promocion[k].TipoVenta.TipoVentaId == '2' && $scope.promocion[k].Presupuesto)
-                {
-                    $scope.presupuesto.Promocion.push(jQuery.extend({}, $scope.promocion[k]));
-                }
+                $scope.presupuesto.Promocion.push(jQuery.extend({}, $scope.promocion[k]));
+            }
+        }
+        
+        for(var k=0; k<$scope.promocion.length; k++)
+        {
+            if($scope.promocion[k].Activo && $scope.promocion[k].Show && $scope.promocion[k].TipoVenta.TipoVentaId == '2' && $scope.promocion[k].Presupuesto)
+            {
+                $scope.presupuesto.Promocion.push(jQuery.extend({}, $scope.promocion[k]));
             }
         }
         
         if($scope.operacion == "Agregar")
         {
             $scope.AgregarProyectoPresupuesto();
+        }
+        else if($scope.operacion == "Editar")
+        {
+            $scope.EditarProyectoPresupuesto();
         }
         
         console.log($scope.tipoAccesorio);
@@ -5335,6 +5823,10 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         if(mes < 10)
         {
             mes = "0"+mes;
+        }
+        if(dia < 10)
+        {
+            dia = "0"+dia;
         }
         
         return year + "/" + mes + "/" + dia + " " + hora + ":" + min;
@@ -5489,6 +5981,8 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
             if(data[0].Estatus == "Exitoso")
             {
                 $scope.presupuesto.PresupuestoId = data[1].PresupuestoId;
+                $scope.presupuesto.Persona.PersonaId = data[2].PersonaId;
+                $scope.presupuesto.Proyecto.ProyectoId = data[3].ProyectoId;
                 
                 $scope.pasoPresupuesto = 14;
                 if($scope.presupuesto.Proyecto.TipoProyecto.Mueble)
@@ -5499,10 +5993,60 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                 {
                     $scope.PDFPresupuestoCubierta();
                 }
+                
+                if($scope.opt == "AgregarProyecto")
+                {
+                    $scope.opt = "";
+                    PRESUPUESTO.ProyectoAgregado($scope.presupuesto.Proyecto);
+                }
+                
+                if($scope.opt == "AgregarPresupuesto")
+                {
+                    $scope.opt = "";
+                    PRESUPUESTO.PresupuestoProyectoAgregado($scope.presupuesto);
+                }
+                
+                if($scope.opt == "Clonar")
+                {
+                    $scope.opt = "";
+                    PRESUPUESTO.PresupuestoClonado($scope.presupuesto);
+                }
                           
                 /*$('#agregarCitaModal').modal('toggle');
                 $scope.mensaje = "La cita se ha agregado.";
                 $scope.CerrarCitaModal();*/
+            }
+            else
+            {
+                //$scope.mensaje = "Ha ocurrido un error. Intente más tarde.";
+            }
+            //$('#mensajeCita').modal('toggle');
+            
+        }).catch(function(error)
+        {
+            $scope.mensaje = "Ha ocurrido un error. Intente más tarde. Error: " + error;
+            $('#mensajePresupuesto').modal('toggle');
+        })
+    };
+    
+    $scope.EditarProyectoPresupuesto = function()
+    {  
+        EditarProyectoPresupuesto($http, CONFIG, $q, $scope.presupuesto).then(function(data)
+        {
+            //console.log(data);
+            if(data[0].Estatus == "Exitoso")
+            {                
+                $scope.pasoPresupuesto = 14;
+                if($scope.presupuesto.Proyecto.TipoProyecto.Mueble)
+                {
+                    $scope.PDFPresupuesto();
+                }
+                else
+                {
+                    $scope.PDFPresupuestoCubierta();
+                }
+                          
+                PRESUPUESTO.PresupuestoEditado($scope.presupuesto);
             }
             else
             {
@@ -5876,9 +6420,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
             headerStyles: {fillColor: [255, 255, 255], textColor: [0, 0, 0], fontStyle: 'bold', fontSize:14}, styles: {overflow: 'linebreak', columnWidth: 'wrap'},
             styles: {overflow: 'linebreak'},
         };
-        
 
-        
         doc.setPage(1 + doc.internal.getCurrentPageInfo().pageNumber - doc.autoTable.previous.pageCount);
         
         if($scope.presupuesto.Proyecto.TipoProyecto.CubiertaPiedra && cub.length > 0)
@@ -5954,6 +6496,9 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         $scope.moduloAgregar = new ModuloPresupuesto();
         $scope.tipoModuloAgregar = [];
         $scope.tabSeleccionada = "";
+        $scope.tipoCubiertaPresupuesto = "";
+        $scope.opt = "";
+        $scope.proyectoPresupuesto = null;
     };
 
     
@@ -5963,11 +6508,77 @@ app.factory('PRESUPUESTO',function($rootScope)
 {
   var service = {};
   service.presupuesto = null;
+  service.persona = null;
+  service.proyecto = null;
     
   service.AgregarPresupuestoCero = function()
   {
       this.presupuesto = null;
       $rootScope.$broadcast('AgregarPresupuestoCero');
+  };
+    
+  service.EditarPresupuesto = function(datos)
+  {
+      this.presupuesto = datos;
+      $rootScope.$broadcast('EditarPresupuesto');
+  };
+    
+  service.PresupuestoEditado = function(datos)
+  {
+      this.presupuesto = datos;
+      $rootScope.$broadcast('PresupuestoEditado');
+  };
+    
+  service.GetPresupuesto = function()
+  {
+      return this.presupuesto;
+  };
+    
+  service.AgregarProyecto = function(datos)
+  {
+      this.persona = datos;
+      $rootScope.$broadcast('AgregarProyecto');
+  };
+    
+  service.GetPersona = function()
+  {
+      return this.persona;
+  };
+    
+  service.ProyectoAgregado = function(datos)
+  {
+      this.proyecto = datos;
+      $rootScope.$broadcast("ProyectoAgregado");
+  };
+    
+  service.GetProyecto = function()
+  {
+      return this.proyecto;
+  };
+    
+  service.AgregarPresupuestoProyecto = function(persona, proyecto)
+  {
+      this.persona = persona;
+      this.proyecto = proyecto;
+      $rootScope.$broadcast("AgregarPresupuestoProyecto");
+  };
+    
+  service.PresupuestoProyectoAgregado = function(datos)
+  {
+      this.presupuesto = datos;
+      $rootScope.$broadcast("PresupuestoProyectoAgregado");
+  };
+
+  service.ClonarPresupuesto = function(datos)
+  {
+      this.presupuesto = datos;
+      $rootScope.$broadcast("ClonarPresupuesto");
+  };
+    
+  service.PresupuestoClonado = function(datos)
+  {
+      this.presupuesto = datos;
+      $rootScope.$broadcast("PresupuestoClonado");
   };
     
   return service;

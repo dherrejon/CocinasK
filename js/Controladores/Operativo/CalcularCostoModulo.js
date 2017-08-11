@@ -1,6 +1,5 @@
 function CalcularCostoModulo(modulo, combinacion, margenPresupuesto, iva)
 {   
-    
     SetDatosModulo(modulo);
     SetParte(modulo.Parte, modulo.AnchoNumero, modulo.AltoNumero);
     
@@ -56,15 +55,16 @@ function CalcularCostoModulo(modulo, combinacion, margenPresupuesto, iva)
         if(combinacion[k].Activo && combinacion[k].PorDefecto)
         {
             SustituirFormulaCompleta(modulo, combinacion[k].CombinacionMaterialId); //componente y pieza
-            combinacion[k].PrecioVentaModulo = CalcularPrecioVenta(modulo, combinacion[k].CombinacionMaterialId);
+            var precio = CalcularPrecioVenta(modulo, combinacion[k].CombinacionMaterialId);
             
-            combinacion[k].PrecioVentaModulo += ((combinacion[k].PrecioVentaModulo*margenPresupuesto)/100);
-            combinacion[k].PrecioVentaModulo += ((combinacion[k].PrecioVentaModulo*iva)/100);
-            combinacion[k].PrecioVentaModulo = Math.round(combinacion[k].PrecioVentaModulo);
+            precio += ((precio*margenPresupuesto)/100);
+            precio += ((precio*iva)/100);
+            precio = Math.round(precio);
+            
+            combinacion[k].PrecioVentaModulo += precio;
         }
     }
     
-   // console.log(modulo);
     
 }
 

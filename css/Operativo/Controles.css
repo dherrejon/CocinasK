@@ -116,6 +116,7 @@
     background: white;
     color: #262626;
     font-size: 16pt;
+    cursor: pointer;
     
     outline: none !important;
     box-shadow: none;
@@ -207,6 +208,36 @@
     border-width: 0px 2px 2px 2px;
     border-style: solid;
     border-color: #262626;
+}
+
+/*------- dropdown punta ---------*/
+.dropdownRight
+{
+    border-radius: 0px;
+    border: solid 2px #262626;
+    margin-top: 2px;
+}
+
+.dropdownRight:before
+{
+    content: "";
+    position: absolute;
+    top: -24px;
+    right: 2px;
+    
+    border: 12px solid transparent;
+    border-bottom-color: #262626;
+}
+
+.dropdownRight:after
+{
+    content: "";
+    position: absolute;
+    top: -18px;
+    right: 5px;
+    
+    border: 9px solid transparent;
+    border-bottom-color: white;
 }
 
 

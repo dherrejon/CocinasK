@@ -673,5 +673,55 @@ function GetMargenDireccion()
     }
 }
 
+function GetPromocionPersona($id)
+{
+    global $app;
+    global $session_expiration_time;
+
+    $request = \Slim\Slim::getInstance()->request();
+    
+    $sql = "SELECT *
+            FROM PromocionPersonaVista 
+            WHERE PersonaId = ".$id. " ORDER BY DescuentoMinimo";
+    
+    try 
+    {   
+        $db = getConnection();
+        $stmt = $db->query($sql);
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $db = null;
+        
+        
+        $promo = new stdClass();
+        $promo->PromocionMueble = array();
+        $promo->PromocionCubierta = array();
+        
+        $countPromo = count($response);
+        
+        for($k=0; $k<$countPromo; $k++)
+        {
+            if($response[$k]->TipoVentaId == "1")
+            {
+                array_push($promo->PromocionMueble, $response[$k]);
+            }
+            else if($response[$k]->TipoVentaId == "2")
+            {
+                array_push($promo->PromocionCubierta, $response[$k]);
+            }
+        }
+        
+        echo '[{"Estatus": "Exitoso"}, {"Promocion":'.json_encode($promo).'} ]';
+    } 
+    catch(PDOException $e) 
+    {
+        $db = null;
+        echo $e;
+        echo '[ { "Estatus": "Fallo" } ]';
+        //$app->status(409);
+        $app->stop();
+    }
+    
+}
+
     
 ?>

@@ -325,7 +325,7 @@
             <form name="presupuesto2Forma" ng-show="pasoPresupuesto == 2">
                
                
-               <div ng-show="presupuesto.Persona.Proyecto.length > 0">
+               <div ng-show="presupuesto.Persona.Proyecto.length > 0 && opt != 'AgregarProyecto'">
                     <div class="row">
 
                         <div class="col-xs-12">
@@ -361,7 +361,7 @@
                                 </button>
 
                                 <ul class="dropdown-menu listaOpcionesDropdownList" >                                
-                                    <li ng-repeat="proyecto in presupuesto.Persona.Proyecto | orderBy:'TipoProyecto.Nombre'" ng-if="proyecto.EstatusProyecto.EstatusProyectoId != '3'">
+                                    <li ng-repeat="proyecto in presupuesto.Persona.Proyecto | orderBy:'TipoProyecto.Nombre'" ng-if="proyecto.EstatusProyecto.EstatusProyectoId != '4'">
                                         <a  href="" class="dropdownOpcionModal" ng-click="CambiarProyectoPersona(proyecto)">
                                             <span>{{proyecto.TipoProyecto.Nombre}} - {{proyecto.Nombre}}</span>
                                         </a>
@@ -567,7 +567,11 @@
                 <br>
                 <!---- botones de operacion -->
                 <div class="row">
-                    <div class="col-xs-6">
+                   <div class="col-xs-6" ng-if="pasoMinimo == 2">
+                        <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarPresupuestoModal()">CANCELAR</button>
+                    </div>
+                    
+                    <div class="col-xs-6" ng-if="pasoMinimo != 2">
                         <button class="btn botonOperacionModal btn-block" ng-click="AnteriorPresupuesto()">&lt;&lt; ANTERIOR</button>
                     </div>
 
@@ -647,7 +651,11 @@
                            </div>
                            
                         </div>
+                        
+                        <div style="height: 10px"></div>
                     </div>
+                    
+                    
                     
                     <!-- Cubierta -->
                     <div class="col-sm-6">
@@ -684,6 +692,32 @@
                            
                     </div>
                 </div>
+                
+                <div ng-show="presupuesto.Persona.UnidadNegocio.length > 1 && permisoOperativo.verTodosCliente && (unidadResponsable || presupuesto.Margen == -1) && (operacion == 'Editar' || opt == 'AgregarPresupuesto')">
+                    <br>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <span class="textoInstruccion">Selecciona la unidad de negocio responsable del proyecto</span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                       <div ng-repeat="unidad in presupuesto.Persona.UnidadNegocio">
+                           <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4" style="margin-bottom:15px">
+
+                               <label class="btn checkBoxActivoPre" ng-class="{checkBoxActivoPreNaranja: unidad.MargenSel}">
+                                   <input  type="checkbox" class="badgeboxPre" ng-model="unidad.MargenSel" ng-click="CambiarMargenPresupuesto(unidad.UnidadNegocioId, unidad.MargenSel)">
+                                   <span class="badge">&check;</span>
+                                   <span> {{unidad.NombreTipoUnidadNegocio}} - {{unidad.Nombre}}</span> 
+                               </label>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                
                 <br>
                 
                 <!-------- mensaje de error ---->
@@ -697,7 +731,12 @@
                 <br>
                 <!---- botones de operacion -->
                 <div class="row">
-                    <div class="col-xs-6">
+                   
+                   <div class="col-xs-6" ng-if="pasoMinimo == 3">
+                        <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarPresupuestoModal()">CANCELAR</button>
+                    </div>
+                    
+                    <div class="col-xs-6" ng-if="pasoMinimo != 3">
                         <button class="btn botonOperacionModal btn-block" ng-click="AnteriorPresupuesto()">&lt;&lt; ANTERIOR</button>
                     </div>
 
@@ -876,7 +915,7 @@
                     
                     <!-- Agregar Módulo -->
                     <div class="col-xs-6 col-sm-3">
-                        <button class="btn botonAgregarAcordion center-block" ng-disabled="!(moduloAgregar.Profundo.length > 0)" ng-click="AgregarModulo()"> <span class="fa fa-plus"></span> </button>
+                        <button class="btn botonAgregarAcordion center-block" ng-disabled="!(moduloAgregar.Profundo.length > 0)" ng-click="AgregarModulo(1)"> <span class="fa fa-plus"></span> </button>
                     </div>
                 </div>
                 
@@ -1248,7 +1287,7 @@
                     <div class="col-xs-12">
                        <div ng-repeat="tipo in tipoAccesorio | orderBy:'Nombre'" ng-show="tipo.Muestrario.length > 0">
                            
-                           <div class="input-group" style="width: 100%; max-height: 33px !important">
+                           <div class="input-group" style="max-height: 33px !important">
                              
                                 <span class="input-group-btn">
                                     <a class="btn checkBtn"  ng-class="{Presupuesto:tipo.Presupuesto}" style="width: auto" ng-click="PresupuestoTipoAccesorio(tipo);">
@@ -1263,13 +1302,13 @@
                                     </span>
                                 </span>
                                 
-                                <a class="btn form-control botonAcordionPerfil {{GetClaseTab(tipo.Nombre)}}"  style="height: auto !important" ng-class="{bordeNegro2:tipo.Presupuesto, disabled:!tipo.Presupuesto}" ng-click="CambiarTab(tipo.Nombre)">
+                                <span class="form-control botonAcordionPerfil {{GetClaseTab(tipo.Nombre)}}"  style="height: auto !important; overflow:hidden !important;" ng-class="{bordeNegro2:tipo.Presupuesto, disabled:!tipo.Presupuesto}" ng-click="CambiarTab(tipo.Nombre)">
                                     {{tipo.Nombre}}
                                     <span ng-if="tipo.Obligatorio" class="fa fa-asterisk"></span>
                                     
-                                    <span class="fa fa-chevron-down pull-right" style="width:20px;" ng-if="tabSeleccionada != tipo.Nombre"></span>
-                                    <span class="fa fa-chevron-up pull-right" style="width:20px;" ng-if="tabSeleccionada == tipo.Nombre"></span>
-                                </a>
+                                    <span class="fa fa-chevron-down pull-right" ng-if="tabSeleccionada != tipo.Nombre"></span>
+                                    <span class="fa fa-chevron-up pull-right" ng-if="tabSeleccionada == tipo.Nombre"></span>
+                                </span>
                                 
                             
                             </div>
@@ -1471,7 +1510,7 @@
                             <div class="row">
                                <div class="col-xs-12">
                                                            
-                                    <div  ng-repeat="grupo in cubierta.Grupo | orderBy:'Grupo.Nombre'" ng-show="grupo.Grupo.Activo && grupo.Color.length > 0">
+                                    <div ng-repeat="grupo in cubierta.Grupo | orderBy:'Grupo.Nombre'" ng-show="grupo.Grupo.Activo && grupo.Color.length > 0">
                                         <div class=" itemPresupuesto" style="margin-left: 0px" ng-class="{itemPresupuestoPrimero: $first}">
                                         
                                                
@@ -1817,7 +1856,7 @@
                 <div class=" row">
                     <div class="col-xs-12">
                         <span class="textoInstruccion">Selecciona las opciones elegidas por {{presupuesto.Persona.Nombre}}</span>
-                        <a class="pull-right botonOperacion btn" ng-click="CrearPresupuestoBasico()">Presupuesto Básico</a>
+                        <a class="pull-right botonOperacionRecto btn" ng-click="CrearPresupuestoBasico()">Presupuesto Básico</a>
                     </div>
                 </div>
                    
@@ -1961,9 +2000,10 @@
                     <!-- Accesorios -->
                     <div ng-repeat="tipo in tipoAccesorio | orderBy:'Nombre'" ng-show="tipo.Presupuesto">
                         <div class="row">
+                           <span><div class="tituloOptPresupuesto col-xs-12" >{{tipo.Cantidad}} {{tipo.Nombre}} </div><br><br></span>
                             <div ng-repeat="muestrario in tipo.Muestrario | orderBy:'Subtotal'" ng-show=" muestrario.Accesorio.length > 0 && muestrario.Activo && muestrario.PorDefecto" >
 
-                               <span ng-if="$first"><div class="tituloOptPresupuesto col-xs-12" > {{tipo.Nombre}} {{tipo.Cantidad}}</div><br><br></span>
+                               
 
                                 <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3" style="margin-bottom:10px">
 
@@ -2184,6 +2224,15 @@
                 <div class="row" ng-show="verPromo">
                    <div class="col-xs-12">
                        <div class="contenedorAcordio">
+                          
+                          <div ng-if="personaSeleccionada && !promoActualizar" class="row">
+                             <div class="col-xs-12">
+                                  <a class="btn botonOperacionRecto pull-right" ng-click="ActualizarPromocion()" >
+                                      <span class="fa fa-refresh"> </span> Actualizar
+                                  </a>
+                              </div>
+                          </div>
+                          <br ng-if="personaSeleccionada && !promoActualizar">
                            
                            
                             <div class="table-responsive tablePerfilClienteDatos" ng-if="(promocion | filter:{Activo:true, Show:true, TipoVenta:{TipoVentaId:'1'}}).length > 0">
@@ -2410,6 +2459,14 @@
                    <div class="col-xs-12">
                        <div class="contenedorAcordio">
                            
+                           <div ng-if="personaSeleccionada && !promoActualizar" class="row">
+                             <div class="col-xs-12">
+                                  <a class="btn botonOperacionRecto pull-right" ng-click="ActualizarPromocion()" >
+                                      <span class="fa fa-refresh"> </span> Actualizar
+                                  </a>
+                              </div>
+                          </div>
+                          <br ng-if="personaSeleccionada && !promoActualizar">
                            
                             <div class="table-responsive tablePerfilClienteDatos" ng-if="(promocion | filter:{Activo:true, Show:true, TipoVenta:{TipoVentaId:'2'}}).length > 0">
                                 <table class="table table-hover table-striped table-condensed">
@@ -2889,7 +2946,7 @@
                         <tr ng-if="presupuesto.Servicio.length > 0" ng-repeat="servicio in presupuesto.Servicio"> <td>{{servicio.Nombre}}</td></tr>
                         
                         <tr> <td>Accesorios</td></tr>
-                        <tr ng-repeat="accesorio in presupuesto.Accesorio | orderBy:'Nombre'"> <td>{{accesorio.Nombre}}: {{accesorio.Nombre}}</td></tr>
+                        <tr ng-repeat="accesorio in presupuesto.Accesorio | orderBy:'Nombre'"> <td>{{accesorio.Nombre}}: {{accesorio.Muestrario}}</td></tr>
                         
                         <tr  ng-if="tipoCubiertaPresupuesto == '1'"> <td>Cubierta de aglomerado</td></tr>
                         <tr  ng-if="tipoCubiertaPresupuesto == '1'"  ng-repeat="cubierta in presupuesto.Cubierta"> <td>{{cubierta}}</td></tr>

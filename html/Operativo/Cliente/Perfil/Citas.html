@@ -17,12 +17,14 @@
         <div class="col-xs-12">
            <div ng-repeat="estatus in citaEstatus | orderBy:'EstatusCitaId'" ng-if="estatus.EstatusCitaId != '1'" >
                
-               <button class="btn btn-block opcionAcordionCita {{estatus.clase}}" ng-click="MostrarEstatusCita(estatus.EstatusCitaId)">
+               <button class="btn btn-block botonAcordionPerfil {{estatus.clase}}" ng-click="MostrarEstatusCita(estatus.EstatusCitaId)">
+                   <span class="fa fa-chevron-right" style="width:20px;" ng-if="estatus.clase != 'active'"></span>
+                   <span class="fa fa-chevron-up" style="width:20px;" ng-if="estatus.clase == 'active'"></span>
                    {{estatus.Nombre}} 
                </button><br>
                
-                <div class="table-responsive tablePerfilCliente" ng-if="estatus.clase == 'active' && (cita | filter:{EstatusCita:{ EstatusCitaId: estatus.EstatusCitaId} }).length > 0">
-                    <table class="table table-hover table-striped table-condensed">
+                <div style="max-height: 70% !important; max-width; 100%" class="table-responsive tablaResponsiva" ng-if="estatus.clase == 'active' && (cita | filter:{EstatusCita:{ EstatusCitaId: estatus.EstatusCitaId} }).length > 0">
+                    <table class="table table-hover table-striped table-condensed" >
                         <thead class="TituloTabla">
                           <tr>
                             <th><span class=""><b>Tarea</b></span></th>
@@ -50,20 +52,22 @@
                                 <span  class="fa fa-eye fa-2x botonRegistroDeshabilitado"></span>
                             </td>
 
-                             <td class="dropdown" ng-if="estatus.EstatusCitaId == '2'">
-                                <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown" style="font-size:14px;">
-                                    <span ng-if="cita.EstatusCita.EstatusCitaId != 2" ng-class="GetClaseEstatus(cita.EstatusCita)">{{cita.EstatusCita.Nombre}}</span>
-                                    <span ng-if="cita.EstatusCita.EstatusCitaId == 2" ng-class="GetClaseEstatus(cita.EstatusCita)">{{GetEstatusCita(cita)}}{{cita.EstatusCita.Nombre}}</span>
-                                    <span class="caret"></span>
-                                </button>
+                             <td ng-if="estatus.EstatusCitaId == '2'">
+                               <div class="dropdown">
+                                    <a class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown" style="font-size:14px;">
+                                        <span ng-if="cita.EstatusCita.EstatusCitaId != 2" ng-class="GetClaseEstatus(cita.EstatusCita)">{{cita.EstatusCita.Nombre}}</span>
+                                        <span ng-if="cita.EstatusCita.EstatusCitaId == 2" ng-class="GetClaseEstatus(cita.EstatusCita)">{{GetEstatusCita(cita)}}{{cita.EstatusCita.Nombre}}</span>
+                                        <span class="caret"></span>
+                                    </a>
 
-                                <ul class="dropdown-menu dropdown-menu-right listaOpcionesDropdownListTabla">
-                                    <li ng-repeat="estatus in citaEstatus | orderBy:'Nombre'" ng-show="estatus.EstatusCitaId != '1' && estatus.EstatusCitaId != '2'">
-                                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarEstatusCita(cita, estatus)">
-                                            <span>{{estatus.Nombre}}</span>
-                                        </a>
-                                    </li>
-                                </ul>
+                                    <ul class="dropdown-menu dropdown-menu-right dropdownRight" style="display: float">
+                                        <li ng-repeat="estatus in citaEstatus | orderBy:'Nombre'" ng-show="estatus.EstatusCitaId != '1' && estatus.EstatusCitaId != '2'">
+                                            <a  href="" class="dropdownOpcionModal" ng-click="CambiarEstatusCita(cita, estatus)">
+                                                <span>{{estatus.Nombre}}</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
                               </td>
 
                           </tr>

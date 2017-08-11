@@ -540,14 +540,22 @@
     $app->delete('/DeleteUnidadNegocioPersona', $seguridad, $ChecarSesion, 'DeleteUnidadNegocioPersona');
 
     $app->post('/GetMargenDireccion', $seguridad, $ChecarSesion, 'GetMargenDireccion');
+    $app->get('/GetPromocionPersona/:id', $seguridad, $ChecarSesion, 'GetPromocionPersona');
 
     /*------------------ Variable del sistema ----------------------------------------------*/
     $app->get('/GetIVA', $seguridad, $ChecarSesion, 'GetIVA');
     $app->put('/EditarIVA', $seguridad, $ChecarSesion, 'EditarIVA');
     
+    /*------------------------- Presupuesto ------------------------------*/
+    $app->get('/GetPresupuestoPorProyecto/:id', $seguridad, $ChecarSesion, 'GetPresupuestoPorProyecto');
+    $app->post('/GetDatosPresupuesto', $seguridad, $ChecarSesion, 'GetDatosPresupuesto');
+
     /*------------------------- Proyecto ------------------------------*/
     $app->post('/AgregarProyectoPresupuesto', $seguridad, $ChecarSesion, 'AgregarProyectoPresupuesto');
-    $app->post('/GetProyectoPersona', $seguridad, $ChecarSesion, 'GetProyectoPersona'); 
+    $app->put('/EditarProyectoPresupuesto', $seguridad, $ChecarSesion, 'EditarProyectoPresupuesto');
+    $app->post('/GetProyectoPersona', $seguridad, $ChecarSesion, 'GetProyectoPersona');
+    $app->post('/CambiarEstatusProyecto', $seguridad, $ChecarSesion, 'CambiarEstatusProyecto');
+    $app->put('/EditarProyecto', $seguridad, $ChecarSesion, 'EditarProyecto');
 
     $app->run(); 
 

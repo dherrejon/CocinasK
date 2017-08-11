@@ -1,5 +1,18 @@
-app.controller("PerfilClienteControlador", function($scope, $rootScope, $http, $q, CONFIG,  $routeParams)
+app.controller("PerfilClienteControlador", function($scope, $rootScope, $http, $q, CONFIG,  $routeParams, datosUsuario)
 {   
+    /*----------------verificar los permisos---------------------*/
+    $rootScope.permisoOperativo = {verTodosCliente: false};
+    $scope.IdentificarPermisos = function()
+    {
+        for(var k=0; k < $scope.usuarioLogeado.Permiso.length; k++)
+        {
+            if($scope.usuarioLogeado.Permiso[k] == "OpeCliConsultar")
+            {
+                $rootScope.permisoOperativo.verTodosCliente = true;
+            }
+        }
+    };
+    
     $rootScope.personaId = $routeParams.personaId;
     $rootScope.seccion = $routeParams.seccion;
     
@@ -230,8 +243,67 @@ app.controller("PerfilClienteControlador", function($scope, $rootScope, $http, $
         });
     };
     
-    //---------- Inicializar ---------------------
-    $scope.GetDatoPersona($rootScope.personaId);
+    //---------- Inicializar ---------------------+
+    $scope.IncializarControlador = function()
+    {
+        $scope.GetDatoPersona($rootScope.personaId);
+    };
+    
+    
+    /*------------------Indentifica cuando los datos del usuario han cambiado-------------------*/
+    $scope.usuarioLogeado =  datosUsuario.getUsuario(); 
+    
+    if($scope.usuarioLogeado !== null)
+    {
+        if($scope.usuarioLogeado.SesionIniciada)
+        {
+            if($scope.usuarioLogeado.PerfilSeleccionado === "")
+            {
+                $window.location = "#Perfil";
+            } 
+            else if($scope.usuarioLogeado.PerfilSeleccionado == "Operativo")
+            {
+                $scope.IdentificarPermisos();
+                $scope.IncializarControlador();
+            }
+            else
+            {
+                $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
+            }
+        }
+        else
+        {
+            $window.location = "#Login";
+        }
+    }
+    
+    //Se manda a llamar cada ves que los datos de un usuario han cambiado
+    $scope.$on('cambioUsuario',function()
+    {
+        $scope.usuarioLogeado =  datosUsuario.getUsuario();
+    
+        if(!$scope.usuarioLogeado.SesionIniciada)
+        {
+            $location.path('/Login');
+            return;
+        }
+        else
+        {
+            if($scope.usuarioLogeado.PerfilSeleccionado === "")
+            {
+                $location.path('/Perfil');
+            }
+            else if($scope.usuarioLogeado.PerfilSeleccionado == "Operativo")
+            {
+                $scope.IdentificarPermisos();
+                $scope.IncializarControlador();
+            }
+            else
+            {
+                $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
+            }
+        }
+    });
     
 });
 
