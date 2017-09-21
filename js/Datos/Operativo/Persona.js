@@ -16,13 +16,13 @@ class Persona
 }
 
 //obtiene los compoenetes para los módulos
-function GetCliente($http, $q, CONFIG)     
+function GetCliente($http, $q, CONFIG, id)     
 {
     var q = $q.defer();
 
     $http({      
           method: 'GET',
-          url: CONFIG.APIURL + '/GetCliente',
+          url: CONFIG.APIURL + '/GetCliente/' + id,
 
       }).success(function(data)
         {

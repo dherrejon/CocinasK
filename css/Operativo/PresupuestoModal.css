@@ -615,6 +615,15 @@
     border: 2px solid  rgba(250, 97, 21, 1.0);
 }
 
+.textoGris
+{
+    color: #A6A6A6;
+}
+
+.textoBlanco
+{
+    color: white;
+}
 .checkBtn, .checkBtn:active, .checkBtn:focus
 {
     border: 2px solid lightgray;

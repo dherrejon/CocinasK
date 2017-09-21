@@ -99,7 +99,7 @@
 
 .textoNaranja
 {
-    color: rgb(250, 97, 21);
+    color: rgb(250, 97, 21) !important;
 }
 
 /*----------------proyecto----------*/

@@ -92,7 +92,7 @@
                               </tr>
                             </thead>
                             <tbody >
-                              <tr ng-repeat="presupuesto in proyecto.Presupuesto | orderBy:['-PresupuestoId']">
+                              <tr ng-repeat="presupuesto in GetPresupuestosOrdenados(proyecto.Presupuesto)">
 
                                  <td>{{presupuesto.PresupuestoId}}</td>
                                  <td>{{presupuesto.Titulo}}</td>
@@ -116,19 +116,19 @@
                                             </li>
                                             
                                             <li>
-                                                <a class="dropdownOpcionModal" ng-disabled="true" ng-click="ClonarPresupuesto(presupuesto, proyecto)">
+                                                <a class="dropdownOpcionModal" ng-click="ClonarPresupuesto(presupuesto, proyecto)">
                                                     <span class="fa fa-clone"></span> Clonar
                                                 </a>
                                             </li>
                                             
                                             <li>
-                                                <a class="dropdownOpcionModal" ng-disabled="true">
+                                                <a class="dropdownOpcionModal" ng-click="UnirPresupuesto(presupuesto, proyecto)">
                                                     <span class="fa fa-link"></span> Unir
                                                 </a>
                                             </li>
                                             
                                             <li>
-                                                <a class="dropdownOpcionModal" ng-disabled="true">
+                                                <a class="dropdownOpcionModal" ng-disabled="true"  ng-click="PersonalizarPresupuesto(presupuesto, proyecto)">
                                                     <span class="fa fa-address-book-o"></span> Personalizado
                                                 </a>
                                             </li>

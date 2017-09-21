@@ -209,6 +209,49 @@ function TransformarFecha(fecha)
     return fechaF;
 }
 
+
+function TransformarFechaEsp(fecha)
+{
+    var year = fecha.slice(6,10);
+    var mes = parseInt(fecha.slice(3,5))-1;
+    var dia = fecha.slice(0,2);
+    
+    var d = new Date(year, mes, dia);
+    
+    mes = GetMesNombre(mes);
+    
+    var fechaF = dia + "/"  + mes + "/" + year;
+    
+    return fechaF;
+}
+
+function TransformarFechaEsp2(fecha)
+{
+    var year = fecha.slice(0,4);
+    var mes = parseInt(fecha.slice(5,7))-1;
+    var dia = fecha.slice(8,10);
+    var hora = fecha.slice(10,16);
+    
+    var d = new Date(year, mes, dia);
+    
+    mes = GetMesNombre(mes);
+    
+    var fechaF = dia + "/"  + mes + "/" + year + hora;
+    
+    return fechaF;
+}
+
+function TransformarFechaEsp2Ing(fecha)
+{
+    var year = fecha.slice(6,10);
+    var mes = fecha.slice(3,5);
+    var dia = fecha.slice(0,2);
+    
+    var fechaF = year + "-"  + mes + "-" + dia;
+    
+    return fechaF;
+}
+
 function GetMesNombre(mes)
 {
     return Month[mes];
@@ -310,6 +353,7 @@ function SetPresupuesto(data)
     var presupuesto = new Presupuesto;
     
     presupuesto.PresupuestoId = data.PresupuestoId;
+    presupuesto.PresupuestoIdN = parseInt(data.PresupuestoId);
     presupuesto.ProyectoId = data.ProyectoId;
     presupuesto.UsuarioId = data.UsuarioId;
     presupuesto.FechaCreacion = TransformarFecha(data.FechaCreacion);

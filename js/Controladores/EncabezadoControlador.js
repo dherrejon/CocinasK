@@ -1,4 +1,4 @@
-app.controller("EncabezadoControlador", function($scope, $rootScope, $http, CONFIG, $q, $window, datosUsuario, datosPerfil, md5, CITA, PRESUPUESTO)
+app.controller("EncabezadoControlador", function($scope, $rootScope, $http, CONFIG, $q, $window, datosUsuario, datosPerfil, md5, CITA, PRESUPUESTO, OPEPRESUPUESTO)
 {   
     $rootScope.barraNavegacionOpciones = "";      //opciones de la barra de navegación
     $scope.usuario = datosUsuario.getUsuario();
@@ -74,6 +74,14 @@ app.controller("EncabezadoControlador", function($scope, $rootScope, $http, CONF
         else if(funcion == "AgregarPresupuesto")
         {
             PRESUPUESTO.AgregarPresupuestoCero(); 
+        }
+        else if(funcion == "UnirPresupuesto")
+        {
+            OPEPRESUPUESTO.UnirPresupuesto(); 
+        }
+        else if(funcion == "ClonarPresupuesto")
+        {
+            OPEPRESUPUESTO.ClonarPresupuesto(); 
         }
     };
     
@@ -496,15 +504,17 @@ var OpcionOperativo =
         elemento: [ 
                     { menu: 1, referencia: "#Cliente", texto:"Perfil Clientes",  show:false, tipo:"enlace", permiso:[{clave:"AdmTerConsultar"}]},
                     { divider: true, menu: 2, texto:"Agregar Cita", funcion:"AgregarCita", show:true, tipo:"funcion"},
-                    { menu: 2, texto:"Agregar Presupuesto", funcion:"AgregarPresupuesto", show:true, tipo:"funcion"}
+                    { divider: true, menu: 3, texto:"Agregar Presupuesto", funcion:"AgregarPresupuesto", show:true, tipo:"funcion"},
+                    { menu: 3, texto:"Unir Presupuesto", funcion:"UnirPresupuesto", show:true, tipo:"funcion"},
+                    { menu: 3, texto:"Clonar Presupuesto", funcion:"ClonarPresupuesto", show:true, tipo:"funcion"}
                   ]                      
     },
     
     { 
         Opcion: {texto:"Usuario", id:"usuario"},
         elemento: [ 
-                        { menu: 1, referencia: "#Plaza", texto:"Agenda", show:false, tipo:"enlace", permiso:[{clave:"AdmPlaConsultar"}]},
-                        { menu: 2, texto:"Cambiar Contraseña", funcion:"CambiarContraseña", show:true, tipo:"funcion", divider:true},
+                        //{ menu: 1, referencia: "#Plaza", texto:"Agenda", show:false, tipo:"enlace", permiso:[{clave:"AdmPlaConsultar"}]},
+                        { menu: 2, texto:"Cambiar Contraseña", funcion:"CambiarContraseña", show:true, tipo:"funcion", divider:false},
                         { menu: 2, texto:"Cerrar Sesión", funcion:"CerrarSesion", show:true, tipo:"funcion"}
                   ]                      
     }

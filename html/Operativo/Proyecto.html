@@ -20,7 +20,7 @@
                 <div class="row"> 
                     <div class="col-sm-12">
                        <div class="entrada2">
-                            <input  ng-disabled=" personaSeleccionada" ng-pattern="erNombrePersonal" ng-blur="GoToPeople()" type="text" required class="{{clasePresupuesto.paso1.nombre}} form-control" name="nombre" ng-model="presupuesto.Persona.Nombre" ng-maxlength="255"/>
+                            <input autocomplete="off" ng-disabled=" personaSeleccionada" ng-pattern="erNombrePersonal" ng-blur="GoToPeople()" type="text" required class="{{clasePresupuesto.paso1.nombre}} form-control" name="nombre" ng-model="presupuesto.Persona.Nombre" ng-maxlength="255"/>
                             <label>Nombre*</label>
                         </div>
                    </div>             
@@ -30,7 +30,7 @@
                 <div class="row"> 
                     <div class="col-sm-6">
                        <div class="entrada2">
-                            <input ng-disabled=" personaSeleccionada" ng-pattern="erNombrePersonal" ng-blur="GoToPeople()" type="text" required class="{{clasePresupuesto.paso1.apellido1}} form-control" name="apellido1" ng-model="presupuesto.Persona.PrimerApellido" ng-maxlength="120"/>
+                            <input autocomplete="off" ng-disabled=" personaSeleccionada" ng-pattern="erNombrePersonal" ng-blur="GoToPeople()" type="text" required class="{{clasePresupuesto.paso1.apellido1}} form-control" name="apellido1" ng-model="presupuesto.Persona.PrimerApellido" ng-maxlength="120"/>
                             <label>Primer Apellido*</label>
                         </div>
                    </div>
@@ -39,7 +39,7 @@
                    
                    <div class="col-sm-6">
                        <div class="entrada2">
-                            <input  ng-disabled=" personaSeleccionada" type="text" class="{{clasePresupuesto.paso1.apellido2}} form-control" name="apellido2" ng-model="presupuesto.Persona.SegundoApellido" ng-maxlength="120"/>
+                            <input autocomplete="off" ng-disabled=" personaSeleccionada" type="text" class="{{clasePresupuesto.paso1.apellido2}} form-control" name="apellido2" ng-model="presupuesto.Persona.SegundoApellido" ng-maxlength="120"/>
                             <label>Segundo Apellido</label>
                         </div>
                    </div>       
@@ -404,7 +404,7 @@
                    <!-- nombre -->
                     <div class="col-sm-6">
                        <div class="entrada2">
-                            <input type="text" required class="entrada form-control"  ng-disabled="!proyectoNuevo"  name="nombre" ng-model="presupuesto.Proyecto.Nombre" ng-maxlength="120" />
+                            <input type="text" autocomplete="off" required class="entrada form-control"  ng-disabled="!proyectoNuevo"  name="nombre" ng-model="presupuesto.Proyecto.Nombre" ng-maxlength="120" />
                             <label>Nombre del Proyecto*</label>
                         </div>
                    </div>             
@@ -1163,7 +1163,7 @@
             </form>
             
             <!-- Paso 6 -->
-            <form name="presupuesto6Forma" ng-show="pasoPresupuesto == 6">
+            <form name="presupuesto6Forma" ng-if="pasoPresupuesto == 6">
                 <div class="row">
                     <div class="col-xs-12 tituloPaso">
                         <span>Maqueo y Accesorios</span>
@@ -2195,7 +2195,11 @@
                 <br>
                 <!---- botones de operacion -->
                 <div class="row">
-                    <div class="col-xs-6">
+                   <div class="col-xs-6" ng-if="pasoMinimo == 10">
+                        <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarPresupuestoModal()">CANCELAR</button>
+                    </div>
+                    
+                    <div class="col-xs-6" ng-if="pasoMinimo != 10">
                         <a class="btn botonOperacionModal btn-block" ng-click="AnteriorPresupuesto()">&lt;&lt; ANTERIOR</a>
                     </div>
 
@@ -2225,7 +2229,7 @@
                    <div class="col-xs-12">
                        <div class="contenedorAcordio">
                           
-                          <div ng-if="personaSeleccionada && !promoActualizar" class="row">
+                          <div ng-if="personaSeleccionada && !promoActualizar && opt != 'Personalizar'" class="row">
                              <div class="col-xs-12">
                                   <a class="btn botonOperacionRecto pull-right" ng-click="ActualizarPromocion()" >
                                       <span class="fa fa-refresh"> </span> Actualizar
@@ -2459,7 +2463,7 @@
                    <div class="col-xs-12">
                        <div class="contenedorAcordio">
                            
-                           <div ng-if="personaSeleccionada && !promoActualizar" class="row">
+                           <div ng-if="personaSeleccionada && !promoActualizar && opt != 'Personalizar'" class="row">
                              <div class="col-xs-12">
                                   <a class="btn botonOperacionRecto pull-right" ng-click="ActualizarPromocion()" >
                                       <span class="fa fa-refresh"> </span> Actualizar
@@ -2577,7 +2581,11 @@
                 <br>
                 <!---- botones de operacion -->
                 <div class="row">
-                    <div class="col-xs-6">
+                   <div class="col-xs-6" ng-if="pasoMinimo == 12">
+                        <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarPresupuestoModal()">CANCELAR</button>
+                    </div>
+                    
+                    <div class="col-xs-6" ng-if="pasoMinimo != 12">
                         <a class="btn botonOperacionModal btn-block" ng-click="AnteriorPresupuestoPaso12()">&lt;&lt; ANTERIOR</a>
                     </div>
 
@@ -2588,7 +2596,7 @@
                 <br>
             </div>
               
-              <!-- paso 13 -->
+            <!-- paso 13 -->
             <div name="presupuesto10Forma" ng-show="pasoPresupuesto == 13">
                
                 <!-- Planes de pago -->
@@ -2893,9 +2901,14 @@
                 <div class="row">
                     <div class="col-xs-12">
                         <div class="text-center">
-                            <span>
+                            <span ng-if="opt != 'Personalizar'">
                                 <span class="fa fa-check-circle-o iconoBien fa-4x"></span><br>
                                 <span style="font-size: 14pt">Presupuesto Guardado</span>
+                            </span>
+                            
+                            <span ng-if="opt == 'Personalizar'">
+                                <span class="fa fa-download iconoBien fa-4x"></span><br>
+                                <span style="font-size: 14pt">Presupuesto Descargado</span>
                             </span>
                         </div>
                     </div>

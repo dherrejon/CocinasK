@@ -288,12 +288,17 @@ function AgregarProyectoPresupuesto()
          
     try 
     {
-        //$stmt = $db->prepare($sql);
-        //$stmt->execute();
         $stmt = $db->query($sql);
         $response = $stmt->fetchAll(PDO::FETCH_OBJ);
-        $presupuesto->PresupuestoId = $response[0]->PresupuestoId;
-        //$presupuesto->PresupuestoId = $db->lastInsertId();
+        
+        if($response[0]->PresupuestoId == null)
+        {
+            $presupuesto->PresupuestoId = 1;
+        }
+        else
+        {
+            $presupuesto->PresupuestoId = $response[0]->PresupuestoId;
+        }
     }
     catch(PDOException $e) 
     {    
@@ -1192,7 +1197,7 @@ function GetDatosPresupuesto()
     }
     
     //accesorios
-    $sql = "SELECT ap.AccesorioPresupuestoId, ap.Cantidad, ta.Nombre, ta.ClaseAccesorioId, ap.TipoAccesorioId
+    $sql = "SELECT ap.AccesorioPresupuestoId, ap.Cantidad, ta.Nombre, ta.ClaseAccesorioId, ap.TipoAccesorioId, ta.Obligatorio
             FROM AccesorioPresupuesto ap
             INNER JOIN TipoAccesorio ta ON ta.TipoAccesorioId = ap.TipoAccesorioId
             WHERE ap.PresupuestoId = ".$presupuesto->PresupuestoId;
@@ -1374,7 +1379,7 @@ function EditarProyectoPresupuesto()
     }
     catch(PDOException $e) 
     {    
-        echo $e;
+        echo $sql;
         echo '[{"Estatus": "Fallido"}]';
         $db->rollBack();
         $app->status(409);

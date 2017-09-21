@@ -1,13 +1,20 @@
 <?php
 
-function GetCliente()
+function GetCliente($id)
 {
     global $app;
     global $session_expiration_time;
 
     $request = \Slim\Slim::getInstance()->request();
-
-    $sql = "SELECT * FROM ClienteVista";
+    
+    if($id == "-1")
+    {
+        $sql = "SELECT * FROM ClienteVista";
+    }
+    else
+    {
+        $sql = "SELECT * FROM ClienteVista WHERE UnidadNegocioId = ".$id;
+    }
 
     try 
     {

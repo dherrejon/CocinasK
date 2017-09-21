@@ -8,7 +8,7 @@
                       <tr>
                        <th><button class="btn btn-block botonOrdenar" ng-click="CambiarOrdenarMuestrarioAccesorio('TipoAccesorio.Nombre')"><b>Tipo Accesorio </b><b ng-if="ordenarPorMuestarioAccesorio === 'TipoAccesorio.Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPorMuestarioAccesorio === '-TipoAccesorio.Nombre'" class="fa fa-arrow-down"></b></button></th>
                         <th><button class="btn btn-block botonOrdenar" ng-click="CambiarOrdenarMuestrarioAccesorio('Nombre')"><b>Nombre </b><b ng-if="ordenarPorMuestarioAccesorio === 'Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPorMuestarioAccesorio === '-Nombre'" class="fa fa-arrow-down"></b></button></th>
-                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenarMuestrarioAccesorio('Margen')"><b>Margen </b><b ng-if="ordenarPorMuestarioAccesorio === 'Margen'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPorMuestarioAccesorio === '-Margen'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonOrdenar" style="text-align: center !important" ng-click="CambiarOrdenarMuestrarioAccesorio('Margen')"><b>Margen </b><b ng-if="ordenarPorMuestarioAccesorio === 'Margen'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPorMuestarioAccesorio === '-Margen'" class="fa fa-arrow-down"></b></button></th>
                         <th><button class="btn botonFalso"><b>Accesorios</b></button></th>
                         <th><button class="btn botonFalso"><b>Editar</b></button></th>
                         <th><button class="btn botonFalso"><b>Activo</b></button></th>
@@ -22,7 +22,7 @@
                               <span ng-if="muestrario.PorDefecto" class="fa fa-asterisk" data-toggle="tooltip" data-placement="bottom" title="Muestrario por defecto"></span>
                           </td>
                           
-                          <td>{{muestrario.Margen}}</td>
+                          <td class="text-center">{{muestrario.Margen}}%</td>
 
                         <td class="text-center">
                             <a class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirDetallesMuestrario(muestrario)">

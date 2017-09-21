@@ -29,21 +29,92 @@ app.controller("CitaControlador", function($scope, $rootScope, CITA, $http, $q, 
         $scope.personaSeleccionada = false;
         $scope.mostrarResponsable = false;
         $scope.pasoCita = 1;
-        $scope.persona = [];
-        $scope.tipoResponsable = "UnidadNegocio";
-        $scope.mostrarContenido = {contacto:false, direccion:false, unidad:false};
-        
-        $scope.CargarCatalogoCita();
+        $scope.pasoMinimo = 1;
+
+        $scope.IniciarCita();
         
         $('#agregarCitaModal').modal('toggle');
     });
     
+    $scope.$on('AgregarCitaPre',function()
+    {
+        $scope.operacion = "Agregar";
+        $scope.nuevaCita = new Cita();
+        
+        $scope.nuevaCita.Persona = CITA.GetPersona();
+        $scope.nuevaCita.Persona.NuevoContacto = [];
+        $scope.nuevaCita.Persona.NuevoDomicilio = [];
+        $scope.nuevaCita.Persona.UnidadNegocio = [];
+        
+        $scope.personaSeleccionada = true;
+        $scope.mostrarResponsable = false;
+        $scope.pasoCita = 2;
+        $scope.pasoMinimo = 2;
+        
+        $scope.IniciarCita(); 
+        $scope.GetDireccionPersona($scope.nuevaCita.Persona.PersonaId);
+        $scope.GetUnidadNegocioPersona($scope.nuevaCita.Persona.PersonaId);
+        
+        $('#agregarCitaModal').modal('toggle');
+    });
+    
+     $scope.$on('EditarCita',function()
+    {
+        $scope.operacion = "Editar";
+        $scope.nuevaCita = new Cita();
+        
+         
+        var c = CITA.GetCita();
+        $scope.nuevaCita = jQuery.extend({}, c);
+        $scope.nuevaCita.Persona.NuevoContacto = [];
+        $scope.nuevaCita.Persona.NuevoDomicilio = [];
+        $scope.nuevaCita.Persona.UnidadNegocio = [];
+         
+        $scope.personaSeleccionada = true;
+        $scope.mostrarResponsable = false;
+        $scope.pasoCita = 2;
+        $scope.pasoMinimo = 2;
+        
+        $scope.nuevaCita.Fecha = $scope.nuevaCita.Fecha2;
+        document.getElementById('fechaCita').value = $scope.nuevaCita.Fecha2;
+        document.getElementById('horaInicio').value = $scope.nuevaCita.HoraInicio;
+        document.getElementById('horaFin').value = $scope.nuevaCita.HoraFin;
+        
+        $scope.IniciarCita(); 
+        $scope.GetDireccionPersona($scope.nuevaCita.Persona.PersonaId);
+        //$scope.GetUnidadNegocioPersona($scope.nuevaCita.Persona.PersonaId);
+         
+        if($scope.nuevaCita.Responsable.UnidadNegocio)
+        {
+            $scope.tipoResponsable = "UnidadNegocio";
+        }
+        else
+        {
+            $scope.tipoResponsable = "Colaborador";
+        }
+        
+        $('#agregarCitaModal').modal('toggle');
+    });
+    
+    $scope.IniciarCita = function()
+    {
+        $scope.tipoResponsable = "UnidadNegocio";
+        $scope.mostrarContenido = {contacto:false, direccion:false, unidad:false};
+        
+        $scope.CargarCatalogoCita();
+        $scope.persona = [];        
+    };
+    
     $scope.CargarCatalogoCita = function()
     {   
         $scope.GetTareaCita();
-        $scope.GetMedioCaptacion();
         $scope.GetResponsable();
         $scope.GetUnidadNegocio();
+        
+        if($scope.operacion != "Editar")
+        {
+            $scope.GetMedioCaptacion();
+        }
         
         $scope.usuario = datosUsuario.getUsuario();
     };
@@ -134,7 +205,24 @@ app.controller("CitaControlador", function($scope, $rootScope, CITA, $http, $q, 
     {
         GetDireccionPersona($http, $q, CONFIG, id).then(function(data)
         {
+            if($scope.operacion == "Editar")
+            {
+                for(var k=0; k<data.length; k++)
+                {
+                    if(data[k].DireccionPersonaId == $scope.nuevaCita.DireccionCitaId)
+                    {
+                        data[k].Seleccionado = true;
+                    }
+                    else
+                    {
+                        data[k].Seleccionado = false;
+                    }
+                }
+            }
+                    
             $scope.nuevaCita.Persona.Domicilio = data;
+            
+           
         
         }).catch(function(error)
         {
@@ -599,39 +687,51 @@ app.controller("CitaControlador", function($scope, $rootScope, CITA, $http, $q, 
     { 
         weekStart : 0, 
         time: false,
-        format: "DD-MM-YYYY",
+        format: "DD/MM/YYYY",
         minDate : new Date(),
         disabledDays: [7]
     });
     
-    $('#horaInicio').bootstrapMaterialDatePicker(
-    { 
-        weekStart : 0, 
-        date: false,
-        format: "HH:mm",
-        //shortTime: true,
-        minDate : new Date(),
-    });
-    
-    $('#horaFin').bootstrapMaterialDatePicker(
-    { 
-        weekStart : 0, 
-        date: false,
-        format: "HH:mm",
-        //shortTime: true,
-        minDate : new Date()
-    });
-    
-    $('#horaInicio').bootstrapMaterialDatePicker(
-    { 
-        weekStart : 0, 
-        date: false,
-        format: "HH:mm",
-        //shortTime: true,
-    }).on('change', function(e, date)
+    $('#horaInicio').datetimepicker(
     {
-        $('#horaFin').bootstrapMaterialDatePicker('setMinDate', date);
+        locale: 'es',
+        format: 'HH:mm',
+        showClear: true,
+        showClose: true,
+        toolbarPlacement: 'bottom'
     });
+    
+    $('#horaFin').datetimepicker(
+    {
+        locale: 'es',
+        format: 'HH:mm',
+        showClear: true,
+        showClose: true,
+        toolbarPlacement: 'bottom'
+    });
+    
+    /*.on('blur', function(e, date)
+    {
+        $('#horaFin').minDate = $('#horaFin').date;
+    });*/
+    
+    /*$('#horaInicio').bootstrapMaterialDatePicker(
+    { 
+        weekStart : 0, 
+        date: false,
+        format: "HH:mm",
+        //shortTime: true,
+        //minDate : new Date(),
+    });*/
+    
+    /*$('#horaFin').bootstrapMaterialDatePicker(
+    { 
+        weekStart : 0, 
+        date: false,
+        format: "HH:mm",
+        //shortTime: true,
+        //minDate : new Date()
+    });*/
 
     $scope.CambiarFecha = function(element) 
     {
@@ -664,7 +764,9 @@ app.controller("CitaControlador", function($scope, $rootScope, CITA, $http, $q, 
     
     $scope.$on('DomicilioAgregado',function()
     {
-        $scope.nuevaCita.Persona.NuevoDomicilio.push(DOMICILIO.GetDomicilio());
+        var domicilio = DOMICILIO.GetDomicilio();
+        domicilio.Seleccionado = false;
+        $scope.nuevaCita.Persona.NuevoDomicilio.push(domicilio);
     });
     
     $scope.BorrarDomicilioAgregado = function(domicilio)
@@ -738,6 +840,15 @@ app.controller("CitaControlador", function($scope, $rootScope, CITA, $http, $q, 
                 }
             }
         }
+        
+        if(domicilio.Seleccionado)
+        {
+            $scope.nuevaCita.Domicilio = domicilio;
+        }
+        else
+        {
+            $scope.nuevaCita.Domicilio = new Domicilio();
+        }
     };
     
     
@@ -784,6 +895,10 @@ app.controller("CitaControlador", function($scope, $rootScope, CITA, $http, $q, 
             {
                 $scope.AgregarCita();
             }
+            else if($scope.operacion == "Editar")
+            {
+                $scope.EditarCita();
+            }
         }
     };
     
@@ -791,11 +906,38 @@ app.controller("CitaControlador", function($scope, $rootScope, CITA, $http, $q, 
     {
         AgregarCita($http, CONFIG, $q, $scope.nuevaCita).then(function(data)
         {
+            if(data[0].Estatus == "Exitoso")
+            {
+                $('#agregarCitaModal').modal('toggle');
+                $scope.mensaje = "La cita se ha agregado.";
+                $scope.CerrarCitaModal();
+                
+                CITA.CitaAgregada(data[1].Cita);
+            }
+            else
+            {
+                $scope.mensaje = "Ha ocurrido un error. Intente más tarde.";
+            }
+            $('#mensajeCita').modal('toggle');
+            
+        }).catch(function(error)
+        {
+            $scope.mensaje = "Ha ocurrido un error. Intente más tarde. Error: " + error;
+            $('#mensajeCita').modal('toggle');
+        });
+    };
+    
+    $scope.EditarCita = function()    
+    {
+        EditarCita($http, CONFIG, $q, $scope.nuevaCita).then(function(data)
+        {
             if(data == "Exitoso")
             {
                 $('#agregarCitaModal').modal('toggle');
                 $scope.mensaje = "La cita se ha agregado.";
                 $scope.CerrarCitaModal();
+                
+                CITA.CitaEditada($scope.nuevaCita);
             }
             else
             {
@@ -872,6 +1014,14 @@ app.controller("CitaControlador", function($scope, $rootScope, CITA, $http, $q, 
         else
         {
             $scope.claseCita.paso2.horaFin = "entrada";
+        }
+        
+        if($scope.nuevaCita.HoraInicio.length > 0 && $scope.nuevaCita.HoraFin.length)
+        {
+            if($scope.nuevaCita.HoraFin < $scope.nuevaCita.HoraInicio)
+            {
+                $scope.mensajeError[$scope.mensajeError.length] = "*La hora de fin debe ser mayor a la hora de inicio.";
+            }
         }
         
         if(descripcionInvalida)
@@ -957,8 +1107,8 @@ app.controller("CitaControlador", function($scope, $rootScope, CITA, $http, $q, 
                             };
         
         document.getElementById("fechaCita").value="";
-        document.getElementById("horaInicio").value="";
-        document.getElementById("horaFin").value="";
+        $('#horaInicio').data("DateTimePicker").clear();
+        $('#horaFin').data("DateTimePicker").clear();
     };
     
 });
@@ -967,11 +1117,46 @@ app.factory('CITA',function($rootScope)
 {
   var service = {};
   service.cita = null;
+  service.persona = null;
     
   service.AgregarCitaCero = function()
   {
       this.cita = null;
       $rootScope.$broadcast('AgregarCitaCero');
+  };
+    
+  service.AgregarCitaPre = function(persona)
+  {
+      this.persona = persona;
+      $rootScope.$broadcast('AgregarCitaPre');
+  };
+    
+  service.CitaAgregada = function(cita)
+  {
+      this.cita = cita;
+      $rootScope.$broadcast('CitaAgregada');
+  };
+    
+  service.CitaEditada = function(cita)
+  {
+      this.cita = cita;
+      $rootScope.$broadcast('CitaEditada');
+  };
+    
+  service.GetPersona = function()
+  {
+      return this.persona;
+  };
+    
+  service.GetCita = function()
+  {
+      return this.cita;
+  };
+    
+  service.EditarCita = function(cita)
+  {
+      this.cita = cita;
+      $rootScope.$broadcast('EditarCita');
   };
     
   return service;

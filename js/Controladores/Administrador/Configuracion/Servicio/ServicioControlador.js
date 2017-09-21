@@ -214,7 +214,7 @@ app.controller("ServicioControlador", function($scope, $http, $q, CONFIG, $rootS
         
         datos[1] = $scope.servicioActualizar.ServicioId;
         
-        console.log();
+        //console.log();
 
         ActivarDesactivarServicio($http, $q, CONFIG, datos).then(function(data)
         {

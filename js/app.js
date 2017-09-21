@@ -1,4 +1,4 @@
-var app = angular.module('CocinasK',['ngRoute', 'angular.filter','angular-md5', 'angular-loading-bar']);
+var app = angular.module('CocinasK',['ngRoute', 'angular.filter','angular-md5', 'angular-loading-bar', 'ui.bootstrap']);
 
  //Configuracion del jason token, APIURL: indica la direccion del directorio de index.php
 app.constant('CONFIG',
@@ -169,10 +169,10 @@ app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpPro
         when('/CostoModulo',{
             templateUrl: 'html/Administrador/Catalogo/Modulo/CostoModulo.html'
         }).
-    //Otros Perfiles
-    when('/Ejecutivo',{
+    //Ejecutivo
+    /*when('/Ejecutivo',{
         templateUrl: 'html/Ejecutivo/Ejecutivo.html'
-    }).
+    }).*/
     
     //Operativo
     when('/Operativo',{

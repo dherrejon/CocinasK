@@ -258,7 +258,7 @@
                                         <thead class="TituloTabla">
                                           <tr>
                                             <th><button class="btn botonOrdenar" ng-click="CambiarOrdenarConsumible('Nombre')"><b>Nombre </b><b ng-if="ordenarPorConsumible === 'Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPorConsumible === '-Nombre'" class="fa fa-arrow-down"></b></button></th>
-                                            <th><button class="btn botonOrdenar" ng-click="CambiarOrdenarConsumible('Costo')"><b>Costo </b><b ng-if="ordenarPorConsumible === 'Costo'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPorConsumible === '-Costo'" class="fa fa-arrow-down"></b></button></th>
+                                            <th><button class="btn botonOrdenar" style="text-align: center !important" ng-click="CambiarOrdenarConsumible('Costo')"><b>Costo </b><b ng-if="ordenarPorConsumible === 'Costo'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPorConsumible === '-Costo'" class="fa fa-arrow-down"></b></button></th>
                                             <th><button class="btn botonFalso"><b>Editar</b></button></th>
                                             <th><button class="btn botonFalso"><b>Activo</b></button></th>
                                           </tr>
@@ -266,7 +266,7 @@
                                         <tbody >
                                           <tr ng-repeat="consumible in consumible | orderBy:[ordenarPorConsumible, 'Nombre']">
                                             <td>{{consumible.Nombre}}</td>
-                                            <td>{{consumible.Costo}}</td>
+                                            <td class="text-center">{{consumible.Costo | currency}}</td>
 
                                             <td class="text-center">
                                                 <a ng-if="permisoUsuario.consumible.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirConsumibleForma('Editar', consumible)">

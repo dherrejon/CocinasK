@@ -4,7 +4,12 @@
        
         
         <div class="nav-side-menu">
-            <div class="tituloBarraVertical">Perfil</div>
+           
+            <div class="tituloBarraVertical">
+
+               Perfil
+
+            </div>
 
             <div ><i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i></div>
 
@@ -14,6 +19,14 @@
                         <li ng-repeat="opcion in opciones" ng-class="GetClaseSeccion(opcion.referencia)">
                           <a href="#PerfilCliente/{{personaId}}/{{opcion.referencia}}">
                               <i class="{{opcion.icono}}"></i> <span>{{opcion.titulo}}</span>
+                          </a>
+                        </li>
+                        
+                        <li class="separador"></li>
+                        
+                        <li>
+                          <a href="#Cliente">
+                              <i class="fa fa-sign-out"></i> <span>Salir</span>
                           </a>
                         </li>
                     </ul>

@@ -1,4 +1,4 @@
-app.controller("PerfilClienteControlador", function($scope, $rootScope, $http, $q, CONFIG,  $routeParams, datosUsuario)
+app.controller("PerfilClienteControlador", function($scope, $rootScope, $http, $q, CONFIG, $window,  $routeParams, $location, datosUsuario)
 {   
     /*----------------verificar los permisos---------------------*/
     $rootScope.permisoOperativo = {verTodosCliente: false};
@@ -312,5 +312,5 @@ var optPerfil = [
                     {titulo: "Datos generales", icono:"fa fa-id-card-o", referencia:"DatosGenerales"},
                     {titulo: "Proyectos", icono:"fa fa-archive", referencia:"Proyectos"},
                     {titulo: "Citas", icono:"fa fa-calendar-o", referencia:"Citas"},
-                    {titulo: "Notas", icono:"fa fa-sticky-note-o", referencia:"Notas"}
+                    //{titulo: "Notas", icono:"fa fa-sticky-note-o", referencia:"Notas"}
                 ];

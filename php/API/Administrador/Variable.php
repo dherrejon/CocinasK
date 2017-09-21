@@ -36,7 +36,7 @@ function EditarIVA()
     $request = \Slim\Slim::getInstance()->request();
     $iva = json_decode($request->getBody());
    
-    $sql = "UPDATE IVA SET IVA='".$iva->IVA."', Incluye = '".$iva->Incluye."'  WHERE IVA=".$iva->IVAId."";
+    $sql = "UPDATE IVA SET IVA='".$iva->IVA."', Incluye = '".$iva->Incluye."'  WHERE IVAId=".$iva->IVAId."";
     
     try 
     {

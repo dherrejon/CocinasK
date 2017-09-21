@@ -104,7 +104,7 @@
                                           <tr>
                                             <th><button class="btn botonOrdenar" ng-click="CambiarOrdenarMaterial('Nombre')"><b>Nombre </b><b ng-if="ordenarPorMaterial === 'Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPorMaterial === '-Nombre'" class="fa fa-arrow-down"></b></button></th>
                                             <th><button class="btn botonOrdenar" ng-click="CambiarOrdenarMaterial('TipoMaterial.Nombre')"><b>Tipo Material </b><b ng-if="ordenarPorMaterial === 'TipoMaterial.Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPorMaterial === '-TipoMaterial.Nombre'" class="fa fa-arrow-down"></b></button></th>
-                                            <th><button class="btn botonOrdenar" ng-click="CambiarOrdenarMaterial('CostoUnidad')"><b>Costo por Unidad </b><b ng-if="ordenarPorMaterial === 'CostoUnidad'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPorMaterial === '-CostoUnidad'" class="fa fa-arrow-down"></b></button></th>
+                                            <th><button class="btn botonOrdenar" style="text-align: center !important" ng-click="CambiarOrdenarMaterial('CostoUnidad')"><b>Costo por Unidad </b><b ng-if="ordenarPorMaterial === 'CostoUnidad'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPorMaterial === '-CostoUnidad'" class="fa fa-arrow-down"></b></button></th>
                                             <th><button class="btn botonFalso"><b>Editar</b></button></th>
                                             <th><button class="btn botonFalso"><b>Activo</b></button></th>
                                           </tr>
@@ -113,9 +113,9 @@
                                           <tr ng-repeat="material in material | orderBy:[ordenarPorMaterial, 'Nombre'] | filter:buscar | filter:FiltrarMaterial | filter:{MaterialDe:'Módulo'}">
                                             <td>{{material.Nombre}}</td>
                                             <td>{{material.TipoMaterial.Nombre}}</td>
-                                            <td ng-if="material.grueso.length == 0">${{material.CostoUnidad}}</td>
+                                            <td class="text-center" ng-if="material.grueso.length == 0">{{material.CostoUnidad | currency}}</td>
                                             
-                                            <td ng-if="material.grueso.length > 0">
+                                            <td ng-if="material.grueso.length > 0" class="text-center">
                                                 <a class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirGruesoForma(material)">
                                                     <span class="fa fa-eye fa-2x"></span>
                                                 </a>
@@ -494,14 +494,14 @@
                                     <thead class="TituloTabla">
                                       <tr>
                                         <th><button class="btn botonOrdenar"><b>Grueso </b></button></th>
-                                        <th><button class="btn botonOrdenar"><b>Costo por Unidad </b></button></th>
+                                        <th><button class="btn botonOrdenar" style="text-align: center !important"><b>Costo por Unidad </b></button></th>
                                         <th><button class="btn botonFalso"><b>Activo </b></button></th>
                                       </tr>
                                     </thead>
                                     <tbody ng-repeat="grueso in costoPorGrueso.grueso | orderBy:'CostoUnidad'">
                                       <tr>
                                         <td>{{grueso.Grueso}}</td>
-                                        <td>${{grueso.CostoUnidad}}</td>
+                                        <td class="text-center">{{grueso.CostoUnidad | currency}}</td>
                                         <td class="text-center">
                                             <div class="checkbox">
                                                 <label>

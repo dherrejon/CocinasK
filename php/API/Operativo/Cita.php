@@ -1,39 +1,5 @@
 <?php
 	
-/*function GetColor()
-{
-    global $app;
-    global $session_expiration_time;
-
-    $request = \Slim\Slim::getInstance()->request();
-
-    $sql = "SELECT * FROM Color";
-
-    try 
-    {
-
-        $db = getConnection();
-        $stmt = $db->query($sql);
-        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
-        $db = null;
-        
-        foreach ($response as $img) 
-        {
-            $img->Imagen =  base64_encode($img->Imagen);
-        }
-        
-        //echo '[ { "Estatus": "Exito"}, {"Color":'.json_encode($response).'} ]'; 
-        echo json_encode($response);  
-    } 
-    catch(PDOException $e) 
-    {
-        //echo($e);
-        echo '[ { "Estatus": "Fallo" } ]';
-        $app->status(409);
-        $app->stop();
-    }
-}*/
-
 function AgregarCita()
 {
     $request = \Slim\Slim::getInstance()->request();
@@ -231,17 +197,22 @@ function AgregarCita()
 
     $sql = "INSERT Cita (TareaCitaId, PersonaId, EstatusCitaId, ColaboradorId, UnidadNegocioId, ProyectoId, DireccionPersonaId, Asunto, Fecha, HoraInicio, HoraFin, Descripcion) VALUES 
     ('".$cita->Tarea->TareaCitaId."', '".$cita->Persona->PersonaId."', 2, ".$cita->Responsable->Colaborador.", ".$cita->Responsable->UnidadNegocio.", 
-    null, ".$cita->DireccionCitaId.", '".$cita->Asunto."', STR_TO_DATE('".$cita->Fecha."', '%d-%m-%Y') , '".$cita->HoraInicio."', '".$cita->HoraFin."', '".$cita->Descripcion."')";
+    null, ".$cita->DireccionCitaId.", '".$cita->Asunto."', STR_TO_DATE('".$cita->Fecha."', '%d/%m/%Y') , '".$cita->HoraInicio."', '".$cita->HoraFin."', '".$cita->Descripcion."')";
     
      try 
     {
         $stmt = $db->prepare($sql);
         $stmt->execute();
         
+         
+        $cita->CitaId = $db->lastInsertId();
+        $cita->EstatusCita->EstatusCitaId = "2";
+        $cita->EstatusCita->Nombre = "Pendiente";
+        
         $db->commit();
         $db = null;
 
-        echo '[{"Estatus":"Exitoso"}]';
+        echo '[{"Estatus":"Exitoso"}, {"Cita": '.json_encode($cita).'}]';
     } 
     catch(PDOException $e) 
     {
@@ -288,7 +259,7 @@ function CambiarEstatusCita()
     {
         $db = getConnection();
         
-        $sql = "UPDATE Cita SET EstatusCitaId = ".$datos->EstatusCitaId." WHERE CitaId = ".$datos->CitaId."";
+        $sql = "UPDATE Cita SET EstatusCitaId = ".$datos->EstatusCitaId.", FechaFin = STR_TO_DATE( '".$datos->FechaFin2."', '%Y/%m/%d  %H:%i' ) WHERE CitaId = ".$datos->CitaId."";
         $stmt = $db->prepare($sql);
         $stmt->execute();
     
@@ -299,39 +270,102 @@ function CambiarEstatusCita()
     catch(PDOException $e) 
     {
         echo '[{"Estatus":"Fallo"}]';
-        //echo ($sql);
+        echo ($sql);
         $app->status(409);
         $app->stop();
     }
 }
 
-/*function GuardarImagenColor($id)
+function EditarCita()
 {
     global $app;
     $request = \Slim\Slim::getInstance()->request();
-    $name = $_FILES['file']['tmp_name'];
+    $cita = json_decode($request->getBody());
     
-    $imagen = addslashes(file_get_contents($_FILES['file']['tmp_name']));
-
-    $sql = "UPDATE Color SET Imagen = '".$imagen."' WHERE ColorId= ".$id."";
-
     try 
     {
         $db = getConnection();
+        $db->beginTransaction();
+        
+    } catch(PDOException $e) 
+    {
+        //echo($e);
+        echo '[ { "Estatus": "Fallo" } ]';
+        $app->status(409);
+        $app->stop();
+    }
+    
+    if($cita->Responsable->Colaborador)
+    {
+        $cita->Responsable->Colaborador = $cita->Responsable->ResponsableId;
+        $cita->Responsable->UnidadNegocio = "null";
+    }
+    else if($cita->Responsable->UnidadNegocio)
+    {
+        $cita->Responsable->UnidadNegocio = $cita->Responsable->ResponsableId;
+        $cita->Responsable->Colaborador = "null";
+    }
+    
+    if($cita->Tarea->TareaCitaId != "1")
+    {
+        $cita->DireccionCitaId = "null";
+    }
+    
+    $counDomicilio = count($cita->Persona->NuevoDomicilio);
+    if($counDomicilio > 0)
+    {
+        for($k=0; $k<$counDomicilio; $k++)
+        {
+            $sql = "INSERT INTO DireccionPersona (TipoMedioContactoId, PersonaId, PaisId, Domicilio, Codigo, Estado, Municipio, Ciudad, Colonia, Activo) VALUES";
+
+
+            $sql .= " (".$cita->Persona->NuevoDomicilio[$k]->TipoMedioContacto->TipoMedioContactoId.", ".$cita->Persona->PersonaId.",
+            1, '".$cita->Persona->NuevoDomicilio[$k]->Domicilio."', '".$cita->Persona->NuevoDomicilio[$k]->Codigo."', '".$cita->Persona->NuevoDomicilio[$k]->Estado."',
+            '".$cita->Persona->NuevoDomicilio[$k]->Municipio."', '".$cita->Persona->NuevoDomicilio[$k]->Ciudad."', '".$cita->Persona->NuevoDomicilio[$k]->Colonia."', 1),";
+            
+            $sql = rtrim($sql,",");
+
+            try 
+            {
+                $stmt = $db->prepare($sql);
+                $stmt->execute();
+                
+                if($cita->Persona->NuevoDomicilio[$k]->Seleccionado)
+                {
+                    $cita->DireccionCitaId = $db->lastInsertId();
+                }
+            } 
+            catch(PDOException $e) 
+            {
+                echo $sql;
+                echo '[{"Estatus": "Fallido"}]';
+                $db->rollBack();
+                $app->status(409);
+                $app->stop();
+            }
+        }
+    }
+   
+    $sql = "UPDATE Cita SET ColaboradorId = ".$cita->Responsable->Colaborador.", UnidadNegocioId = ".$cita->Responsable->UnidadNegocio.", DireccionPersonaId = ".$cita->DireccionCitaId.", HoraFin='".$cita->HoraFin."', HoraInicio='".$cita->HoraInicio."', Fecha= STR_TO_DATE('".$cita->Fecha."', '%d/%m/%Y'), Descripcion='".$cita->Descripcion."' WHERE CitaId=".$cita->CitaId."";
+    
+    try 
+    {
         $stmt = $db->prepare($sql);
         $stmt->execute();
+        
+        $db->commit();
         $db = null;
-        echo '[{"Estatus": "Exitoso"}]';
-        //echo '[{"rowcount":'. $stmt->rowCount() .'}]';
+
+        echo '[{"Estatus":"Exitoso"}]';
     }
     catch(PDOException $e) 
-    {
-        
-        //echo $e;
+    {    
+        echo $sql;
         echo '[{"Estatus": "Fallido"}]';
         $app->status(409);
         $app->stop();
     }
-}*/
+}
+
     
 ?>

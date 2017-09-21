@@ -148,20 +148,17 @@
     <div class="modal fade" id="CambiarPasswordModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static" >
         <br>    <br>   <br>
         <div class="modal-dialog modal-ms">
-            <div class="modal-content">
+            <div class="modal-content modalPrincipal">
                 <!-- encabezado del modal -->
                 <div class="row">
                     <div class="col-xs-12">
-                        <div class="margenModal">
-                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarCambiarPasswordForma()"><span aria-hidden="true">&times;</span></button>
-                            <h3 class="text-center">Cambiar Contraseña</h3>
-                            <hr class="separador">
-                        </div>
+                        <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarCambiarPasswordForma()"><span aria-hidden="true">&times;</span></button>
+                        <span  class="tituloModal">Cambiar Contraseña</span>
                     </div>
                 </div>
                 <br>
 
-                <form class="modal-body" name="cambiarPasswordForma">
+                <form class="" name="cambiarPasswordForma">
                 <!-- Datos -->
                     <!-- Nueva contraseña -->
                     <br>
@@ -205,11 +202,11 @@
                     <!---- botones de operacion --->
                     <div class="row">
                         <div class="col-xs-6">
-                            <button class="btn botonCancelar btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarCambiarPasswordForma()">CANCELAR</button>
+                            <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarCambiarPasswordForma()">CANCELAR</button>
                         </div>
                         
                         <div class="col-xs-6">
-                            <button focus class="btn botonAvanzar btn-block" ng-click="GuardarPassword(cambiarPasswordForma.nuevoPassword.$invalid)">TERMINAR</button>
+                            <button focus class="btn botonOperacionModal btn-block" ng-click="GuardarPassword(cambiarPasswordForma.nuevoPassword.$invalid)">TERMINAR</button>
                         </div>
                     </div>
                     <br> 
@@ -334,31 +331,25 @@
         </div>
     </div>
            
-    <!-- Modal para mensajes -->
-    <div class="modal fade" id="mensajeEncabezado">
+    <!-- Modal para mensajes -->     
+    <div class="modal fade sombraDivModal" id="mensajeEncabezado" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <br>    <br>   <br>
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                
-                <div class="modal-body">
-                    <div class="panel panel-default modalMensaje">
-                        <br>
-                        <b>{{mensaje}}</b>
-
-                        <br><br>
-
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <button class="btn  botonAvanzar" data-dismiss="modal" aria-label="Close">Aceptar</button>
-                            </div>
-                        </div>
-                        <br>
-                    </div>
+        <div class="modal-dialog modalPrincipal modal-sm">
+           <br>
+            <div class="row">
+                <div class="col-xs-12 text-center" style="font-size:12pt">
+                   {{mensaje}}
                 </div>
-                
             </div>
-        </div>
-    </div>
+            <br>
+            <div class="row">
+            
+                <div class="col-xs-12">
+                    <button focus class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close">Aceptar</button>
+                </div>
+            </div>
+        </div> 
+    </div> 
            
             
              
@@ -380,6 +371,10 @@
 
     <div ng-if="PerfilSeleccinado == 'Operativo'">
         <header ng-include=" 'html/Operativo/Domicilio.html' "></header>
+    </div>
+          
+    <div ng-if="PerfilSeleccinado == 'Operativo'">
+        <header ng-include=" 'html/Operativo/Presupuesto/OperacionesPresupuesto.html' "></header>
     </div> 
            
     

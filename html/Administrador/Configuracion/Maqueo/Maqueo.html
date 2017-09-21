@@ -6,8 +6,8 @@
                     <thead class="TituloTabla">
                       <tr>
                         <th><button class="btn btn-block botonOrdenar" ng-click="CambiarOrdenarMaqueo('Nombre')"><b>Nombre </b><b ng-if="ordenarMaqueo === 'Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarMaqueo === '-Nombre'" class="fa fa-arrow-down"></b></button></th>
-                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenarMaqueo('CostoUnidad')"><b>Costo Unidad </b><b ng-if="ordenarMaqueo === 'CostoUnidad'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarMaqueo === '-CostoUnidad'" class="fa fa-arrow-down"></b></button></th>
-                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenarMaqueo('Margen')"><b>Margen </b><b ng-if="ordenarMaqueo === 'Margen'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarMaqueo === '-Margen'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonOrdenar" style="text-align: center !important" ng-click="CambiarOrdenarMaqueo('CostoUnidad')"><b>Costo Unidad </b><b ng-if="ordenarMaqueo === 'CostoUnidad'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarMaqueo === '-CostoUnidad'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonOrdenar" style="text-align: center !important" ng-click="CambiarOrdenarMaqueo('Margen')"><b>Margen </b><b ng-if="ordenarMaqueo === 'Margen'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarMaqueo === '-Margen'" class="fa fa-arrow-down"></b></button></th>
                         <th><button class="btn botonFalso"><b>Colores</b></button></th>
                         <th><button class="btn botonFalso"><b>Editar</b></button></th>
                         <th><button class="btn botonFalso"><b>Activo</b></button></th>
@@ -20,9 +20,9 @@
                                <span ng-if="maqueo.PorDefecto" class="fa fa-asterisk" data-toggle="tooltip" data-placement="bottom" title="Maqueo por defecto"></span>
                           </td>
                           
-                          <td>${{maqueo.CostoUnidad}}</td>
+                          <td class="text-center">{{maqueo.CostoUnidad | currency}}</td>
                           
-                          <td>{{maqueo.Margen}}%</td>
+                          <td class="text-center">{{maqueo.Margen}}%</td>
 
                            <td class="text-center">
                                 <a  class="BotonOperacion" href="" data-toggle="modal" data-target="#DetalleMaqueoColores" ng-click="VerGrupoColorMaqueo(maqueo.Grupo)">

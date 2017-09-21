@@ -370,7 +370,7 @@
                                       <tr>
                                         <td>{{consumible.Consumible.Nombre}}</td>
                                         <td class="text-center">{{consumible.Cantidad}}</td>
-                                        <td class="text-center">${{consumible.Cantidad * consumible.Consumible.Costo}}</td>
+                                        <td class="text-center">{{consumible.Cantidad * consumible.Consumible.Costo | currency}}</td>
                                       </tr>
                                     </tbody>
                                 </table>

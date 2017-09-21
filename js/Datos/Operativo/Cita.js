@@ -104,10 +104,14 @@ function SetCita(data)
     
     cita.CitaId = data.CitaId;
     cita.Asunto = data.Asunto;
-    cita.Fecha = data.Fecha;
+    cita.Fecha = TransformarFechaEsp(data.Fecha);
+    cita.Fecha2 = data.Fecha;
+    cita.Fecha3 = data.Fecha3;
+    cita.FechaFin2 = data.FechaFin;
     cita.HoraInicio = data.HoraInicio.slice(0,5);
     cita.HoraFin = data.HoraFin.slice(0,5);
     cita.Descripcion = data.Descripcion;
+    cita.DireccionCitaId = data.DireccionPersonaId;
     
     cita.Tarea.TareaCitaId = data.TareaCitaId;
     cita.Tarea.Nombre = data.NombreTareaCita;
@@ -120,7 +124,7 @@ function SetCita(data)
     
     cita.Domicilio.Codigo = data.Codigo;
     cita.Domicilio.Estado = data.Estado;
-    cita.Domicilio.Domicilio = data.Codigo;
+    cita.Domicilio.Domicilio = data.Domicilio;
     cita.Domicilio.Municipio = data.Municipio;
     cita.Domicilio.Ciudad = data.Ciudad;
     cita.Domicilio.Colonia = data.Colonia;
@@ -136,8 +140,17 @@ function SetCita(data)
     {
         cita.Responsable.UnidadNegocio = false;
         cita.Responsable.Colaborador = true;
-        cita.Responsable.ResponsableId = data.ColobaoradorId;
+        cita.Responsable.ResponsableId = data.ColaboradorId;
         cita.Responsable.Nombre = data.NombreColaborador;
+    }
+    
+    if(data.FechaFin !== null)
+    {
+         cita.FechaFin = TransformarFechaEsp2(data.FechaFin);
+    }
+    else
+    {
+        cita.FechaFin = null;
     }
 
     return cita;
@@ -157,11 +170,11 @@ function AgregarCita($http, CONFIG, $q, cita)
         {
             if(data[0].Estatus == "Exitoso") 
             {
-                q.resolve("Exitoso");
+                q.resolve(data);
             }
             else
             {
-                q.resolve("Fallido");
+                q.resolve([{Estatus: "Fallido"}]);
             }
             
         }).error(function(data, status){
@@ -171,15 +184,15 @@ function AgregarCita($http, CONFIG, $q, cita)
     return q.promise;
 }
 
-//edita un componente
-/*function EditarComponente($http, CONFIG, $q, componente)
+//edita una cita
+function EditarCita($http, CONFIG, $q, cita)
 {
     var q = $q.defer();
     
     $http({      
           method: 'PUT',
-          url: CONFIG.APIURL + '/EditarComponente',
-          data: componente
+          url: CONFIG.APIURL + '/EditarCita',
+          data: cita
 
       }).success(function(data)
         {
@@ -197,7 +210,7 @@ function AgregarCita($http, CONFIG, $q, cita)
 
      }); 
     return q.promise;
-}*/
+}
 
 function CambiarEstatusCita($http, $q, CONFIG, estatus) 
 {
@@ -298,5 +311,29 @@ class ResponsableCita
         this.ResponsableId = "";
         this.Nombre = "";
     }
+}
+
+function GetFechaAhora()
+{
+    var fecha = new Date();
+    
+    var dia = fecha.getDate();
+    var year = fecha.getFullYear();
+    var mes = fecha.getMonth()+1;
+    
+    if(mes<10)
+    {
+        mes = "0"+mes;
+    }
+    
+    var hr = fecha.getHours();
+    var min = fecha.getMinutes();
+    
+    if(min < 10)
+    {
+        min = "0" + min;
+    }
+    
+    return year + "/" + mes + "/" + dia + " " + hr + ":" + min;
 }
 

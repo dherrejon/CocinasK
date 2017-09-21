@@ -25,6 +25,7 @@ app.controller("CostoModuloControlador", function($scope, $http, $q, CONFIG, dat
     $scope.costosMedidas = null;
     $scope.costosPuerta = null;
     $scope.medidaVer = null;
+    $scope.calcular = false;
     
     $scope.moduloSeleccionado = new Modulo();
     $scope.puertaSeleccionada = null;
@@ -406,6 +407,7 @@ app.controller("CostoModuloControlador", function($scope, $http, $q, CONFIG, dat
     {
         if(modulo.ModuloId != $scope.moduloSeleccionado.ModuloId)
         {
+            $scope.calcular = true;
             $scope.moduloSeleccionado = modulo;
 
             $scope.GetMedidasPorModulo(modulo.ModuloId);
@@ -472,7 +474,7 @@ app.controller("CostoModuloControlador", function($scope, $http, $q, CONFIG, dat
             }
         }
         
-        console.log($scope.moduloSeleccionado.Seccion);
+        //console.log($scope.moduloSeleccionado.Seccion);
     };*/
     $scope.AgruparCombinacionComponentePuerta = function()
     {
@@ -530,15 +532,18 @@ app.controller("CostoModuloControlador", function($scope, $http, $q, CONFIG, dat
     /*----------------------------- Calcular Costos ----------------------------------------*/
     $scope.CalcularCostos = function()
     {
-        $scope.moduloSeleccionado.Entrepano = $scope.SetCombinacionEntrepano($scope.moduloSeleccionado.Entrepano );
-        $scope.AgruparCombinacionComponentePuerta();
-        //$scope.SetSeccionPuerta();
-        
-        for(var k=0; k<$scope.moduloSeleccionado.Medida.length; k++)
+        if($scope.calcular)
         {
-            $scope.SustituirFormula($scope.moduloSeleccionado.Medida[k], $scope.moduloSeleccionado.Seccion);
+            $scope.calcular = false;
+            $scope.moduloSeleccionado.Entrepano = $scope.SetCombinacionEntrepano($scope.moduloSeleccionado.Entrepano );
+            $scope.AgruparCombinacionComponentePuerta();
+            //$scope.SetSeccionPuerta();
+
+            for(var k=0; k<$scope.moduloSeleccionado.Medida.length; k++)
+            {
+                $scope.SustituirFormula($scope.moduloSeleccionado.Medida[k], $scope.moduloSeleccionado.Seccion);
+            }
         }
-        
         //console.log($scope.moduloSeleccionado.Medida);
         //console.log($scope.moduloSeleccionado.Entrepano);
     };
@@ -653,7 +658,6 @@ app.controller("CostoModuloControlador", function($scope, $http, $q, CONFIG, dat
                 medida.Combinacion[k].CostoTotal = parseFloat(medida.Combinacion[k].CostoTotal);
             }
         }
-        //console.log($scope.combinacion);
         //console.log(componente);
     };
     
@@ -835,7 +839,7 @@ app.controller("CostoModuloControlador", function($scope, $http, $q, CONFIG, dat
                         }
                         else if(medidaPieza == "Ancho")
                         {
-                           // console.log("ancho: "+pieza[j].ancho);
+                           //console.log("ancho: "+pieza[j].ancho);
                             if(componente[j].Pieza[i].Ancho > -1)
                             {
                                 formula = formula.replace(medida, componente[j].Pieza[i].Ancho);
@@ -1091,14 +1095,15 @@ app.controller("CostoModuloControlador", function($scope, $http, $q, CONFIG, dat
     $scope.SustituirPieza = function(pieza, piezas)
     {
         //console.log(pieza);
-        if(pieza.AnchoNuevo == -1)
-        {
-            pieza.AnchoNuevo = $scope.SustituirValorPieza(pieza.FormulaAnchoNuevo, piezas);
-        }
         if(pieza.LargoNuevo == -1)
         {
             pieza.LargoNuevo = $scope.SustituirValorPieza(pieza.FormulaLargoNuevo, piezas);
         }
+        if(pieza.AnchoNuevo == -1)
+        {
+            pieza.AnchoNuevo = $scope.SustituirValorPieza(pieza.FormulaAnchoNuevo, piezas);
+        }
+        
     };
     
     $scope.SustituirValorPieza = function(formula, pieza)
@@ -1159,7 +1164,7 @@ app.controller("CostoModuloControlador", function($scope, $http, $q, CONFIG, dat
                     }
                     else if(medidaPieza == "Ancho")
                     {
-                       // console.log("ancho: "+pieza[j].ancho);
+                       //console.log("ancho: "+pieza[j].ancho);
                         if(pieza[j].AnchoNuevo > -1)
                         {
                             formula = formula.replace(medida, pieza[j].AnchoNuevo);
@@ -1204,22 +1209,11 @@ app.controller("CostoModuloControlador", function($scope, $http, $q, CONFIG, dat
             }
         }
         
+        
         for(var k=0; k<componente.length; k++)
         {
             for(var i=0; i<componente[k].Pieza.length; i++)
             {
-                if(componente[k].Pieza[i].Ancho < 0)
-                {
-                    if(componente[k].Pieza[i].FormulaAncho.includes(["Componente"]))
-                    {
-                        componente[k].Pieza[i].FormulaAnchoNuevo = $scope.SustituirComponenteValor( componente[k].Pieza[i].FormulaAncho, componente, parte, combinacionComponente);
-                        componente[k].Pieza[i].AnchoNuevo = $scope.EvaluarFormula(componente[k].Pieza[i].FormulaAnchoNuevo);
-                    }
-                }
-                else
-                {
-                   componente[k].Pieza[i].AnchoNuevo  =  componente[k].Pieza[i].Ancho;
-                }
                 if(componente[k].Pieza[i].Largo < 0)
                 {
                     if(componente[k].Pieza[i].FormulaLargo.includes(["Componente"]))
@@ -1227,11 +1221,34 @@ app.controller("CostoModuloControlador", function($scope, $http, $q, CONFIG, dat
                         componente[k].Pieza[i].FormulaLargoNuevo = $scope.SustituirComponenteValor( componente[k].Pieza[i].FormulaLargo, componente, parte, combinacionComponente);
                         componente[k].Pieza[i].LargoNuevo = $scope.EvaluarFormula(componente[k].Pieza[i].FormulaLargoNuevo);
                     }
+                    else
+                    {
+                        componente[k].Pieza[i].FormulaLargoNuevo =  componente[k].Pieza[i].FormulaLargo;
+                        componente[k].Pieza[i].LargoNuevo = -1;
+                    }
                 }
                 else
                 {
-                   componente[k].Pieza[i].LargoNuevo  =  componente[k].Pieza[i].Largo;
+                    componente[k].Pieza[i].LargoNuevo  =  componente[k].Pieza[i].Largo;
                 }
+                if(componente[k].Pieza[i].Ancho < 0)
+                {
+                    if(componente[k].Pieza[i].FormulaAncho.includes(["Componente"]))
+                    {
+                        componente[k].Pieza[i].FormulaAnchoNuevo = $scope.SustituirComponenteValor( componente[k].Pieza[i].FormulaAncho, componente, parte, combinacionComponente);
+                        componente[k].Pieza[i].AnchoNuevo = $scope.EvaluarFormula(componente[k].Pieza[i].FormulaAnchoNuevo);
+                    }
+                    else
+                    {
+                        componente[k].Pieza[i].FormulaAnchoNuevo =  componente[k].Pieza[i].FormulaAncho;
+                        componente[k].Pieza[i].AnchoNuevo = -1;
+                    }
+                }
+                else
+                {
+                   componente[k].Pieza[i].AnchoNuevo  =  componente[k].Pieza[i].Ancho;
+                }
+                
                 
             }
         }
@@ -1322,7 +1339,7 @@ app.controller("CostoModuloControlador", function($scope, $http, $q, CONFIG, dat
                     if(componente[k].Pieza[i].FormulaLargo.includes(["Parte"]))
                     {
                         componente[k].Pieza[i].FormulaLargo = $scope.SustituirParteValor( componente[k].Pieza[i].FormulaLargo, parte);
-                        componente[k].Pieza[i].Largo = $scope.EvaluarFormula(componente[k].Pieza[i].FormulaAncho);
+                        componente[k].Pieza[i].Largo = $scope.EvaluarFormula(componente[k].Pieza[i].FormulaLargo);
                     }
                 }
                 

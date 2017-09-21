@@ -365,14 +365,14 @@
 
     /*------------------------Tipo combinacion Material----------------------------*/
     $app->get('/GetTipoCombinacionMaterial', $seguridad, $ChecarSesion, 'GetTipoCombinacionMaterial');
-    $app->post('/AgregarCombinacionMaterial', $seguridad, $ChecarSesion, 'AgregarCombinacionMaterial');
-    $app->put('/EditarCombinacionMaterial', $seguridad, $ChecarSesion, 'EditarCombinacionMaterial');
+    $app->post('/AgregarTipoCombiancion', $seguridad, $ChecarSesion, 'AgregarTipoCombiancion');
+    $app->put('/EditarTipoCombiancion', $seguridad, $ChecarSesion, 'EditarTipoCombiancion');
     $app->post('/ActivarDesactivarTipoCombinacion', $seguridad, $ChecarSesion, 'ActivarDesactivarTipoCombinacion');
 
     /*------------------------Consumible----------------------------*/
     $app->get('/GetConsumible', $seguridad, $ChecarSesion, 'GetConsumible');
-    $app->post('/AgregarTipoCombiancion', $seguridad, $ChecarSesion, 'AgregarTipoCombiancion');
-    $app->put('/EditarTipoCombiancion', $seguridad, $ChecarSesion, 'EditarTipoCombiancion');
+    $app->post('/AgregarConsumible', $seguridad, $ChecarSesion, 'AgregarConsumible');
+    $app->put('/EditarConsumible', $seguridad, $ChecarSesion, 'EditarConsumible');
     $app->post('/ActivarDesactivarConsumible', $seguridad, $ChecarSesion, 'ActivarDesactivarConsumible');
 
     /*------------------------Muestrario----------------*/
@@ -510,10 +510,11 @@
 
     /*------------------ Cita ----------------------------------------------*/
     $app->post('/AgregarCita', $seguridad, $ChecarSesion, 'AgregarCita');
+    $app->put('/EditarCita', $seguridad, $ChecarSesion, 'EditarCita');
     $app->post('/CambiarEstatusCita', $seguridad, $ChecarSesion, 'CambiarEstatusCita');
 
     /*------------------ Persona ----------------------------------------------*/
-    $app->get('/GetCliente', $seguridad, $ChecarSesion, 'GetCliente');
+    $app->get('/GetCliente/:id', $seguridad, $ChecarSesion, 'GetCliente');
     $app->put('/EditarDatosPersona', $seguridad, $ChecarSesion, 'EditarDatosPersona');
 
     $app->post('/GetBuscarPersona', $seguridad, $ChecarSesion, 'GetBuscarPersona');

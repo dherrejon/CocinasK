@@ -23,12 +23,16 @@
     overflow: hidden;
 }
 
-.botonPerfil, .botonPerfil:disabled
+.botonPerfil, .botonPerfil:disabled, .botonPerfil:active, .botonPerfil:focus
 {
+    border-radius: 0px;
     border: solid 2px white;
     background: transparent;
     color: white;
     opacity: 1.0;
+    
+    outline: none !important;
+    box-shadow: none;
 }
 
 .botonPerfil:hover:disabled

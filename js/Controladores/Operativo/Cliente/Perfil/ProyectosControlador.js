@@ -1,10 +1,11 @@
-app.controller("ProyectoClienteControlador", function($scope, $rootScope, CITA, $http, $q, CONFIG, PRESUPUESTO, DOMICILIO)
+app.controller("ProyectoClienteControlador", function($scope, $rootScope, CITA, $http, $q, CONFIG, PRESUPUESTO, DOMICILIO, OPEPRESUPUESTO)
 {  
     $scope.proyecto = [];
     $scope.estatus = [];
     $scope.proyectoDetalle = "";
     $scope.promocionPersona = {promocionMueble: [], promocionCubierta: []};
     $scope.verDireccion = false;
+    $scope.proyectoAgregar = null;
     
     $scope.verDetalle = {desCliente: false, desInterna: false, combinacion: false, modulo: false, puerta: false, servicio: false, maqueo: false, accesorio: false, cubiertaAglomerado: false, cubiertaPiedra: false, promocion: false};
     $scope.verTipoCubierta = {aglomerado: false, piedra: false};
@@ -116,6 +117,10 @@ app.controller("ProyectoClienteControlador", function($scope, $rootScope, CITA, 
         {
             PRESUPUESTO.ClonarPresupuesto(data[1].Presupuesto);
         }
+        else if(opt == "Personalizar")
+        {
+            PRESUPUESTO.PersonalizarPresupuesto(data[1].Presupuesto);
+        }
     };
 
     $scope.SetDatosPresupuesto = function(presupuesto, proyecto)
@@ -124,6 +129,13 @@ app.controller("ProyectoClienteControlador", function($scope, $rootScope, CITA, 
         presupuesto.Persona = $rootScope.persona;
         presupuesto.PromocionMueble = $scope.promocionPersona.PromocionMueble;
         presupuesto.PromocionCubierta = $scope.promocionPersona.PromocionCubierta;
+    };
+    
+    $scope.GetPresupuestosOrdenados = function(presupuesto)
+    {
+        presupuesto.sort(function(a, b){return (b.PresupuestoIdN - a.PresupuestoIdN)});
+        
+        return presupuesto;
     };
     
     //----------- vista ----------------------------
@@ -178,11 +190,13 @@ app.controller("ProyectoClienteControlador", function($scope, $rootScope, CITA, 
         if($scope.proyectoDetalle == proyecto.ProyectoId)
         {
             $scope.proyectoDetalle = "";
+            $scope.proyectoAgregar = null;
         }
         else
         {
             $scope.proyectoDetalle = proyecto.ProyectoId;
             $scope.GetPresupuestoPorProyecto(proyecto);
+            $scope.proyectoAgregar = proyecto;
         }
 
     };
@@ -357,7 +371,6 @@ app.controller("ProyectoClienteControlador", function($scope, $rootScope, CITA, 
     $scope.AgregarPresupuesto = function(proyecto)
     {
         PRESUPUESTO.AgregarPresupuestoProyecto($rootScope.persona, proyecto);
-        $scope.proyectoAgregar = proyecto;
     };
     
     $scope.$on('PresupuestoProyectoAgregado',function()
@@ -379,60 +392,93 @@ app.controller("ProyectoClienteControlador", function($scope, $rootScope, CITA, 
     {
         $scope.SetDatosPresupuesto(presupuesto, proyecto);
         $scope.presupuestoEditar = presupuesto;
-        $scope.proyectoAgregar = proyecto;
         
         $scope.GetDatosPresupuesto(presupuesto, "Clonar");
     };
     
     $scope.$on('PresupuestoClonado',function()
     {
+        $scope.SetNuevoPresupuestoProyecto();
+    });
+    
+    //---------------------------------- Unir Presupuesto -------------------------------
+    $scope.UnirPresupuesto = function(presupuesto, proyecto)
+    {
+        OPEPRESUPUESTO.UnirPresupuestoPreCargado(presupuesto, $rootScope.persona, proyecto);
+    };
+    
+    $scope.$on('ProyectoUnido',function()
+    {
+        $scope.SetNuevoPresupuestoProyecto();
+    });
+    
+    $scope.SetNuevoPresupuestoProyecto = function()
+    {
         var pre = PRESUPUESTO.GetPresupuesto();
-        
         if(pre.Persona.PersonaId == $rootScope.personaId)
         {
-            if(pre.Proyecto.ProyectoId == $scope.proyectoAgregar.ProyectoId)
+            if($scope.proyectoAgregar !== null)
             {
-                 //presupuesto al proyecto
-                 var presupuesto = SetPresupuesto(pre);
-                presupuesto.PersonaId = pre.Persona.PersonaId;
-                presupuesto.ProyectoId = pre.Proyecto.ProyectoId;
+                if(pre.Proyecto.ProyectoId == $scope.proyectoAgregar.ProyectoId)
+                {
+                     //presupuesto al proyecto
+                     var presupuesto = SetPresupuesto(pre);
+                    presupuesto.PersonaId = pre.Persona.PersonaId;
+                    presupuesto.ProyectoId = pre.Proyecto.ProyectoId;
 
-                $scope.proyectoAgregar.Presupuesto.push(presupuesto);
-                
+                    $scope.proyectoAgregar.Presupuesto.push(presupuesto);
+
+                }
+                else
+                {
+                    //agregar proyecto a la persona
+                    $scope.AgregarProyectoNuevo(pre);
+                }
             }
             else
             {
                 //agregar proyecto a la persona
-                var proyectoNuevo = true;
-                
-                for(var k=0; k<$scope.proyecto.length; k++)
-                {
-                    if($scope.proyecto[k].ProyectoId == pre.Proyecto.ProyectoId)
-                    {
-                        proyectoNuevo = false;
-                        break;
-                    }
-                }
-                
-                if(proyectoNuevo)
-                {
-                    var pro = pre.Proyecto;
-
-                    var proyecto = $scope.SetProyecto(pro);
-                    proyecto.EstatusProyecto.EstatusProyectoId = "1";
-                    proyecto.EstatusProyecto.Nombre = "Activo";
-                    if(pro.Domicilio.DomicilioId === null)
-                    {
-                        proyecto.Domicilio = null;
-                    }
-                    $scope.proyecto.push(proyecto);
-                }
+                $scope.AgregarProyectoNuevo(pre);
             }
         }
         
         $scope.GetPromocionPersona($rootScope.personaId);
-    });
+    };
     
+    $scope.AgregarProyectoNuevo = function(pre)
+    {
+        var proyectoNuevo = true;
+
+        for(var k=0; k<$scope.proyecto.length; k++)
+        {
+            if($scope.proyecto[k].ProyectoId == pre.Proyecto.ProyectoId)
+            {
+                proyectoNuevo = false;
+                break;
+            }
+        }
+
+        if(proyectoNuevo)
+        {
+            var pro = pre.Proyecto;
+
+            var proyecto = $scope.SetProyecto(pro);
+            proyecto.EstatusProyecto.EstatusProyectoId = "1";
+            proyecto.EstatusProyecto.Nombre = "Activo";
+            if(pro.Domicilio.DomicilioId === null)
+            {
+                proyecto.Domicilio = null;
+            }
+            $scope.proyecto.push(proyecto);
+        }
+    };
+    
+    //----------------------- Personalizar presupuesto -------------------------------
+    $scope.PersonalizarPresupuesto = function(presupuesto, proyecto)
+    {
+        $scope.SetDatosPresupuesto(presupuesto, proyecto);
+        $scope.GetDatosPresupuesto(presupuesto, "Personalizar");
+    };
     
     //-------------------------- Editar Proyecto ----------------------
     $scope.EditarProyectoModal = function(proyecto)

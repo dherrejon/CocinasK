@@ -258,6 +258,11 @@ function SustituirFormulaCompleta(modulo, combinacion)
                     modulo.Componente[i].Pieza[j].nFormulaAncho = SustituirComponenteValor(modulo.Componente[i].Pieza[j].FormulaAncho, modulo.Componente, modulo.ComponenteEspecial, combinacion);
                     modulo.Componente[i].Pieza[j].nAncho = EvaluarFormula(modulo.Componente[i].Pieza[j].nFormulaAncho);
                 }
+                /*else
+                {
+                    modulo.Componente[i].Pieza[j].nFormulaAncho = modulo.Componente[i].Pieza[j].FormulaAncho;
+                    modulo.Componente[i].Pieza[j].nAncho = -1;
+                }*/
             }
             else
             {
@@ -269,6 +274,11 @@ function SustituirFormulaCompleta(modulo, combinacion)
                 {
                     modulo.Componente[i].Pieza[j].nFormulaLargo = SustituirComponenteValor(modulo.Componente[i].Pieza[j].FormulaLargo, modulo.Componente, modulo.ComponenteEspecial, combinacion);
                     modulo.Componente[i].Pieza[j].nLargo = EvaluarFormula(modulo.Componente[i].Pieza[j].nFormulaLargo);
+                }
+                else
+                {
+                    modulo.Componente[i].Pieza[j].nFormulaLargo = modulo.Componente[i].Pieza[j].FormulaLargo;
+                    modulo.Componente[i].Pieza[j].nLargo = -1;
                 }
             }
             else
@@ -286,11 +296,11 @@ function SustituirFormulaCompleta(modulo, combinacion)
         {
             if(modulo.Componente[i].Pieza[j].nAncho == -1  && modulo.Componente[i].Pieza[j].nFormulaAncho.includes('[Pieza]'))
             {
-                modulo.Componente[i].Pieza[j].nAncho = SustituirValorPieza(modulo.Componente[i].Pieza[j].nFormulaAncho, modulo.Componente[i].Pieza[j]);
+                modulo.Componente[i].Pieza[j].nAncho = SustituirValorPieza(modulo.Componente[i].Pieza[j].nFormulaAncho, modulo.Componente[i].Pieza);
             }
             if(modulo.Componente[i].Pieza[j].nLargo == -1  && modulo.Componente[i].Pieza[j].nFormulaLargo.includes('[Pieza]'))
             {
-                modulo.Componente[i].Pieza[j].nLargo = SustituirValorPieza(modulo.Componente[i].Pieza[j].nFormulaLargo, modulo.Componente[i].Pieza[j]);
+                modulo.Componente[i].Pieza[j].nLargo = SustituirValorPieza(modulo.Componente[i].Pieza[j].nFormulaLargo, modulo.Componente[i].Pieza);
             }
         }
     }

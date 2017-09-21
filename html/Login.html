@@ -68,20 +68,17 @@
     <div class="modal fade" id="recuperarPasswordModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static" >
         <br>    <br>   <br>
         <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <!-- encabezado del modal -->
+            <div class="modal-content modalPrincipal">
+                <!-- encabezado del modal -->                
                 <div class="row">
                     <div class="col-xs-12">
-                        <div class="margenModal">
-                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarRecuperarPasswordForma()"><span aria-hidden="true">&times;</span></button>
-                            <h3 class="text-center">Recuperar Contraseña</h3>
-                            <hr class="separador">
-                        </div>
+                        <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarCambiarPasswordForma()"><span aria-hidden="true">&times;</span></button>
+                        <span  class="tituloModal">Recuperar Contraseña</span>
                     </div>
                 </div>
                 <br>
 
-                <form class="modal-body" name="recuperarPasswordForma">
+                <form class="" name="recuperarPasswordForma">
                 <!-- Datos -->
                     <!-- Nombre de Usuario -->
                     <br>
@@ -106,11 +103,11 @@
                     <!--- botones de operacion -->
                     <div class="row">
                         <div class="col-xs-6">
-                            <button class="btn botonCancelar btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarRecuperarPasswordForma()">CANCELAR</button>
+                            <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarRecuperarPasswordForma()">CANCELAR</button>
                         </div>
                         
                         <div class="col-xs-6">
-                            <button focus class="btn botonAvanzar btn-block" ng-click="RecuperarPassword(recuperarPasswordForma.usuario.$invalid)">TERMINAR</button>
+                            <button focus class="btn botonOperacionModal btn-block" ng-click="RecuperarPassword(recuperarPasswordForma.usuario.$invalid)">TERMINAR</button>
                         </div>
                     </div>
                     <br> 
@@ -121,28 +118,23 @@
     </div>
            
     <!-- Modal para mensajes -->
-    <div class="modal fade" id="mensajeLogin">
+    <div class="modal fade sombraDivModal" id="mensajeLogin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <br>    <br>   <br>
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                
-                <div class="modal-body">
-                    <div class="panel panel-default modalMensaje">
-                        <br>
-                        <b>{{mensaje}}</b>
-
-                        <br><br>
-
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <button class="btn  botonAvanzar" data-dismiss="modal" aria-label="Close">Aceptar</button>
-                            </div>
-                        </div>
-                        <br>
-                    </div>
+        <div class="modal-dialog modalPrincipal modal-sm">
+           <br>
+            <div class="row">
+                <div class="col-xs-12 text-center" style="font-size:12pt">
+                   {{mensaje}}
                 </div>
-                
             </div>
-        </div>
-    </div>  
+            <br>
+            <div class="row">
+            
+                <div class="col-xs-12">
+                    <button focus class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close">Aceptar</button>
+                </div>
+            </div>
+        </div> 
+    </div>
+    
 </div>

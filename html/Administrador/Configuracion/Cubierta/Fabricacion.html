@@ -139,7 +139,7 @@
                                               </td>
                                               
                                               <td >
-                                                  ${{consumible.Costo}}
+                                                  {{consumible.Costo | currency}}
                                               </td>
                                               
                                               <td>
@@ -187,7 +187,7 @@
                                             </div>
                                         </td>
                                          
-                                         <td class="text-center">${{consumible.Cantidad * consumible.Costo}}</td>
+                                         <td class="text-center">{{consumible.Cantidad * consumible.Costo | currency}}</td>
                                          
                                          <td class="text-center">
                                             <a class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="QuitarConsumible(consumible)">
@@ -266,7 +266,7 @@
                                     
                                     <td>{{consumible.Nombre}}</td>
                                     <td class="text-center">{{consumible.Cantidad}}</td>
-                                    <td class="text-center">${{consumible.Costo * consumible.Cantidad}}</td>
+                                    <td class="text-center">{{consumible.Costo * consumible.Cantidad | currency}}</td>
 
                                   </tr>
                                 </tbody>

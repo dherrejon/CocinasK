@@ -287,7 +287,7 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
     $scope.AbrirModuloModal = function(operacion, objeto)
     {
         $scope.operacion = operacion;
-        
+
         if(operacion == "Agregar")
         {
             $scope.nuevoModulo = new Modulo();
@@ -765,37 +765,24 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
     };
     
     $scope.ValidarComponentes = function()
-    {   
+    {           
         var q = $q.defer();
+        
+        var promesas = [];
+        
         $scope.componenteFaltante = [];
         
         for(var k=0; k<$scope.componenteModulo.length; k++)
         {        
-            GetPiezaPorComponente($http, $q, CONFIG, $scope.componenteModulo[k].Componente.ComponenteId).then(function(data)
+            var promesaP = GetPiezaPorComponente($http, $q, CONFIG, $scope.componenteModulo[k].Componente.ComponenteId).then(function(data)
             {   
                 for(var i=0; i<data.length; i++)
                 {
-                    $scope.ValidarComponenteFormula(data[i].Pieza.FormulaAncho, i).then(function(dato1)
-                    {
-
-                    });
+                    var promesaA = $scope.ValidarComponenteFormula(data[i].Pieza.FormulaAncho);
+                    var promesaL = $scope.ValidarComponenteFormula(data[i].Pieza.FormulaLargo);
                     
-                    $scope.ValidarComponenteFormula(data[i].Pieza.FormulaLargo, i).then(function(dato2)
-                    {
-                        if(dato2==(data.length-1))
-                        {
-                            
-                            if($scope.componenteFaltante.length === 0)
-                            {
-                                 q.resolve(true);
-                            }
-                            else
-                            {
-                                 q.resolve(false);
-                            }
-                        }
-                    });
-                    
+                    promesas.push(promesaA);
+                    promesas.push(promesaL);
                 }
                 
             }).catch(function(error)
@@ -803,14 +790,27 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
                 alert("Ha ocurrido un error al obtener las piezas del componente." + error);
                 return;
             });
+            
+            promesas.push(promesaP);
         }
         
+        $q.all(promesas).then(function()
+        {
+            if($scope.mensajeError.length == 0)
+            {
+                q.resolve(true);
+            }
+            else
+            {
+                q.resolve(false);
+            }
+        });
         
         return q.promise;
     };
     
     
-    $scope.ValidarComponenteFormula = function(formula, indexP)
+    $scope.ValidarComponenteFormula = function(formula)
     {
         var q = $q.defer();
         
@@ -820,7 +820,7 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
         
         if(index <= -1)
         {
-            q.resolve(indexP);
+            q.resolve();
         } 
         else
         {
@@ -893,7 +893,7 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
 
                 if(index < 0)
                 {
-                    q.resolve(indexP);
+                    q.resolve();
                 }
             }
         }

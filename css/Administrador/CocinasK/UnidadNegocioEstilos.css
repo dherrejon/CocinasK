@@ -40,17 +40,13 @@
     background: white;
 }
 
-.botonOrdenar
+.botonOrdenar, .botonOrdenar:focus, .botonOrdenar:active, .botonOrdenar:hover
 {
     background: transparent;
+    color: white;
     width: 100%;
-    text-align: left!important;
-}
-
-
-.botonOrdenar:hover, .botonOrdenar:focus
-{
-    color: #D9D9D9 !important;
+    text-align: left !important;
+    
     outline: none !important;
     box-shadow: none;
 }
@@ -60,11 +56,15 @@
     background: transparent;
     width: 100%;
 }
-
+.botonFalsoLeft
+{
+    text-align: left !important;
+    padding-left: 0px;
+}
 
 .botonFalso:hover, .botonFalso:focus
 {
-    color: #D9D9D9 !important;
+    color: white !important;
     outline: none !important;
     box-shadow: none;
     vertical-align: bottom !important;

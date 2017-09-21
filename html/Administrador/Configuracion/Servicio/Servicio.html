@@ -7,8 +7,8 @@
                     <thead class="TituloTabla">
                       <tr>
                         <th><button class="btn btn-block botonOrdenar" ng-click="CambiarOrdenarServicio('Nombre')"><b>Nombre </b><b ng-if="ordenarServicio === 'Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarServicio === '-Nombre'" class="fa fa-arrow-down"></b></button></th>
-                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenarServicio('CostoUnidad')"><b>Costo Unidad </b><b ng-if="ordenarServicio === 'CostoUnidad'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarServicio === '-CostoUnidad'" class="fa fa-arrow-down"></b></button></th>
-                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenarServicio('PrecioVenta')"><b>Margen </b><b ng-if="ordenarServicio === 'PrecioVenta'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarServicio === '-PrecioVenta'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonOrdenar" style="text-align: center !important" ng-click="CambiarOrdenarServicio('CostoUnidad')"><b>Costo Unidad </b><b ng-if="ordenarServicio === 'CostoUnidad'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarServicio === '-CostoUnidad'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonOrdenar" style="text-align: center !important" ng-click="CambiarOrdenarServicio('PrecioVenta')"><b>Margen </b><b ng-if="ordenarServicio === 'PrecioVenta'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarServicio === '-PrecioVenta'" class="fa fa-arrow-down"></b></button></th>
                         <th><button class="btn botonFalso"><b>Editar</b></button></th>
                         <th><button class="btn botonFalso"><b>Por Defecto</b></button></th>
                         <th><button class="btn botonFalso"><b>Activo</b></button></th>
@@ -18,9 +18,9 @@
                       <tr ng-repeat="servicio in servicio | orderBy:[ordenarServicio,'Nombre'] | filter:buscarServicio">
                           <td>{{servicio.Nombre}}</td>
                           
-                          <td>${{servicio.CostoUnidad}}</td>
+                          <td class="text-center">{{servicio.CostoUnidad | currency}}</td>
                           
-                          <td>{{servicio.PrecioVenta}}</td>
+                          <td class="text-center">{{servicio.PrecioVenta}}%</td>
 
                             <td class="text-center">
                                 <a ng-if="permisoUsuario.servicio.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirServicio('Editar', servicio)">

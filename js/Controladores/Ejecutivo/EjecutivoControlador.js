@@ -349,7 +349,7 @@ app.controller("EjecutivoControlador", function($scope, $http, $q, CONFIG, datos
             //console.log(pieza);
             for(var j=0; j<pieza.length; j++)
             {
-                console.log("pieza: "+pieza[j].nombre);
+                //console.log("pieza: "+pieza[j].nombre);
                 if(pieza[j].nombre == nombrePieza)
                 {
                     var medida = "[Pieza][" + nombrePieza + "][" + medidaPieza + "]";
@@ -371,7 +371,7 @@ app.controller("EjecutivoControlador", function($scope, $http, $q, CONFIG, datos
                     }
                     else if(medidaPieza == "Ancho")
                     {
-                        console.log("ancho: "+pieza[j].ancho);
+                        //console.log("ancho: "+pieza[j].ancho);
                         if(pieza[j].ancho > -1)
                         {
                             formula = formula.replace(medida, pieza[j].ancho);
@@ -964,8 +964,8 @@ app.controller("EjecutivoControlador", function($scope, $http, $q, CONFIG, datos
                                 }
                             }
                             /*console.log($scope.combinacion[i].CombinacionMaterial.Nombre);
-                            console.log($scope.seccionModulo[j].SeccionModulo.Nombre + ": " + ((($scope.seccionModulo[j].Pieza[k].Ancho * $scope.seccionModulo[j].Pieza[k].Largo)/144)*$scope.seccionModulo[j].Pieza[k].Cantidad));
-                            console.log($scope.seccionModulo[j].Pieza[k].NombrePieza + ": " + costo);*/
+                            //console.log($scope.seccionModulo[j].SeccionModulo.Nombre + ": " + ((($scope.seccionModulo[j].Pieza[k].Ancho * $scope.seccionModulo[j].Pieza[k].Largo)/144)*$scope.seccionModulo[j].Pieza[k].Cantidad));
+                            //console.log($scope.seccionModulo[j].Pieza[k].NombrePieza + ": " + costo);*/
                             $scope.combinacion[i].costoTotal += costo*$scope.seccionModulo[j].NumeroPiezas;
                             costo = 0;
                             break;
