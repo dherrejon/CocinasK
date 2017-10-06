@@ -153,6 +153,9 @@ app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpPro
     when('/ConfigurarProyecto',{
         templateUrl: 'html/Administrador/Configuracion/ConfiguracionProyecto.html'
     }).
+    when('/ConfigurarContrato',{
+        templateUrl: 'html/Administrador/Configuracion/ConfiguracionContrato.html'
+    }).
     //Catálogos
     when('/Combinacion',{
         templateUrl: 'html/Administrador/Catalogo/Combinacion.html'

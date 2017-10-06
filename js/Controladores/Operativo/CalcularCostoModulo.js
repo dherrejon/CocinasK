@@ -59,9 +59,8 @@ function CalcularCostoModulo(modulo, combinacion, margenPresupuesto, iva)
             
             precio += ((precio*margenPresupuesto)/100);
             precio += ((precio*iva)/100);
-            precio = Math.round(precio);
             
-            combinacion[k].PrecioVentaModulo += precio;
+            combinacion[k].PrecioVentaModulo += Math.round(precio);
         }
     }
     

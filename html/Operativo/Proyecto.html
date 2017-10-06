@@ -1103,7 +1103,7 @@
                            
                             <div class="row">
                                 <div ng-repeat="muestrario in muestrario | orderBy:'Nombre'" ng-show="muestrario.Activo && muestrario.Puerta.length > 0">
-                                    <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3" style="margin-bottom:10px">
+                                    <div class="col-xs-6 col-sm-4 col-md-4 col-lg-4" style="margin-bottom:10px">
                             
                                         <!--<div class="input-group">-->
 
@@ -1871,7 +1871,7 @@
                     <div class="tituloOptPresupuesto"> Combinación </div><br>  
                     <div class="row">
                         <div ng-repeat="combinacion in combinacion | orderBy:'PrecioVentaModulo'" ng-show="combinacion.Activo && combinacion.PorDefecto">
-                            <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3" style="margin-bottom:10px">
+                            <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4" style="margin-bottom:10px">
 
                                 <!--<div class="input-group">-->
 
@@ -1901,7 +1901,7 @@
                     <div class="tituloOptPresupuesto"> Puertas </div><br>
                     <div class="row">
                         <div ng-repeat="muestrario in muestrario | orderBy:'PrecioVenta'" ng-show="muestrario.Activo && muestrario.PorDefecto">
-                            <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3" style="margin-bottom:10px">
+                            <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4" style="margin-bottom:10px">
 
                                 <!--<div class="input-group">-->
 
@@ -1914,9 +1914,9 @@
                                     <div class="panelItemPresupuesto itemPuerta" style="height: auto">
 
                                         <div ng-repeat="combinacion in muestrario.Combinacion | orderBy:'PrecioVenta'" > <!-- ng-class="{opcionSeleccionadaPresupuestoEst: (combinacion.CombinacionMaterialId == combinacionSeleccionada)}" -->
-                                            <div class="itemPresupuestoEstatico" style="margin-left: 0px" ng-class="{itemPresupuestoPrimero: $first}">
-                                                <span style="margin-left: 8px">{{combinacion.Nombre}}</span>
-                                                <span class="pull-right" style="margin-right: 8px">{{combinacion.PrecioVenta | currency}}</span>
+                                            <div class="itemPresupuestoEstatico" style="margin-left: 0px; " ng-class="{itemPresupuestoPrimero: $first}">
+                                                <span style="margin-left: 8px;" >{{combinacion.Nombre}}</span>
+                                                <span class="pull-right" style="margin-right: 8px; ">{{combinacion.PrecioVenta | currency}}</span>
                                             </div>
                                         </div>
 
@@ -1936,7 +1936,7 @@
                         <div class="tituloOptPresupuesto"> Servicios </div><br>
                         <div class="row">
                             <div ng-repeat="servicio in servicio | orderBy:'Nombre'" ng-show="servicio.Obligatorio && servicio.Activo">
-                                <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3" style="margin-bottom:10px">
+                                <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4" style="margin-bottom:10px">
 
                                     <!--<div class="input-group">-->
 
@@ -1969,7 +1969,7 @@
                     <div class="tituloOptPresupuesto"> Maqueo </div><br>
                     <div class="row">
                         <div ng-repeat="maqueo in maqueo | orderBy:'Subtotal'" ng-show="maqueo.PorDefecto && maqueo.Activo">
-                            <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3" style="margin-bottom:10px">
+                            <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4" style="margin-bottom:10px">
 
                                 <!--<div class="input-group">-->
 
@@ -2005,7 +2005,7 @@
 
                                
 
-                                <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3" style="margin-bottom:10px">
+                                <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4" style="margin-bottom:10px">
 
                                     <!--<div class="input-group">-->
 
@@ -2141,7 +2141,7 @@
                                        <div>
                                             <div class="panelItemPresupuesto itemPuerta text-center price">
 
-                                                {{grupo.Total | currency}}
+                                                ${{grupo.Total}}
 
                                             </div>
                                         </div>
@@ -2168,7 +2168,7 @@
                                        <div>
                                             <div class="panelItemPresupuesto itemPuerta text-center price">
 
-                                                {{grupo.Total | currency}}
+                                                ${{grupo.Total}}
 
                                             </div>
                                         </div>
@@ -2849,7 +2849,7 @@
                                             </thead>
 
                                             <tbody>
-                                              <tr ng-repeat="abono in combinacion.Abono | orderBy:parseInt(NumeroAbono)">
+                                              <tr ng-repeat="abono in combinacion.Abono | orderBy:'FechaCompromiso2'">
 
                                                     <td class="text-left">
                                                         {{abono.FechaCompromiso}}

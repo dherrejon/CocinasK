@@ -343,8 +343,17 @@ function GetUnidadNegocioPersona()
     $persona = json_decode($request->getBody());
     
     
-    $sql = "SELECT *
-            FROM UnidadNegocioPersonaVista WHERE PersonaId = ".$persona->PersonaId;
+    $sql = "SELECT u.*, x.Margen
+            FROM UnidadNegocioPersonaVista u
+            
+            INNER JOIN (
+
+            SELECT p.Ciudad, p.Municipio, p.Estado, t.Margen
+            FROM Plaza p
+            INNER JOIN Territorio t ON t.TerritorioId = p.TerritorioId
+            ) x ON u.Estado = x.Estado AND u.Ciudad = x.Ciudad AND u.Municipio = x.Municipio
+            
+            WHERE u.PersonaId = ".$persona->PersonaId;
     
     try 
     {

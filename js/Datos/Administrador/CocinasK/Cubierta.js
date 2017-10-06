@@ -163,11 +163,11 @@ function GetTipoCubierta()
     tipoCubierta[1] = new TipoCubierta();
     
     tipoCubierta[0].TipoCubiertaId = "1";
-    tipoCubierta[0].Nombre = "Formaica";
+    tipoCubierta[0].Nombre = "Aglomerado";
     tipoCubierta[0].PorDefecto = true;
     
     tipoCubierta[1].TipoCubiertaId = "2";
-    tipoCubierta[1].Nombre = "Granito";
+    tipoCubierta[1].Nombre = "Piedra";
     tipoCubierta[1].PorDefecto = false;
     
     return tipoCubierta;

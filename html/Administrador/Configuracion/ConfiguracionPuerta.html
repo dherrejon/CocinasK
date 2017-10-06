@@ -620,7 +620,7 @@
                                             <th><button class="btn botonFalso"><b>Cantidad</b></button></th>
                                           </tr>
                                         </thead>
-                                        <tbody ng-repeat="pieza in componentePorPuerta | filter:{ComponenteId:componente.ComponenteId} | orderBy:'NombrePieza'">
+                                        <tbody ng-repeat="pieza in componentePorPuerta | filter:{ComponenteId:componente.ComponenteId}:true | orderBy:'NombrePieza'">
                                           <tr>
                                             <td>{{pieza.NombrePieza}}</td>
                                             <td class="text-center">{{pieza.Cantidad}}</td>

@@ -484,7 +484,13 @@ var OpcionAdministrador =
                                        ]
                         }, 
             
-                        { menu: 2, referencia: "#ConfigurarMedioContacto", texto:"Medios de Contacto", show:false, tipo:"enlace", permiso:[{clave:"ConTMCConsultar"}]}
+                        { menu: 2, referencia: "#ConfigurarMedioContacto", texto:"Medios de Contacto", show:false, tipo:"enlace", permiso:[{clave:"ConTMCConsultar"}]},
+            
+                        { menu: 2, referencia: "", texto:"Contratos", show:false, tipo:"dropdownlist", id:"ConfigurarContrato", clase:"dropdown-submenu",
+                                opcion:[
+                                            { referencia: "#ConfigurarContrato", texto:"Configuración", show:false, permiso:[{clave:"ConMPaConsultar"}, {clave:"ConCVeConsultar"}]},
+                                       ]
+                        }, 
                   ]                      
     },
     

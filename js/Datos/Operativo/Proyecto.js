@@ -180,6 +180,7 @@ function SetProyecto(data)
         proyecto.Domicilio = new Domicilio();
         proyecto.Domicilio.DireccionPersonaId = data.DireccionPersonaId;
         proyecto.Domicilio.Domicilio = data.Domicilio;
+        proyecto.Domicilio.Colonia = data.Colonia;
         proyecto.Domicilio.Codigo = data.Codigo;
         proyecto.Domicilio.Estado = data.Estado;
         proyecto.Domicilio.Municipio = data.Municipio;

@@ -109,6 +109,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         $scope.personaSeleccionada = true; 
         
         $scope.IniciarPresupuesto();
+        $scope.pasoMinimo = 10;
          
         $scope.presupuestoBase = PRESUPUESTO.GetPresupuesto(); // presupuesto a patir del cual se empezará a trabajar
         $scope.presupuesto.Persona = $scope.presupuestoBase.Persona;
@@ -834,7 +835,10 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                     if(data[k].UnidadNegocioId == $scope.usuario.UnidadNegocioId)
                     {
                         data[k].show = false;
-                        $scope.presupuesto.Persona.UnidadNegocio[0] = data[k];
+                        if($scope.presupuesto.Persona.UnidadNegocio.length === 0)
+                        {
+                            $scope.presupuesto.Persona.UnidadNegocio[0] = data[k];
+                        }
                     }
                     else
                     {
@@ -926,7 +930,6 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                 {
                     if(data[i].UnidadNegocioId == $scope.unidadNegocio[k].UnidadNegocioId)
                     {
-                        data[i].Margen = $scope.unidadNegocio[k].Margen;
                         $scope.unidadNegocio[k].show = false;
                         break;
                     }
@@ -960,7 +963,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                     }
                 }
             }
-        
+            
         }).catch(function(error)
         {
             alert(error);
@@ -2582,7 +2585,6 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         {
             if($scope.presupuesto.Persona.UnidadNegocio.length == 1)
             {
-                //console.log($scope.presupuesto.Persona);
                 $scope.presupuesto.Margen = parseFloat($scope.presupuesto.Persona.UnidadNegocio[0].Margen);
                 $scope.presupuesto.Persona.UnidadNegocio[0].MargenSel = true;
                 return true;
@@ -5550,11 +5552,11 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
     {
         if(promocion.TipoPromocion.TipoPromocionId == "1" || promocion.TipoPromocion.TipoPromocionId == "3")
         {
-            return total-((total*promocion.DescuentoMinimo)/100);
+            return Math.round(total-((total*promocion.DescuentoMinimo)/100));
         }
         else if(promocion.TipoPromocion.TipoPromocionId == "2")
         {
-            return total/promocion.NumeroPagos;
+            return Math.round(total/promocion.NumeroPagos);
         }
     };
     
@@ -5642,7 +5644,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                 subtotal = combinacionTotal;
             }
             
-            total += subtotal;
+            total += Math.round(subtotal);
         }
         
         if($scope.presupuesto.Proyecto.TipoProyecto.CubiertaPiedra && $scope.tipoCubiertaPresupuesto == "2")
@@ -5654,7 +5656,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                 subtotal = subtotal - ((subtotal*parseFloat($scope.presupuesto.PromocionCubierta.DescuentoMinimo))/100);
             }
             
-            total += subtotal;
+            total += Math.round(subtotal);
         }
         
         return total;
@@ -5702,14 +5704,21 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
             fecha = new Date();
             fecha.setDate(fecha.getDate() + parseInt(plan.Abono[k].Dias));
             
-            mes = fecha.getMonth();
-            /*mes = fecha.getMonth() + 1;
-            if(mes < 10)
+            mes = parseInt(fecha.getMonth());
+            var mes2 = mes + 1;
+            if(mes2 < 10)
             {
-                mes = "0" + mes;
-            }*/
+                mes2 = "0" + mes2;
+            }
             
-            plan.Abono[k].FechaCompromiso = fecha.getDate()+ "/" + Month[mes] + "/" + fecha.getFullYear();
+            var dia = parseInt(fecha.getDate());
+            if(dia < 10)
+            {
+                dia = "0" + dia;
+            }
+            
+            plan.Abono[k].FechaCompromiso = dia+ "/" + Month[mes] + "/" + fecha.getFullYear();
+            plan.Abono[k].FechaCompromiso2 = fecha.getFullYear()+ "/" + mes2 + "/" + dia;
             //plan.Abono[k].Pago = (total*parseFloat(plan.Abono[k].Abono))/100;
         }
         
@@ -5721,13 +5730,25 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                 total = $scope.GetPrecioVentaPresupuesto($scope.combinacion[k].Total);
                 $scope.combinacion[k].TotalProyecto = total;
                 
+                var acumulado = 0;
                 for(var i=0; i<plan.Abono.length; i++)
                 {
                     $scope.combinacion[k].Abono[i] = new Object();
                     $scope.combinacion[k].Abono[i].FechaCompromiso = plan.Abono[i].FechaCompromiso;
-                    $scope.combinacion[k].Abono[i].Pago = (total*parseFloat(plan.Abono[i].Abono))/100;
+                    $scope.combinacion[k].Abono[i].FechaCompromiso2 = plan.Abono[i].FechaCompromiso2;
+                    
+                    if(i == plan.Abono.length-1)
+                    {
+                        $scope.combinacion[k].Abono[i].Pago = total - acumulado;
+                    }
+                    else
+                    {
+                        $scope.combinacion[k].Abono[i].Pago = Math.round((total*parseFloat(plan.Abono[i].Abono))/100);
+                        acumulado += $scope.combinacion[k].Abono[i].Pago;
+                    }
                 }
             }
+        
         }
         
         //console.log($scope.combinacion);
@@ -6678,7 +6699,6 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         var nombre = $scope.presupuesto.Persona.Nombre + $scope.presupuesto.Persona.PrimerApellido + $scope.presupuesto.PresupuestoId + ".pdf";
         
         doc.save(nombre);
-
     }
     
     $scope.PDFPresupuestoCubierta = function()

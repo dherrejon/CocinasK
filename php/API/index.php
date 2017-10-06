@@ -1,5 +1,4 @@
 <?php
-
     require 'Slim/Slim.php';
     require 'configuration.php';
     
@@ -30,6 +29,8 @@
     require 'Administrador/MedioCaptacion.php';
     require 'Administrador/TipoProyecto.php';
     require 'Administrador/Variable.php';
+    require 'Administrador/ConceptoVenta.php';
+    require 'Administrador/MedioPago.php';
 
     /*------------Operativo-----------*/
     require 'Operativo/Cita.php';
@@ -557,6 +558,18 @@
     $app->post('/GetProyectoPersona', $seguridad, $ChecarSesion, 'GetProyectoPersona');
     $app->post('/CambiarEstatusProyecto', $seguridad, $ChecarSesion, 'CambiarEstatusProyecto');
     $app->put('/EditarProyecto', $seguridad, $ChecarSesion, 'EditarProyecto');
+
+    /*------------------ Medio Pago ------------------------------*/
+    $app->get('/GetMedioPago', $seguridad, $ChecarSesion, 'GetMedioPago');
+    $app->post('/AgregarMedioPago', $seguridad, $ChecarSesion, 'AgregarMedioPago');
+    $app->put('/EditarMedioPago', $seguridad, $ChecarSesion, 'EditarMedioPago');
+    $app->post('/ActivarDesactivarMedioPago', $seguridad, $ChecarSesion, 'ActivarDesactivarMedioPago');
+
+    /*------------------ Medio Pago ------------------------------*/
+    $app->get('/GetConceptoVenta', $seguridad, $ChecarSesion, 'GetConceptoVenta');
+    $app->post('/AgregarConceptoVenta', $seguridad, $ChecarSesion, 'AgregarConceptoVenta');
+    $app->put('/EditarConceptoVenta', $seguridad, $ChecarSesion, 'EditarConceptoVenta');
+    $app->post('/ActivarDesactivarConceptoVenta', $seguridad, $ChecarSesion, 'ActivarDesactivarConceptoVenta');
 
     $app->run(); 
 

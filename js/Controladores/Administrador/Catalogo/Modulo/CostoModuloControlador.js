@@ -601,6 +601,7 @@ app.controller("CostoModuloControlador", function($scope, $http, $q, CONFIG, dat
                 {
                     $scope.combinacion[k].Componente[i]  = new Object();
                     $scope.combinacion[k].Componente[i].ComponenteId = componente[i].ComponenteId;
+                    $scope.combinacion[k].Componente[i].Cantidad = parseInt(componente[i].Cantidad);
                     $scope.combinacion[k].Componente[i].Consumo = 0;
                     $scope.combinacion[k].Componente[i].Costo = 0;
 
@@ -616,8 +617,8 @@ app.controller("CostoModuloControlador", function($scope, $http, $q, CONFIG, dat
                     {
                         $scope.combinacion[k].Componente[i].Consumo += (componente[i].Pieza[j].AnchoNuevo * componente[i].Pieza[j].LargoNuevo * parseInt(componente[i].Pieza[j].Cantidad))/144.0;
                     }
-
-                    $scope.combinacion[k].CostoTotal += $scope.combinacion[k].Componente[i].Costo * $scope.combinacion[k].Componente[i].Consumo;
+                   
+                    $scope.combinacion[k].CostoTotal += $scope.combinacion[k].Componente[i].Costo * $scope.combinacion[k].Componente[i].Consumo * $scope.combinacion[k].Componente[i].Cantidad;
                 }
 
                 var i = $scope.combinacion[k].Componente.length;
@@ -748,14 +749,21 @@ app.controller("CostoModuloControlador", function($scope, $http, $q, CONFIG, dat
     {   
         for(var k=0; k<data.Componente.length; k++)
         {
-            data.Componente[k].Consumo = 0;
             for(var i=0; i<data.Componente[k].Pieza.length; i++)
             {
                 data.Componente[k].Pieza[i].Ancho = $scope.EvaluarFormula(data.Componente[k].Pieza[i].FormulaAncho);
                 data.Componente[k].Pieza[i].Largo = $scope.EvaluarFormula(data.Componente[k].Pieza[i].FormulaLargo);
                 
                 $scope.SustituirModuloMedidaPuerta(data.Componente[k].Pieza[i], medida);
-                $scope.SustituirPuertaMedida(data.Componente[k].Pieza[i], seccion);
+                $scope.SustituirPuertaMedida(data.Componente[k].Pieza[i], seccion);    
+            }
+        }
+        
+        for(var k=0; k<data.Componente.length; k++)
+        {
+            data.Componente[k].Consumo = 0;
+            for(var i=0; i<data.Componente[k].Pieza.length; i++)
+            {
                 $scope.SustituirPiezaPuerta(data.Componente[k].Pieza[i], data.Componente);
                 
                 data.Componente[k].Consumo += ((data.Componente[k].Pieza[i].Ancho * data.Componente[k].Pieza[i].Largo)/144)*parseInt(data.Componente[k].Pieza[i].Cantidad);

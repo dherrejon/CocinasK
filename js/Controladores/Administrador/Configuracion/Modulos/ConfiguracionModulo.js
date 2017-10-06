@@ -1048,6 +1048,7 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
         else
         {
             $scope.medidasFormula = valor;
+
         }
     };
     

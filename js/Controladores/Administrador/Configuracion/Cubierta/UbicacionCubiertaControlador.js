@@ -239,11 +239,10 @@ app.controller("UbicacionControlador", function($scope, $http, $q, CONFIG, $root
     };
     
     
-    //***---------------Inicializae---------------*/
-    $scope.GetUbicacionCubierta();
-    
+    //***---------------Inicializae---------------**//
     $rootScope.InicializarUbicacionCubierta = function()
     {
+        $scope.GetUbicacionCubierta();
         $scope.GetFabricacionCubiertaUbicacion();
     };
 });

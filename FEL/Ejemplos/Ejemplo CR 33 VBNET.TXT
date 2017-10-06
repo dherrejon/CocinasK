@@ -1,0 +1,154 @@
+﻿Imports System.Xml
+Imports System.Text
+Public Class Form1
+
+    Private Sub Button1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button1.Click
+        '**********************************************
+        ' Instanciar al Web Service de Conexión Remota.
+        '**********************************************
+        Dim ConexionRemota33 As New WSRemota33.ConexionRemotaClient
+        '******************************************************************
+        ' Sección de variables para la autenticación del usuario remoto.
+        ' Ingreso de credenciales para la autenticacion del usuario remoto.
+        '******************************************************************
+        Dim datosUsuario As New WSRemota33.Credenciales
+        datosUsuario.Usuario = "TES030201001"
+        datosUsuario.Cuenta = "TES030201001"
+        datosUsuario.Password = "Pruebas2017$"
+        '*************************************************************************************
+        ' Sección de variables para agregar los valores al comprobante CFDi.
+        '*************************************************************************************
+        ' Dim Comprobante As New WSRemota33.Comprobante33R
+        Dim Comprobante As New WSRemota33.Comprobante33R
+
+
+
+        Comprobante.FormaPago = "03"
+        Comprobante.Descuento = "100.00"
+        Comprobante.CondicionesDePago = "CONTADO"
+        Comprobante.MetodoPago = "PUE"
+        Comprobante.LugarExpedicion = "91700"
+        Comprobante.SubTotal = "1671.43"
+        Comprobante.Moneda = "MXN"
+        Comprobante.Total = "1838.86"
+        'Comprobante.Fecha = "2017-08-09T10:52:00"
+        Comprobante.ClaveCFDI = "FAC"
+        Comprobante.Serie = "A"
+        '*************************************************************************************
+        ' Sección de variables para identificar y actualizar los datos del Cliente(Receptor).
+        '*************************************************************************************
+        Comprobante.Receptor = New WSRemota33.ReceptorR
+
+        Comprobante.Receptor.Rfc = "TEST010203001"
+        Comprobante.Receptor.Nombre = "ASESORIA Y TRAMITACION ADUANAL, SC"
+        Comprobante.Receptor.UsoCFDI = "I04"
+
+
+        Comprobante.Emisor = New WSRemota33.EmisorR
+        Comprobante.Emisor.Nombre = "GRUPO JBSISTEMAS, SA DE CV"
+        Comprobante.Emisor.RegimenFiscal = "601"
+
+
+        ' Sección de variables para la descripción de los conceptos.
+        '*************************************************************************
+        'Nota: el objeto listaConcepto es una lista que puede contener varios Conceptos.
+        'Lista de Conceptos
+        Dim listaConcepto As List(Of WSRemota33.ConceptoR) = New List(Of WSRemota33.ConceptoR)()
+        '*************************************************************************************
+        'Concepto1
+        '*************************************************************************************
+        Dim Concepto1 As WSRemota33.ConceptoR = New WSRemota33.ConceptoR()
+        Concepto1.ClaveProdServ = "44101719"
+        Concepto1.NoIdentificacion = "ASCA2400"
+        Concepto1.Cantidad = "1"
+        Concepto1.ClaveUnidad = "EA"
+        Concepto1.Unidad = "PZA"
+        Concepto1.Descripcion = "SCANJET 2400 1200X1200 DPI RESOLUCION OPTICA 48 BITS OCR INTERFASE USB"
+        Concepto1.ValorUnitario = "855.75"
+        Concepto1.Importe = "855.75"
+        Concepto1.Descuento = "100.00"
+
+
+        Dim ConceptoImpuestos1 As WSRemota33.ImpuestosConceptoR = New WSRemota33.ImpuestosConceptoR
+
+        Dim ListaTraslado1 As List(Of WSRemota33.TrasladoConceptoR) = New List(Of WSRemota33.TrasladoConceptoR)()
+
+        Dim traslado1 As WSRemota33.TrasladoConceptoR = New WSRemota33.TrasladoConceptoR
+
+        traslado1.Base = "855.75"
+        traslado1.Impuesto = "002"
+        traslado1.TipoFactor = "Tasa"
+        traslado1.TasaOCuota = "0.160000"
+        traslado1.Importe = "136.92"
+        ListaTraslado1.Add(traslado1)
+        ConceptoImpuestos1.Traslados = ListaTraslado1.ToArray()
+
+        Concepto1.Impuestos = ConceptoImpuestos1
+        listaConcepto.Add(Concepto1)
+        '*************************************************************************************************************
+
+        Dim Concepto2 As WSRemota33.ConceptoR = New WSRemota33.ConceptoR()
+        Concepto2.ClaveProdServ = "32101603"
+        Concepto2.NoIdentificacion = "MEMDAT035"
+        Concepto2.Cantidad = "1"
+        Concepto2.ClaveUnidad = "EA"
+        Concepto2.Unidad = "PZA"
+        Concepto2.Descripcion = "MEMORIA SDRAM PC 133 DE 512MB VDATA"
+        Concepto2.ValorUnitario = "815.68"
+        Concepto2.Importe = "815.68"
+
+        Dim ConceptoImpuestos2 As WSRemota33.ImpuestosConceptoR = New WSRemota33.ImpuestosConceptoR
+
+        Dim ListaTraslado2 As List(Of WSRemota33.TrasladoConceptoR) = New List(Of WSRemota33.TrasladoConceptoR)()
+
+        Dim traslado2 As WSRemota33.TrasladoConceptoR = New WSRemota33.TrasladoConceptoR
+
+        traslado2.Base = "815.68"
+        traslado2.Impuesto = "002"
+        traslado2.TipoFactor = "Tasa"
+        traslado2.TasaOCuota = "0.160000"
+        traslado2.Importe = "130.51"
+        ListaTraslado2.Add(traslado2)
+        ConceptoImpuestos2.Traslados = ListaTraslado2.ToArray()
+
+        Concepto2.Impuestos = ConceptoImpuestos2
+        listaConcepto.Add(Concepto2)
+        '////////////////////////////////////////////
+        Comprobante.Conceptos = listaConcepto.ToArray
+
+
+
+
+        Comprobante.Referencia = "Prueba360"
+
+        Dim RespuestaServicio As New WSRemota33.RespuestaOperacionCR
+        RespuestaServicio = ConexionRemota33.GenerarCFDI(datosUsuario, Comprobante)
+
+
+
+
+
+        Dim leerRespuesta As StringBuilder = New StringBuilder()
+        'Las respuestas vienen separadas por Apendíces con los cuales vamos a leerlas de la siguiente manera:
+        leerRespuesta.AppendFormat("Operacion Exitosa: {0}{1}", RespuestaServicio.OperacionExitosa, ChrW(13))
+        leerRespuesta.AppendFormat("Error General: {0}{1}", RespuestaServicio.ErrorGeneral, ChrW(13))
+        leerRespuesta.AppendFormat("Error Detallado: {0}{1}", RespuestaServicio.ErrorDetallado, ChrW(13))
+        'Se revisa que la respuesta del XML no sea vacía
+        If RespuestaServicio.XML IsNot Nothing Then
+            leerRespuesta.AppendFormat("XML Incluido {0}", ChrW(13))
+            System.IO.File.WriteAllText(System.AppDomain.CurrentDomain.BaseDirectory() + "\MiXML_Timbrado_WS32Nueva.xml", RespuestaServicio.XML)
+        End If
+        'Se revisa que la respuesta del CBB no sea vacía
+        If RespuestaServicio.CBB IsNot Nothing Then
+            leerRespuesta.AppendFormat("CBB Incluido {0}", ChrW(13))
+            System.IO.File.WriteAllBytes(System.AppDomain.CurrentDomain.BaseDirectory() + "\CBBGenerado.jpg", Convert.FromBase64String(RespuestaServicio.CBB))
+        End If
+        'Escribo la respuesta.
+        TextBox1.Text = leerRespuesta.ToString()
+
+    End Sub
+
+    Private Sub TextBox1_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TextBox1.TextChanged
+
+    End Sub
+End Class

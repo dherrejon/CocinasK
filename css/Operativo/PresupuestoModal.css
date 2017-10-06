@@ -391,8 +391,8 @@
 
 .itemPresupuestoEstatico
 {
+    min-height: 35px;
     padding-top: 5px;
-    height: 35px;
     border-bottom: 1px solid #7F7F7F;
     border-top: none;
 }

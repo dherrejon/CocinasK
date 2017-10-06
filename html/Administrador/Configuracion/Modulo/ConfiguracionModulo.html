@@ -879,7 +879,7 @@
                         <div class="col-xs-5 col-sm-4">
                             <div ng-repeat="titulo in tabFormula">
                                
-                                <button ng-disabled="valorFormula=='operador'" class="btn btn-block" ng-class="GetClaseFormula(titulo.titulo)" ng-click="MostrarMedidasFormula(titulo.titulo)">{{titulo.titulo}}</button>
+                                <a ng-class="{disabled:valorFormula=='operador'}" class="btn btn-block  {{GetClaseFormula(titulo.titulo)}}" ng-click="MostrarMedidasFormula(titulo.titulo)">{{titulo.titulo}}</a>
                                 
                                 <br>
                            </div>
@@ -997,7 +997,7 @@
                                     <br>
                                     
                                     <div class="col-xs-12">
-                                        <input required ng-pattern="erNumeroDecimal" name="constante" class="text-right {{contanteFormula.clase}} form-control"  ng-model="contanteFormula.valor">
+                                        <input autofocus required ng-pattern="erNumeroDecimal" name="constante" class="text-right {{contanteFormula.clase}} form-control"  ng-model="contanteFormula.valor">
                                     </div>
                                     
                                     <div class="col-xs-12 textoError" style="margin-top:15px" ng-if="contanteFormula.mensaje.length > 0">{{contanteFormula.mensaje}}</div>

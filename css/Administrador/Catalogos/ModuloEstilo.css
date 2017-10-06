@@ -167,6 +167,7 @@
 /*-------------------Acordio vertical---------------*/
 .opcionAcordion, .opcionAcordion:active, .opcionAcordion:focus
 {
+    color: #262626;
     background: rgb(249, 249, 249);
     border-radius: 0px;
     border-color: #262626;

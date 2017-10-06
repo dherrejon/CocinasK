@@ -59,7 +59,7 @@
                        </span>
 
                        <span ng-if="proyecto.Domicilio != null">
-                           {{proyecto.Domicilio.Domicilio}}. {{proyecto.Domicilio.Ciudad}}, {{proyecto.Domicilio.Estado}}. C.P. {{proyecto.Domicilio.Codigo}}. 
+                           {{proyecto.Domicilio.Domicilio}}, {{proyecto.Domicilio.Colonia}}. {{proyecto.Domicilio.Ciudad}}, {{proyecto.Domicilio.Estado}}. C.P. {{proyecto.Domicilio.Codigo}}. 
                        </span>
                        
                        <a class="botonAgregarAcordion" style="font-size: 12pt" ng-click="EditarProyectoModal(proyecto)">
@@ -334,7 +334,7 @@
                     </span><br>
                     <!-- Dirección del proyecto -->
                     <span ng-if="detalle.Proyecto.Domicilio.DireccionPersonaId.length > 0">
-                        <b>Dirección: </b> <span>{{detalle.Proyecto.Domicilio.Domicilio}}. {{detalle.Proyecto.Domicilio.Ciudad}}, {{detalle.Proyecto.Domicilio.Estado}}. C.P. {{detalle.Proyecto.Domicilio.Codigo}}</span><br>
+                        <b>Dirección: </b> <span>{{detalle.Proyecto.Domicilio.Domicilio}}, {{detalle.Proyecto.Domicilio.Colonia}}. {{detalle.Proyecto.Domicilio.Ciudad}}, {{detalle.Proyecto.Domicilio.Estado}}. C.P. {{detalle.Proyecto.Domicilio.Codigo}}</span><br>
                     </span>
                     <!-- Colaborador -->
                     <span>

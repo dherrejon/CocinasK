@@ -1,0 +1,169 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+using System.Xml;
+using System.Text;
+
+namespace WindowsFormsApplication2
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+                //**********************************************
+        // Instanciar al Web Service de Conexión Remota.
+        //**********************************************
+        WSRemota33.ConexionRemotaClient ConexionRemota33 = new WSRemota33.ConexionRemotaClient();
+        //******************************************************************
+        // Sección de variables para la autenticación del usuario remoto.
+        // Ingreso de credenciales para la autenticacion del usuario remoto.
+        //******************************************************************
+        WSRemota33.Credenciales datosUsuario = new WSRemota33.Credenciales();
+        datosUsuario.Usuario = "TES030201001";
+        datosUsuario.Cuenta = "TES030201001";
+        datosUsuario.Password = "Pruebas2017$";
+        //*************************************************************************************
+        // Sección de variables para agregar los valores al comprobante CFDi.
+        //*************************************************************************************
+        // Dim Comprobante As New WSRemota33.Comprobante33R
+        WSRemota33.Comprobante33R Comprobante = new WSRemota33.Comprobante33R();
+ 
+ 
+ 
+        Comprobante.FormaPago = "03";
+        Comprobante.Descuento = 100.00m;
+        Comprobante.CondicionesDePago = "CONTADO";
+        Comprobante.MetodoPago = "PUE";
+        Comprobante.LugarExpedicion = "91700";
+        Comprobante.SubTotal = 1671.43m;
+        Comprobante.Moneda = "MXN";
+        Comprobante.Total = 1838.86m;
+        
+        Comprobante.ClaveCFDI = "FAC";
+        Comprobante.Serie = "A";
+        //*************************************************************************************
+        // Sección de variables para identificar y actualizar los datos del Cliente(Receptor).
+        //*************************************************************************************
+        Comprobante.Receptor = new WSRemota33.ReceptorR();
+ 
+        Comprobante.Receptor.Rfc = "TEST010203001";
+        Comprobante.Receptor.Nombre = "ASESORIA Y TRAMITACION ADUANAL, SC";
+        Comprobante.Receptor.UsoCFDI = "I04";
+ 
+ 
+        Comprobante.Emisor = new WSRemota33.EmisorR();
+        Comprobante.Emisor.Nombre = "GRUPO JBSISTEMAS, SA DE CV";
+        Comprobante.Emisor.RegimenFiscal = "601";
+ 
+ 
+        // Sección de variables para la descripción de los conceptos.
+        //*************************************************************************
+        //Nota: el objeto listaConcepto es una lista que puede contener varios Conceptos.
+        //Lista de Conceptos
+        List<WSRemota33.ConceptoR> listaConcepto= new List < WSRemota33.ConceptoR >() ;
+        //*************************************************************************************
+        //Concepto1
+        //*************************************************************************************
+        WSRemota33.ConceptoR Concepto1 = new WSRemota33.ConceptoR();
+        Concepto1.ClaveProdServ = "44101719";
+        Concepto1.NoIdentificacion = "ASCA2400";
+        Concepto1.Cantidad = 1m;
+        Concepto1.ClaveUnidad = "EA";
+        Concepto1.Unidad = "PZA";
+        Concepto1.Descripcion = "SCANJET 2400 1200X1200 DPI RESOLUCION OPTICA 48 BITS OCR INTERFASE USB";
+        Concepto1.ValorUnitario = 855.75m;
+        Concepto1.Importe = 855.75m;
+        Concepto1.Descuento = 100.00m;
+ 
+ 
+        WSRemota33.ImpuestosConceptoR ConceptoImpuestos1 = new WSRemota33.ImpuestosConceptoR();
+        List<WSRemota33.TrasladoConceptoR> ListaTraslado1 = new List <WSRemota33.TrasladoConceptoR >();
+    
+        WSRemota33.TrasladoConceptoR traslado1 = new WSRemota33.TrasladoConceptoR();
+ 
+        traslado1.Base = 855.75m;
+        traslado1.Impuesto = "002";
+        traslado1.TipoFactor = "Tasa";
+        traslado1.TasaOCuota = "0.160000";
+        traslado1.Importe = 136.92m;
+        ListaTraslado1.Add(traslado1);
+        ConceptoImpuestos1.Traslados = ListaTraslado1.ToArray();
+ 
+        Concepto1.Impuestos = ConceptoImpuestos1;
+        listaConcepto.Add(Concepto1);
+        //*************************************************************************************************************
+       
+        WSRemota33.ConceptoR Concepto2 = new WSRemota33.ConceptoR();
+        Concepto2.ClaveProdServ = "32101603";
+        Concepto2.NoIdentificacion = "MEMDAT035";
+        Concepto2.Cantidad = 1m;
+        Concepto2.ClaveUnidad = "EA";
+        Concepto2.Unidad = "PZA";
+        Concepto2.Descripcion = "MEMORIA SDRAM PC 133 DE 512MB VDATA";
+        Concepto2.ValorUnitario = 815.68m;
+        Concepto2.Importe = 815.68m;
+ 
+        WSRemota33.ImpuestosConceptoR ConceptoImpuestos2 = new WSRemota33.ImpuestosConceptoR();
+ 
+      
+ List<WSRemota33.TrasladoConceptoR> ListaTraslado2 = new List <WSRemota33.TrasladoConceptoR >();
+
+        WSRemota33.TrasladoConceptoR traslado2 = new WSRemota33.TrasladoConceptoR();
+ 
+        traslado2.Base = 815.68m;
+        traslado2.Impuesto = "002";
+        traslado2.TipoFactor = "Tasa";
+        traslado2.TasaOCuota = "0.160000";
+        traslado2.Importe = 130.51m;
+        ListaTraslado2.Add(traslado2);
+        ConceptoImpuestos2.Traslados = ListaTraslado2.ToArray();
+ 
+        Concepto2.Impuestos = ConceptoImpuestos2;
+        listaConcepto.Add(Concepto2);
+        //////////////////////////////////////////////
+        Comprobante.Conceptos = listaConcepto.ToArray();
+ 
+ 
+ 
+ 
+ 
+        Comprobante.Referencia = "Prueba360";
+ 
+        WSRemota33.RespuestaOperacionCR RespuestaServicio = new WSRemota33.RespuestaOperacionCR();
+        RespuestaServicio = ConexionRemota33.GenerarCFDI(datosUsuario, Comprobante);
+ 
+ 
+ 
+ 
+ 
+        StringBuilder leerRespuesta = new StringBuilder();
+        //Las respuestas vienen separadas por Apendíces con los cuales vamos a leerlas de la siguiente manera:
+        leerRespuesta.AppendFormat("Operacion Exitosa: {0}{1}", RespuestaServicio.OperacionExitosa, Convert.ToString((char)13));
+        leerRespuesta.AppendFormat("Error General: {0}{1}", RespuestaServicio.ErrorGeneral, Convert.ToString((char)13));
+        leerRespuesta.AppendFormat("Error Detallado: {0}{1}", RespuestaServicio.ErrorDetallado, Convert.ToString((char)13));
+        //Se revisa que la respuesta del XML no sea vacía
+        if( RespuestaServicio.XML != null ){
+            leerRespuesta.AppendFormat("XML Incluido {0}", Convert.ToString((char)13));
+            System.IO.File.WriteAllText(System.AppDomain.CurrentDomain.BaseDirectory+ @"\MiXML_Timbrado_WS32Nueva.xml", RespuestaServicio.XML);
+        }
+        //Se revisa que la respuesta del CBB no sea vacía
+        if( RespuestaServicio.CBB != null ){
+            leerRespuesta.AppendFormat("CBB Incluido {0}", Convert.ToString((char)13));
+            System.IO.File.WriteAllBytes(System.AppDomain.CurrentDomain.BaseDirectory + @"\CBBGenerado.jpg", Convert.FromBase64String(RespuestaServicio.CBB));
+        }
+        //Escribo la respuesta.
+        textBox1.Text = leerRespuesta.ToString();
+        }
+        
+    }
+}

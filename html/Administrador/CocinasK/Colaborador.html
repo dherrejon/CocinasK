@@ -481,7 +481,7 @@
                         </div>
                         
                         <div class="col-sm-2 col-md-2 col-xs-4" ng-if="!editarContacto.realizar || editarContacto.tipoContacto != 'telefono'">
-                             <button ng-disabled="editarContacto.realizar" class="btn btn-block botonOperacion fa fa-plus" data-toggle="tooltip" data-placement="bottom" title="Agregar Teléfono" ng-click="AgregarTelefono(colaboradorForma.telefono.$invalid)"></button>
+                             <a ng-disabled="editarContacto.realizar" class="btn btn-block botonOperacion fa fa-plus" data-toggle="tooltip" data-placement="bottom" title="Agregar Teléfono" ng-click="AgregarTelefono(colaboradorForma.telefono.$invalid)"></a>
                         </div>
                        
                         <div class="col-sm-2 col-md-2 col-xs-4" ng-if="editarContacto.realizar && editarContacto.tipoContacto == 'telefono'">
@@ -590,7 +590,7 @@
                         </div>
                         
                         <div class="col-sm-2 col-xs-4" ng-if="!editarContacto.realizar || editarContacto.tipoContacto != 'correo'">
-                             <button  ng-disabled="editarContacto.realizar" class="btn btn-block botonOperacion fa fa-plus" data-toggle="tooltip" data-placement="bottom" title="Agregar Correo Electrónico" ng-click="AgregarCorreo(colaboradorForma.correo.$invalid)"></button>
+                             <a  ng-disabled="editarContacto.realizar" class="btn btn-block botonOperacion fa fa-plus" data-toggle="tooltip" data-placement="bottom" title="Agregar Correo Electrónico" ng-click="AgregarCorreo(colaboradorForma.correo.$invalid)"></a>
                         </div>
                         
                         <div class="col-sm-2 col-xs-4" ng-if="editarContacto.realizar && editarContacto.tipoContacto == 'correo'">
@@ -884,7 +884,7 @@
                         </div>
                         
                         <div class="col-xs-6">
-                            <button ng-disable="terminarConcluido" focus class="btn botonAvanzar btn-block" ng-click="TerminarColaborador(colaboradorForma.nombre.$invalid, colaboradorForma.primerApellido.$invalid, colaboradorForma.segundoApellido.$invalid, colaboradorForma.domicilio.$invalid, colaboradorForma.codigo.$invalid, colaboradorForma.otraColonia.$invalid)">TERMINAR</button>
+                            <a ng-disable="terminarConcluido" focus class="btn botonAvanzar btn-block" ng-click="TerminarColaborador(colaboradorForma.nombre.$invalid, colaboradorForma.primerApellido.$invalid, colaboradorForma.segundoApellido.$invalid, colaboradorForma.domicilio.$invalid, colaboradorForma.codigo.$invalid, colaboradorForma.otraColonia.$invalid)">TERMINAR</a>
                         </div>
                     </div>
                     <br> 
