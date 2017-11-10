@@ -55,11 +55,36 @@
     background: #F2F2F2;
 }
 
+.itemPresupuesto.itemList:hover
+{
+    background: rgba(250, 97, 21, 1.0);
+    color: white !important;
+}
+
 .itemPresupuestoPrimero
 {
     border-top: 1px solid #7F7F7F;
 }
 
+.itemPresupuesto.itemList:hover .cr
+{
+    border-color: white;
+    color: white;
+}
+
+.checkbox.itemList:hover label input[type="checkbox"]:checked + .cr > .cr-icon
+{
+    transform: none !important;
+    transition: all .0s ease-in !important;
+    opacity: 1 !important;
+}
+
+.checkbox.itemList label input[type="checkbox"]:checked + .cr > .cr-icon
+{
+    transform: none !important;
+    transition: all .0s ease-in !important;
+    opacity: 1 !important;
+}
 
 /*------- modulo */
 .imagenModuloPresupuesto

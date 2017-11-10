@@ -109,6 +109,31 @@
     border-radius: 0px;
 }
 
+.dropdownOpcionModalbtn, .dropdownOpcionModalbtn:focus, .dropdownOpcionModalbtn:active
+{
+    color: #262626 !important;
+    border-width: 0px;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(38,38,38,0.4);
+    cursor: pointer;
+    white-space: normal;
+    background: transparent;
+    text-align: left;
+    width: 100%;
+    
+    
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.dropdownOpcionModalbtn:hover
+{
+    color: white !important;
+    background-color: rgb(250, 97, 21) !important;
+    cursor: hand !important;
+}
 
 /*--------clase para CheckBox----------*/
 
@@ -169,7 +194,8 @@
 {
     transform: scale(1) rotateZ(0deg);
     opacity: 1;
-}
+} 
+
 
 .checkboxOperativo label input[type="checkbox"]:disabled + .cr
 {

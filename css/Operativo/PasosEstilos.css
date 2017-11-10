@@ -36,8 +36,13 @@
 {    
     display: table-cell;
     text-align: center;
-    position: relative;;
+    position: relative;
     width: 20%;
+}
+
+.stepwizard-step.contrato
+{    
+    width: 25%;
 }
 
 .btn-circle 
@@ -113,7 +118,6 @@
 {
     width: 90%; 
 }
-
 .stepwizard-row.paso6:before 
 {
     width: 100%; 
@@ -125,4 +129,24 @@
     background-color:  rgba(250, 97, 21, 1.0); 
     width: 100%;
     margin-bottom: 5px;
+}
+
+.stepwizard-row.cuatro.paso1:before 
+{
+    width: 25%; 
+}
+
+.stepwizard-row.cuatro.paso2:before 
+{
+    width: 50%; 
+}
+
+.stepwizard-row.cuatro.paso3:before 
+{
+    width: 75%; 
+}
+
+.stepwizard-row.cuatro.paso4:before 
+{
+    width: 100%; 
 }

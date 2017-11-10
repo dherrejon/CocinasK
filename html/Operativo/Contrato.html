@@ -1,0 +1,1213 @@
+<div ng-controller="ContratoControlador as contrato" ng-init="GetIVA();">
+
+     <!-- Modal para mensajes -->
+    <div class="modal fade" id="contratoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="true" data-backdrop="static">
+        <div class="modalPantalla center-block" >
+            
+            <div class="modalHeader">
+               
+               <!-- Encabezado -->
+               <div class="row">
+                    <div class="col-xs-12">
+                        <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarPresupuestoModal()"><span aria-hidden="true">&times;</span></button>
+                        <span class="tituloModal">Contrato</span>
+                    </div>
+                </div>
+                <br>
+                
+                <!-- barra de pasos -->
+                <div>
+                    <div class="stepwizard">
+                      <div class="stepwizard-rowActivo"></div>
+
+                        <div class="stepwizard-row" ng-class="GetClaseLineaPaso()">
+
+                            <div class="stepwizard-step"  ng-repeat="paso in pasos">
+                                <button type="button" class="btn  btn-circle" ng-class="GetClasePaso(paso.numero)" disabled>{{paso.numero}}</button>
+                                <p>{{paso.nombre}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="height: 162px;"></div>
+            
+            <div style="padding: 15px">    
+                <!-- Paso 1 -->
+                <div ng-show="pasoContrato == 1">
+                    
+                    <!-- Datos del presupuesto -->
+                    <div class="row">
+
+                        <div class="col-sm-12">
+                           <!--Cliente-->
+                            <span>
+                                <b>Cliente: </b> <span>{{presupuesto.Persona.Nombre}} {{presupuesto.Persona.PrimerApellido}} {{presupuesto.Persona.SegundoApellido}}</span>
+                            </span><br>
+                            <!-- Proyecto -->
+                            <span>
+                                <b>Proyecto: </b> <span>{{presupuesto.Proyecto.TipoProyecto.Nombre}} - {{presupuesto.Proyecto.Nombre}}</span>
+                            </span><br>
+                            <!-- Presupuesto -->
+                            <span>
+                                <b>Presupuesto: </b> <span>No.{{presupuesto.PresupuestoId}} - {{presupuesto.Titulo}}</span>
+                            </span>
+                        </div>
+                    </div>
+                    <br>
+                    <!-- Intruccion -->
+                    <div class="row">
+                       <div class="col-xs-12 ">
+                           <span class="textoInstruccion">Selecciona las opciones elegidas por el cliente.</span>
+                       </div>
+                   </div>
+                   <br>
+                   
+                   <div ng-if="presupuesto.Proyecto.TipoProyecto.Mueble">
+                      <div class="row"><div class="col-xs-12 "> <div class="tituloAccesorioPre"> Módulos </div> </div></div><br><br>
+                       <!-- Combinacion -->
+                        <div class="row">
+                            <div class="col-xs-12 etiquetaDropdownList">
+                                <label>Combinación</label>
+                            
+                                 <div class="dropdown">
+
+                                    <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown">
+                                        <span>{{contrato.Combinacion.Nombre}}</span>
+                                        
+                                        <span class="pull-right">
+                                            <b> {{contrato.Combinacion.PrecioVenta | currency}}</b>
+                                            <span class="caret"></span>
+                                        </span>
+                                        
+                                    </button>
+
+                                    <ul class="dropdown-menu listaOpcionesDropdownList" style="width: 100%">                                
+                                        <li ng-repeat="combinacion in presupuesto.CombinacionMaterial ">
+                                            <button  href="" class="dropdownOpcionModalbtn" ng-click="SeleccionarCombinacion(combinacion)">
+                                               <span style="margin: 0px 15px 0px 10px;">
+                                                    <span>{{combinacion.Nombre}}</span>
+                                                    <b class="pull-right">{{combinacion.PrecioVenta | currency}}</b>
+                                                </span>
+                                            </button>
+                                        </li>
+                                    </ul>
+
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <br>
+                        
+                         <!--  Puerta  -->
+                        <div class="row">
+                            <div class="col-sm-6 etiquetaDropdownList">
+                                <label>Puerta</label>
+                            
+                                 <div class="dropdown">
+
+                                    <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown" ng-disabled="!(contrato.Combinacion.CombinacionMaterialId.length > 0)">
+                                        <span>{{contrato.Puerta.Nombre}}</span>
+                                        
+                                        <span class="pull-right">
+                                            <b> {{contrato.Puerta.Precio | currency}}</b>
+                                            <span class="caret"></span>
+                                        </span>
+                                        
+                                    </button>
+
+                                    <ul class="dropdown-menu listaOpcionesDropdownList" style="width: 100%">                                
+                                        <li ng-repeat="puerta in presupuesto.Puerta ">
+                                            <button  href="" class="dropdownOpcionModalbtn" ng-click="contrato.Puerta = puerta">
+                                               <span style="margin: 0px 15px 0px 10px;">
+                                                    <span>{{puerta.Nombre}}</span>
+                                                    <b class="pull-right">
+                                                       <span ng-repeat="combinacion in puerta.Combinacion" ng-show="combinacion.CombinacionMaterialId == contrato.Combinacion.CombinacionMaterialId">
+                                                            {{puerta.Precio | currency}}
+                                                        </span>
+                                                    </b>
+                                                </span>
+                                            </button>
+                                        </li>
+                                    </ul>
+
+                                </div>
+                                
+                            </div>
+                            
+                            
+                            <div class="col-sm-6 etiquetaDropdownList">
+                                                    
+                                 <div class="dropdown" style="margin-top: 25px" >
+
+                                    <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown" ng-disabled="!(contrato.Puerta.MuestrarioId.length > 0)">
+                                        <span>{{contrato.Puerta.PuertaSeleccionada.Nombre}}</span>
+                                        
+                                        <span class="pull-right">
+                                            <span class="caret"></span>
+                                        </span>
+                                    </button>
+
+                                    <ul class="dropdown-menu listaOpcionesDropdownList" style="width: 100%"> 
+                                       <li>
+                                            <a  href="" class="dropdownOpcionModal" ng-click="contrato.Puerta.PuertaSeleccionada = {Nombre:'Pendiente', PuertaId: null}">
+                                                <span>Pendiente</span>
+                                            </a>
+                                        </li>                               
+                                        <li ng-repeat="puerta in contrato.Puerta.Puerta ">
+                                            <a  href="" class="dropdownOpcionModal" ng-click="contrato.Puerta.PuertaSeleccionada = puerta">
+                                                <span>{{puerta.Nombre}}</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+
+                                </div>
+                                
+                            </div>
+                            
+                        </div>
+                        <br>
+                        <!-- Servicios -->
+                        <div class="row">
+                           <div class="col-xs-12 etiquetaDropdownList">
+                                
+                                <div class="dropdown ">
+
+                                    <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown">
+                                        <span>Servicios</span>
+                                        
+                                        <span class="pull-right">
+                                            <span class="caret"></span>
+                                        </span>
+                                    </button>
+
+                                    <ul class="dropdown-menu listaOpcionesDropdownList" style="width: 100%; height: auto">
+                                        <form>
+                                        <li ng-repeat="servicio in presupuesto.Servicio | orderBy:'Nombre'">
+                                        
+                                            <div class="checkbox checkboxOperativo itemPresupuesto itemList" style="margin-left: 0px; color: #262626;" ng-class="{itemPresupuestoPrimero: $first}">
+                                                <label style="width:100%;">
+                                                    <input  ng-model="servicio.Contrato" type="checkbox">
+                                                    <span class="cr"> <i class="cr-icon fa fa-check"></i> </span>
+                                                    <span>{{servicio.Nombre}}</span>
+                                                    <b class="pull-right" style="margin-right: 20px;">{{servicio.PrecioVenta | currency}}</b>
+                                                </label>
+                                            </div>
+                                            
+                                        </li>
+                                        </form>
+                                    </ul>
+                                    
+                                </div>
+                               
+                           </div>
+                        </div>
+                        
+                        <div class="row" ng-show="(presupuesto.Servicio | filter:{Contrato:true}).length > 0">
+                           <div class="col-xs-12">
+
+                                <div class="table-responsive tablePerfilClienteDatos">
+                                    <table class="table table-hover table-striped table-condensed">
+                                        <thead class="TituloTabla">
+                                          <tr>
+                                            <th><span class=""><b>Servicio</b></span></th>
+                                            <th><span><b>Precio</b></span></th>
+                                            <th style="width: 40px;"></th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                          <tr ng-repeat="servicio in presupuesto.Servicio | orderBy:'Nombre'" ng-show="servicio.Contrato">
+                                             <td>{{servicio.Nombre}}</td>
+                                             <td>{{servicio.PrecioVenta | currency}}</td>
+                                             <td class="text-center">
+                                                <a  class="BotonOperacion" href="" ng-click="servicio.Contrato = false" >
+                                                    <span class="fa fa-times" style="font-size: 12pt"></span>
+                                                </a>
+                                             </td>                                              
+                                          </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+                        <br>
+                        <!--  Maqueo  -->
+                        <div class="row">
+                            <div class="col-sm-6 etiquetaDropdownList">
+                                <label>Maqueo</label>
+                            
+                                 <div class="dropdown">
+
+                                    <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown">
+                                        <span>{{contrato.Maqueo.Nombre}}</span>
+                                        
+                                        <span class="pull-right">
+                                            <b> {{contrato.Maqueo.PrecioVenta | currency}}</b>
+                                            <span class="caret"></span>
+                                        </span>
+                                        
+                                    </button>
+
+                                    <ul class="dropdown-menu listaOpcionesDropdownList" style="width: 100%">                                
+                                        <li ng-repeat="maqueo in presupuesto.Maqueo">
+                                            <button  href="" class="dropdownOpcionModalbtn" ng-click="contrato.Maqueo = maqueo">
+                                               <span style="margin: 0px 15px 0px 10px;">
+                                                    <span>{{maqueo.Nombre}}</span>
+                                                    <b class="pull-right">
+                                                        {{maqueo.PrecioVenta  | currency}}
+                                                    </b>
+                                                </span>
+                                            </button>
+                                        </li>
+                                    </ul>
+
+                                </div>
+                                
+                            </div>
+                            
+                            
+                            <div class="col-sm-6 etiquetaDropdownList">
+                                                    
+                                 <div class="dropdown" style="margin-top: 25px" >
+
+                                    <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown" ng-disabled="!(contrato.Maqueo.MaqueoId.length > 0)">
+                                        <span>{{contrato.Maqueo.ColorSel.Nombre}}</span>
+                                        
+                                        <span class="pull-right">
+                                            <span class="caret"></span>
+                                        </span>
+                                    </button>
+
+                                    <ul class="dropdown-menu listaOpcionesDropdownList" style="width: 100%"> 
+                                       <li>
+                                            <a  href="" class="dropdownOpcionModal" ng-click="contrato.Maqueo.ColorSel = {Nombre:'Pendiente', PuertaId: null}">
+                                                <span>Pendiente</span>
+                                            </a>
+                                        </li>                               
+                                        <li ng-repeat="color in contrato.Maqueo.Color ">
+                                            <a  href="" class="dropdownOpcionModal" ng-click="contrato.Maqueo.ColorSel = color">
+                                                <span>{{color.Nombre}}</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+
+                                </div>
+                                
+                            </div>
+                            
+                        </div>
+                        <br>
+                        <!-- Accesorio -->
+                        <div class="row">
+                           <div class="col-xs-12 etiquetaDropdownList">
+                                
+                                <div class="dropdown ">
+
+                                    <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown">
+                                        <span>Accesorios</span>
+                                        
+                                        <span class="pull-right">
+                                            <span class="caret"></span>
+                                        </span>
+                                    </button>
+
+                                    <ul class="dropdown-menu listaOpcionesDropdownList" style="width: 100%; height: auto">
+                                        <form>
+                                        <li ng-repeat="accesorio in presupuesto.Accesorio | orderBy:'Nombre'">
+                                        
+                                            <div class="checkbox checkboxOperativo itemPresupuesto itemList" style="margin-left: 0px; color: #262626;" ng-class="{itemPresupuestoPrimero: $first}">
+                                                <label style="width:100%;">
+                                                    <input  ng-model="accesorio.Contrato" type="checkbox" ng-disabled="accesorio.Obligatorio == '1'">
+                                                    <span class="cr"> <i class="cr-icon fa fa-check"></i> </span>
+                                                    <span>{{accesorio.Nombre}}</span>
+                                                </label>
+                                            </div>
+                                            
+                                        </li>
+                                        </form>
+                                    </ul>
+                                    
+                                </div>
+                               
+                           </div>
+                        </div>
+                        
+                        <div class="row" ng-show="(presupuesto.Accesorio | filter:{Contrato:true}).length > 0">
+                           <div class="col-xs-12">
+
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-striped table-condensed">
+                                        <thead class="TituloTabla">
+                                          <tr>
+                                            <th><span class=""><b>Tipo de Accesorio</b></span></th>
+                                            <th style="min-width: 40%"><span><b>Muestrario</b></span></th>
+                                            <th style="min-width: 30%"><span><b>Accesorio</b></span></th>
+                                            <th style="width: 40px;"></th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                          <tr ng-repeat="accesorio in presupuesto.Accesorio | orderBy:'Nombre'" ng-show="accesorio.Contrato">
+                                             <td>{{accesorio.Nombre}}</td>
+                                             
+                                             <td>
+                                                 <div class="dropdown">
+
+                                                    <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown" ng-disabled="accesorio.ClaseAccesorioId == '2' && !(contrato.Combinacion.CombinacionMaterialId.length > 0) " >
+                                                        <span style="font-size: 11pt !important">
+                                                            <span>{{accesorio.MuestrarioSel.Nombre}}</span>
+
+                                                            <span class="pull-right">
+                                                                <b>{{accesorio.MuestrarioSel.PrecioVenta | currency}}</b>
+                                                                <span class="caret"></span>
+                                                            </span>
+                                                        </span>
+                                                    </button>
+
+                                                    <ul class="dropdown-menu listaOpcionesDropdownList" style="width: 100%; ">                               
+                                                        <li ng-repeat="muestrario in accesorio.Muestrario " >
+                                                            <button  href="" class=" dropdownOpcionModalbtn " ng-click="accesorio.MuestrarioSel = muestrario">
+                                                               <span style="margin: 0px 15px 0px 10px;">
+                                                                    <span class="text-left">{{muestrario.Nombre}} </span>
+                                                                    <b class="pull-right">
+                                                                        {{muestrario.PrecioVenta  | currency}}
+                                                                    </b>
+                                                                </span>
+                                                            </button>
+                                                        </li>
+                                                    </ul>
+
+                                                </div>
+                                             </td>
+                                             
+                                              <td>
+                                                 <div class="dropdown">
+
+                                                    <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown" ng-disabled=" !(accesorio.MuestrarioSel.MuestrarioId.length > 0) ">
+                                                        <span style="font-size: 11pt !important">
+                                                            <span>{{accesorio.MuestrarioSel.AccesorioSel.Nombre}}</span>
+
+                                                            <span class="pull-right">
+                                                                <span class="caret"></span>
+                                                            </span>
+                                                        </span>
+                                                    </button>
+
+                                                    <ul class="dropdown-menu listaOpcionesDropdownList" style="width: 100%"> 
+                                                       
+                                                        <li>
+                                                            <a  href="" class="dropdownOpcionModal" ng-click="accesorio.MuestrarioSel.AccesorioSel = {Nombre:'Pendiente', AccesorioId: null}">
+                                                                <span>Pendiente</span>
+                                                            </a>
+                                                        </li>  
+
+                                                        <li ng-repeat="accesory in accesorio.MuestrarioSel.Accesorio ">
+                                                            <a  href="" class="dropdownOpcionModal" ng-click="accesorio.MuestrarioSel.AccesorioSel = accesory">
+                                                                <span>{{accesory.Nombre}}</span>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+
+                                                </div>
+                                                
+                                             </td>
+                                             
+                                             
+                                             <td class="text-center">
+                                                <a  class="BotonOperacion" href="" ng-click="accesorio.Contrato = false" ng-show="accesorio.Obligatorio != '1'">
+                                                    <span class="fa fa-times" style="font-size: 12pt"></span>
+                                                </a>
+                                                
+                                                <span class="fa fa-times" style="font-size: 12pt; opacity: 0.7" ng-show="accesorio.Obligatorio == '1'"></span>
+                                             </td>                                              
+                                          </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+                        
+                    </div>
+
+                     <!--  Cubierta  -->
+                     <div ng-show="presupuesto.Proyecto.TipoProyecto.CubiertaPiedra || presupuesto.Proyecto.TipoProyecto.CubiertaAglomerado">
+                        <div class="row" ng-show="presupuesto.Proyecto.TipoProyecto.Mueble"><div class="col-xs-12 "> <div class="sepradorGris" style="height: 2px"> </div> </div><br></div>
+                        <div class="row"><div class="col-xs-12 "> <div class="tituloAccesorioPre"> Cubierta </div> </div></div><br><br>
+                           
+                        <div class="row">
+                            <div class="col-sm-6 etiquetaDropdownList">
+                                <label>Tipo de Cubierta</label>
+
+                                 <div class="dropdown">
+
+                                    <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown">
+                                        <span>{{contrato.TipoCubierta.Nombre}}</span>
+
+                                        <span class="pull-right">
+                                            <span class="caret"></span>
+                                        </span>
+
+                                    </button>
+
+                                    <ul class="dropdown-menu listaOpcionesDropdownList" style="width: 100%"> 
+                                       
+                                        <li ng-show="presupuesto.Proyecto.TipoProyecto.Mueble">
+                                            <a  href="" class="dropdownOpcionModal" ng-click="contrato.TipoCubierta = {Nombre: 'Pendiente', Id: null}">
+                                                <span>Pendiente</span>
+                                            </a>
+                                        </li> 
+                                                                               
+                                        <li ng-repeat="tipo in presupuesto.TipoCubierta | orderBy:'Nombre'">
+                                            <a  href="" class="dropdownOpcionModalbtn" ng-click="CambiarTipoCubierta(tipo)">
+                                                <span>{{tipo.Nombre}}</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+
+                                </div>
+
+                            </div>
+
+                            <br class="hidden-sm hidden-md hidden-lg">
+
+                            <div class="col-sm-6 etiquetaDropdownList">
+
+                                  <label>Ubicación</label>
+
+                                  <div class="dropdown ">
+
+                                        <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown" ng-disabled="!(contrato.TipoCubierta.TipoCubiertaId.length > 0)">
+                                            <span ng-repeat="u in (contrato.TipoCubierta.Ubicacion | filter:{Contrato:true, UbicacionCubiertaId:'!3'})">
+                                                <span ng-show="$first">(</span>
+                                                <span ng-show="!$last">{{u.Nombre}}, </span>
+                                                <span ng-show="$last">{{u.Nombre}} )</span>
+                                            </span>
+
+                                            <span class="pull-right">
+                                                <span class="caret"></span>
+                                            </span>
+                                        </button>
+
+                                        <ul class="dropdown-menu listaOpcionesDropdownList" style="width: 100%; height: auto">
+                                            <form>
+                                            <li ng-repeat="ubicacion in contrato.TipoCubierta.Ubicacion | orderBy:'UbicacionCubiertaId'" ng-show="ubicacion.UbicacionCubiertaId != '3'">
+
+                                                <div class="checkbox checkboxOperativo itemPresupuesto itemList" style="margin-left: 0px; color: #262626;" ng-class="{itemPresupuestoPrimero: $first}">
+                                                    <label style="width:100%;">
+                                                        <input  ng-model="ubicacion.Contrato" type="checkbox" ng-change="GetPrecioVentaCubierta(ubicacion)">
+                                                        <span class="cr"> <i class="cr-icon fa fa-check"></i> </span>
+                                                        <span>{{ubicacion.Nombre}}</span>
+                                                    </label>
+                                                </div>
+
+                                            </li>
+                                            </form>
+                                        </ul>
+
+                                    </div>
+
+                            </div>
+
+                        </div>
+                        <br>
+                        <!--  Opciones Cubierta  -->
+                        <div ng-show="(contrato.TipoCubierta.Ubicacion | filter:{Contrato:true}).length > 0" ng-repeat="gp in contrato.TipoCubierta.GrupoUbicacion">
+
+                            <div class="row" ng-show="contrato.TipoCubierta.TipoCubiertaId == '1'">
+                               <div class="col-xs-12" >
+                                   <span class="textoInstruccion">Selecciona un material para {{gp.Nombre}}</span>
+                               </div>
+                               <br><br>
+                            </div>  
+
+                            <div class="row" >
+
+                                <div class="col-sm-6 etiquetaDropdownList">
+                                    <label>Material</label>
+
+                                     <div class="dropdown">
+
+                                        <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown" ng-disabled="!(contrato.TipoCubierta.TipoCubiertaId.length > 0)">
+                                            <span>{{gp.MaterialAux}}</span>
+
+                                            <span class="pull-right">
+                                                <span class="caret"></span>
+                                            </span>
+
+                                        </button>
+
+                                        <ul class="dropdown-menu listaOpcionesDropdownList" style="width: 100%">                                
+                                            <li ng-repeat="material in contrato.TipoCubierta.Material | unique:'NombreMaterial' | orderBy:'NombreMaterial'" ng-show="ShowMaterial(material.Ubicacion, gp)">
+                                                <a href="" class="dropdownOpcionModalbtn" ng-click="gp.MaterialAux = material.NombreMaterial; gp.MaterialSel = ''">
+                                                    <span>{{material.NombreMaterial}}</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+
+                                    </div>
+
+                                </div>
+
+                                <br class="hidden-sm hidden-md hidden-lg">
+
+                                <div class="col-sm-6 etiquetaDropdownList">
+                                    <label>Muestrario</label>
+
+                                     <div class="dropdown">
+
+                                        <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown" ng-disabled="!(gp.MaterialAux.length > 0)">
+                                            
+                                            <span>{{gp.MaterialSel.NombreGrupo}}</span>
+
+                                            <span class="pull-right">
+                                               <b>{{gp.MaterialSel.PrecioVenta | currency}}</b>
+                                                <span class="caret"></span>
+                                            </span>
+
+                                        </button>
+
+                                        <ul class="dropdown-menu listaOpcionesDropdownList" style="width: 100%">                                
+                                            <li ng-repeat="grupo in contrato.TipoCubierta.Material | filter:{NombreMaterial:gp.MaterialAux}:true">
+                                                <button  href="" class="dropdownOpcionModalbtn" ng-click="gp.MaterialSel = grupo">
+                                                    <span style="margin: 0px 15px 0px 10px;">
+                                                        <span>{{grupo.NombreGrupo}}</span>
+                                                        <b class="pull-right">{{grupo.PrecioVenta | currency}}</b>
+                                                    </span>
+                                                </button>
+                                            </li>
+                                        </ul>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                            <br>
+                            <!--  Color Material Cubierta  -->
+                            <div class="row">
+                                <div class="col-sm-6 etiquetaDropdownList">
+                                    <label>Color</label>
+
+                                     <div class="dropdown">
+
+                                        <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown" ng-disabled="!(gp.MaterialSel.GrupoId.length > 0)">
+                                            <span>{{gp.MaterialSel.ColorSel.Nombre}}</span>
+
+                                            <span class="pull-right">
+                                                <span class="caret"></span>
+                                            </span>
+
+                                        </button>
+
+                                        <ul class="dropdown-menu listaOpcionesDropdownList" style="width: 100%"> 
+
+                                            <li>
+                                                <a  href="" class="dropdownOpcionModal" ng-click="gp.MaterialSel.ColorSel = {Nombre:'Pendiente', ColorId:null}">
+                                                    <span>Pendiente</span>
+                                                </a>
+                                            </li>                             
+
+                                            <li ng-repeat="color in gp.MaterialSel.Color | orderBy:'Nombre'">
+                                                <a  href="" class="dropdownOpcionModal" ng-click="gp.MaterialSel.ColorSel = color">
+                                                    <span>{{color.Nombre}}</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Paso 2 -->
+                <div ng-show="pasoContrato == 2">
+                    <!--  Color Material Cubierta  -->
+                    <div class="row">
+                        <div class="col-sm-6 etiquetaDropdownList">
+                            <label>Concepto de Venta</label>
+
+                             <div class="dropdown">
+
+                                <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown">
+                                    <span>{{contrato.ConceptoVenta.Nombre}}</span>
+
+                                    <span class="pull-right">
+                                        <span class="caret"></span>
+                                    </span>
+
+                                </button>
+
+                                <ul class="dropdown-menu listaOpcionesDropdownList" style="width: 100%">                          
+
+                                    <li ng-repeat="concepto in conceptoVenta | orderBy:'Nombre'">
+                                        <a  href="" class="dropdownOpcionModal" ng-click="contrato.ConceptoVenta = concepto; CambiarConceptoVenta()">
+                                            <span>{{concepto.Nombre}}</span>
+                                        </a>
+                                    </li>
+                                    
+                                </ul>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    
+                    <div class="row"><div class="col-xs-12"><div class="sepradorGris" style="height: 2px"></div></div></div>
+                    
+                    <div class="row">
+                        <!-- Promocion de muebles -->
+                        <div class="col-xs-12" ng-class="contrato.SubtotalCubierta > 0 ? 'col-sm-6' : 'col-sm-12'" ng-if="presupuesto.Proyecto.TipoProyecto.Mueble">
+                            
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div style="margin-top: 10px"></div>
+                                    <b>Muebles</b>
+                                </div>
+                            </div>
+                            <br><br>
+                            
+                            <div class="row">
+                                <div class="etiquetaDropdownList" ng-class="contrato.SubtotalCubierta > 0 ? 'col-xs-12' : anchoPantalla > 767 ? 'col-xs-6' : 'col-xs-12'">
+                                    <label>Promoción</label>
+                                    
+                                     <div class="dropdown">
+                                        <div ng-class="{'input-group' : contrato.PromocionMueble.TipoPromocionId == '1' || contrato.PromocionMueble.TipoPromocionId == '3'}">
+                                           
+                                            <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown">
+                                                <span ng-if="contrato.PromocionMueble.TipoPromocionId.length > 0 && contrato.PromocionMueble.TipoPromocionId != '0'">{{contrato.PromocionMueble.TipoPromocionId != '2' ? contrato.PromocionMueble.Descuento + '% de descuento' : contrato.PromocionMueble.NumeroPagos + ' Meses sin Intereses'}}</span>
+                                                <span ng-if="contrato.PromocionMueble.TipoPromocionId == '0'">Sin Promoción</span>
+
+                                                <span class="pull-right">
+                                                   <span ng-if="contrato.PromocionMueble.FechaLimite2 < hoy" class="fa fa-exclamation-triangle textoRojo" data-toggle="tooltip" title="Promoción vencida"></span>
+                                                   <span class="caret"></span>
+                                                </span>
+                                            </button>
+
+                                            <ul class="dropdown-menu listaOpcionesDropdownList" style="width: 100%">                          
+
+                                                <li >
+                                                    <a  href="" class="dropdownOpcionModal" ng-click="QuitarPromocion('Mueble');">
+                                                        <span>Sin promoción</span>
+                                                    </a>
+                                                </li>
+
+                                                <li ng-repeat="promo in presupuesto.PromocionMueble | orderBy:'DescuentoMinimo'">
+                                                    <a  href="" class="dropdownOpcionModal" ng-click="contrato.PromocionMueble = promo; contrato.PromocionMueble.Descuento = promo.DescuentoMinimo; CalcularValoresContratoMueble();">
+                                                        <span>{{promo.TipoPromocionId != '2' ? promo.DescuentoMinimo + '% de descuento' : promo.NumeroPagos + ' Meses sin Intereses'}}</span>                
+                                                        <span ng-class="{textoRojo : promo.FechaLimite2 < hoy}" class="pull-right ">
+                                                            <span ng-if="promo.FechaLimite2 < hoy" class="fa fa-exclamation-triangle"></span>
+                                                            {{promo.FechaLimite}}
+                                                        </span>
+                                                    </a>
+                                                </li>
+
+                                            </ul>
+                                            
+                                            <span class="input-group-btn" ng-if="contrato.PromocionMueble.TipoPromocionId == '1' || contrato.PromocionMueble.TipoPromocionId == '3'">
+                                                <button class="btn chgDescuento"  ng-disabled="contrato.PromocionMueble.Descuento == contrato.PromocionMueble.DescuentoMinimo" ng-click="contrato.PromocionMueble.Descuento = contrato.PromocionMueble.Descuento - 1; CalcularValoresContratoMueble()"> <span class="fa fa-minus"></span> </button>
+                                                <button class="btn chgDescuento" ng-disabled="contrato.PromocionMueble.Descuento == contrato.PromocionMueble.DescuentoMaximo" ng-click="contrato.PromocionMueble.Descuento = contrato.PromocionMueble.Descuento + 1; CalcularValoresContratoMueble()"> <span class="fa fa-plus"></span> </button>
+                                            </span>
+                                            
+                                         </div>
+
+                                    </div>
+ 
+                                </div>
+
+                            </div>
+                            <br>
+                            
+                            <div class="row">
+                                <div ng-class="contrato.SubtotalCubierta > 0 ? 'col-xs-12' : anchoPantalla > 767 ? 'col-xs-6' : 'col-xs-12'">
+                                    Subtotal:  <span class="pull-right">{{contrato.SubtotalMueble | currency}}</span><br>
+                                    Descuento:  <span class="pull-right">-{{contrato.DescuentoMueble | currency}}</span><br>
+                                    IVA:  <span class="pull-right">{{contrato.IVAMueble | currency}}</span><br><br>
+
+                                    <b>TOTAL: <span class="pull-right">{{contrato.TotalMueble | currency}}</span></b><br><br>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        
+                        <div ng-if="presupuesto.Proyecto.TipoProyecto.Mueble && contrato.SubtotalCubierta > 0" class="col-xs-12 hidden-sm hidden-md hidden-lg"><div class="sepradorGris" style="height: 1px; margin: 10px 0px 10px 0px;"></div></div>
+                        
+                        <!-- Promocion de cubiertas -->
+                        <div class="col-xs-12"  ng-class="(presupuesto.Proyecto.TipoProyecto.Mueble && anchoPantalla > 767) ? 'col-sm-6 divisorMitad' : presupuesto.Proyecto.TipoProyecto.Mueble ? 'col-sm-6' : 'col-sm-12';" ng-if="contrato.SubtotalCubierta > 0">
+                            <div class="row">
+                            
+                                <div class="col-xs-12">
+                                    <div style="margin-top: 10px"></div>
+                                    <b>Cubiertas</b>
+                                </div>
+                            </div>
+                            <br><br>
+                            <div class="row">
+                                <div class=" etiquetaDropdownList" ng-class="presupuesto.Proyecto.TipoProyecto.Mueble ? 'col-xs-12' : anchoPantalla > 767 ? 'col-xs-6' : 'col-xs-12'">
+                                    <label>Promoción</label>
+
+                                     <div class="dropdown">
+                                        <div ng-class="{'input-group' : contrato.PromocionCubierta.TipoPromocionId == '1' || contrato.PromocionCubierta.TipoPromocionId == '3'}">
+                                            <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown">
+                                                <span ng-if="contrato.PromocionCubierta.TipoPromocionId.length > 0 && contrato.PromocionCubierta.TipoPromocionId != '0'">{{contrato.PromocionCubierta.TipoPromocionId != '2' ? contrato.PromocionCubierta.Descuento + '% de descuento' : contrato.PromocionCubierta.NumeroPagos + ' Meses sin Intereses'}}</span>
+                                                <span ng-if="contrato.PromocionCubierta.TipoPromocionId == '0'">Sin Promoción</span>
+
+                                                <span class="pull-right">
+                                                   <span ng-if="contrato.PromocionCubierta.FechaLimite2 < hoy" class="fa fa-exclamation-triangle textoRojo"></span>
+                                                    <span class="caret"></span>
+                                                </span>
+
+                                            </button>
+
+                                            <ul class="dropdown-menu listaOpcionesDropdownList" style="width: 100%">                          
+
+                                                <li >
+                                                    <a  href="" class="dropdownOpcionModal" ng-click="QuitarPromocion('Cubierta');">
+                                                        <span>Sin promoción</span>
+                                                    </a>
+                                                </li>
+
+                                                <li ng-repeat="promo in presupuesto.PromocionCubierta | orderBy:'DescuentoMinimo'">
+                                                    <a  href="" class="dropdownOpcionModal" ng-click="contrato.PromocionCubierta = promo; contrato.PromocionCubierta.Descuento = promo.DescuentoMinimo; CalcularValoresContratoCubierta();">
+                                                        <span>{{promo.TipoPromocionId != '2' ? promo.DescuentoMinimo + '% de descuento' : promo.NumeroPagos + ' Meses sin Intereses'}}</span>                
+                                                        <span ng-class="{textoRojo : promo.FechaLimite2 < hoy}" class="pull-right ">
+                                                            <span ng-if="promo.FechaLimite2 < hoy" class="fa fa-exclamation-triangle"></span>
+                                                            {{promo.FechaLimite}}
+                                                        </span>
+                                                    </a>
+                                                </li>
+
+                                            </ul>
+                                            
+                                             <span class="input-group-btn" ng-if="contrato.PromocionCubierta.TipoPromocionId == '1' || contrato.PromocionCubierta.TipoPromocionId == '3'">
+                                                <button class="btn chgDescuento"  ng-disabled="contrato.PromocionCubierta.Descuento == contrato.PromocionCubierta.DescuentoMinimo" ng-click="contrato.PromocionCubierta.Descuento = contrato.PromocionCubierta.Descuento - 1; CalcularValoresContratoCubierta()"> <span class="fa fa-minus"></span> </button>
+                                                <button class="btn chgDescuento" ng-disabled="contrato.PromocionCubierta.Descuento == contrato.PromocionCubierta.DescuentoMaximo" ng-click="contrato.PromocionCubierta.Descuento = contrato.PromocionCubierta.Descuento + 1; CalcularValoresContratoCubierta()"> <span class="fa fa-plus"></span> </button>
+                                            </span>
+                                        
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div ng-class="presupuesto.Proyecto.TipoProyecto.Mueble ? 'col-xs-12' : anchoPantalla > 767 ? 'col-xs-6' : 'col-xs-12'">
+                                    Subtotal:  <span class="pull-right">{{contrato.SubtotalCubierta2 | currency}}</span><br>
+                                    Descuento:  <span class="pull-right">-{{contrato.DescuentoCubierta | currency}}</span><br>
+                                    IVA:  <span class="pull-right">{{contrato.IVACubierta | currency}}</span><br><br>
+
+                                    <b>TOTAL: <span class="pull-right">{{contrato.TotalCubierta | currency}}</span></b><br><br>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                    </div>
+                    
+                    <div class="row"><div class="col-xs-12"><div class="sepradorGris" style="height: 2px"></div></div></div>
+                    <br>
+                                  
+                </div>
+                
+                <!-- Paso 3 -->
+                <form ng-show="pasoContrato == 3" name="paso3">
+                     <div class="row"> 
+                        <!-- Planes de pago -->
+                        <div class="col-xs-12">
+                            <a class="btn btn-block botonAcordionPerfil" ng-class="{active: verPlanPago}" ng-click="verPlanPago = !verPlanPago">
+                                <span style="width:20px;" ng-class="verPlanPago ? 'fa fa-chevron-up' : 'fa fa-chevron-right'"></span>
+                                Planes de pago
+                            </a>
+                        </div>
+                
+                       <div class="col-xs-12" ng-show="verPlanPago">
+
+                           <div class="contenedorAcordio">
+
+                                <div class="table-responsive tablePerfilClienteDatos">
+                                    <table class="table table-hover table-striped table-condensed" id="precioCubierta">
+                                        <thead class="TituloTabla">
+                                          <tr>
+                                            <th><span>Plan de pagos</span></th>
+                                            <th class="text-center"><span><b>Fecha de entrega</b></span></th>
+                                            <th class="text-center"><span><b>Pagos</b></span></th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                          <tr ng-repeat="plan in planPago | orderBy:'FechaFin2'" ng-show="plan.Activo">
+
+                                                <td>
+                                                    <div class="checkboxOperativo" style="margin-left:0px !important">
+                                                        <label>
+                                                            <input  ng-model="plan.Contrato" type="checkbox" value="" ng-change="CambiarPlan(plan)">
+                                                            <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+                                                            <span> {{plan.Nombre}}</span>
+                                                        </label>
+                                                    </div>
+                                                </td>
+
+                                                <td class="text-center">
+                                                    <span> {{plan.FechaFin}} </span>
+                                                </td>
+
+                                                <td class="text-center">
+                                                    <span >{{plan.Pagos}}</span>
+                                                </td>
+
+                                          </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+                        
+                        <div class="col-xs-12"><div style="height: 15px"></div></div>
+                        
+                        
+                        <div ng-show="contrato.PlanPago.PlanPagoId.length > 0">
+                        
+                            
+                            <div class="col-xs-12" style="height: 20px"></div>
+
+                            <div class="col-xs-12 ">
+                                <div class="marcoDetalleTop">
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-sm-6 ">
+                                <b>Fecha de entraga: </b><span class="pull-right">{{contrato.PlanPago.FechaFin}}</span><br>
+                            </div>
+
+                            <div class="col-xs-12 hidden-sm hidden-md hidden-lg">
+                                <div class="marcoDetalleTop">
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-sm-6"  ng-class="{marcoDetalleLeft: (anchoPantalla > 767)}">
+                                <b>Fecha Venta: </b><span class="pull-right">{{contrato.FechaVenta}}</span><br>
+                            </div>
+
+                           <div class="col-xs-12 ">
+                                <div class="marcoDetalleTop">
+                                </div>
+                           </div>
+
+                           <div class="col-xs-12 col-sm-6 ">
+                                <b>Plan de pagos: </b><span class="pull-right">{{contrato.PlanPago.Nombre}}</span><br>
+                           </div>
+
+                           <div class="col-xs-12 hidden-sm hidden-md hidden-lg">
+                              <div class="marcoDetalleTop">
+                              </div>
+                          </div>
+
+                           <div class="col-xs-12 col-sm-6"  ng-class="{marcoDetalleLeft: (anchoPantalla > 767)}">
+                                <b>Pagos: </b><span class="pull-right">{{contrato.PlanPago.Pagos}}</span><br>
+                           </div>
+
+                           <div class="col-xs-12 ">
+                                <div class="marcoDetalleTop">
+                                </div>
+                            </div>
+                            
+                            <div class="col-xs-12"><div style="height: 20px"></div></div>  
+                            
+                            <div class="col-xs-12">
+                                <div class="btn-group">
+                                    
+                                    <button class="btn btnTitle" ng-disabled="true"><b>Anticipo</b></button>
+                                    <button class="btn btnSwitch" ng-class="{active : contrato.PagoAnticipo == 1}" ng-click="CambiarNumeroAnticipo(1)" ng-disabled="true">1 pago</button>
+                                    <button class="btn btnSwitch" ng-class="{active : contrato.PagoAnticipo == 2}" ng-click="CambiarNumeroAnticipo(2)" ng-disabled="true">2 pagos</button>
+                                    
+                                </div>
+                            </div>
+                            
+                            <div class="col-xs-12" style="height: 40px"></div>
+                            
+                             <div class="col-xs-12">
+                                <div class="textoInstruccion">
+                                    <span>
+                                         *El mínimo del anticipo debe ser de <b>{{anticipo.mindef | currency}}</b>, disponible en saldar en {{contrato.TotalMeses >= anticipo.minimo  ? '1 pago.' : contrato.PlanPago.Abono.length > 1 ? '2 pagos.' : '1 Pago.'}} 
+                                        <span ng-if="anticipo.minimo > contrato.TotalMeses && contrato.TotalMeses > 0 && contrato.PlanPago.Abono.length > 1"> (El mínimo del anticipo 1 debe ser de <b>{{contrato.TotalMeses | currency}}</b> )</span>
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="col-xs-12" style="height: 20px"></div>
+                            
+                            <!-- Anticipo 1 -->
+                            <div class="col-sm-6 col-xs-12">
+                               <div class="entrada2">
+                                    <input type="text" autocomplete="off" required ng-pattern="erNumeroEnteroSinCero" class="entrada form-control" name="anticipo1" currency-input ng-model="anticipo.uno" ng-blur="SetAnticipo1(paso3.anticipo1.$invalid)" />
+                                    <label>Anticipo 1*</label>
+                                </div>
+                           </div> 
+                            <div class="col-xs-12 hidden-sm hidden-md hidden-lg" ng-show="contrato.PagoAnticipo == 2"><div style="height: 40px"></div></div> 
+                            
+                            <!-- Anticipo 2 -->
+                            <div class="col-sm-6 col-xs-12" ng-show="contrato.PagoAnticipo == 2">
+                               <div class="entrada2">
+                                    <input type="text" currency-input  autocomplete="off" required class="entrada form-control" name="anticipo2"  ng-model="anticipo.dos" disabled/>
+                                    <label>Anticipo 2</label>
+                                </div>
+                           </div>
+                            
+                            <div class="col-xs-12"><div style="height: 20px"></div></div> 
+                            
+                            <div class="col-xs-12 col-lg-6">
+
+                                <div class="text-center">
+
+                                    <div class="planPagoSel">
+                                        <b class="fuente14">Total: {{contrato.TotalContrato | currency}}</b>
+                                    </div>
+
+                                    <div class="table-responsive">
+                                        <table class="table table-hover table-striped table-condensed" id="pp{{combinacion.CombinacionMaterialId}}">
+                                            <thead class="planPagoHeader">
+                                              <tr>
+                                                <th><span>Pago</span></th>
+                                                <th><span><b>Fecha Límite</b></span></th>
+                                                <th><span><b>Concepto</b></span></th>
+                                              </tr>
+                                            </thead>
+
+                                            <tbody>
+                                              <tr ng-repeat="abono in contrato.PlanPago.Abono | orderBy:'FechaCompromiso2'">
+                                                    
+                                                    <td class="text-left">
+                                                        {{abono.Pago | currency}}
+                                                    </td>
+                                                    
+                                                    <td class="text-left">
+                                                        {{abono.FechaCompromiso}}
+                                                    </td>
+                                                    
+                                                    <td class="text-left">
+                                                        {{abono.Concepto}}
+                                                    </td>
+
+                                              </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                        
+                    </div> 
+                </form>
+                
+                
+                <!-- Paso 4 -->
+                <div ng-show="pasoContrato == 4">
+                    
+                    <!-- Meses sin intereses -->
+                    <div ng-show="pagos.meses > 0">
+                        <div class="row">
+                            <div class="col-xs-12">
+
+                                <b style="font-size: 14pt; color:  rgb(50, 50, 50);">Pago a meses sin intereses ({{pagos.meses | currency}})</b>
+
+                            </div>
+                        </div>
+                        <br>
+
+                        <!-- Numero de pagos -->
+                         <div class="row">
+                            <div class="col-xs-12">
+                               <div class="btn-group">
+
+                                    <button class="btn btnTitle" style="padding-right: 10px;" ng-disabled="true">
+                                        <span >Número de pagos: </span>
+                                        <b style="margin-left: 10px">{{contrato.PagoMeses.length }}</b>
+                                    </button>
+
+                                    <button class="btn chgDescuento" ng-disabled="contrato.PagoMeses.length == 1" ng-click="QuitarPago(contrato.PagoMeses, pagos.meses)"> <span class="fa fa-minus"></span></button>
+                                    <button class="btn chgDescuento" ng-disabled="contrato.PagoMeses.length  == 2" ng-click="AgregarPago(contrato.PagoMeses, pagos.meses)"> <span class="fa fa-plus"></span></button>
+                                </div>
+
+                            </div>
+                        </div>
+                        <br><br>
+
+                        <!-- Pagos Meses -->
+                        <div ng-repeat="pago in contrato.PagoMeses">
+                            <div class="row">
+                               <!-- pago -->
+                                <div class="col-xs-6">
+                                   <div class="entrada2">
+                                        <input type="text" currency-input  autocomplete="off" required ng-pattern="erNumeroEnteroSinCero" class="entrada form-control" name="pago{{$index}}"  ng-model="pago.Pago" ng-blur="CalcularUltimoPago(contrato.PagoMeses, pagos.meses)" ng-disabled="$last"/>
+                                        <label>Pago {{$index + 1}}</label>
+                                    </div>
+                                </div>
+
+                                <!-- Medio de pago -->
+                                <div class="col-xs-6 etiquetaDropdownList">
+
+                                    <label>Medio de pago</label>
+
+                                     <div class="dropdown">
+
+                                        <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown">
+                                            <span>{{pago.MedioPago.Nombre}}</span>
+
+                                            <span class="pull-right">
+                                                <span class="caret"></span>
+                                            </span>
+
+                                        </button>
+
+                                        <ul class="dropdown-menu listaOpcionesDropdownList" style="width: 100%">                                
+                                            <li ng-repeat="medio in medioPago">
+                                                <a  href="" class="dropdownOpcionModal" ng-click="pago.MedioPago = medio">
+                                                   <span style="margin: 0px 15px 0px 10px;">
+                                                        <span>{{medio.Nombre}}</span>
+                                                    </span>
+                                                </a>
+                                            </li>
+                                        </ul>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <br>
+                        </div>
+                    </div>
+                    
+                    <div class="row" ng-show="pagos.contado > 0 && pagos.meses > 0"><div class="col-xs-12"><div class="sepradorGris" style="margin-top: 20px"></div></div></div>
+                    
+                    <!-- pago contado -->
+                    <div ng-show="pagos.contado > 0">
+                        <div class="row">
+                            <div class="col-xs-12">
+
+                                <b style="font-size: 14pt; color:  rgb(50, 50, 50);">Pago 1 exhibición ({{pagos.contado | currency}})</b>
+
+                            </div>
+                        </div>
+                        <br>
+
+                        <!-- Numero de pagos -->
+                         <div class="row">
+                            <div class="col-xs-12">
+                               <div class="btn-group">
+
+                                    <button class="btn btnTitle" style="padding-right: 10px;" ng-disabled="true">
+                                        <span >Número de pagos: </span>
+                                        <b style="margin-left: 10px">{{contrato.PagoContado.length }}</b>
+                                    </button>
+
+                                    <button class="btn chgDescuento" ng-disabled="contrato.PagoContado.length == 1" ng-click="QuitarPago(contrato.PagoContado, pagos.contado)"> <span class="fa fa-minus"></span></button>
+                                    <button class="btn chgDescuento" ng-disabled="contrato.PagoContado.length  == 3" ng-click="AgregarPago(contrato.PagoContado, pagos.contado)"> <span class="fa fa-plus"></span></button>
+                                </div>
+
+                            </div>
+                        </div>
+                        <br><br>
+
+                        <!-- Pagos Meses -->
+                        <div ng-repeat="pago in contrato.PagoContado">
+                            <div class="row">
+                               <!-- pago -->
+                                <div class="col-xs-6">
+                                   <div class="entrada2">
+                                        <input type="text" currency-input  autocomplete="off" required ng-pattern="erNumeroEnteroSinCero" class="entrada form-control" name="pago{{$index}}"  ng-model="pago.Pago" ng-blur="CalcularUltimoPago(contrato.PagoContado, pagos.contado)" ng-disabled="$last"/>
+                                        <label>Pago {{$index + 1}}</label>
+                                    </div>
+                                </div>
+
+                                <!-- Medio de pago -->
+                                <div class="col-xs-6 etiquetaDropdownList">
+
+                                    <label>Medio de pago</label>
+
+                                     <div class="dropdown">
+
+                                        <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown">
+                                            <span>{{pago.MedioPago.Nombre}}</span>
+
+                                            <span class="pull-right">
+                                                <span class="caret"></span>
+                                            </span>
+
+                                        </button>
+
+                                        <ul class="dropdown-menu listaOpcionesDropdownList" style="width: 100%">                                
+                                            <li ng-repeat="medio in medioPago">
+                                                <a  href="" class="dropdownOpcionModal" ng-click="pago.MedioPago = medio">
+                                                   <span style="margin: 0px 15px 0px 10px;">
+                                                        <span>{{medio.Nombre}}</span>
+                                                    </span>
+                                                </a>
+                                            </li>
+                                        </ul>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <br>
+                        </div>
+                    </div>
+                    
+                </div>
+                
+                
+                <!-- Paso 5 -->
+            
+                
+                <!-------- mensaje de error ---->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div ng-repeat="error in mensajeError track by $index">
+                            <span class="textoError">{{error}}</span>
+                        </div>
+                    </div>
+                </div>
+                <br ng-if="mensajeError.length > 0">
+                
+            </div>
+            
+            <div style="height: 60px;"></div>
+  
+            <div class="modalFooter">
+                    
+                <div class="row">
+                    <!-- Cancelar -->
+                    <div class="col-xs-6" ng-if="pasoContrato == 1">
+                        <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="CancelarEstatusProyecto()">CANCELAR</button>
+                    </div>
+                    
+                    <!-- Anterior -->
+                    <div class="col-xs-6" ng-if="pasoContrato > 1">
+                        <button class="btn botonOperacionModal btn-block"  ng-click="AnteriorPaso()">&lt;&lt; ANTERIOR</button>
+                    </div>
+                    
+                    <!-- Siguiente -->
+                    <div class="col-xs-6" ng-if="pasoContrato < 5">
+                        <button class="btn botonOperacionModal btn-block"  ng-click="SiguientePaso()">SIGUIENTE &gt;&gt;</button>
+                    </div>
+                    
+                    <!-- Terminar -->
+                    <div class="col-xs-6" ng-if="pasoContrato > 4">
+                        <button class="btn botonOperacionModal btn-block"  ng-click="CancelarEstatusProyecto()">TERMINAR</button>
+                    </div>
+                </div>
+            </div>
+
+        
+        </div>
+    </div>
+</div>

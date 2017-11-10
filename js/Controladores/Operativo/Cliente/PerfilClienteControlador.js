@@ -312,5 +312,6 @@ var optPerfil = [
                     {titulo: "Datos generales", icono:"fa fa-id-card-o", referencia:"DatosGenerales"},
                     {titulo: "Proyectos", icono:"fa fa-archive", referencia:"Proyectos"},
                     {titulo: "Citas", icono:"fa fa-calendar-o", referencia:"Citas"},
+                    {titulo: "Contratos", icono:"fa fa-handshake-o", referencia:"Contratos"},
                     //{titulo: "Notas", icono:"fa fa-sticky-note-o", referencia:"Notas"}
                 ];

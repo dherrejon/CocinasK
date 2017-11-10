@@ -1,4 +1,4 @@
-app.controller("ProyectoClienteControlador", function($scope, $rootScope, CITA, $http, $q, CONFIG, PRESUPUESTO, DOMICILIO, OPEPRESUPUESTO)
+app.controller("ProyectoClienteControlador", function($scope, $rootScope, CITA, $http, $q, CONFIG, PRESUPUESTO, DOMICILIO, OPEPRESUPUESTO, CONTRATO)
 {  
     $scope.proyecto = [];
     $scope.estatus = [];
@@ -121,6 +121,11 @@ app.controller("ProyectoClienteControlador", function($scope, $rootScope, CITA, 
         {
             PRESUPUESTO.PersonalizarPresupuesto(data[1].Presupuesto);
         }
+        else if(opt == "Contrato")
+        {
+            $scope.SetDatosPresupuesto(data[1].Presupuesto, $scope.proyectoContrato);
+            CONTRATO.AgregarContrato(data[1].Presupuesto);
+        }
     };
 
     $scope.SetDatosPresupuesto = function(presupuesto, proyecto)
@@ -141,7 +146,7 @@ app.controller("ProyectoClienteControlador", function($scope, $rootScope, CITA, 
     //----------- vista ----------------------------
     $scope.MostrarEstatus = function(actualId, cambiarId)
     {
-        if(actualId == cambiarId)
+        if(actualId == cambiarId || cambiarId=="2")
         {
             return false;
         }
@@ -150,27 +155,9 @@ app.controller("ProyectoClienteControlador", function($scope, $rootScope, CITA, 
         {
             return true;
         }
-        else if(actualId == "2")
-        {
-            if(cambiarId != "1")
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
         else if(actualId == "3")
         {
-            if(cambiarId == "2")
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
+            return true;
         }
         else if(actualId == "4")
         {
@@ -566,6 +553,13 @@ app.controller("ProyectoClienteControlador", function($scope, $rootScope, CITA, 
     $scope.CerrarProyecto = function()
     {
         $scope.mensajeError = [];
+    };
+    
+    //---------------- Contratar ----------------
+    $scope.Contratar = function(presupuesto, proyecto)
+    {
+        $scope.proyectoContrato = proyecto;
+        $scope.GetDatosPresupuesto(presupuesto, "Contrato");
     };
     
     

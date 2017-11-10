@@ -95,7 +95,7 @@ function CalcularPrecioVentaPuerta(puerta, combinacion, modulo)
     
     PrecioVenta = (CostoTotal + (CostoTotal * (modulo.Margen/100.0))) * parseInt(modulo.Cantidad);
     
-    return PrecioVenta;
+    return Math.round(PrecioVenta);
     
 }
 

@@ -906,7 +906,7 @@ app.controller("AccesorioModuloControlador", function($scope, $http, $q, CONFIG,
         }
         else
         {
-            $scope.mensajeAdvertencia = "¿Estas seguro de DESACRIVAR - " + accesorio.Nombre + "?";
+            $scope.mensajeAdvertencia = "¿Estas seguro de DESACTIVAR - " + accesorio.Nombre + "?";
         }
         $('#modalActivarDesactivarAccesorio').modal('toggle'); 
     };

@@ -264,6 +264,7 @@
     border-bottom-width: 1px;
     border-bottom-color: rgba(38,38,38,0.4);
     cursor: pointer;
+    white-space: normal;
 }
 
 .dropdownOpcionModal:hover
@@ -271,6 +272,12 @@
     color: white !important;
     background-color: rgb(250, 97, 21) !important;
     cursor: hand !important;
+}
+
+.dropdownOpcionModal:disabled
+{
+    cursor: not-allowed;
+    background: lightgray; 
 }
 
 .buscar

@@ -1189,6 +1189,7 @@
                                 <span class="fa fa-chevron-down pull-right" style="width:20px;" ng-if="tabSeleccionada != 'Maqueo'"></span>
                                 <span class="fa fa-chevron-up pull-right" style="width:20px;" ng-if="tabSeleccionada == 'Maqueo'"></span>
                             </a>
+                            
                         </div>
                     </div>
                 </div>
@@ -2262,7 +2263,7 @@
 
                                             <td>
                                                 <span ng-if="promo.TipoPromocion.TipoPromocionId == '1' || promo.TipoPromocion.TipoPromocionId == '3'">{{promo.DescuentoMinimo}}% de descuento</span>
-                                                <span ng-if="promo.TipoPromocion.TipoPromocionId == '2'">{{promo.NumeroPagos}} pagos de </span>
+                                                <span ng-if="promo.TipoPromocion.TipoPromocionId == '2'">{{promo.NumeroPagos}} meses sin intereses </span>
                                             </td>
                                             
                                             <td class="text-center">
@@ -2926,7 +2927,6 @@
                    
                    <table id="titulo">
                         <tbody>
-
                            <tr>
                             <td>{{presupuesto.Titulo}}</td>
                             </tr>
@@ -2941,6 +2941,7 @@
                             </tr>
                         </tbody>
                     </table>
+                    
                 </div>
                 
                 <div ng-show="false">

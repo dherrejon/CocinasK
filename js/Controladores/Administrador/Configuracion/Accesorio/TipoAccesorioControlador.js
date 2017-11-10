@@ -233,7 +233,7 @@ app.controller("TipoAccesorioControlador", function($scope, $http, $q, CONFIG, $
         }
         else
         {
-            $scope.mensajeAdvertencia = "¿Estas seguro de DESACRIVAR - " + tipo.Nombre + "?";
+            $scope.mensajeAdvertencia = "¿Estas seguro de DESACTIVAR - " + tipo.Nombre + "?";
         }
         
         $('#modalActivarDesactivarTipoAccesorio').modal('toggle'); 

@@ -121,6 +121,13 @@
     background: lightgray;
 }
 
+.btnStatusProyecto:disabled
+{
+    cursor: default;
+    opacity: 1;
+    background: transparent !important;
+}
+
 .btnStatusProyecto.Seleccionado
 {
     border: 2px solid #262626;
@@ -141,7 +148,7 @@
     color: #B40404;
 }
 
-.btnStatusProyecto.Contratado
+.btnStatusProyecto.Contratado, .btnStatusProyecto.Contratado:hover:disabled
 {
     border: 2px solid #088A29;
     color: #088A29;

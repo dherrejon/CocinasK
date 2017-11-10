@@ -1,0 +1,116 @@
+.BotonOperacion.contratar
+{
+    border: 2px solid rgb(250, 97, 21);
+    padding: 5px;
+}
+
+.BotonOperacion.contratar:hover
+{
+    color: white;
+    background: rgb(250, 97, 21);
+}
+
+.contratado
+{
+    border: 2px solid rgb(250, 97, 21);
+    padding: 5px;
+    color: white;
+    background: rgb(250, 97, 21);
+}
+
+.modalPantalla
+{
+    height: 90%;
+    width: 90%;
+    background: white;
+    position: relative;
+    top: 5%;
+    border-radius: 0px;
+    overflow: scroll;
+}
+
+.modalFooter
+{
+    position: fixed;  
+    width: 90%;
+    bottom: 5%;
+    padding: 15px 15px 20px 15px;
+    background: white;
+}
+
+.modalHeader
+{
+    position: absolute;  
+    width: 100%;
+    top: 0;
+    padding: 15px 15px 20px 15px;
+    z-index: 2;
+}
+
+.divisorMitad
+{
+    border-left: 1px solid #A6A6A6;
+}
+
+.chgDescuento, .chgDescuento:focus, .chgDescuento:active
+{
+    width: 30px !important;
+    border-radius: 0px !important;
+    border: 1px solid rgb(42, 45, 51);
+    background: transparent;
+    color: rgb(42, 45, 51);
+    padding: 4px;
+    
+    box-shadow: none;
+    outline: none !important;
+}
+
+.chgDescuento:hover
+{
+    background: rgb(42, 45, 51);
+    color: white;
+    
+    box-shadow: none;
+    outline: none !important;
+}
+
+.btnTitle, .btnTitle:disabled
+{
+    border-radius: 0px;
+    background: white;
+    color: rgb(50, 50, 50);
+    cursor: default;
+    font-size: 14pt;
+    padding-left: 0px;
+    padding-right: 30px;
+    opacity: 1.0;
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.btnSwitch, .btnSwitch:hover, .btnSwitch:active, .btnSwitch:disabled
+{
+    background: #A6A6A6;
+    color: rgb(42, 45, 51);
+    border-radius: 0px;
+     
+    outline: none !important;
+    box-shadow: none;
+}
+
+.btnSwitch.active
+{
+    background: rgb(250, 97, 21);
+    color: white;
+    border-radius: 0px;
+     
+    outline: none !important;
+    box-shadow: none;
+}
+
+.btnSwitch:disabled
+{
+    opacity: 1.0;
+    cursor: default;
+}

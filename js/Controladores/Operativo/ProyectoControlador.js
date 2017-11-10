@@ -3397,7 +3397,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                 {
                     $scope.servicio[k].CostoTotal = $scope.servicio[k].CostoUnidad*parseFloat($scope.servicio[k].Cantidad);
                     $scope.servicio[k].Subtotal = $scope.servicio[k].CostoTotal + ($scope.servicio[k].CostoTotal*($scope.servicio[k].PrecioVenta/100));
-                    $scope.servicio[k].Subtotal += (($scope.servicio[k].Subtotal*$scope.presupuesto.Margen)/100);
+                    //$scope.servicio[k].Subtotal += (($scope.servicio[k].Subtotal*$scope.presupuesto.Margen)/100);
                     $scope.servicio[k].Subtotal += (($scope.servicio[k].Subtotal*$scope.presupuesto.iva)/100);
                     $scope.servicio[k].Subtotal = Math.round($scope.servicio[k].Subtotal);
                 }
@@ -3627,7 +3627,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
             {
                 $scope.maqueo[k].CostoTotal = $scope.maqueo[k].CostoUnidad*parseFloat($scope.presupuesto.CantidadMaqueo);
                 $scope.maqueo[k].Subtotal = $scope.maqueo[k].CostoTotal + ($scope.maqueo[k].CostoTotal*($scope.maqueo[k].Margen/100));
-                $scope.maqueo[k].Subtotal += (($scope.maqueo[k].Subtotal*$scope.presupuesto.Margen)/100);
+                //$scope.maqueo[k].Subtotal += (($scope.maqueo[k].Subtotal*$scope.presupuesto.Margen)/100);
                 $scope.maqueo[k].Subtotal += (($scope.maqueo[k].Subtotal*$scope.presupuesto.iva)/100);
                 $scope.maqueo[k].Subtotal = Math.round($scope.maqueo[k].Subtotal);
             }
@@ -3659,7 +3659,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                         $scope.tipoAccesorio[k].Muestrario[i].CostoTotal = $scope.tipoAccesorio[k].Muestrario[i].CostoUnidad*parseInt($scope.tipoAccesorio[k].Cantidad);
                         $scope.tipoAccesorio[k].Muestrario[i].Subtotal = $scope.tipoAccesorio[k].Muestrario[i].CostoTotal + ($scope.tipoAccesorio[k].Muestrario[i].CostoTotal*($scope.tipoAccesorio[k].Muestrario[i].Margen/100));
                         
-                        $scope.tipoAccesorio[k].Muestrario[i].Subtotal += (($scope.tipoAccesorio[k].Muestrario[i].Subtotal*$scope.presupuesto.Margen)/100);
+                        //$scope.tipoAccesorio[k].Muestrario[i].Subtotal += (($scope.tipoAccesorio[k].Muestrario[i].Subtotal*$scope.presupuesto.Margen)/100);
                         $scope.tipoAccesorio[k].Muestrario[i].Subtotal += (($scope.tipoAccesorio[k].Muestrario[i].Subtotal*$scope.presupuesto.iva)/100);
                         $scope.tipoAccesorio[k].Muestrario[i].Subtotal = Math.round($scope.tipoAccesorio[k].Muestrario[i].Subtotal);
                     }
@@ -3707,7 +3707,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                                     $scope.tipoAccesorio[k].Muestrario[i].Combinacion[ind].CostoTotal = $scope.tipoAccesorio[k].Muestrario[i].Combinacion[ind].CostoUnidad * parseInt($scope.tipoAccesorio[k].Cantidad);
                                     $scope.tipoAccesorio[k].Muestrario[i].Combinacion[ind].Subtotal = $scope.tipoAccesorio[k].Muestrario[i].Combinacion[ind].CostoTotal + ($scope.tipoAccesorio[k].Muestrario[i].Combinacion[ind].CostoTotal*($scope.tipoAccesorio[k].Muestrario[i].Margen/100));
                                 
-                                    $scope.tipoAccesorio[k].Muestrario[i].Combinacion[ind].Subtotal += (($scope.tipoAccesorio[k].Muestrario[i].Combinacion[ind].Subtotal*$scope.presupuesto.Margen)/100);
+                                    //$scope.tipoAccesorio[k].Muestrario[i].Combinacion[ind].Subtotal += (($scope.tipoAccesorio[k].Muestrario[i].Combinacion[ind].Subtotal*$scope.presupuesto.Margen)/100);
                                     $scope.tipoAccesorio[k].Muestrario[i].Combinacion[ind].Subtotal += (($scope.tipoAccesorio[k].Muestrario[i].Combinacion[ind].Subtotal*$scope.presupuesto.iva)/100);
                                     $scope.tipoAccesorio[k].Muestrario[i].Combinacion[ind].Subtotal = Math.round($scope.tipoAccesorio[k].Muestrario[i].Combinacion[ind].Subtotal);
                                 }
@@ -4304,13 +4304,14 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                                         $scope.cubierta[j].Grupo[k].Ubicacion[ind].Cantidad = $scope.ubicacion[i].CantidadPiedra; 
                                         $scope.cubierta[j].Grupo[k].Ubicacion[ind].Fabricacion = $scope.ubicacion[i].Fabricacion[l].Costo;
                                         
+                                        
                                         CostoTotal += ($scope.ubicacion[i].Fabricacion[l].Costo * $scope.ubicacion[i].CantidadPiedra);
                                         break;
                                     }
                                 }
-
+                                
                                 var Subtotal = CostoTotal + (CostoTotal*($scope.cubierta[j].Margen/100));
-                                Subtotal += ((Subtotal*$scope.presupuesto.Margen)/100); 
+                                //Subtotal += ((Subtotal*$scope.presupuesto.Margen)/100); 
                                 Subtotal += ((Subtotal*$scope.presupuesto.iva)/100); 
                                 
                                 $scope.cubierta[j].Grupo[k].Ubicacion[ind].CostoTotal = CostoTotal;
@@ -4374,8 +4375,8 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                                 }
 
                                 var Subtotal = CostoTotal + (CostoTotal*($scope.cubierta[j].Margen/100));
-                                Subtotal += ((Subtotal*$scope.presupuesto.Margen)/100);
-                                Subtotal += ((Subtotal*$scope.presupuesto.iva)/100);
+                                //Subtotal += ((Subtotal*$scope.presupuesto.Margen)/100);
+                                Subtotal += ((Subtotal*$scope.presupuesto.iva)/100);;
                                 
                                 $scope.cubierta[j].Grupo[k].Ubicacion[ind].CostoTotal = CostoTotal;
                                 $scope.cubierta[j].Grupo[k].Ubicacion[ind].Subtotal = Math.round(Subtotal);
@@ -5378,7 +5379,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                 {
                     
                     var dia = $scope.promocion[j].FechaLimite.slice(0,2);
-                    var mes = $scope.promocion[j].FechaLimite.slice(3,5);
+                    var mes = parseInt($scope.promocion[j].FechaLimite.slice(3,5));
                     var year = $scope.promocion[j].FechaLimite.slice(6,10);
                     
                     if(mes < 10)
@@ -5386,9 +5387,12 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                         mes = "0" + mes;
                     }
                     
-                    $scope.promocion[j].FechaLimite = year + "/" + mes + "/" + dia;
-
+                    $scope.promocion[j].FechaLimite2 = year + "/" + mes + "/" + dia;
+                    
                     mes = parseInt(mes);
+                    mes = mes -1;
+                    
+                    $scope.promocion[j].FechaLimite = dia + "/" + GetMesNombre(mes) + "/" + year;
                     
                     var promo = new Date(year, mes, dia, 23, 59, 59);
                     
@@ -5400,8 +5404,6 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                     {
                         $scope.promocion[j].Show = true;
                     }
-                    
-                    $scope.promocion[j].FechaLimite2 = $scope.promocion[j].FechaLimite;
                 }
                 else
                 {

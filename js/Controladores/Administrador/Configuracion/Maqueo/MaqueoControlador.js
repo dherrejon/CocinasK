@@ -310,7 +310,7 @@ app.controller("MaqueoControlador", function($scope, $http, $q, CONFIG, $rootSco
         }
         else
         {
-            $scope.mensajeAdvertencia = "¿Estas seguro de DESACRIVAR - " + maqueo.Nombre + "?";
+            $scope.mensajeAdvertencia = "¿Estas seguro de DESACTIVAR - " + maqueo.Nombre + "?";
         }
         $('#modalActivarDesactivarMaqueo').modal('toggle'); 
     };

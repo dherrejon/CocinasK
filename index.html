@@ -5,7 +5,7 @@
         <title>Cocinas K</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+       
         <!-- angular-->
         <script type="text/javascript" src="libs/angular/angular.min.js"></script>
         <script type="text/javascript" src="libs/angular/angular-route.min.js"></script>
@@ -15,11 +15,12 @@
         
         <script type="text/javascript" src="libs/alaSQL/alasql.js"></script>
         <script type="text/javascript" src="libs/FileSaver.min.js"></script>
+        <link rel="stylesheet" href="libs/angular-loading-bar/loading-bar.css">
 
         <!-- jQuery-->
         <script src="libs/jQuery.js"></script>
         <script src="libs/jquery-base64.min.js"></script>
-
+        
         <!-- Bootstrap-->
         <link rel="stylesheet" href="libs/bootstrap/css/bootstrap.css">
         
@@ -36,9 +37,6 @@
         <link rel="stylesheet" href="libs/bootstrap/js/datetimepicker/bootstrap-datetimepicker.min.css">
         <script type="text/javascript" src="libs/bootstrap/js/datetimepicker/bootstrap-datetimepicker.js"></script>
         
-        
-        <link rel="stylesheet" href="libs/angular-loading-bar/loading-bar.css">
-        
         <!-- PDF -->
         <!--<script type="text/javascript" src="libs/pdfmaker/pdfmake.min.js"></script>
         <script type="text/javascript" src="libs/pdfmaker/vfs_fonts.js"></script>
@@ -48,7 +46,7 @@
         
         <script type="text/javascript" src="libs/jspdf/jspdf.debug.js"></script>
         <script type="text/javascript" src="libs/jspdf/faker.min.js"></script>
-        <script type="text/javascript" src="libs/jspdf/jspdf.plugin.autotable.js"></script>
+        <script type="text/javascript" src="libs/jspdf/jspdf.plugin.autotable.js"></script> 
         
         <!-- Datos -->
         <script src="js/Datos/General/Usuario.js"></script>
@@ -89,6 +87,8 @@
         <script src="js/Datos/Operativo/Cita.js"></script>
         <script src="js/Datos/Operativo/Persona.js"></script>
         <script src="js/Datos/Operativo/Proyecto.js"></script>
+        <script src="js/Datos/Operativo/Contrato.js"></script>
+        <script src="js/Datos/Operativo/Pago.js"></script>
         
         
         <!-- Controladores -->
@@ -159,6 +159,7 @@
         <script src="js/Controladores/Operativo/DomicilioControlador.js"></script>
         <script src="js/Controladores/Operativo/DatosFiscales.js"></script>
         <script src="js/Controladores/Operativo/ProyectoControlador.js"></script>
+        <script src="js/Controladores/Operativo/ContratoControlador.js"></script>
         
         <script src="js/Controladores/Operativo/Cliente/ClienteControlador.js"></script>
         <script src="js/Controladores/Operativo/Cliente/PerfilClienteControlador.js"></script>
@@ -200,6 +201,7 @@
         <link rel="stylesheet" href="css/Operativo/PerfilCliente.css">
         <link rel="stylesheet" href="css/Operativo/PasosEstilos.css">
         <link rel="stylesheet" href="css/Operativo/PresupuestoModal.css">
+        <link rel="stylesheet" href="css/Operativo/Contratos.css">
         
         <!--awesome font-->
         <link rel="stylesheet" href="css/font-awesome.min.css">
@@ -207,6 +209,7 @@
 
     </head>
     <body class="{{clasePrincipal}}">
+       
         <div>
            <div id="header">
                <header ng-include=" 'html/Encabezado.html' "></header>

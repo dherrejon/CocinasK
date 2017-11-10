@@ -180,5 +180,34 @@ function ActivarDesactivarMaqueo($http, $q, CONFIG, maqueo)
     return q.promise;
 }
 
+/*--------------- Grupo Por Color ---------------------*/
+function GetGrupoMaqueo($http, $q, CONFIG, id)     
+{
+    var q = $q.defer();
+
+        
+    $http({      
+          method: 'GET',
+          url: CONFIG.APIURL + '/GetGrupoMaqueo/' + id,
+      }).success(function(data)
+        {
+            var color = []; 
+            
+            if(data[0].Estatus == "Exito")
+            {
+                for(var k=0; k<data[1].Color.length; k++)
+                {
+                    color[k] = new Color();
+                    color[k] = SetColor(data[1].Color[k]);
+                }
+            }
+    
+            q.resolve(color);  
+        }).error(function(data, status){
+            q.resolve([]);
+     }); 
+    return q.promise;
+}
+
 
   

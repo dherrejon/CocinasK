@@ -322,7 +322,7 @@ app.controller("FabricacionCubiertaControlador", function($scope, $http, $q, CON
         }
         else
         {
-            $scope.mensajeAdvertencia = "¿Estas seguro de DESACRIVAR - " + fabricacion.Nombre + "?";
+            $scope.mensajeAdvertencia = "¿Estas seguro de DESACTIVAR - " + fabricacion.Nombre + "?";
         }
         $('#modalActivarDesactivarConfigurarCubiertaFabricacion').modal('toggle'); 
     };

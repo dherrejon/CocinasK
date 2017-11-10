@@ -323,7 +323,7 @@ app.controller("ColorCubiertaControlador", function($scope, $http, $q, CONFIG, $
         }
         else
         {
-            $scope.mensajeAdvertencia = "¿Estas seguro de DESACRIVAR - " + grupo.Nombre + "?";
+            $scope.mensajeAdvertencia = "¿Estas seguro de DESACTIVAR - " + grupo.Nombre + "?";
         }
         $('#modalActivarDesactivarConfigurarCubiertaColor').modal('toggle'); 
     };

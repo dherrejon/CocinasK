@@ -783,6 +783,8 @@ function GetPromocionPersona($http, $q, CONFIG, id)
             {
                 for(var k=0; k<data[1].Promocion.PromocionMueble.length; k++)
                 {
+                    data[1].Promocion.PromocionMueble[k].DescuentoMinimo = parseFloat(data[1].Promocion.PromocionMueble[k].DescuentoMinimo);
+                    data[1].Promocion.PromocionMueble[k].DescuentoMaximo = parseFloat(data[1].Promocion.PromocionMueble[k].DescuentoMaximo);
                     data[1].Promocion.PromocionMueble[k].FechaLimite2 = data[1].Promocion.PromocionMueble[k].FechaLimite;
                     if(data[1].Promocion.PromocionMueble[k].TipoPromocionId != "2")
                     {
@@ -792,6 +794,8 @@ function GetPromocionPersona($http, $q, CONFIG, id)
                 
                 for(var k=0; k<data[1].Promocion.PromocionCubierta.length; k++)
                 {
+                    data[1].Promocion.PromocionCubierta[k].DescuentoMinimo = parseFloat(data[1].Promocion.PromocionCubierta[k].DescuentoMinimo);
+                    data[1].Promocion.PromocionCubierta[k].DescuentoMaximo = parseFloat(data[1].Promocion.PromocionCubierta[k].DescuentoMaximo);
                     data[1].Promocion.PromocionCubierta[k].FechaLimite2 = data[1].Promocion.PromocionCubierta[k].FechaLimite;
                     if(data[1].Promocion.PromocionCubierta[k].TipoPromocionId != "2")
                     {

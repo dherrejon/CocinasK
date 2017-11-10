@@ -195,7 +195,7 @@ app.controller("ConceptoVentaControlador", function($scope, $http, $q, CONFIG, $
         }
         else
         {
-            $scope.mensajeAdvertencia = "¿Estas seguro de DESACRIVAR - " + concepto.Nombre + "?";
+            $scope.mensajeAdvertencia = "¿Estas seguro de DESACTIVAR - " + concepto.Nombre + "?";
         }
         $('#modalActivarDesactivarConceptoVenta').modal('toggle'); 
     };

@@ -36,6 +36,7 @@
     require 'Operativo/Cita.php';
     require 'Operativo/Persona.php';
     require 'Operativo/Proyecto.php';
+    require 'Operativo/Contrato.php';
 
     /*------------General----------*/
     require 'General/Direccion.php';
@@ -459,6 +460,7 @@
 
     /*------------------ TipoProyecto ------------------------------*/
     $app->get('/GetTipoProyecto', $seguridad, $ChecarSesion, 'GetTipoProyecto');
+    $app->get('/GetTipoProyectoId/:id', $seguridad, $ChecarSesion, 'GetTipoProyectoId');
     $app->post('/AgregarTipoProyecto', $seguridad, $ChecarSesion, 'AgregarTipoProyecto');
     $app->put('/EditarTipoProyecto', $seguridad, $ChecarSesion, 'EditarTipoProyecto');
     $app->post('/ActivarDesactivarTipoProyecto', $seguridad, $ChecarSesion, 'ActivarDesactivarTipoProyecto');
@@ -469,6 +471,8 @@
     $app->post('/AgregarMaqueo', $seguridad, $ChecarSesion, 'AgregarMaqueo');
     $app->put('/EditarMaqueo', $seguridad, $ChecarSesion, 'EditarMaqueo');
     $app->post('/ActivarDesactivarMaqueo', $seguridad, $ChecarSesion, 'ActivarDesactivarMaqueo');
+    
+    $app->get('/GetGrupoMaqueo/:id', $seguridad, $ChecarSesion, 'GetGrupoMaqueo');
 
     /*------------------ Accesorio ------------------------------*/
     $app->get('/GetAccesorio', $seguridad, $ChecarSesion, 'GetAccesorio');

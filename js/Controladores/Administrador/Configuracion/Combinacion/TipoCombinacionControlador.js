@@ -184,7 +184,7 @@ app.controller("TipoCombinacion", function($scope, $http, $q, CONFIG, $rootScope
         }
         else
         {
-            $scope.mensajeAdvertencia = "¿Estas seguro de DESACRIVAR - " + tipo.Nombre + "?";
+            $scope.mensajeAdvertencia = "¿Estas seguro de DESACTIVAR - " + tipo.Nombre + "?";
         }
         $('#modalActivarDesactivarTipoCombinacion').modal('toggle'); 
     };

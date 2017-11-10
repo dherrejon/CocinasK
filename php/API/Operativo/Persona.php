@@ -297,7 +297,7 @@ function GetContactoAdicional()
     } 
     catch(PDOException $e) 
     {
-        //echo $e;
+        echo $e;
         echo '[ { "Estatus": "Fallo" } ]';
         //$app->status(409);
         $app->stop();

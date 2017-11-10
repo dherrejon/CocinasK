@@ -1435,7 +1435,7 @@ function EditarProyectoPresupuesto()
         } 
         catch(PDOException $e) 
         {
-            echo $e;
+            echo $sql;
             $db->rollBack();
             $app->status(409);
             $app->stop();

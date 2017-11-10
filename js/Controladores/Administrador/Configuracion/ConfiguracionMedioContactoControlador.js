@@ -112,7 +112,7 @@ app.controller("ConfiguaracionMedioContactoControlador", function($scope, $http,
         }
         else
         {
-            $scope.mensajeAdvertencia = "¿Estas seguro de DESACRIVAR - " + objeto.Nombre + "?";
+            $scope.mensajeAdvertencia = "¿Estas seguro de DESACTIVAR - " + objeto.Nombre + "?";
         }
         $('#modalActivarDesactivarConfigurarGeneral').modal('toggle'); 
     };

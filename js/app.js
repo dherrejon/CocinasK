@@ -1,4 +1,4 @@
-var app = angular.module('CocinasK',['ngRoute', 'angular.filter','angular-md5', 'angular-loading-bar', 'ui.bootstrap']);
+var app = angular.module('CocinasK',['ngRoute', 'angular.filter','angular-md5', 'angular-loading-bar']);
 
  //Configuracion del jason token, APIURL: indica la direccion del directorio de index.php
 app.constant('CONFIG',
@@ -340,7 +340,7 @@ $(document).on('show.bs.modal', '.modal', function ()
     var zIndex = Math.max.apply(null, Array.prototype.map.call(document.querySelectorAll('*'), function(el) 
     {
         return +el.style.zIndex;
-    })) + 100;
+    })) + 1000000000000000;
     
     $(document).on('hidden.bs.modal', '.modal', function () 
     {

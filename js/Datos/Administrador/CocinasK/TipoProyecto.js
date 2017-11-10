@@ -43,6 +43,35 @@ function GetTipoProyecto($http, $q, CONFIG)
     return q.promise;
 }
 
+//obtiene los tipos de módulos
+function GetTipoProyectoId($http, $q, CONFIG, id)     
+{
+    var q = $q.defer();
+
+    $http({      
+          method: 'GET',
+          url: CONFIG.APIURL + '/GetTipoProyectoId/' +id,
+
+      }).success(function(data)
+        {
+            var tipoProyecto = []; 
+            
+            if(data[0].Estatus == "Exito")
+            {
+                for(var k=0; k<data[1].TipoProyecto.length; k++)
+                {
+                    tipoProyecto[k] = SetTipoProyecto(data[1].TipoProyecto[k]);
+                }
+            }
+        
+            q.resolve(tipoProyecto);  
+        }).error(function(data, status)
+        {
+            q.resolve([]);
+        }); 
+    return q.promise;
+}
+
 //copia los datos de un material
 function SetTipoProyecto(data)
 {

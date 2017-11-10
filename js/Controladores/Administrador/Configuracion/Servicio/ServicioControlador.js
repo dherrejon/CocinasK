@@ -194,7 +194,7 @@ app.controller("ServicioControlador", function($scope, $http, $q, CONFIG, $rootS
         }
         else
         {
-            $scope.mensajeAdvertencia = "¿Estas seguro de DESACRIVAR - " + servicio.Nombre + "?";
+            $scope.mensajeAdvertencia = "¿Estas seguro de DESACTIVAR - " + servicio.Nombre + "?";
         }
         $('#modalActivarDesactivarServicio').modal('toggle'); 
     };

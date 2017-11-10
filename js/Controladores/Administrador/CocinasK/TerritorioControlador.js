@@ -170,7 +170,7 @@ app.controller("TerritorioControlador", function($scope, $http, $q, CONFIG, $roo
         }
         else
         {
-            $scope.mensajeAdvertencia = "¿Estas seguro de DESACRIVAR - " + objeto.Nombre +"?";
+            $scope.mensajeAdvertencia = "¿Estas seguro de DESACTIVAR - " + objeto.Nombre +"?";
         }
         $('#modalActivoTerritorio').modal('toggle'); 
     };

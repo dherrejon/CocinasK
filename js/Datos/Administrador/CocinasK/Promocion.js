@@ -14,6 +14,8 @@ class Promocion
         this.FechaLimite = "";
         this.Vigencia = "";
         this.Activo = true; 
+        
+        this.TipoPromocionId = "";
     }
 }
 

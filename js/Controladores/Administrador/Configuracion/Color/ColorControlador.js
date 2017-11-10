@@ -201,7 +201,7 @@ app.controller("ColorControlador", function($scope, $http, $q, CONFIG, $rootScop
         }
         else
         {
-            $scope.mensajeAdvertencia = "¿Estas seguro de DESACRIVAR - " + color.Nombre + "?";
+            $scope.mensajeAdvertencia = "¿Estas seguro de DESACTIVAR - " + color.Nombre + "?";
         }
         $('#modalActivarDesactivarConfigurarGeneralColor').modal('toggle'); 
     };

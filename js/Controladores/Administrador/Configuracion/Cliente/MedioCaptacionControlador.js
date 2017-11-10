@@ -190,7 +190,7 @@ app.controller("MedioCaptacionControlador", function($scope, $http, $q, CONFIG, 
         }
         else
         {
-            $scope.mensajeAdvertencia = "¿Estas seguro de DESACRIVAR - " + medio.Nombre + "?";
+            $scope.mensajeAdvertencia = "¿Estas seguro de DESACTIVAR - " + medio.Nombre + "?";
         }
         
         $('#modalActivarDesactivarMedioCaptacion').modal('toggle'); 

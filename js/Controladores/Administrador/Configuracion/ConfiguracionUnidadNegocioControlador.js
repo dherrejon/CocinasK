@@ -115,7 +115,7 @@ app.controller("ConfiguaracionUnidadNegocioControlador", function($scope, $http,
         }
         else
         {
-            $scope.mensajeAdvertencia = "¿Estas seguro de DESACRIVAR - " + objeto.Nombre + "?";
+            $scope.mensajeAdvertencia = "¿Estas seguro de DESACTIVAR - " + objeto.Nombre + "?";
         }
         $('#modalActivarDesactivarModulo').modal('toggle'); 
     };

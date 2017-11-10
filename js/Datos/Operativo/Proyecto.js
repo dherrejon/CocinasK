@@ -17,6 +17,8 @@ class Presupuesto
         this.DescripcionCliente = "";
         this.DescripcionInterna = "";
         this.Titulo = "";
+        
+        this.ContratoId = null;
     }
 }
 
@@ -363,6 +365,7 @@ function SetPresupuesto(data)
     presupuesto.DescripcionCliente = data.DescripcionCliente;
     presupuesto.Titulo = data.Titulo;
     presupuesto.CantidadMaqueo = parseFloat(data.CantidadMaqueo);
+    presupuesto.ContratoId = data.ContratoId;
     
     return presupuesto;
 }

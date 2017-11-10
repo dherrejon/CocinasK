@@ -192,7 +192,7 @@ app.controller("UbicacionControlador", function($scope, $http, $q, CONFIG, $root
         }
         else
         {
-            $scope.mensajeAdvertencia = "¿Estas seguro de DESACRIVAR - " + ubicacion.Nombre + "?";
+            $scope.mensajeAdvertencia = "¿Estas seguro de DESACTIVAR - " + ubicacion.Nombre + "?";
         }
         $('#modalActivarDesactivarConfigurarCubiertaUbicacion').modal('toggle'); 
     };

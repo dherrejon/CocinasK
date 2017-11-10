@@ -1063,6 +1063,115 @@ function CopiarUnidad(unidad)
     return nuevaUnidad;
 }
 
+//Directiva para mostrar el precio con una mascara 
+app.directive('currencyInput', function($filter, $browser) 
+{
+    return {
+        require: 'ngModel',
+        link: function($scope, $element, $attrs, ngModelCtrl) 
+        {
+            var listener = function() 
+            {
+                var value = $element.val().replace(/[^0-9]/g, '');
+                $element.val($filter('moneda')(value, false));
+            };
+
+            // This runs when we update the text field
+            ngModelCtrl.$parsers.push(function(viewValue) 
+            {
+                return viewValue.replace(/[^0-9]/g, '').slice(0,10);
+            });
+
+            // This runs when the model gets updated on the scope directly and keeps our view in sync
+            ngModelCtrl.$render = function() 
+            {
+                $element.val($filter('moneda')(ngModelCtrl.$viewValue, false));
+            };
+
+            $element.bind('change', listener);
+            $element.bind('keydown', function(event) 
+            {
+                var key = event.keyCode;
+                // If the keys include the CTRL, SHIFT, ALT, or META keys, or the arrow keys, do nothing.
+                // This lets us support copy and paste too
+                if (key == 91 || (15 < key && key < 19) || (37 <= key && key <= 40)){
+                    return;
+                }
+                $browser.defer(listener); // Have to do this or changes don't get picked up properly
+            });
+
+            $element.bind('paste cut', function() 
+            {
+                $browser.defer(listener);
+            });
+        }
+
+    };
+});
+
+app.filter('moneda', function () 
+{
+    return function (moneda) 
+    {
+        //console.log(tel);
+        if (!moneda) { return ''; }
+
+        var value = moneda.toString().trim().replace(/^\+/, '');
+
+        if (value.match(/[^0-9]/)) 
+        {
+            return moneda;
+        }
+        
+        if(moneda.length == 1 && moneda == "0")
+        {
+            return "";
+        }
+        
+        var n = Math.ceil(moneda.length/3);
+        
+        if(n > 1)
+        {
+            var u = moneda.length%3 === 0 ? 3 : moneda.length%3;
+            
+            var v1 = moneda.slice(0, u);
+            var v = [];
+            
+            var iu = u;
+            
+            for(var k = 0; k<(n-1); k++)
+            {
+                var it = iu+3;
+                if(it > moneda.length)
+                {
+                    it = moneda.length;
+                }
+                
+                v[k] = moneda.slice(iu, it);
+                
+                iu = it;
+            }
+            
+            var m = v1 + ",";
+            
+            for(var k=0; k<(v.length-1); k++)
+            {
+                m +=  (v[k] + ",");
+            }
+            
+            m += ( v[v.length-1] );
+            
+            return "$ " + m;
+        }
+        else
+        {
+            return "$ " + moneda;
+        }
+    
+        
+    };
+});
+
 //Directiva para mostrar el teléfono con una mascara 
 app.directive('phoneInput', function($filter, $browser) 
 {
@@ -1109,7 +1218,8 @@ app.directive('phoneInput', function($filter, $browser)
     };
 });
 
-app.filter('tel', function () {
+app.filter('tel', function () 
+{
     return function (tel) {
         //console.log(tel);
         if (!tel) { return ''; }

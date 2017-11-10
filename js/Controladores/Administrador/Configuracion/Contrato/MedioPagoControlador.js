@@ -216,7 +216,7 @@ app.controller("MedioPagoControlador", function($scope, $http, $q, CONFIG, $root
         }
         else
         {
-            $scope.mensajeAdvertencia = "¿Estas seguro de DESACRIVAR - " + medio.Nombre + "?";
+            $scope.mensajeAdvertencia = "¿Estas seguro de DESACTIVAR - " + medio.Nombre + "?";
         }
         $('#modalActivarMedioPago').modal('toggle'); 
     };

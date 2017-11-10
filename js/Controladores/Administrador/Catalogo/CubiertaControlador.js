@@ -831,7 +831,7 @@ app.controller("CubiertaControlador", function($scope, $http, $q, CONFIG, datosU
         }
         else
         {
-            $scope.mensajeAdvertencia = "¿Estas seguro de DESACRIVAR - " + cubierta.Material.Nombre + "?";
+            $scope.mensajeAdvertencia = "¿Estas seguro de DESACTIVAR - " + cubierta.Material.Nombre + "?";
         }
         $('#modalActivarDesactivarCubierta').modal('toggle'); 
     };

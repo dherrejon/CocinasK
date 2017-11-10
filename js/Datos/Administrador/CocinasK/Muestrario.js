@@ -214,7 +214,7 @@ function GetPuertaPorMuestrario($http, $q, CONFIG, id)
 
             q.resolve(data);
         }).error(function(data){
-            q.resolve(data);
+            q.resolve([]);
      }); 
     
     return q.promise;
