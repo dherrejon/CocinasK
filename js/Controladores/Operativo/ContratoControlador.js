@@ -97,8 +97,7 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
         $scope.grupoUbicacion = [];
         $scope.grupoUbicacion[0] = {Nombre:'', MaterialAux:"", MaterialSel:""};
         $scope.grupoUbicacion[1] = {Nombre: "Cubierta", Grupo:"13", MaterialAux:"", MaterialSel:""};
-        $scope.grupoUbicacion[2] = {Nombre: "Backsplash e Isla", Grupo:"24", MaterialAux:"", MaterialSel:""};
-        
+        $scope.grupoUbicacion[2] = {Nombre: "Backsplash e Isla", Grupo:"24", MaterialAux:"", MaterialSel:""};    
     };
     
     $scope.GetIVA = function()
@@ -127,6 +126,12 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
         GetTipoProyectoId($http, $q, CONFIG, id).then(function(data)
         {
             $scope.presupuesto.Proyecto.TipoProyecto = data[0];
+            
+            if($scope.presupuesto.Proyecto.TipoProyecto.CubiertaPiedra)
+            {
+                $scope.GetAcabadoCubierta();
+            }
+            
         }).catch(function(error)
         {
             alert(error);
@@ -176,6 +181,18 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
         GetGrupoPorColor($http, $q, CONFIG, grupo.GrupoId).then(function(data)
         {
             grupo.Color = alasql("SELECT * FROM ? WHERE Activo = true", [data]);
+            
+        }).catch(function(error)
+        {
+            alert(error);
+        });
+    };
+    
+    $scope.GetAcabadoCubierta = function()      
+    {
+        GetAcabadoCubierta($http, $q, CONFIG).then(function(data)
+        {
+            $scope.acabado = alasql("SELECT * FROM ? WHERE Activo = true", [data]);
             
         }).catch(function(error)
         {
@@ -534,6 +551,22 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
                                 }
                             }
                         }
+                    }
+                }
+                
+                //acabado
+                if($scope.contrato.TipoCubierta.TipoCubiertaId == "2")
+                {
+                    if($scope.contrato.TipoCubierta.Acabado != null || $scope.contrato.TipoCubierta.Acabado != undefined)
+                    {
+                        if($scope.contrato.TipoCubierta.Acabado.Nombre.length == 0)
+                        {
+                            $scope.mensajeError[$scope.mensajeError.length] = "Selecciona un acabado para la cubierta.";
+                        }
+                    }
+                    else
+                    {
+                        $scope.mensajeError[$scope.mensajeError.length] = "Selecciona un acabado para la cubierta.";
                     }
                 }
             }

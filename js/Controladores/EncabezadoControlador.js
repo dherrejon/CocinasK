@@ -460,7 +460,7 @@ var OpcionAdministrador =
                                         {referencia: "#Cubierta", texto:"Registro",  show:false, permiso:[{clave:"ConCubConsultar"}]},
                                         {referencia: "#ConfigurarCubierta", texto:"Configuración", show:false, permiso:[
                                                                                                             {clave:"ConMCCConsultar"}, {clave:"ConFCuConsultar"},
-                                                                                                            {clave:"ConUCuConsultar"}
+                                                                                                            {clave:"ConUCuConsultar"}, {clave:"ConACuConsultar"}
                                                                                                                     ]}
 
                                    ]

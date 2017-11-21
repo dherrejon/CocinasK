@@ -3,3 +3,14 @@ https://www.fel.mx/CR33Test/ConexionRemota.svc?WSDL
 
 Productiva:
 https://www.fel.mx/CR33/ConexionRemota.svc?WSDL
+
+Error Code: 1146. Table 'pesonal.puestodepto' doesn't exist
+
+Error Code: 1146. Table 'pesonal.puestodepto' doesn't exist
+
+Error Code: 1146. Table 'pesonal.puestodepto' doesn't exist
+
+Error Code: 1146. Table 'personal.departamenos' doesn't exist
+
+
+Error Code: 1146. Table 'personal.iddepto' doesn't exist

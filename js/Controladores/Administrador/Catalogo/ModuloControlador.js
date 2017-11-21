@@ -1472,9 +1472,16 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
         }
     };
     
-    $scope.BorrarMedidaAgregada = function(index)
+    $scope.BorrarMedidaAgregada = function(med)
     {
-        $scope.nuevoModulo.MedidasPorModulo.splice(index,1);
+        for(var k=0; k<$scope.nuevoModulo.MedidasPorModulo.length; k++)
+        {
+            if($scope.nuevoModulo.MedidasPorModulo[k].Ancho == med.Ancho && $scope.nuevoModulo.MedidasPorModulo[k].Alto == med.Alto && $scope.nuevoModulo.MedidasPorModulo[k].Profundo == med.Profundo)
+            {
+                $scope.nuevoModulo.MedidasPorModulo.splice(k, 1);
+                break;
+            }
+        }
     };
     
     $scope.CancelarEdicionMedida = function()

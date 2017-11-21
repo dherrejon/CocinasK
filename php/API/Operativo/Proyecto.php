@@ -1812,8 +1812,6 @@ function EditarProyectoPresupuesto()
     $db = null;
 
     echo '[{"Estatus": "Exitoso"}]';
-    
-
 }
     
 ?>

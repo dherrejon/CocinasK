@@ -31,6 +31,7 @@
     require 'Administrador/Variable.php';
     require 'Administrador/ConceptoVenta.php';
     require 'Administrador/MedioPago.php';
+    require 'Administrador/AcabadoCubierta.php';
 
     /*------------Operativo-----------*/
     require 'Operativo/Cita.php';
@@ -431,6 +432,12 @@
 
     $app->post('/GetDatosUbicacion', $seguridad, $ChecarSesion, 'GetDatosUbicacion');
     $app->put('/EditarUbicacionFabricacionTipoCubierta', $seguridad, $ChecarSesion, 'EditarUbicacionFabricacionTipoCubierta');
+
+    /*----------------- Acabado Cubierta --------------------*/
+    $app->get('/GetAcabadoCubierta', $seguridad, $ChecarSesion, 'GetAcabadoCubierta');
+    $app->post('/AgregarAcabadoCubierta', $seguridad, $ChecarSesion, 'AgregarAcabadoCubierta');    
+    $app->put('/EditarAcabadoCubierta', $seguridad, $ChecarSesion, 'EditarAcabadoCubierta');
+    $app->post('/ActivarDesactivarAcabadoCubierta', $seguridad, $ChecarSesion, 'ActivarDesactivarAcabadoCubierta');
 
     /*---------------- Cubierta ------------------------*/
     $app->get('/GetCubierta', $seguridad, $ChecarSesion, 'GetCubierta');

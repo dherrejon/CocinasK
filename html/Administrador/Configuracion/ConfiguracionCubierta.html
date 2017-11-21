@@ -15,11 +15,11 @@
             <div class="tab" role="tabpanel">
                 <!-- Pestañas -->
                 
-                <ul ng-if="anchoPantalla > 600" class="nav nav-tabs" role="tablist">
+                <ul ng-if="anchoPantalla > 754" class="nav nav-tabs" role="tablist">
                     <li   ng-repeat="tab in tabs" class="{{tab.clase}}"><a  href="" aria-controls="{{tab.area}}" role="tab" data-toggle="tab" ng-click="SeleccionarTab(tab, $index)">{{tab.titulo}}</a></li>
                 </ul>
                 
-                <ul ng-if="anchoPantalla < 601" class="nav nav">
+                <ul ng-if="anchoPantalla < 755" class="nav nav">
                     <li  class="tabSm dropdown">
 
                         <button  class="dropdown-toggle  btn bt-block dropDownTab" data-toggle="dropdown" >
@@ -63,6 +63,12 @@
                         <div ng-include=" 'html/Administrador/Configuracion/Cubierta/Ubicacion.html' ">
                             
                         </div>
+                    </div>
+                    
+                    <!-- acabado --> 
+                    <div role="tabpanel" class="tab-pane" id="Acabado" ng-if="permisoUsuario.acabado.consultar">
+                      <br>  
+                        <div ng-include=" 'html/Administrador/Configuracion/Cubierta/Acabado.html' "></div>
                     </div>
                 
                 </div>

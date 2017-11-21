@@ -7,6 +7,7 @@ app.controller("ConfiguaracionCubiertaControlador", function($scope, $http, $q, 
                             muestrarioColor:{consultar:false, agregar:false, editar:false, activar:false},
                             fabricacion:{consultar:false, agregar:false, editar:false, activar:false},
                             ubicacion:{consultar:false, agregar:false, editar:false, activar:false},
+                            acabado:{consultar:false, agregar:false, editar:false, activar:false},
                             };
     $scope.IdentificarPermisos = function()
     {
@@ -62,6 +63,23 @@ app.controller("ConfiguaracionCubiertaControlador", function($scope, $http, $q, 
             {
                 $scope.permisoUsuario.ubicacion.activar  = true;
             }
+            //acabado
+            if($scope.usuarioLogeado.Permiso[k] == "ConACuConsultar")
+            {
+                $scope.permisoUsuario.acabado.consultar = true;
+            }
+            else if($scope.usuarioLogeado.Permiso[k] == "ConACuAgregar")
+            {
+                $scope.permisoUsuario.acabado.agregar  = true;
+            }
+            else if($scope.usuarioLogeado.Permiso[k] == "ConACuEditar")
+            {
+                $scope.permisoUsuario.acabado.editar  = true;
+            }
+            else if($scope.usuarioLogeado.Permiso[k] == "ConACuActivar")
+            {
+                $scope.permisoUsuario.acabado.activar  = true;
+            }
         }
     };
     
@@ -82,21 +100,31 @@ app.controller("ConfiguaracionCubiertaControlador", function($scope, $http, $q, 
                 $('#MuestrarioColor').show();
                 $('#Fabricacion').hide();
                 $('#Ubicacion').hide();
+                $('#Acabado').hide();
                 break;
             case 1:  
                 $('#Fabricacion').show();
                 $('#MuestrarioColor').hide();
                 $('#Ubicacion').hide();
+                $('#Acabado').hide();
                 break;
             case 2:  
                 $('#Ubicacion').show();
                 $('#MuestrarioColor').hide();
                 $('#Fabricacion').hide();
+                $('#Acabado').hide();
                 
                 if($scope.permisoUsuario.ubicacion.editar)
                 {
                     $rootScope.InicializarUbicacionCubierta();
                 }
+                break;
+                
+            case 3:  
+                $('#Acabado').show();
+                $('#MuestrarioColor').hide();
+                $('#Ubicacion').hide();
+                $('#MuestrarioColor').hide();
                 break;
             default:
                 break;
@@ -173,5 +201,6 @@ var tabCubierta =
     [
         {titulo:"Muestrario Color", referencia: "#MuestrarioColor", clase:"active", area:"muestrarioColor"},
         {titulo:"Fabricación", referencia: "#Fabricacion", clase:"", area:"fabricacion"},
-        {titulo:"Ubicación", referencia: "#Ubicacion", clase:"", area:"ubicacion"}
+        {titulo:"Ubicación", referencia: "#Ubicacion", clase:"", area:"ubicacion"},
+        {titulo:"Acabado", referencia: "#Acabado", clase:"", area:"acabado"}
     ];

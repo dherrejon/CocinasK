@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/" xmlns:tes="http://schemas.datacontract.org/2004/07/TES.V33.CFDI.Negocios">
+<soapenv:Header/>
+<soapenv:Body>
+    <tem:GenerarCFDI>
+    <tem:credenciales>
+    <tes:Cuenta>TES030201001</tes:Cuenta>
+    <tes:Password>Pruebas2017$</tes:Password>
+    <tes:Usuario>TES030201001</tes:Usuario>
+    </tem:credenciales>
+    <tem:cfdi>
+    <tes:ClaveCFDI>FAC</tes:ClaveCFDI>
+    <tes:Conceptos>
+  <tes:ConceptoR>
+    <tes:Cantidad>1.7</tes:Cantidad>
+    <tes:ClaveProdServ>01010101</tes:ClaveProdServ>
+    <tes:ClaveUnidad>F52</tes:ClaveUnidad>
+    <tes:Descripcion>ZAMAC</tes:Descripcion>
+    <tes:Importe>17000.00</tes:Importe>
+    <tes:Impuestos>
+    <tes:Traslados>
+    <tes:TrasladoConceptoR>
+    <tes:Base>17000</tes:Base>
+    <tes:Importe>2720.00</tes:Importe>
+    <tes:Impuesto>002</tes:Impuesto>
+    <tes:TasaOCuota>0.160000</tes:TasaOCuota>
+    <tes:TipoFactor>Tasa</tes:TipoFactor>
+    </tes:TrasladoConceptoR>
+    </tes:Traslados>
+    </tes:Impuestos>
+    <tes:NoIdentificacion>00003</tes:NoIdentificacion>
+  <tes:Unidad>TONELADA</tes:Unidad>
+    <tes:ValorUnitario>10000.00</tes:ValorUnitario>
+    </tes:ConceptoR>
+    </tes:Conceptos>
+    <tes:CondicionesDePago>CONDICIONES</tes:CondicionesDePago>	<tes:Emisor>
+    <tes:Nombre> Ruperto Gonzales </tes:Nombre>
+    <tes:RegimenFiscal>601</tes:RegimenFiscal>
+    </tes:Emisor>
+    <tes:Fecha>2017-06-26T11:36:11</tes:Fecha>
+    <tes:Folio>167ABC</tes:Folio>
+    <tes:FormaPago>01</tes:FormaPago>
+    <tes:LugarExpedicion>45079</tes:LugarExpedicion>
+    <tes:MetodoPago>PUE</tes:MetodoPago>
+    <tes:Moneda>MXN</tes:Moneda>
+    <tes:Receptor>
+    <tes:Nombre>RAFAEL ALEJANDRO HERNÁNDEZ PALACIOS</tes:Nombre>
+    <tes:Rfc>TEST010203001</tes:Rfc>
+    <tes:UsoCFDI>G01</tes:UsoCFDI>
+    </tes:Receptor>
+    <tes:Referencia>0001</tes:Referencia>
+    <tes:Serie>A</tes:Serie>
+    <tes:SubTotal>17000.00</tes:SubTotal>
+    <tes:TipoCambio>1</tes:TipoCambio>
+    <tes:Total>19720.00</tes:Total>
+    </tem:cfdi>
+    </tem:GenerarCFDI>
+    </soapenv:Body>
+    </soapenv:Envelope>

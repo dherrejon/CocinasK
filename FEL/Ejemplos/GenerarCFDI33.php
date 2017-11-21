@@ -109,7 +109,7 @@
   
   //Seccion para detallar el impuesto por partida (Opcional).
   //Se indica el tipo de calculo que se realizara por cada Concepto (PARTIDA, IEPS_GASOLINA, IEPS_TABACO)
-  $soap_request .= "    <tes:Nombre>HORACIO LLANOS</tes:Nombre>\n";
+  $soap_request .= "    <tes:Nombre> Ruperto Gonzales </tes:Nombre>\n";
   $soap_request .= "    <tes:RegimenFiscal>601</tes:RegimenFiscal>\n";
   
   //Seccion para indicar el descuento por partida.
@@ -143,10 +143,10 @@
   $soap_request .= "    </soapenv:Body>\n";
   $soap_request .= "    </soapenv:Envelope>\n";
   
-//creo un archivo soap_reequest.xml e introduzco la cadena_xml
-	$new_xml = fopen ("./soap-request.xml", "w");
-	fwrite($new_xml,$soap_request);
-	fclose($new_xml);
+  //creo un archivo soap_reequest.xml e introduzco la cadena_xml
+    $new_xml = fopen ("./soap-request.xml", "w");
+    fwrite($new_xml,$soap_request);
+    fclose($new_xml);
 
 //Esta parde es el Header de la peticion SOAP y en ella se incluye el contenido de la pagina del servicio
   $header = array(
