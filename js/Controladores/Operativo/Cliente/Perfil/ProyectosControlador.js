@@ -46,6 +46,7 @@ app.controller("ProyectoClienteControlador", function($scope, $rootScope, CITA, 
         GetPresupuestoPorProyecto($http, $q, CONFIG, proyecto.ProyectoId).then(function(data)
         {
             proyecto.Presupuesto = data;
+            console.log(data);
         
         }).catch(function(error)
         {

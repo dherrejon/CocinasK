@@ -488,7 +488,7 @@ var OpcionAdministrador =
             
                         { menu: 2, referencia: "", texto:"Contratos", show:false, tipo:"dropdownlist", id:"ConfigurarContrato", clase:"dropdown-submenu",
                                 opcion:[
-                                            { referencia: "#ConfigurarContrato", texto:"Configuración", show:false, permiso:[{clave:"ConMPaConsultar"}, {clave:"ConCVeConsultar"}]},
+                                            { referencia: "#ConfigurarContrato", texto:"Configuración", show:false, permiso:[{clave:"ConMPaConsultar"}, {clave:"ConCVeConsultar"}, {clave:"ConDCnConsultar"}]},
                                        ]
                         }, 
                   ]                      

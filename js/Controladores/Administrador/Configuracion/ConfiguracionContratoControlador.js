@@ -3,7 +3,8 @@ app.controller("ConfiguaracionContratoController", function($scope, $http, $q, C
     $rootScope.clasePrincipal = "";
     $scope.permisoUsuario = {
                              conceptoVenta:{consultar:false, agregar:false, editar:false, activar:false},
-                             medioPago:{consultar:false, agregar:false, editar:false, activar:false}
+                             medioPago:{consultar:false, agregar:false, editar:false, activar:false},
+                             descripcion:{consultar:false, agregar:false, editar:false, activar:false},
                             };
     $scope.IdentificarPermisos = function()
     {
@@ -44,6 +45,24 @@ app.controller("ConfiguaracionContratoController", function($scope, $http, $q, C
             {
                 $scope.permisoUsuario.medioPago.activar= true;
             }
+            
+            //descripcion contrato
+            else if($scope.usuarioLogeado.Permiso[k] == "ConDCnConsultar")
+            {
+                $scope.permisoUsuario.descripcion.consultar = true;
+            }
+            else if($scope.usuarioLogeado.Permiso[k] == "ConDCnAgregar")
+            {
+                $scope.permisoUsuario.descripcion.agregar= true;
+            }
+            else if($scope.usuarioLogeado.Permiso[k] == "ConDCnEditar")
+            {
+                $scope.permisoUsuario.descripcion.editar = true;
+            }
+            else if($scope.usuarioLogeado.Permiso[k] == "ConDCnActivar")
+            {
+                $scope.permisoUsuario.descripcion.activar= true;
+            }
         }
     };
     
@@ -60,10 +79,17 @@ app.controller("ConfiguaracionContratoController", function($scope, $http, $q, C
             case 0:  
                 $('#ConceptoVenta').show();
                 $('#MedioPago').hide();
+                $('#Descripcion').hide();
                 break;
             case 1:  
                 $('#MedioPago').show();
                 $('#ConceptoVenta').hide();
+                $('#Descripcion').hide();
+                break;
+            case 2:  
+                $('#MedioPago').hide();
+                $('#ConceptoVenta').hide();
+                $('#Descripcion').show();
                 break;
             default:
                 break;
@@ -138,5 +164,6 @@ app.controller("ConfiguaracionContratoController", function($scope, $http, $q, C
 var tabConfContrato = 
     [
         {titulo:"Concepto de Venta", referencia: "#ConceptoVenta", clase:"active", area:"conceptoVenta"},
-        {titulo:"Medio de Pago", referencia: "#MedioPago", clase:"", area:"medioPago"}
+        {titulo:"Medio de Pago", referencia: "#MedioPago", clase:"", area:"medioPago"},
+        {titulo:"Descripción", referencia: "#Descripcion", clase:"", area:"descripcion"}
     ];

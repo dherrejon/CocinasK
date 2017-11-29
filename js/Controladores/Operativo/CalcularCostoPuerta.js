@@ -88,6 +88,7 @@ function CalcularPrecioVentaPuerta(puerta, combinacion, modulo)
             {
                 consumoTotal = puerta.Componente[k].Consumo + (puerta.Componente[k].Consumo * (modulo.Desperdicio/100.0));
                 CostoTotal += consumoTotal * parseFloat(puerta.Componente[k].Combinacion[i].CostoUnidad);
+                            
                 break;
             }
         }
@@ -96,11 +97,15 @@ function CalcularPrecioVentaPuerta(puerta, combinacion, modulo)
     PrecioVenta = (CostoTotal + (CostoTotal * (modulo.Margen/100.0))) * parseInt(modulo.Cantidad);
     
     return Math.round(PrecioVenta);
-    
 }
 
 function CalcularConsumoPuerta(puerta, modulo)
 {
+    for(var j=0; j<puerta.Componente.length; j++)
+    {
+        puerta.Componente[j].Consumo = 0;
+    }
+    
     for(var k=0; k<modulo.Seccion.length; k++)
     {
         var componenteSeccion = [];
@@ -134,7 +139,7 @@ function CalcularConsumoPuerta(puerta, modulo)
                 componenteSeccion.push(puerta.Componente[i]);
             }
         }
-        
+
         for(var i=0; i<componenteSeccion.length; i++)
         {
             SustituirFormulaPieza(componenteSeccion[i], componenteSeccion);
@@ -149,12 +154,10 @@ function CalcularConsumoPuerta(puerta, modulo)
             {
                 if(puerta.Componente[j].ComponenteId == componenteSeccion[i].ComponenteId)
                 {
-                    puerta.Componente[j].Consumo = consumo*parseInt(modulo.Seccion[k].NumeroPiezas); 
+                    puerta.Componente[j].Consumo += consumo*parseInt(modulo.Seccion[k].NumeroPiezas); 
                     break;
                 }
             }
-            
-            
 
             /*for(var j=0; j<componenteSeccion[i].Combinacion.length; j++)
             {

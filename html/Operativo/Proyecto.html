@@ -2944,7 +2944,32 @@
                     
                 </div>
                 
+                
+                
+                
                 <div ng-show="false">
+                   
+                   <table id="encabezadoTitulo1">
+                        
+                        <tr> 
+                            <td>Fecha de Mostar el Presupuesto Cliente</td>
+                            <td>no.</td>
+                        </tr>
+                        
+                        <tr> 
+                            <td>{{GetHoy()}}</td>
+                            <td>No. {{presupuesto.PresupuestoId}}</td>
+                        </tr>
+
+                    </table>
+                    
+                    <table id="encabezadoTitulo2">
+                        
+                        <tr> 
+                            <td>{{presupuesto.Persona.Nombre}} {{presupuesto.Persona.PrimerApellido}} {{presupuesto.Persona.SegundoApellido}}</td>
+                        </tr>
+
+                    </table>
                     
                     <table id="incluye">
                         <tr> <td>{{presupuesto.Proyecto.TipoProyecto.Nombre}}</td></tr>

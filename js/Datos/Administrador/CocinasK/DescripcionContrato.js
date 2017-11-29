@@ -1,57 +1,56 @@
-class AcabadoCubierta
+class DescripcionContrato
 {
     constructor()
     {
-        this.AcabadoCubiertaId = "";
-        this.Nombre = "";
+        this.DescripcionContratoId = "";
+        this.Descripcion = "";
         this.Activo = true;
     }
 }
 
-function GetAcabadoCubierta($http, $q, CONFIG)     
+function GetDescripcionContrato($http, $q, CONFIG)     
 {
     var q = $q.defer();
         
     $http({      
           method: 'GET',
-          url: CONFIG.APIURL + '/GetAcabadoCubierta',
+          url: CONFIG.APIURL + '/GetDescripcionContrato',
       }).success(function(data)
         {
-            var acabado = []; 
+            var desc = []; 
             for(var k=0; k<data.length; k++)
             {
-                acabado[k] = SetAcabadoCubierta(data[k]);
+                desc[k] = SetDescripcionContrato(data[k]);
             }
     
-            q.resolve(acabado);  
+            q.resolve(desc);  
         }).error(function(data, status){
             q.resolve([]);
      }); 
     return q.promise;
 }
 
-function SetAcabadoCubierta(data)
+function SetDescripcionContrato(data)
 {
-    var acabado = new AcabadoCubierta();
+    var desc = new DescripcionContrato();
     
-    acabado.AcabadoCubiertaId = data.AcabadoCubiertaId;
-    acabado.Nombre = data.Nombre;
-    acabado.Activo = data.Activo == "1" ? true : false;
+    desc.DescripcionContratoId = data.DescripcionContratoId;
+    desc.Descripcion = data.Descripcion;
+    desc.Activo = data.Activo == "1" ? true : false;
     
-    return acabado;
+    return desc;
 }
 
 //agrega un acabado
-function AgregarAcabadoCubierta($http, CONFIG, $q, acabado)
+function AgregarDescripcionContrato($http, CONFIG, $q, data)
 {
     var q = $q.defer();
     
-    var data = jQuery.extend({}, acabado);
     data.Activo = data.Activo ? "1" : "0";
 
     $http({      
           method: 'POST',
-          url: CONFIG.APIURL + '/AgregarAcabadoCubierta',
+          url: CONFIG.APIURL + '/AgregarDescripcionContrato',
           data: data
 
       }).success(function(data)
@@ -75,16 +74,15 @@ function AgregarAcabadoCubierta($http, CONFIG, $q, acabado)
 
 
 //edita un acabdo
-function EditarAcabadoCubierta($http, CONFIG, $q, acabado)
+function EditarDescripcionContrato($http, CONFIG, $q, data)
 {
     var q = $q.defer();
     
-    var data = jQuery.extend({}, acabado);
     data.Activo = data.Activo ? "1" : "0";
 
     $http({      
           method: 'PUT',
-          url: CONFIG.APIURL + '/EditarAcabadoCubierta',
+          url: CONFIG.APIURL + '/EditarDescripcionContrato',
           data: data
 
       }).success(function(data)
@@ -106,13 +104,13 @@ function EditarAcabadoCubierta($http, CONFIG, $q, acabado)
     return q.promise;
 }
 
-function ActivarDesactivarAcabadoCubierta($http, $q, CONFIG, datos) 
+function ActivarDesactivarDescripcion($http, $q, CONFIG, datos) 
 {
     var q = $q.defer();
 
     $http({      
           method: 'POST',
-          url: CONFIG.APIURL + '/ActivarDesactivarAcabadoCubierta',
+          url: CONFIG.APIURL + '/ActivarDesactivarDescripcion',
           data: datos
 
       }).success(function(data)

@@ -1,0 +1,243 @@
+<div ng-controller="DescripcionContatoController as descon">
+   
+   <!-- Tabla de datos -->
+    <div class="row">
+        <div class="col-md-11 col-xs-10">
+            <div class="table-responsive TablaUnidadNegocio">
+                <table class="table table-hover table-striped table-condensed">
+                    <thead class="TituloTabla">
+                      <tr>
+                        <th><button class="btn botonFalso" style="text-align: left; "><b>Descipción</b></button></th>
+                        <th><button class="btn botonFalso"><b>Editar</b></button></th>
+                        <th><button class="btn botonFalso"><b>Activo</b></button></th>
+                      </tr>
+                    </thead>
+                    <tbody >
+                      <tr ng-repeat="desc in descripcion | filter:buscarDesc">
+                          <td>
+                              <a ng-if="permisoUsuario.descripcion.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirDetalleDescripcion(desc)">
+                                  <span class="fa fa-eye fa-2x" ></span>
+                              </a>
+                              <span> {{desc.Descripcion.slice(0,60)}}</span>
+                              <span ng-if="desc.Descripcion.length > 60">...</span>
+                           </td>
+                        
+                            <td class="text-center">
+                                <a ng-if="permisoUsuario.descripcion.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirDescripcion('Editar', desc)">
+                                    <span class="fa fa-pencil fa-2x" ></span>
+                                </a>
+
+                                <span ng-if="!permisoUsuario.descripcion.editar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
+                            </td>
+
+                            <td class="text-center">
+                                <div class="checkbox">
+                                    <label>
+                                        <input  ng-disabled="!permisoUsuario.descripcion.activar" ng-model="desc.Activo" type="checkbox" value="" ng-click="ActivarDesactivarDescripcion(desc)">
+                                        <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+                                    </label>
+                                </div>
+                            </td>
+
+                      </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-xs-2 col-md-1">
+            
+            <!-- Agregar -->
+             <button ng-disabled="!permisoUsuario.descripcion.agregar"  class="btn btn-block botonOperacion fa fa-plus text-center" data-toggle="tooltip" data-placement="bottom" title="Agregar Descripción del Contrato" ng-click="AbrirDescripcion('Agregar', null)"></button>
+             
+             <br><br>
+             <!-- Boton buscar -->
+            <div class="dropdown">
+                
+                <button class="btn btn btn-block botonOperacion fa fa-search text-center" data-toggle="dropdown" ></button>
+                    
+                <ul class="dropdown-menu dropdown-menu-right operacionPanel">
+
+                    <li style="width: 225px; height: 35px !important;">
+
+                        <form role="buscar" style="max-width: 200px; height: 25px !important;">
+                            <div class="input-group" >
+                              <input  type="text" class="form-control operacionPanelEntrada" placeholder="Buscar" style="margin-left: 5px; width: 175px;" ng-model="buscarDesc">
+                              <span class="input-group-btn" style="width: 25px;">
+                                <button class="btn operacionPanelBoton" type="button">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                              </span>
+                            </div>
+                        </form>
+                    </li>
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+                     
+    <!------------------------------------ Modales -------------------------------------------------------------------->
+    <!---- Agregar y editar medio pago -->
+    <div class="modal fade" id="DecripcionContrato" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static" >
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <!-- encabezado del modal -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarDescripcion()"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center">{{operacion}} Descripción Contrato</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+                <br>
+
+                <form class="modal-body" name="fdc">
+                    <!-- Descripción -->
+                    <div class="row">
+                        <div class="col-sm-12">
+                             <div class="">
+                                <label class="labelEntrada">
+                                    Descripción
+                                </label>
+                                
+                                <textarea required type="text"  name="descripcion" class="form-control descripcionArea" ng-model="nuevaDesc.Descripcion" ng-maxlength="600" style="min-height: 100px; min-width: 100%"></textarea>
+                            </div>
+                            <br>
+                        </div>
+                    </div> 
+                    
+                    <div class="row">
+                        <!-- Activo -->
+                        <div class="col-sm-6">
+                             <label class="btn checkBoxActivo">Activo <input type="checkbox" class="badgebox" ng-model="nuevaDesc.Activo"><span class="badge">&check;</span></label>
+                         </div>
+                        
+                    </div> 
+                    <br>
+                    
+                    <!-------- mensaje de error ---->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div ng-repeat="error in mensajeError">
+                                <span class="textoError">{{error}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!---- botones de operacion --->
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <button class="btn botonCancelar btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarDescripcion()">CANCELAR</button>
+                        </div>
+                        
+                        <div class="col-xs-6">
+                            <button ng-disabled="terminar" focus class="btn botonAvanzar btn-block" ng-click="TerminarDescripcionContrato(fdc.descripcion.$invalid)">TERMINAR</button>
+                        </div>
+                    </div>
+                    <br> 
+                </form>
+            </div>
+            <br><br><br>
+        </div>
+    </div>
+    
+    <!--- Detalle --->
+    <div class="modal fade" id="DetalleModal"  >
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+            
+                <!-- encabezado del modal -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center">Descripción</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- cuerpo del modal -->
+                <div class="modal-body">
+                
+                   <div class="row">
+                        <div class="col-xs-12">
+                            <b class="pull-right">{{detalle.Activo ? 'Activo' : 'Desactivo'}}</b>
+                        </div>
+                    </div>
+                   
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <span class="text-justify">{{detalle.Descripcion}}</span>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    
+    <!-- Desactivar Modal -->
+    <div class="modal fade" id="modalActivarDescripcion" data-keyboard="false" data-backdrop="static">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                
+                <div class="modal-body">
+                    <br>
+                    <div class="panel panel-default modalMensaje">
+                        <br>
+                        <b>{{mensajeAdvertencia}}</b>
+                        <br><br>
+
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <button class="btn botonCancelar" data-dismiss="modal" aria-label="Close" ng-click="CancelarEstatusActivoDescripcion()">No</button>
+                            </div>
+                            <div class="col-xs-6">
+                                <button class="btn botonAvanzar" data-dismiss="modal" aria-label="Close" ng-click="ConfirmarActualizarDescripcion()">Si</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div> 
+    
+    <!-- Modal para mensajes -->
+    <div class="modal fade" id="mensajeDescripcionContrato">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                
+                <div class="modal-body">
+                    <div class="panel panel-default modalMensaje">
+                        <br>
+                        <b>{{mensaje}}</b>
+
+                        <br><br>
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <button class="btn  botonAvanzar" data-dismiss="modal" aria-label="Close">Aceptar</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>             
+    
+                        
+</div>
+
+     

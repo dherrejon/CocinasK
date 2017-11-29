@@ -116,7 +116,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
          
         $scope.CargarCatalogoPresupuesto();
         $scope.SetPresupuestoBaseDatos();
-    
+        
         $('#agregarPresupuestoModal').modal('toggle');
     });
     
@@ -780,6 +780,10 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                         else if($scope.tipoProyecto[k].CubiertaPiedra)
                         {
                             $scope.pasoPresupuesto = 12;
+                            if($scope.opt == "Personalizar")
+                            {
+                                $scope.pasoMinimo = 12;
+                            }
                         }
                         break;
                     }
@@ -2839,11 +2843,11 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
     {
         $scope.mensajeError = [];
         
-        var seleccion = false;
+        //var seleccion = false;
         
         if($scope.presupuesto.Proyecto.TipoProyecto.Mueble)
         {
-            for(var k=0; k<$scope.combinacion.length; k++)
+            /*for(var k=0; k<$scope.combinacion.length; k++)
             {
                 if($scope.combinacion[k].Activo && $scope.combinacion[k].PorDefecto)
                 {
@@ -2855,6 +2859,27 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
             if(!seleccion)
             {
                 $scope.mensajeError[$scope.mensajeError.length] = "*Selecciona al menos una combinación.";
+            }*/
+            
+            var com = alasql('SELECT * FROM ? WHERE Activo = true AND PorDefecto = true GROUP BY TipoCombinacionId ', [$scope.combinacion]);
+            
+            if(com.length > 1)
+            {
+                $scope.mensajeError[$scope.mensajeError.length] = "*Solo puedes seleccionar combinaciones del mismo tipo.";
+            }
+            else if(com.length == 1)
+            {
+                if(com[0].CombinacionMaterialId != undefined)
+                {
+                    if($scope.operacion == "Agregar" && $scope.opt != "Clonar")
+                    {
+                        $scope.presupuesto.DescripcionCliente = com[0].TipoCombinacion.Descripcion;
+                    }
+                }
+                else
+                {
+                    $scope.mensajeError[$scope.mensajeError.length] = "*Selecciona al menos una combinación.";
+                }
             }
         }
         
@@ -4299,7 +4324,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
 
                                 for(var l=0; l<$scope.ubicacion[i].Fabricacion.length; l++)
                                 {
-                                    if($scope.ubicacion[i].Fabricacion[l].TipoCubiertaId == "2")
+                                    if($scope.ubicacion[i].Fabricacion[l].TipoCubiertaId == "1")
                                     {
                                         $scope.cubierta[j].Grupo[k].Ubicacion[ind].Cantidad = $scope.ubicacion[i].CantidadPiedra; 
                                         $scope.cubierta[j].Grupo[k].Ubicacion[ind].Fabricacion = $scope.ubicacion[i].Fabricacion[l].Costo;
@@ -4364,7 +4389,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
 
                                 for(var l=0; l<$scope.ubicacion[i].Fabricacion.length; l++)
                                 {
-                                    if($scope.ubicacion[i].Fabricacion[l].TipoCubiertaId == "2")
+                                    if($scope.ubicacion[i].Fabricacion[l].TipoCubiertaId == "1")
                                     {
                                         $scope.cubierta[j].Grupo[k].Ubicacion[ind].Cantidad = $scope.ubicacion[i].CantidadAglomerado; 
                                         $scope.cubierta[j].Grupo[k].Ubicacion[ind].Fabricacion = $scope.ubicacion[i].Fabricacion[l].Costo;
@@ -5506,6 +5531,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
     
     $scope.TerminarPaso11 = function()
     {
+        var piedra = false;
         if($scope.presupuesto.Proyecto.TipoProyecto.CubiertaPiedra )
         {
             for(var k=0; k<$scope.tipoCubierta.length; k++)
@@ -5515,14 +5541,18 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                     if($scope.tipoCubierta[k].PorDefecto)
                     {
                         $scope.pasoPresupuesto++;
+                        piedra = true;
                     }
-                    else
-                    {
-                        $scope.pasoPresupuesto = 13;
-                        $scope.IniciarPlanPago();
-                    }
+                    
                 }
             }
+            
+            if(!piedra)
+            {
+                $scope.pasoPresupuesto = 13;
+                $scope.IniciarPlanPago();
+            }
+            
             
         }
         else
@@ -6427,22 +6457,8 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         $scope.combinacion = alasql(sql, [$scope.combinacion]);
         
         var doc = new jsPDF();
+        var totalPagesExp = "{total_pages_count_string}";
         doc.setFontSize(12);
-        
-        var num = "No. " + $scope.presupuesto.PresupuestoId;
-        
-        var pageContent = function (data) 
-        {
-            // HEADER
-            if (base64Img) 
-            {
-                doc.setFontSize(10);
-                doc.addImage(base64Img, 'JPEG', 15, 10, 30, 10);
-            }
-            
-            doc.text($scope.GetHoy() + "     " + num, data.settings.margin.left + 35, 13);
-            doc.text($scope.presupuesto.Persona.Nombre + " " + $scope.presupuesto.Persona.PrimerApellido, data.settings.margin.left + 35, 18);
-        };
         
         var tit = doc.autoTableHtmlToJson(document.getElementById("titulo"));
         var des = doc.autoTableHtmlToJson(document.getElementById("descripcion"));
@@ -6453,6 +6469,8 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         var datos = doc.autoTableHtmlToJson(document.getElementById("datosPresupuesto"));
         var pMue = doc.autoTableHtmlToJson(document.getElementById("promocionMueble"));
         var pCub = doc.autoTableHtmlToJson(document.getElementById("promocionCubierta"));
+        //var enc1 = doc.autoTableHtmlToJson(document.getElementById("encabezadoTitulo1"));
+        //var enc2 = doc.autoTableHtmlToJson(document.getElementById("encabezadoTitulo2"));
         
         var cub = [];
         var tCub = [];
@@ -6479,9 +6497,66 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                 }
             }
         }
+    
+        //encabezado
+        var nombre = $scope.presupuesto.Persona.Nombre + " " + $scope.presupuesto.Persona.PrimerApellido + " " + $scope.presupuesto.Persona.SegundoApellido;
+        var fecha = $scope.GetHoy() + "     No. " + $scope.presupuesto.PresupuestoId;
+        
+        var pageWidth = doc.internal.pageSize.width;
+        var fontSize = 10;
+        
+        var nombreW = doc.getStringUnitWidth(nombre)*fontSize/doc.internal.scaleFactor;
+        var dateW = doc.getStringUnitWidth(fecha)*fontSize/doc.internal.scaleFactor;
+        
+        var w = nombreW > dateW ? nombreW : dateW;
+        var x = pageWidth - w - 15;
+        
+        
+        var pageContent = function (data) 
+        {
+            // HEADER
+            if (base64Img) 
+            {
+                doc.setFontSize(10);
+                doc.addImage(base64Img, 'JPEG', 15, 10, 30, 10);
+            }
+            
+            /*doc.autoTable(enc1.columns, enc1.data, {
+                margin: {top: 7, left: 50},
+                showHeader: 'never',
+                headerStyles: {fillColor: [255, 255, 255], textColor: 20, fontStyle: 'normal'}, 
+                styles: { overflow: 'linebreak', fillColor: [255, 255, 255], halign: 'right', lineWidth: 0, textColor: [0, 0, 0]},
+                theme: 'grid',
+            });
+
+            doc.autoTable(enc2.columns, enc2.data, {
+                margin: { left: 50},
+                startY: doc.autoTable.previous.finalY,
+
+                headerStyles: {fillColor: [255, 255, 255], textColor: 20, fontStyle: 'normal',}, 
+                styles: {overflow: 'linebreak', halign: 'right'},
+                columnStyles: {fillColor: [255, 255, 255], text: {columnWidth: 'auto'}}
+            });*/
+            
+            doc.text(fecha, x, 13);
+            doc.text(nombre, x, 18);
+        
+            // FOOTER
+            var str = "Página " + doc.internal.getCurrentPageInfo().pageNumber;
+            
+            // Total número de páginas
+            if(typeof doc.putTotalPages === 'function') 
+            {
+                str = str + " de " + totalPagesExp;
+            }
+            
+            doc.setFontSize(10);
+            doc.text(str, 14.11, 287);
+        };
+        
+        
         
         //Hoja 1
-        
         doc.autoTable(tit.columns, tit.data, {
             margin: {top: 25},
             addPageContent: pageContent,
@@ -6489,11 +6564,11 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
             styles: {overflow: 'linebreak'},
             columnStyles: {text: {columnWidth: 'auto'}}
         });
+        
 
         doc.autoTable(des.columns, des.data, {
             margin: {top: 25},
             startY: doc.autoTable.previous.finalY,
-            addPageContent: pageContent,
             headerStyles: {fillColor: [255, 255, 255], textColor: 20, fontStyle: 'normal'}, styles: {overflow: 'linebreak', columnWidth: 'wrap'},
             styles: {overflow: 'linebreak'},
             columnStyles: {text: {columnWidth: 'auto'}}
@@ -6512,7 +6587,6 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
 
          doc.autoTable(inc.columns, inc.data, {
             startY: first.finalY + 10,
-            showHeader: 'firstPage',
             margin: {right: 107},
             headerStyles: {fillColor: [250, 97, 21], fontSize:18, halign: 'center', textColor: [255,255,255]},
             styles: {textColor: [0,0,0], overflow: 'linebreak', halign:'left'},
@@ -6540,9 +6614,16 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                 theme: 'grid',
          });
         
-        
+        var piedra = false;
+        for(var k=0; k<$scope.tipoCubierta.length; k++)
+        {
+            if($scope.tipoCubierta[k].TipoCubiertaId == "2" && $scope.tipoCubierta[k].PorDefecto)
+            {
+                piedra = true;
+            }
+        }
         //Hoja 2
-        if($scope.presupuesto.Proyecto.TipoProyecto.CubiertaPiedra && cub.length > 0)
+        if($scope.presupuesto.Proyecto.TipoProyecto.CubiertaPiedra && cub.length > 0 && piedra)
         {   
             doc.addPage();
             
@@ -6559,7 +6640,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
             columnStyles: {text: {columnWidth: 'auto'}}
             });
 
-            doc.setPage(1 + doc.internal.getCurrentPageInfo().pageNumber - doc.autoTable.previous.pageCount);
+            //doc.setPage(1 + doc.internal.getCurrentPageInfo().pageNumber - doc.autoTable.previous.pageCount);
             
             doc.autoTable(cub[0].columns, cub[0].data,  {
                 startY: doc.autoTable.previous.finalY ,
@@ -6617,6 +6698,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         
         doc.autoTable(ppInc.columns, ppInc.data,  {
             startY: doc.autoTable.previous.finalY ,
+            addPageContent: pageContent,
             headerStyles: {fillColor: [230, 230, 230], fontSize:10, textColor: [0,0, 0], halign:'center'},
             styles: { overflow: 'linebreak', fontSize:10},
             theme: 'grid',
@@ -6626,6 +6708,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         
         doc.autoTable(promo.columns, promo.data,  {
             startY: doc.autoTable.previous.finalY ,
+            addPageContent: pageContent,
             headerStyles: {fillColor: [230, 230, 230], fontSize:10, textColor: [0,0, 0], halign:'center'},
             styles: { overflow: 'linebreak', fontSize:10},
             theme: 'grid',
@@ -6652,8 +6735,9 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
 
                      doc.autoTable(precio.columns, precio.data, {
                         startY: first.finalY + 10,
+                         addPageContent: pageContent,
                         showHeader: 'firstPage',
-                        margin: {right: 107},
+                        margin: {right: 107, top:55},
                         headerStyles: {fillColor: [0, 0, 0], fontSize:14, textColor: [255,255, 255], halign:'center',},
                         styles: {fillColor: [250, 97, 21], textColor: [255,255,255], overflow: 'linebreak', halign:'center', fontSize:16},
                          theme: 'grid',
@@ -6661,8 +6745,8 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
 
                      doc.autoTable(planPago.columns, planPago.data, {
                         startY: doc.autoTable.previous.finalY,
-                        showHeader: 'firstPage',
-                        margin: {right: 107},
+                        addPageContent: pageContent,
+                        margin: {right: 107, top: 25},
                         headerStyles: {fillColor: [230, 230, 230], fontSize:10, textColor: [0,0, 0], fontStyle:'bold'},
                         styles: {textColor: [0,0,0], overflow: 'linebreak', halign:'left'},
                          theme: 'grid',
@@ -6674,7 +6758,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                 {
                     doc.autoTable(precio.columns, precio.data, {
                         startY: first.finalY + 10,
-                        showHeader: 'firstPage',
+                        addPageContent: pageContent,
                         margin: {left: 107},
                         headerStyles: {fillColor: [0, 0, 0], fontSize:14, textColor: [255,255, 255], halign:'center',},
                         styles: {fillColor: [250, 97, 21], textColor: [255,255,255], overflow: 'linebreak', halign:'center', fontSize:16},
@@ -6683,8 +6767,8 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
 
                     doc.autoTable(planPago.columns, planPago.data, {
                         startY: doc.autoTable.previous.finalY,
-                        showHeader: 'firstPage',
-                        margin: {left: 107},
+                        addPageContent: pageContent,
+                        margin: {left: 107, top: 25},
                         headerStyles: {fillColor: [230, 230, 230], fontSize:10, textColor: [0,0, 0], fontStyle:'bold'},
                         styles: {textColor: [0,0,0], overflow: 'linebreak', halign:'left'},
                         theme: 'grid',
@@ -6696,25 +6780,46 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
             }
         }
         
-        doc.setPage(1 + doc.internal.getCurrentPageInfo().pageNumber - doc.autoTable.previous.pageCount);
+        //doc.setPage(1 + doc.internal.getCurrentPageInfo().pageNumber - doc.autoTable.previous.pageCount);
 
         var nombre = $scope.presupuesto.Persona.Nombre + $scope.presupuesto.Persona.PrimerApellido + $scope.presupuesto.PresupuestoId + ".pdf";
+        
+        if(typeof doc.putTotalPages === 'function') 
+        {
+            doc.putTotalPages(totalPagesExp);
+        }
         
         doc.save(nombre);
     }
     
     $scope.PDFPresupuestoCubierta = function()
-    {
+    {   
         var doc = new jsPDF();
+        var totalPagesExp = "{total_pages_count_string}";
+        
         doc.setFontSize(12);
         
         var tit = doc.autoTableHtmlToJson(document.getElementById("titulo"));
         var des = doc.autoTableHtmlToJson(document.getElementById("descripcion"));
         var pCub = doc.autoTableHtmlToJson(document.getElementById("promocionCubierta"));
+        var pCub = doc.autoTableHtmlToJson(document.getElementById("promocionCubierta"));
+        var pCub = doc.autoTableHtmlToJson(document.getElementById("promocionCubierta"));
         var cub = [];
         var tCub = [];
         
-        var num = "No. " + $scope.presupuesto.PresupuestoId;
+        //encabezado
+        var nombre = $scope.presupuesto.Persona.Nombre + " " + $scope.presupuesto.Persona.PrimerApellido + " " + $scope.presupuesto.Persona.SegundoApellido;
+        var fecha = $scope.GetHoy() + "     No. " + $scope.presupuesto.PresupuestoId;
+        
+        var pageWidth = doc.internal.pageSize.width;
+        var fontSize = 10;
+        
+        var nombreW = doc.getStringUnitWidth(nombre)*fontSize/doc.internal.scaleFactor;
+        var dateW = doc.getStringUnitWidth(fecha)*fontSize/doc.internal.scaleFactor;
+        
+        var w = nombreW > dateW ? nombreW : dateW;
+        var x = pageWidth - w - 15;
+        
         
         var pageContent = function (data) 
         {
@@ -6725,11 +6830,23 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                 doc.addImage(base64Img, 'JPEG', 15, 10, 30, 10);
             }
             
-            doc.text($scope.GetHoy() + "     " + num, data.settings.margin.left + 35, 13);
-            doc.text($scope.presupuesto.Persona.Nombre + " " + $scope.presupuesto.Persona.PrimerApellido, data.settings.margin.left + 35, 18);
+            doc.text(fecha, x, 13);
+            doc.text(nombre, x, 18);
+        
+            // FOOTER
+            var str = "Página " + doc.internal.getCurrentPageInfo().pageNumber;
+            
+            // Total número de páginas
+            if(typeof doc.putTotalPages === 'function') 
+            {
+                str = str + " de " + totalPagesExp;
+            }
+            
+            doc.setFontSize(10);
+            doc.text(str, 14.11, 287);
         };
         
-
+    
         if($scope.presupuesto.Proyecto.TipoProyecto.CubiertaPiedra)
         {
             for(var i=0; i<$scope.cubierta.length; i++)
@@ -6754,6 +6871,25 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         
         //Hoja 2
         
+        /*doc.autoTable(enc1.columns, enc1.data, {
+            margin: {top: 7, left: 50},
+            addPageContent: pageContent,
+            showHeader: 'never',
+            headerStyles: {fillColor: [255, 255, 255], textColor: 20, fontStyle: 'normal'}, 
+            styles: { overflow: 'linebreak', fillColor: [255, 255, 255], halign: 'right', lineWidth: 0, textColor: [0, 0, 0]},
+            theme: 'grid',
+        });
+        
+        doc.autoTable(enc2.columns, enc2.data, {
+            margin: { left: 50},
+            startY: doc.autoTable.previous.finalY,
+            addPageContent: pageContent,
+
+            headerStyles: {fillColor: [255, 255, 255], textColor: 20, fontStyle: 'normal',}, 
+            styles: {overflow: 'linebreak', halign: 'right'},
+            columnStyles: {fillColor: [255, 255, 255], text: {columnWidth: 'auto'}}
+        });*/
+        
         doc.autoTable(tit.columns, tit.data, {
             margin: {top: 25},
             addPageContent: pageContent,
@@ -6766,7 +6902,8 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
             margin: {top: 25},
             startY: doc.autoTable.previous.finalY,
             addPageContent: pageContent,
-            headerStyles: {fillColor: [255, 255, 255], textColor: 20, fontStyle: 'normal'}, styles: {overflow: 'linebreak', columnWidth: 'wrap'},
+            headerStyles: {fillColor: [255, 255, 255], textColor: 20, fontStyle: 'normal'}, 
+            styles: {overflow: 'linebreak', columnWidth: 'wrap'},
             styles: {overflow: 'linebreak'},
             columnStyles: {text: {columnWidth: 'auto'}}
         });
@@ -6780,7 +6917,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
             styles: {overflow: 'linebreak'},
         };
 
-        doc.setPage(1 + doc.internal.getCurrentPageInfo().pageNumber - doc.autoTable.previous.pageCount);
+        //doc.setPage(1 + doc.internal.getCurrentPageInfo().pageNumber - doc.autoTable.previous.pageCount);
         
         if($scope.presupuesto.Proyecto.TipoProyecto.CubiertaPiedra && cub.length > 0)
         {   
@@ -6827,6 +6964,11 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         }
         
         var nombre = $scope.presupuesto.Persona.Nombre + $scope.presupuesto.Persona.PrimerApellido + $scope.presupuesto.PresupuestoId + ".pdf";
+        
+        if(typeof doc.putTotalPages === 'function') 
+        {
+            doc.putTotalPages(totalPagesExp);
+        }
         
         doc.save(nombre);
     }

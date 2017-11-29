@@ -32,6 +32,7 @@
     require 'Administrador/ConceptoVenta.php';
     require 'Administrador/MedioPago.php';
     require 'Administrador/AcabadoCubierta.php';
+    require 'Administrador/DescripcionContrato.php';
 
     /*------------Operativo-----------*/
     require 'Operativo/Cita.php';
@@ -581,6 +582,12 @@
     $app->post('/AgregarConceptoVenta', $seguridad, $ChecarSesion, 'AgregarConceptoVenta');
     $app->put('/EditarConceptoVenta', $seguridad, $ChecarSesion, 'EditarConceptoVenta');
     $app->post('/ActivarDesactivarConceptoVenta', $seguridad, $ChecarSesion, 'ActivarDesactivarConceptoVenta');
+
+    /*-----------------  Descripcion Contrato --------------------*/
+    $app->get('/GetDescripcionContrato', $seguridad, $ChecarSesion, 'GetDescripcionContrato');
+    $app->post('/AgregarDescripcionContrato', $seguridad, $ChecarSesion, 'AgregarDescripcionContrato');    
+    $app->put('/EditarDescripcionContrato', $seguridad, $ChecarSesion, 'EditarDescripcionContrato');
+    $app->post('/ActivarDesactivarDescripcion', $seguridad, $ChecarSesion, 'ActivarDesactivarDescripcion');
 
     $app->run(); 
 

@@ -701,6 +701,7 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
         $scope.pasoModulo[0].clase="pasoNoActivo";
         $scope.pasoModulo[1].clase="pasoNoActivo";
         $scope.pasoModulo[2].clase="pasoActivo";
+        $scope.pasoModulo[3].clase="pasoNoActivo";
     };
     
     /*--------Paso 3------------*/
@@ -1122,7 +1123,7 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
             altoAux = $scope.FraccionADecimal($scope.alturas[k]);
             if(altoAux != alturasLuces[k])
             {
-                $scope.mensajeError[$scope.mensajeError.length] = "La suma de los anchos de los peinzos y de las alturas de las luces debe ser igual a la altura del módulo. Altura: " + $scope.alturas[k] + "."; 
+                $scope.mensajeError[$scope.mensajeError.length] = "La suma de los anchos de los peinazos y de las alturas de las luces debe ser igual a la altura del módulo. Altura: " + $scope.alturas[k] + "."; 
             }
         }
         
@@ -1506,6 +1507,7 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
         $scope.pasoModulo[0].clase="pasoActivo";
         $scope.pasoModulo[1].clase="pasoNoActivo";
         $scope.pasoModulo[2].clase="pasoNoActivo";
+        $scope.pasoModulo[3].clase="pasoNoActivo";
         
         //$scope.imagen = [];
         //$scope.imagenSeleccionada = false;

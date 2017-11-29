@@ -15,17 +15,17 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
         $scope.catalogos = {paso2: false, paso3: false, paso4: false, paso5:false};
         
         $scope.contrato = new Contrato();
-        $scope.pasoContrato = 2;
+        $scope.pasoContrato = 1;
         $scope.presupuesto = presupuesto;
         
         $scope.GetDatosPresupuesto();
         
         $scope.verPlanPago = false;
         //paso 2
-        $scope.presupuesto.Proyecto.TipoProyecto.IVA = false;
+        /*$scope.presupuesto.Proyecto.TipoProyecto.IVA = false;
         $scope.contrato.Subtotal = 16853;
         $scope.contrato.SubtotalCubierta = 7694;
-        $scope.GetCatalogosPaso2();
+        $scope.GetCatalogosPaso2();*/
         
         $scope.mensajeError = [];
         
@@ -507,7 +507,7 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
             }
         }
         
-        if($scope.presupuesto.Proyecto.TipoProyecto.CubiertaAglomerado || $scope.presupuesto.Proyecto.TipoProyecto.CubiertaAglomerado)
+        if($scope.presupuesto.Proyecto.TipoProyecto.CubiertaAglomerado || $scope.presupuesto.Proyecto.TipoProyecto.CubiertaPiedra)
         {
             if($scope.contrato.TipoCubierta.Nombre.length == 0)
             {

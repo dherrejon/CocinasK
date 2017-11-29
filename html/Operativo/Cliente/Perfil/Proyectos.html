@@ -84,13 +84,14 @@
                         </div>
                     </div>
                    <!-- Presupuestos -->
-                   <div ng-if="proyecto.Presupuesto.length > 0" style="overflow-y: visible !important;" class=""> <!--class="table-responsive"-->
+                   <div ng-if="proyecto.Presupuesto.length > 0" style="overflow-y: visible !important;" > <!--class="table-responsive"-->
                         <table class="table table-hover table-striped">
                             <thead class="TituloTabla">
                               <tr>
                                 <th style="width: 70px"><span class=""><b>#</b></span></th>
                                 <th><span class=""><b>Título</b></span></th>
-                                <th class="text-center" style="width: 110px"><span>  </span></th>
+                                <th><span class=""><b>Fecha</b></span></th>
+                                <th class="text-center" style="width: 110px; min-width: 110px"><span>  </span></th>
                                 <th class="text-center" style="width: 30px"><span></span></th>
                               </tr>
                             </thead>
@@ -99,6 +100,7 @@
 
                                  <td>{{presupuesto.PresupuestoId}}</td>
                                  <td> {{presupuesto.Titulo}} </td>
+                                 <td>{{presupuesto.FechaCreacion}}</td>
                                 
                                 <td class="text-center">
                                     <a  class="BotonOperacion contratar" ng-click="Contratar(presupuesto, proyecto)" ng-if="proyecto.EstatusProyecto.EstatusProyectoId != '2'">
