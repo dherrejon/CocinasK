@@ -42,7 +42,7 @@
 
 .stepwizard-step.contrato
 {    
-    width: 25%;
+    width: 16.66%;
 }
 
 .btn-circle 
@@ -131,22 +131,33 @@
     margin-bottom: 5px;
 }
 
-.stepwizard-row.cuatro.paso1:before 
+.stepwizard-row.seis.paso1:before 
 {
-    width: 25%; 
+    width: 16.6%; 
 }
 
-.stepwizard-row.cuatro.paso2:before 
+.stepwizard-row.seis.paso2:before 
+{
+    width: 33.2%; 
+}
+
+.stepwizard-row.seis.paso3:before 
 {
     width: 50%; 
 }
 
-.stepwizard-row.cuatro.paso3:before 
+.stepwizard-row.seis.paso4:before 
 {
-    width: 75%; 
+    width: 66.6%; 
 }
 
-.stepwizard-row.cuatro.paso4:before 
+.stepwizard-row.seis.paso5:before 
+{
+    width: 83.2%; 
+}
+
+.stepwizard-row.seis.paso6:before 
 {
     width: 100%; 
 }
+

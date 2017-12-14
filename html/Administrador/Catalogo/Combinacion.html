@@ -138,6 +138,22 @@
                         </div>
                     </div>
                     <br>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="subrayado">
+                                <label>Frente</label><br>
+                                <span class="textoModal">{{nuevaCombinacion.Frente}}</span>
+                            </div>
+                        </div>
+                        <br div class="hidden-sm hidden-md hidden-lg">
+                        <div class="col-sm-6">
+                            <div class="subrayado">
+                                <label>Interior</label><br>
+                                <span class="textoModal">{{nuevaCombinacion.Interior}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
                     <!--  Descripcion del presupuesto -->
                     <div class="row">
                         <div class="col-sm-12">
@@ -289,26 +305,48 @@
                             <br class="hidden-sm hidden-md hidden-lg"><br class="hidden-sm hidden-md hidden-lg">
                             <!-- Tipo de combinacion -->
                             <div class="col-sm-6 etiquetaDropdownList">
-                             <label>Tipo de Combinación</label>
-                             <div class="dropdown">
+                                 <label>Tipo de Combinación</label>
+                                 <div class="dropdown">
 
-                                <button ng-disabled="nuevaPlaza.Municipio.length == 0" class="dropdown-toggle  {{claseCombinacion.tipo}}" data-toggle="dropdown">
-                                    <span>{{nuevaCombinacion.TipoCombinacion.Nombre}}</span>
-                                    <span class="caret"></span>
-                                </button>
+                                    <button ng-disabled="nuevaPlaza.Municipio.length == 0" class="dropdown-toggle  {{claseCombinacion.tipo}}" data-toggle="dropdown">
+                                        <span>{{nuevaCombinacion.TipoCombinacion.Nombre}}</span>
+                                        <span class="caret"></span>
+                                    </button>
 
-                                <ul class="dropdown-menu elemetosDropdownListModal"><!-- -->
-                                    <li ng-repeat="tipo in tipoCombinacion   | orderBy:'Nombre'" ng-show="tipo.Activo">
-                                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarTipoCombinacion(tipo)">
-                                            <span>{{tipo.Nombre}} </span>
-                                        </a>
-                                    </li>
-                                </ul>
+                                    <ul class="dropdown-menu elemetosDropdownListModal"><!-- -->
+                                        <li ng-repeat="tipo in tipoCombinacion   | orderBy:'Nombre'" ng-show="tipo.Activo">
+                                            <a  href="" class="dropdownOpcionModal" ng-click="CambiarTipoCombinacion(tipo)">
+                                                <span>{{tipo.Nombre}} </span>
+                                            </a>
+                                        </li>
+                                    </ul>
 
+                                </div>
                             </div>
-                        </div>
                         </div> 
                         <br class="hidden-xs">
+                        
+                        <!-- Frente e Interior -->
+                        <div class="row">
+                           
+                            <div class="col-sm-6">
+                                 <div class="entrada2">
+                                    <input ng-pattern="erNombreGeneral" type="text" required class="entrada form-control" name="frente" ng-model="nuevaCombinacion.Frente"/>
+                                    <label>Frente</label>
+                                </div>
+                            </div>
+                            
+                            <br class="hidden-sm hidden-md hidden-lg"><br class="hidden-sm hidden-md hidden-lg">
+                            
+                            <div class="col-sm-6">
+                                 <div class="entrada2">
+                                    <input ng-pattern="erNombreGeneral" type="text" required class="entrada form-control" name="interior" ng-model="nuevaCombinacion.Interior"/>
+                                    <label>Interior</label>
+                                </div>
+                            </div>
+                            
+                        </div> 
+                        <br >
                         
                         
                         <div class="row">
@@ -431,7 +469,7 @@
                             </div>
 
                             <div class="col-xs-6">
-                                <button focus class="btn botonAvanzar btn-block" ng-click="SiguienteCombinacion(combinacionForma.nombre.$invalid)">SIGUIENTE &gt;&gt;</button>
+                                <button focus class="btn botonAvanzar btn-block" ng-click="SiguienteCombinacion(combinacionForma.nombre.$invalid, combinacionForma.frente.$invalid, combinacionForma.interior.$invalid)">SIGUIENTE &gt;&gt;</button>
                             </div>
                         </div>
                         <br> 

@@ -33,8 +33,8 @@ function AgregarCombinacionMaterial()
     $combinacion = json_decode($request->getBody());
     global $app;
     
-    $sql = "INSERT INTO CombinacionMaterial (Nombre, Activo, PorDefecto, TipoCombinacionId) 
-                            VALUES(:Nombre, :Activo, :PorDefecto, :TipoCombinacionId)";
+    $sql = "INSERT INTO CombinacionMaterial (Nombre, Activo, PorDefecto, TipoCombinacionId, Frente, Interior) 
+                            VALUES(:Nombre, :Activo, :PorDefecto, :TipoCombinacionId, :Frente, :Interior)";
 
     $db;
     $stmt;
@@ -50,6 +50,8 @@ function AgregarCombinacionMaterial()
         $stmt->bindParam("Activo", $combinacion->Activo);
         $stmt->bindParam("PorDefecto", $combinacion->PorDefecto);
         $stmt->bindParam("TipoCombinacionId", $combinacion->TipoCombinacion->TipoCombinacionId);
+        $stmt->bindParam("Frente", $combinacion->Frente);
+        $stmt->bindParam("Interior", $combinacion->Interior);
 
         $stmt->execute();
         
@@ -168,7 +170,7 @@ function EditarCombinacionMaterial()
     $combinacion = json_decode($request->getBody());
     global $app;
     
-    $sql = "UPDATE CombinacionMaterial SET Nombre='".$combinacion->Nombre."', TipoCombinacionId='".$combinacion->TipoCombinacion->TipoCombinacionId."', Activo='".$combinacion->Activo."', PorDefecto='".$combinacion->PorDefecto."' WHERE CombinacionMaterialId=".$combinacion->CombinacionMaterialId."";
+    $sql = "UPDATE CombinacionMaterial SET Nombre='".$combinacion->Nombre."', TipoCombinacionId='".$combinacion->TipoCombinacion->TipoCombinacionId."', Activo='".$combinacion->Activo."', PorDefecto='".$combinacion->PorDefecto."', Frente='".$combinacion->Frente."', Interior='".$combinacion->Interior."' WHERE CombinacionMaterialId=".$combinacion->CombinacionMaterialId."";
 
     $db;
     $stmt;

@@ -31,9 +31,68 @@ class Contrato
         
         this.PromocionCubierta = new Promocion();
         this.PromocionMueble = new Promocion();
+        
+        this.NoFactura = "";
+        this.NoNotaCargo = "";
+        this.DatoFiscal = new DatosFiscales();
+        this.Especificacion = [];
+        this.DescripcionContrato = [];
+        this.Encabezado = "";
+        this.ProyectoNombre = "";
     }
 }
 
+
+function AgregarContrato($http, CONFIG, $q, contrato)
+{
+    var q = $q.defer();
+
+    $http({      
+          method: 'POST',
+          url: CONFIG.APIURL + '/AgregarContrato',
+          data: contrato
+
+      }).success(function(data)
+        {
+            if(data[0].Estatus == "Exitoso") 
+            {
+                q.resolve(data);
+            }
+            else
+            {
+                q.resolve([{Estatus:"Fallo"}]);
+            }
+            
+        }).error(function(data, status){
+            q.resolve([{Estatus:status}]);
+
+     }); 
+    return q.promise;
+}
+
+
+
+//---------- tipo venta contrato -------------------
+function GetTipoVentaContrato()
+{
+    var tipoVenta = [];
+    
+    tipoVenta[0] = new TipoVenta();
+    tipoVenta[0].TipoVentaId = "0";
+    tipoVenta[0].Nombre = "General";
+    
+    tipoVenta[1] = new TipoVenta();
+    tipoVenta[1].TipoVentaId = "1";
+    tipoVenta[1].Nombre = "Cocina";
+    
+    tipoVenta[2] = new TipoVenta();
+    tipoVenta[2].TipoVentaId = "2";
+    tipoVenta[2].Nombre = "Cubierta de piedra";
+    
+    return tipoVenta;
+}
+
+//------------------------- funciones
 function GetHoy()
 {
     var hoy = new Date();
@@ -64,5 +123,5 @@ function GetHoy2()
     return dia + "/" + GetMesNombre(hoy.getMonth()) + "/" + year;
 }
 
-
+var mesesN = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 

@@ -5,6 +5,9 @@ class DescripcionContrato
         this.DescripcionContratoId = "";
         this.Descripcion = "";
         this.Activo = true;
+        
+        this.TipoVentaId = "";
+        this.TipoVentaNombre  = "";
     }
 }
 
@@ -37,6 +40,9 @@ function SetDescripcionContrato(data)
     desc.DescripcionContratoId = data.DescripcionContratoId;
     desc.Descripcion = data.Descripcion;
     desc.Activo = data.Activo == "1" ? true : false;
+    
+    desc.TipoVentaId = data.TipoVentaId;
+    desc.TipoVentaNombre = data.TipoVentaNombre;
     
     return desc;
 }

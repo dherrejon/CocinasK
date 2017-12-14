@@ -63,7 +63,7 @@
 
 .itemPresupuestoPrimero
 {
-    border-top: 1px solid #7F7F7F;
+    border-top: 1px solid #7F7F7F !important;
 }
 
 .itemPresupuesto.itemList:hover .cr
@@ -463,6 +463,11 @@
     background: #7F7F7F;
     margin-top: 3px;
     margin-bottom: 3px;
+}
+
+.separadorGris1.dos
+{
+    height: 2px;
 }
 
 .listaMiCocina

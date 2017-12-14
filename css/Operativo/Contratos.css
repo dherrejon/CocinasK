@@ -34,7 +34,7 @@
     position: fixed;  
     width: 90%;
     bottom: 5%;
-    padding: 15px 15px 20px 15px;
+    padding: 15px 15px 10px 15px;
     background: white;
 }
 
@@ -55,6 +55,7 @@
 .chgDescuento, .chgDescuento:focus, .chgDescuento:active
 {
     width: 30px !important;
+    height: 30px;
     border-radius: 0px !important;
     border: 1px solid rgb(42, 45, 51);
     background: transparent;
@@ -99,7 +100,7 @@
     box-shadow: none;
 }
 
-.btnSwitch.active
+.btnSwitch.Activo
 {
     background: rgb(250, 97, 21);
     color: white;
@@ -113,4 +114,39 @@
 {
     opacity: 1.0;
     cursor: default;
+}
+
+.labeldetail
+{
+    width: 110px;
+}
+
+.pagospanel
+{
+    min-height: 145px;
+}
+
+.entradaContorno, .entradaContorno:focus, .entradaContorno:hover, .entradaContorno:active
+{
+    border-color: #262626;
+    color: #262626;
+    border-radius: 0px;
+    border-width: 2px;
+    width: 100%;
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.formlidropdown, .formlidropdown:focus, .formlidropdown:hover, .formlidropdown:active
+{
+    height: auto;
+    min-height: 30px;
+    border-radius: 0px !important;
+    border-width: 0px 0px 1px 0px;
+    width: 100%;
+    border-color: #7F7F7F;
+    
+    outline: none !important;
+    box-shadow: none !important;
 }

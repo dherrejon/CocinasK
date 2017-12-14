@@ -345,7 +345,7 @@ app.controller("CombinacionControlador", function($scope, $http, $q, CONFIG, dat
         combinacion.Grueso = grueso;
     };
     
-    $scope.SiguienteCombinacion = function(nombreInvalido)
+    $scope.SiguienteCombinacion = function(nombreInvalido, frenteInvalido, interiorInvalido)
     {
         $scope.nuevaCombinacion.MaterialComponente = $scope.combinacionMaterialComponente;
 
@@ -369,6 +369,16 @@ app.controller("CombinacionControlador", function($scope, $http, $q, CONFIG, dat
         else
         {
             $scope.claseCombinacion.tipo = "dropdownListModal";
+        }
+        
+        if(frenteInvalido)
+        {
+            $scope.mensajeError[$scope.mensajeError.length] = "*Indica un frente válido";
+        }
+        
+        if(interiorInvalido)
+        {
+            $scope.mensajeError[$scope.mensajeError.length] = "*Indica un interior válido";
         }
         
         if($scope.mensajeError.length>0)

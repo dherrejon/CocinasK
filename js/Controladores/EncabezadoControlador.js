@@ -508,7 +508,7 @@ var OpcionOperativo =
     { 
         Opcion: {texto:"Clientes", id:"clientes"},
         elemento: [ 
-                    { menu: 1, referencia: "#Cliente", texto:"Perfil Clientes",  show:false, tipo:"enlace", permiso:[{clave:"AdmTerConsultar"}]},
+                    { menu: 1, referencia: "#Cliente", texto:"Perfil Clientes",  show:false, tipo:"enlace", permiso:[{clave:"OpeVPfConsultar"}]},
                     { divider: true, menu: 2, texto:"Agregar Cita", funcion:"AgregarCita", show:true, tipo:"funcion"},
                     { divider: true, menu: 3, texto:"Agregar Presupuesto", funcion:"AgregarPresupuesto", show:true, tipo:"funcion"},
                     { menu: 3, texto:"Unir Presupuesto", funcion:"UnirPresupuesto", show:true, tipo:"funcion"},

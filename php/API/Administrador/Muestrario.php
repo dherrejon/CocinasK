@@ -248,7 +248,7 @@ function GetAccesorioPorMuestrario()
     $muestrarioId = json_decode($request->getBody());
     
     
-    $sql = "SELECT a.Nombre, a.Activo,  ta.Nombre as NombreTipoAccesorio FROM Accesorio a, TipoAccesorio ta WHERE a.TipoAccesorioId = ta.TipoAccesorioId AND a.MuestrarioId='".$muestrarioId[0]."'";
+    $sql = "SELECT a.AccesorioId, a.Nombre, a.Activo,  ta.Nombre as NombreTipoAccesorio FROM Accesorio a, TipoAccesorio ta WHERE a.TipoAccesorioId = ta.TipoAccesorioId AND a.MuestrarioId='".$muestrarioId[0]."'";
     
     try 
     {

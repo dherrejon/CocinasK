@@ -870,7 +870,7 @@ function GetDatosPresupuesto()
     }
     
     //Combinaciones
-    $sql = "SELECT cp.CombinacionMaterialId, cp.PrecioVenta, cm.Nombre
+    $sql = "SELECT cp.CombinacionMaterialId, cp.PrecioVenta, cm.Nombre, cm.Frente, cm.Interior
             FROM CombinacionPorPresupuesto cp
             INNER JOIN CombinacionMaterial cm ON cm.CombinacionMaterialId = cp.CombinacionMaterialId
             WHERE cp.PresupuestoId = ".$presupuesto->PresupuestoId. " ORDER BY cp.PrecioVenta";
@@ -1197,7 +1197,7 @@ function GetDatosPresupuesto()
     }
     
     //accesorios
-    $sql = "SELECT ap.AccesorioPresupuestoId, ap.Cantidad, ta.Nombre, ta.ClaseAccesorioId, ap.TipoAccesorioId, ta.Obligatorio
+    $sql = "SELECT ap.AccesorioPresupuestoId, ap.Cantidad, ta.Nombre, ta.ClaseAccesorioId, ap.TipoAccesorioId, ta.Obligatorio, ta.Contable
             FROM AccesorioPresupuesto ap
             INNER JOIN TipoAccesorio ta ON ta.TipoAccesorioId = ap.TipoAccesorioId
             WHERE ap.PresupuestoId = ".$presupuesto->PresupuestoId;

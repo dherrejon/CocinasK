@@ -1173,7 +1173,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                         if($scope.servicio[k].ServicioId == $scope.presupuestoBase.Servicio[i].ServicioId)
                         {
                             $scope.servicio[k].Obligatorio = true;
-                            $scope.servicio[k].Cantidad = parseFloat($scope.presupuestoBase.Servicio[i].Cantidad);
+                            $scope.servicio[k].Cantidad = $scope.presupuestoBase.Servicio[i].Cantidad;
                             break;
                         }
                     }
@@ -3013,7 +3013,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
     {
         $scope.presupuesto.Modulo.push($scope.SetModuloNuevo($scope.moduloAgregar, cantidad));
         $scope.HideMedida($scope.moduloAgregar);
-        $scope.AgregarTipoModulo($scope.moduloAgregar.TipoModulo);
+        $scope.GetTipoModuloCantidad();
         
         $scope.moduloAgregar.Ancho = "";
         $scope.moduloAgregar.Alto = "";
@@ -3063,52 +3063,54 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         }
     };
     
-    $scope.AgregarTipoModulo = function(tipo)
-    {
-        for(var k=0; k<$scope.tipoModuloAgregar.length; k++)
+    $scope.GetTipoModuloCantidad = function(tipo, cantidad)
+    {   
+        //console.log($scope.presupuesto.Modulo);
+        $scope.tipoModuloAgregar = [];
+        var atm = [];
+        for(var k=0; k<$scope.presupuesto.Modulo.length; k++)
         {
-            if($scope.tipoModuloAgregar[k].TipoModuloId == tipo.TipoModuloId)
-            {
-                $scope.tipoModuloAgregar[k].Cantidad++;
-                return;
-            }
+            var tm = new Object();
+            tm.TipoModuloId = $scope.presupuesto.Modulo[k].TipoModulo.TipoModuloId;
+            tm.Nombre = $scope.presupuesto.Modulo[k].TipoModulo.Nombre;
+            tm.Cantidad = parseInt($scope.presupuesto.Modulo[k].Cantidad);
+            atm.push(tm);
         }
         
-        var tipoModulo = new TipoModulo();
-        tipoModulo.TipoModuloId = tipo.TipoModuloId;
-        tipoModulo.Nombre = tipo.Nombre;
-        tipoModulo.Cantidad = 1;
+        $scope.tipoModuloAgregar = alasql("SELECT DISTINCT TipoModuloId, Nombre FROM ?", [atm]);
         
-        $scope.tipoModuloAgregar.push(tipoModulo);
+        for(var k=0; k<$scope.tipoModuloAgregar.length; k++)
+        {
+            $scope.tipoModuloAgregar[k].Cantidad = 0;
+            
+            for(var i=0; i<atm.length; i++)
+            {
+                if(atm[i].TipoModuloId == $scope.tipoModuloAgregar[k].TipoModuloId)
+                {
+                    $scope.tipoModuloAgregar[k].Cantidad += atm[i].Cantidad; 
+                }
+            }
+        }
     };
     
     $scope.AgregarCantidad = function(modulo)
     {
         modulo.Cantidad++;
+        $scope.SetTipoModuloCantidad(modulo.TipoModulo, 1);
     };
     
     $scope.ReducirCantidad = function(modulo)
     {
         if((modulo.Cantidad-1) > 0)
         {
-           modulo.Cantidad--; 
+            modulo.Cantidad--; 
+            $scope.SetTipoModuloCantidad(modulo.TipoModulo, -1);
         }
     };
     
     $scope.QuitarModulo = function(modulo)
     {
-        for(var k=0; k<$scope.tipoModuloAgregar.length; k++)
-        {
-            if(modulo.TipoModulo.TipoModuloId == $scope.tipoModuloAgregar[k].TipoModuloId)
-            {
-                $scope.tipoModuloAgregar[k].Cantidad--;
-                if($scope.tipoModuloAgregar[k].Cantidad == 0)
-                {
-                    $scope.tipoModuloAgregar.splice(k,1);
-                }
-                break;
-            }
-        }
+        
         
         for(var i=0; i<$scope.modulo.length; i++)
         {
@@ -3116,7 +3118,6 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
             {
                 for(var j=0; j<$scope.modulo[i].Medida.length; j++)
                 {
-
                     if($scope.modulo[i].Medida[j].Ancho == modulo.Ancho && $scope.modulo[i].Medida[j].Alto == modulo.Alto && $scope.modulo[i].Medida[j].Profundo == modulo.Profundo)
                     {
                         $scope.modulo[i].Medida[j].show = true;
@@ -3134,7 +3135,22 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                 return;
             }
         }
+        
+        $scope.GetTipoModuloCantidad();
     };
+    
+    $scope.SetTipoModuloCantidad = function(tipo, val)
+    {
+        for(var k=0; k<$scope.tipoModuloAgregar.length; k++)
+        {
+            if($scope.tipoModuloAgregar[k].TipoModuloId == tipo.TipoModuloId)
+            {
+               $scope.tipoModuloAgregar[k].Cantidad += val; 
+               break;
+            }
+        }
+    };
+    
     
     $scope.TerminarPaso4 = function()
     {
@@ -6735,7 +6751,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
 
                      doc.autoTable(precio.columns, precio.data, {
                         startY: first.finalY + 10,
-                         addPageContent: pageContent,
+                        addPageContent: pageContent,
                         showHeader: 'firstPage',
                         margin: {right: 107, top:55},
                         headerStyles: {fillColor: [0, 0, 0], fontSize:14, textColor: [255,255, 255], halign:'center',},

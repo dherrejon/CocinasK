@@ -16,15 +16,15 @@
                 <br>
                 
                 <!-- barra de pasos -->
-                <div>
+                <div ng-if="pasoContrato != 7">
                     <div class="stepwizard">
                       <div class="stepwizard-rowActivo"></div>
 
-                        <div class="stepwizard-row" ng-class="GetClaseLineaPaso()">
+                        <div class="stepwizard-row seis" ng-class="GetClaseLineaPaso()">
 
-                            <div class="stepwizard-step"  ng-repeat="paso in pasos">
+                            <div class="stepwizard-step contrato"  ng-repeat="paso in pasos">
                                 <button type="button" class="btn  btn-circle" ng-class="GetClasePaso(paso.numero)" disabled>{{paso.numero}}</button>
-                                <p>{{paso.nombre}}</p>
+                                <p class="hidden-xs">{{paso.nombre}}</p>
                             </div>
                         </div>
                     </div>
@@ -150,7 +150,7 @@
                                     </button>
 
                                     <ul class="dropdown-menu listaOpcionesDropdownList" style="width: 100%"> 
-                                       <li>
+                                       <li ng-if="contrato.Puerta.Puerta.length > 1">
                                             <a  href="" class="dropdownOpcionModal" ng-click="contrato.Puerta.PuertaSeleccionada = {Nombre:'Pendiente', PuertaId: null}">
                                                 <span>Pendiente</span>
                                             </a>
@@ -281,8 +281,8 @@
                                     </button>
 
                                     <ul class="dropdown-menu listaOpcionesDropdownList" style="width: 100%"> 
-                                       <li>
-                                            <a  href="" class="dropdownOpcionModal" ng-click="contrato.Maqueo.ColorSel = {Nombre:'Pendiente', PuertaId: null}">
+                                       <li ng-if="contrato.Maqueo.Color.length > 1">
+                                            <a  href="" class="dropdownOpcionModal" ng-click="contrato.Maqueo.ColorSel = {Nombre:'Pendiente', ColorId: null}">
                                                 <span>Pendiente</span>
                                             </a>
                                         </li>                               
@@ -365,7 +365,7 @@
                                                         </span>
                                                     </button>
 
-                                                    <ul class="dropdown-menu listaOpcionesDropdownList" style="width: 100%; ">                               
+                                                    <ul class="dropdown-menu listaOpcionesDropdownList" style="width: 100%; overflow: visible">                               
                                                         <li ng-repeat="muestrario in accesorio.Muestrario " >
                                                             <button  href="" class=" dropdownOpcionModalbtn " ng-click="accesorio.MuestrarioSel = muestrario">
                                                                <span style="margin: 0px 15px 0px 10px;">
@@ -396,7 +396,7 @@
 
                                                     <ul class="dropdown-menu listaOpcionesDropdownList" style="width: 100%"> 
                                                        
-                                                        <li>
+                                                        <li ng-if="accesorio.MuestrarioSel.Accesorio.length > 1">
                                                             <a  href="" class="dropdownOpcionModal" ng-click="accesorio.MuestrarioSel.AccesorioSel = {Nombre:'Pendiente', AccesorioId: null}">
                                                                 <span>Pendiente</span>
                                                             </a>
@@ -454,8 +454,8 @@
                                     <ul class="dropdown-menu listaOpcionesDropdownList" style="width: 100%"> 
                                        
                                         <li ng-show="presupuesto.Proyecto.TipoProyecto.Mueble">
-                                            <a  href="" class="dropdownOpcionModal" ng-click="contrato.TipoCubierta = {Nombre: 'Pendiente', Id: null}">
-                                                <span>Pendiente</span>
+                                            <a  href="" class="dropdownOpcionModal" ng-click="contrato.TipoCubierta = {Nombre: 'No Incluye', TipoCubiertaId: null}">
+                                                <span>No Incluye</span>
                                             </a>
                                         </li> 
                                                                                
@@ -602,7 +602,7 @@
 
                                         <ul class="dropdown-menu listaOpcionesDropdownList" style="width: 100%"> 
 
-                                            <li>
+                                            <li ng-if="gp.MaterialSel.Color.length > 1">
                                                 <a  href="" class="dropdownOpcionModal" ng-click="gp.MaterialSel.ColorSel = {Nombre:'Pendiente', ColorId:null}">
                                                     <span>Pendiente</span>
                                                 </a>
@@ -618,6 +618,7 @@
                                     </div>
 
                                 </div>
+                                <br class="hidden-sm hidden-md hidden-lg">
                                 
                                 <div class="col-sm-6 etiquetaDropdownList" ng-show="contrato.TipoCubierta.TipoCubiertaId == '2'">
                                     <label>Acabado</label>
@@ -635,7 +636,7 @@
 
                                         <ul class="dropdown-menu listaOpcionesDropdownList" style="width: 100%"> 
 
-                                            <li>
+                                            <li ng-if="acabado.length > 0">
                                                 <a  href="" class="dropdownOpcionModal" ng-click="contrato.TipoCubierta.Acabado = {Nombre:'Pendiente', AcabadoCubiertaId:null}">
                                                     <span>Pendiente</span>
                                                 </a>
@@ -711,7 +712,7 @@
                                      <div class="dropdown">
                                         <div ng-class="{'input-group' : contrato.PromocionMueble.TipoPromocionId == '1' || contrato.PromocionMueble.TipoPromocionId == '3'}">
                                            
-                                            <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown">
+                                            <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown" style="height: 30px">
                                                 <span ng-if="contrato.PromocionMueble.TipoPromocionId.length > 0 && contrato.PromocionMueble.TipoPromocionId != '0'">{{contrato.PromocionMueble.TipoPromocionId != '2' ? contrato.PromocionMueble.Descuento + '% de descuento' : contrato.PromocionMueble.NumeroPagos + ' Meses sin Intereses'}}</span>
                                                 <span ng-if="contrato.PromocionMueble.TipoPromocionId == '0'">Sin Promoción</span>
 
@@ -785,7 +786,7 @@
 
                                      <div class="dropdown">
                                         <div ng-class="{'input-group' : contrato.PromocionCubierta.TipoPromocionId == '1' || contrato.PromocionCubierta.TipoPromocionId == '3'}">
-                                            <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown">
+                                            <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown" style="height: 30px">
                                                 <span ng-if="contrato.PromocionCubierta.TipoPromocionId.length > 0 && contrato.PromocionCubierta.TipoPromocionId != '0'">{{contrato.PromocionCubierta.TipoPromocionId != '2' ? contrato.PromocionCubierta.Descuento + '% de descuento' : contrato.PromocionCubierta.NumeroPagos + ' Meses sin Intereses'}}</span>
                                                 <span ng-if="contrato.PromocionCubierta.TipoPromocionId == '0'">Sin Promoción</span>
 
@@ -955,8 +956,8 @@
                                 <div class="btn-group">
                                     
                                     <button class="btn btnTitle" ng-disabled="true"><b>Anticipo</b></button>
-                                    <button class="btn btnSwitch" ng-class="{active : contrato.PagoAnticipo == 1}" ng-click="CambiarNumeroAnticipo(1)" ng-disabled="true">1 pago</button>
-                                    <button class="btn btnSwitch" ng-class="{active : contrato.PagoAnticipo == 2}" ng-click="CambiarNumeroAnticipo(2)" ng-disabled="true">2 pagos</button>
+                                    <button class="btn btnSwitch" ng-class="{Activo : contrato.PagoAnticipo == 1}" ng-click="CambiarNumeroAnticipo(1)" ng-disabled="true">1 pago</button>
+                                    <button class="btn btnSwitch" ng-class="{Activo : contrato.PagoAnticipo == 2}" ng-click="CambiarNumeroAnticipo(2)" ng-disabled="true">2 pagos</button>
                                     
                                 </div>
                             </div>
@@ -1149,7 +1150,7 @@
                         </div>
                         <br><br>
 
-                        <!-- Pagos Meses -->
+                        <!-- Pagos 1 exhibición -->
                         <div ng-repeat="pago in contrato.PagoContado">
                             <div class="row">
                                <!-- pago -->
@@ -1199,7 +1200,598 @@
                 
                 
                 <!-- Paso 5 -->
-            
+                <div ng-show="pasoContrato == 5">
+                    
+                    <!-- Facturar -->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <a class="btn botonOperacionRecto pull-right" href="http://www.fel.mx/CFDI33/Presentacion/Usuario/Ingreso.aspx" target="_blank">
+                                Facturar
+                            </a>
+                        </div>
+                    </div>
+                    <br>
+                    
+                    <!-- Documentos Fiscales -->
+                    <div class="row">
+                       
+                        <!-- No. Factura -->
+                        <div class="col-sm-6" ng-if="docFiscal.factura">
+                           <div class="entrada2">
+                                <input type="text" autocomplete="off" required class="entrada form-control" name="nofactura" ng-model="contrato.NoFactura" />
+                                <label>No. Factura</label>
+                            </div>
+                        </div>
+                        
+                        <div class="hidden-sm hidden-md hidden-lg" ng-show="docFiscal.factura">
+                            <br> <br>
+                        </div>
+                        
+                        <!-- No. Nota Cargo -->
+                        <div class="col-sm-6" ng-if="docFiscal.nota">
+                           <div class="entrada2">
+                                <input type="text" autocomplete="off" required class="entrada form-control" name="nonotacargo" ng-model="contrato.NoNotaCargo" />
+                                <label>No. Nota de Cargo</label>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <br>
+                    
+                    <!-- Datos Fiscales -->
+                    <div class="row">
+                       <div class="col-xs-12">
+
+                            <div class="dropdown ">
+
+                                <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown">
+                                    <span>Datos Fiscales</span>
+
+                                    <span class="pull-right">
+                                        <span class="caret"></span>
+                                    </span>
+                                </button>
+
+                                <ul class="dropdown-menu listaOpcionesDropdownList" style="width: 100%; height: auto; max-height: 200px">
+                                    <form>
+                                        <div class="col-xs-12">
+                                           <br>
+                                           <div class="input-group">
+                                                <input class="entradaContorno form-control" type="text" placeholder="Buscar" ng-model="buscarFiscal" style="height: 35px"><br><br>
+                                            
+                                                <div class="input-group-btn">
+                                                    <button  class="btn botonOperacionRecto" ng-click="AgregarDatosFiscales()" style="margin-top: -5px; height: 35px" data-toggle="dropdown">
+                                                         <span class="fa fa-plus"></span> Nuevo
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <br>
+                                        </div>
+                                        
+                                                
+                                        <div class="col-xs-12">
+                                          
+                                           <li data-toggle="dropdown">
+                                               <button class="dropdownOpcionModal formlidropdown itemPresupuestoPrimero text-left" ng-click="CambiarDatoFiscal('Venta al Publico')">
+                                                    <b>Venta al Público</b>
+                                               </button>
+                                           </li>
+                                           
+                                            <li ng-repeat="dato in presupuesto.Persona.DatosFiscales | orderBy:'Nombre' | filter:buscarFiscal">
+
+                                                <button class=" dropdownOpcionModal formlidropdown text-left" ng-click="CambiarDatoFiscal(dato)" data-toggle="dropdown">
+                                                    <span>
+                                                        <b>Nombre: </b>{{dato.Nombre}}<br>
+                                                        <b>RFC: </b>{{dato.RFC}}<br>
+                                                        <b>Correo: </b>{{dato.CorreoElectronico}}<br>
+                                                        
+                                                        <b>Domicilio: </b>{{dato.Domicilio}}, {{dato.Colonia}}. {{dato.Municipio}}, {{dato.Estado}}. {{dato.Codigo}}.
+                                                    </span>
+                                                </button>
+                                            </li>
+                                             <br>
+                                        </div>
+                                        
+                                      
+                                    </form>
+                                </ul>
+
+                            </div>
+
+                       </div>
+                    </div>
+                    <br>
+                    <div class="row" ng-if="contrato.DatoFiscal.Nombre.length > 0">
+                        <div class="col-xs-12">
+                            <span>
+                                <b>Nombre: </b>{{contrato.DatoFiscal.Nombre}}<br>
+                                
+                                <span ng-if="contrato.DatoFiscal.Nombre != 'Venta al Público'">
+                                    <b>RFC: </b>{{contrato.DatoFiscal.RFC}}<br>
+                                    <b>Correo: </b>{{contrato.DatoFiscal.CorreoElectronico}}<br>
+
+                                    <b>Domicilio: </b>{{contrato.DatoFiscal.Domicilio}}, {{contrato.DatoFiscal.Colonia}}. {{contrato.DatoFiscal.Municipio}}, {{contrato.DatoFiscal.Estado}}. {{contrato.DatoFiscal.Codigo}}.
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+                    <br>
+                    <!-- Resumen -->
+                    <div class="row">
+                       
+                        <div class="col-xs-12"><div class="separadorGris1 dos" style="margin-bottom: 10px"></div></div>
+                    
+                        <div class="col-xs-12">
+                            <label style="color: gray; font-size: 13pt">Resumen del contrato</label>
+                        </div>
+                    </div>
+                    
+                    <!-- Descripcion de venta -->
+                    <div class="row">
+                      
+                        <!-- Totales -->
+                        <div class="col-sm-6 col-xs-12">
+                            <b>Concepto de Venta:</b> <span class="pull-right">{{contrato.ConceptoVenta.Nombre}}</span> <br><br>
+                            Subtotal:  <span class="pull-right">{{(contrato.SubtotalMueble + contrato.SubtotalCubierta2) | currency}}</span><br>
+                            Descuento:  <span class="pull-right">-{{(contrato.DescuentoMueble + contrato.DescuentoCubierta)| currency}}</span><br>
+                            IVA:  <span class="pull-right">{{(contrato.IVAMueble + contrato.IVACubierta) | currency}}</span><br><br>
+
+                            <b>TOTAL: <span class="pull-right">{{(contrato.TotalMueble + contrato.TotalCubierta)  | currency}}</span></b><br>
+                    
+                        </div>
+                        
+                         <div class="col-xs-12 hidden-md hidden-sm hidden-lg">
+                            <div class="separadorGris1" style="margin-bottom: 10px; margin-top: 10px"></div>
+                        </div>
+                        
+                        <!-- Pagos -->
+                        <div class="col-sm-6 col-xs-12 divisorMitad " ng-class="{'divisorMitad pagospanel' : anchoPantalla > 767 }">
+                            
+                            <div ng-if="pagos.meses > 0">
+                                <label> Pago a meses sin intereses </label>
+                                
+                                <div ng-repeat="pago in contrato.PagoMeses">
+                                   
+                                    <b style="color: gray">Pago {{$index + 1}}: </b>  {{pago.MedioPago.Nombre}}
+                                    <span class="pull-right">{{pago.Pago | currency}}</span>
+                                </div>
+                                <br>
+                            </div>
+                            
+                            <div ng-if="pagos.contado > 0">
+                                <label> Pago en 1 exhibición </label>
+                                
+                                <div ng-repeat="pago in contrato.PagoContado">
+                                    <b style="color: gray">Pago {{$index + 1}}: </b> {{pago.MedioPago.Nombre}}
+                                    <span class="pull-right">{{pago.Pago | currency}}</span>
+                                </div>
+                                <br>
+                            </div>
+                            
+                        </div>
+                        
+                        <div class="col-xs-12 hidden-xs" style="height: 20px"></div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-xs-12"><div class="separadorGris1" style="margin-bottom: 10px"></div></div>
+                    </div>
+                    
+                    <div class="row">
+                        
+                         <div ng-if="presupuesto.Proyecto.TipoProyecto.Mueble">
+                           
+                             <div class="col-xs-12">
+                                 <label class="labeldetail">Combinación: </label>
+
+                                 <span>{{contrato.Combinacion.Nombre}}</span>
+                             </div>
+
+                             <div class="col-xs-12 ">
+                                <label class="labeldetail">Puerta: </label>
+                                 <span >{{contrato.Puerta.Nombre}} - {{contrato.Puerta.PuertaSeleccionada.Nombre}}</span>
+                             </div>
+
+                             <div class="col-xs-12">
+                                <label class="labeldetail">Maqueo: </label>
+
+                                 <span>{{contrato.Maqueo.Nombre}} - {{contrato.Maqueo.ColorSel.Nombre}}</span>
+                             </div>
+
+                             <div class="col-xs-12" ng-if="contrato.Servicio.length > 0">
+                                 <label class="labeldetail"> Servicios: <br>  </label>
+
+                                 <li  ng-repeat="servicio in contrato.Servicio" style="margin-left: 110px">{{servicio.Nombre}}<br></li>
+
+                             </div>
+
+                             <div class="col-xs-12" ng-if="contrato.Accesorio.length > 0">
+
+                                <label class="labeldetail">Accesorio:<br> </label>
+
+                                 <li  ng-repeat="accesorio in contrato.Accesorio" style="margin-left:  110px">
+                                    <b>{{accesorio.Nombre}}: </b>  {{accesorio.MuestrarioSel.Nombre}} - {{accesorio.MuestrarioSel.AccesorioSel.Nombre}}<br>
+                                 </li>
+
+                             </div>
+                             
+                             
+                         </div>
+                         
+                         <div ng-if="presupuesto.Proyecto.TipoProyecto.CubiertaAglomerado || presupuesto.Proyecto.TipoProyecto.CubiertaPiedra" >
+                            
+                            <div class="col-xs-12">
+                               <br>
+                                <span class="labeldetail">
+                                     <b>Cubierta: </b> <span >{{contrato.TipoCubierta.Nombre}}</span>
+                                 </span>
+                                 <br><br>
+                             </div>
+                             
+                             
+                             <div ng-if="contrato.TipoCubierta.Nombre != 'Pendiente'" ng-repeat="grupo in contrato.TipoCubierta.GrupoUbicacion">
+                                 
+                                 <div class="col-xs-12" style="color: gray">
+                                     {{grupo.Nombre}}
+                                 </div>
+                                 
+                                 <div class="col-xs-12">
+                                     <label class="labeldetail">Material: </label>
+                                     <span>{{grupo.MaterialSel.NombreMaterial}} - {{grupo.MaterialSel.NombreGrupo}}</span>
+                                 </div>
+                                 
+                                 <div class="col-xs-12">
+                                     <label class="labeldetail">Color: </label>
+                                     <span>{{grupo.MaterialSel.ColorSel.Nombre}}</span>
+                                 </div>
+                                 
+                                 <div class="col-xs-12" ng-if="contrato.TipoCubierta.TipoCubiertaId == '2'">
+                                     <label class="labeldetail">Acabado: </label>
+                                     <span>{{contrato.TipoCubierta.Acabado.Nombre}}</span>
+                                 </div>
+                                 
+                                 <div ng-if="!$last" style="height: 15px" class="col-xs-12"></div>
+                                 
+                             </div>
+                             
+                             <div class="col-xs-12">
+                                     <label class="labeldetail">Ubicaciones: </label>
+                                     <li  ng-repeat="ubicacion in contrato.TipoCubierta.Ubicacion" ng-show="ubicacion.Contrato && ubicacion.UbicacionCubiertaId != '3'" style="margin-left:  110px">
+                                        {{ubicacion.Nombre}}
+                                     </li>
+                                 </div>
+                         </div>
+                         
+                    </div>
+                    <br>
+                    
+                    <div class="row">
+                       
+                        <div class="col-xs-12"><div class="separadorGris1 dos" style="margin-bottom: 10px"></div></div>
+                    </div>
+                    
+                </div>
+                
+                <!-- Paso 6 -->
+                <div ng-show="pasoContrato == 6">
+                   
+                   
+                   <div class="row">
+                        <div class="col-xs-12">
+                        <h4>Encabezado del Contrato</h4>
+                       </div>
+                    </div>
+                    <br><br>
+                    
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="entrada2">
+                                <input type="text" class="entrada from-control" ng-model="contrato.ProyectoNombre " required ng-blur="SetEncabezadoContrato()">
+                                <label>Nombre Proyecto</label>
+                            </div>
+                       </div>
+                    </div>
+                    <br>
+                    
+                    <div class="row">
+                        <div class="col-xs-12">
+                        <span>{{contrato.Encabezado}}</span>
+                       </div>
+                    </div>
+                    
+                    <br>
+                   <div class="row">
+                        <div class="col-xs-12">
+                        <h4>Especificaciones del Contrato</h4>
+                       </div>
+                    </div>
+                   
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <!-- Agregar Especificación -->
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <a class="btn botonOperacionRecto pull-right" ng-click="AbrirEspecificacion('Agregar', null, 0)">
+                                        <span class="fa fa-plus" ></span> Agregar
+                                    </a>
+                                </div>
+                            </div>
+                        <br>
+                        </div>
+                    </div>
+                    
+                    <div class="row" ng-if="contrato.Especificacion.length == 0">
+                        <div class="col-xs-12">
+                            <span class="textoPerfilHome">Sin especificaciones</span>
+                        </div>
+                    </div>
+                    
+                    <div class="row" ng-if="contrato.Especificacion.length > 0">
+                        <div class="col-xs-12">
+                            <div class="table-responsive">
+                                <table class="table table-hover table-striped table-condensed" >
+                                    <thead class="TituloTabla">
+                                        <tr>
+                                            <th>Ubicación</th>
+                                            <th>Descripción</th>
+                                            <th class="text-center">Editar</th>
+                                            <th class="text-center">Quitar</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="especificacion in contrato.Especificacion">
+                                            <td>{{especificacion.Ubicacion}}</td>
+                                            <td>
+                                                <a  class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirDetalleEspecificacion(especificacion)">
+                                                    <span class="fa fa-eye fa-2x" ></span>
+                                                </a>
+                                                {{especificacion.Descripcion.slice(0,60)}}
+                                                <span ng-if="especificacion.Descripcion.length > 60">...</span>
+                                            </td>
+                                            
+                                            <td class="text-center">
+                                                <a  class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirEspecificacion('Editar', especificacion, $index)">
+                                                    <span class="fa fa-pencil fa-2x" ></span>
+                                                </a>
+                                            </td>
+                                            
+                                            <td class="text-center">
+                                                <a  class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="QuitarEspecificacion($index)">
+                                                    <span class="fa fa-times fa-2x" ></span>
+                                                </a>
+        
+                                            </td>
+                                            
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                
+                <!-- paso 7 -->
+                <div ng-show="pasoContrato == 7">
+                   
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="text-center">
+                                <span>
+                                    <span class="fa fa-check-circle-o iconoBien fa-5x"></span><br>
+                                    <span style="font-size: 14pt">Contrato Guardado</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <br><br>
+                    
+                    <div ng-show="false">
+                        
+                        
+                        <div class="row" >
+                            <div class="col-xs-12">
+                               <!-- tabla base -->
+                                <table id="">
+                                    <tbody>
+                                       <tr>
+                                            <td >{{contrato.Encabezado}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                
+                                
+                                <!-- encabezado -->
+                                <table id="encabezado">
+                                    <tbody>
+                                       <tr>
+                                            <td >{{contrato.Encabezado}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                
+                                <!-- Combinación título -->
+                                <table id="combinaciontit">
+                                    <tbody>
+                                       <tr>
+                                            <td >{{contrato.ProyectoNombre}} de acuerdo al proyecto anexo</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                
+                                <!-- Combinación caracteristicas -->
+                                <table id="combinacioncar">
+                                    <tbody>
+                                      <tr>
+                                            <td ></td>
+                                            <td ></td>
+                                        </tr>
+                                      
+                                       <tr>
+                                            <td >Frente de: {{contrato.Combinacion.Frente}}</td>
+                                            <td >Interior de: {{contrato.Combinacion.Interior}}</td>
+                                        </tr>
+                                        
+                                        <tr>
+                                            <td >Puerta: {{contrato.Puerta.PuertaSeleccionada.PuertaId == null ? 'Pendiente (' + contrato.Puerta.Nombre + ')' : contrato.Puerta.PuertaSeleccionada.Nombre }}</td>
+                                            <td >Maqueo {{contrato.Maqueo.Nombre}}: {{contrato.Maqueo.ColorSel.Nombre}}</td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                                
+                                <!-- Servicios -->
+                                <table id="servicio">
+                                    <tbody>
+                                       <tr>
+                                            <td >Servicios</td>
+                                        </tr>
+                                        
+                                        <tr ng-repeat="servicio in contrato.Servicio">
+                                            <td >{{servicio.Nombre}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                
+                                <!-- Accesorio -->
+                                <table id="accesorio">
+                                    <tbody>
+                                       <tr>
+                                            <td >Accesorios</td>
+                                        </tr>
+                                        
+                                        <tr ng-repeat="accesorio in contrato.Accesorio | orderBy:'Nombre'">
+                                            <td>
+                                                {{GetTextoAccesorioContrato(accesorio)}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                
+                                <!-- Cubierta -->
+                                <table id="cubierta">
+                                    <tbody>
+                                       <tr>
+                                            <td >Cubierta: {{contrato.TipoCubierta.Nombre}}</td>
+                                        </tr>
+                                        
+                                        <tr>
+                                            <td>
+                                                Material: {{contrato.TipoCubierta.GrupoUbicacion[0].MaterialSel.NombreMaterial}} {{contrato.TipoCubierta.GrupoUbicacion[0].MaterialSel.NombreGrupo}}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Color: {{contrato.TipoCubierta.GrupoUbicacion[0].MaterialSel.ColorSel.ColorId == null ? 'Pendiente' : contrato.TipoCubierta.GrupoUbicacion[0].MaterialSel.ColorSel.Nombre }}
+                                            </td>
+                                        </tr>
+                                        <tr ng-if="contrato.TipoCubierta.TipoCubiertaId == '2'">
+                                            <td>
+                                                Acabado: {{contrato.TipoCubierta.Acabado.Nombre}}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Ubicaciones: {{GetTextoUbicacionContrato(contrato.TipoCubierta.Ubicacion)}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                
+                                <!-- Descripcion -->
+                                <table id="descripcionContrato">
+                                    <tbody>
+                                       <tr>
+                                            <td > </td>
+                                      </tr>
+                                        
+                                       <tr ng-repeat="desc in contrato.Descripcion">
+                                            <td >-{{desc.Descripcion}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                
+                                <!-- Especificaciones -->
+                                <table id="especificaciontitulo">
+                                    <tbody>
+                                       <tr>
+                                            <td >Especificaciones</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                
+                                <table id="especificacion">
+                                    <tbody>
+                                      <tr>
+                                            <td id="ubicacion">Ubicación</td>
+                                            <td id="descripcion">Descripción</td>
+                                        </tr>
+                                        
+                                       <tr ng-repeat="esp in contrato.Especificacion">
+                                            <td >{{esp.Ubicacion}}</td>
+                                            <td >{{esp.Descripcion}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                
+                                <!-- fechas y pagos -->
+                                <table id="fechapago">
+                                    <tbody>
+                                      <tr>
+                                            <td id=""></td>
+                                            <td id=""></td>
+                                        </tr>
+                                        
+                                       <tr id="fecha">
+                                            <td >Fecha Entraga</td>
+                                            <td >{{GetFechaContrato(contrato.PlanPago.FechaFin2)}}</td>
+                                        </tr>
+                                        
+                                        <tr >
+                                            <td ></td>
+                                            <td ></td>
+                                        </tr>
+                                        
+                                        <tr id="total">
+                                            <td >Total de la venta</td>
+                                            <td >{{contrato.TotalContrato | currency}}</td>
+                                        </tr>
+                                        
+                                        <tr >
+                                            <td >{{GetTextoAnticipoContrato(contrato)}}</td>
+                                            <td >{{(contrato.TotalContado + contrato.TotalMeses) | currency}}</td>
+                                        </tr>
+                                        
+                                        <tr >
+                                            <td >Total de Adeudo</td>
+                                            <td >{{(contrato.TotalContrato - (contrato.TotalContado + contrato.TotalMeses)) | currency}}</td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                                
+                                <table id="pagos">
+                                    <tbody>
+                                      <tr>
+                                            <td id="">Pago Pendiente</td>
+                                            <td id="">Fecha compromiso</td>
+                                            <td id="">Concepto</td>
+                                        </tr>
+                                        
+                                       <tr ng-repeat="pago in contrato.PlanPago.Abono | orderBy:'FechaCompromiso2'" ng-show="pago.Pago > 0">
+                                            <td >{{pago.Pago | currency}}</td>
+                                            <td >{{pago.FechaCompromiso}}</td>
+                                            <td >{{pago.Concepto}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                
+                            </div>
+                        </div>
+                        
+                    </div>
+
+                </div>
                 
                 <!-------- mensaje de error ---->
                 <div class="row">
@@ -1224,23 +1816,160 @@
                     </div>
                     
                     <!-- Anterior -->
-                    <div class="col-xs-6" ng-if="pasoContrato > 1">
+                    <div class="col-xs-6" ng-if="pasoContrato > 1 && pasoContrato < 7">
                         <button class="btn botonOperacionModal btn-block"  ng-click="AnteriorPaso()">&lt;&lt; ANTERIOR</button>
                     </div>
                     
                     <!-- Siguiente -->
-                    <div class="col-xs-6" ng-if="pasoContrato < 5">
+                    <div class="col-xs-6" ng-if="pasoContrato < 7">
                         <button class="btn botonOperacionModal btn-block"  ng-click="SiguientePaso()">SIGUIENTE &gt;&gt;</button>
                     </div>
                     
                     <!-- Terminar -->
-                    <div class="col-xs-6" ng-if="pasoContrato > 4">
-                        <button class="btn botonOperacionModal btn-block"  ng-click="CancelarEstatusProyecto()">TERMINAR</button>
+                     <div class="col-xs-12 col-sm-6 col-sm-offset-3"  ng-if="pasoContrato == 7">
+                        <a focus class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="">TERMINAR</a>
                     </div>
+
                 </div>
             </div>
 
         
         </div>
     </div>
+    
+    <!--- Especificacion Contrato --->
+    <div class="modal fade sombraDivModal" id="EspecificacionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+        <br>    <br>   <br>
+        <div class="modal-dialog modalPrincipal modal-lg">
+           
+            <div class="row">
+                <div class="col-xs-12">
+                    <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarDireccionModal()"><span aria-hidden="true">&times;</span></button>
+                    <span  class="tituloModal">{{operacionEsp}} Especificación del Contrato</span>
+                </div>
+            </div>
+        
+            <br><br>
+            <!-- cuerpo del modal -->
+           <div class="row">
+                <div class="col-xs-12" style="font-size: 13pt">
+                    <div class="entrada2">
+                        <input autofocus type="text" required class="entrada" ng-model="especificacion.Ubicacion" maxlength="255" id="ubicacionEspecificacion">
+                        <label>Ubicación</label>
+                    </div>
+                </div>
+            </div>
+           <br>
+            
+            <!-- Descripción -->
+            <div class="row">
+                <div class="col-sm-12">
+                     <div class="">
+                        <label class="labelEntrada">
+                            Descripción
+                        </label>
+
+                        <textarea required type="text"  name="descripcion" class="form-control descripcionArea" ng-model="especificacion.Descripcion" ng-maxlength="600" style="min-height: 100px; min-width: 100%"></textarea>
+                    </div>
+                    <br>
+                </div>
+            </div>
+            <br>
+            
+            <!-------- mensaje de error ---->
+            <div class="row">
+                <div class="col-xs-12">
+                    <div ng-repeat="error in erroresp">
+                        <span class="textoError">{{error}}</span>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <!---- botones de operacion -->
+            <div class="row">
+                <div class="col-xs-6">
+                    <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarDireccionModal()">CANCELAR</button>
+                </div>
+
+                <div class="col-xs-6">
+                    <button focus class="btn botonOperacionModal btn-block" ng-click="TerminarEspecificaicon()">TERMINAR</button>
+                </div>
+            </div>
+            <br>
+            
+            
+        </div>
+    </div> 
+    
+    <!--- Detalle --->
+    <div class="modal fade sombraDivModal" id="DetalleEspecificacionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+        <br>    <br>   <br>
+        <div class="modal-dialog modalPrincipal">
+           
+            <div class="row">
+                <div class="col-xs-12">
+                    <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarDireccionModal()"><span aria-hidden="true">&times;</span></button>
+                    <span  class="tituloModal">Especificación del Contrato</span>
+                </div>
+            </div>
+        
+            <br>
+            <!-- cuerpo del modal -->
+           <div class="row">
+                <div class="col-xs-12" style="font-size: 13pt">
+                   <b >Ubicación: </b> {{detalle.Ubicacion}}
+                </div>
+            </div>
+           <br>
+            <div class="row">
+                <div class="col-xs-12">
+                    <p >{{detalle.Descripcion}}</p>
+                </div>
+            </div>
+        </div>
+    </div> 
+    
+    <!-- Quitar especificacion -->
+    <div class="modal fade sombraDivModal" id="quitarEspecificacionModal">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm modalPrincipal text-center">
+           
+            <div class="row">
+                <div class="col-xs-12">
+                    <span style="font-size:14pt">{{mensajeAdvertencia}}</span>
+                </div>
+            </div>
+            <br><br>
+            <div class="row">
+                <div class="col-xs-6">
+                    <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close">No</button>
+                </div>
+                <div class="col-xs-6">
+                    <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="ConfirmarQuitarEspecificacion()">Si</button>
+                </div>
+            </div>
+                        
+        </div>
+    </div>
+    
+    <!-- Modal para mensajes -->
+    <div class="modal fade sombraDivModal" id="mensajeContrato" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <br>    <br>   <br>
+        <div class="modal-dialog modalPrincipal modal-sm">
+           <br>
+            <div class="row">
+                <div class="col-xs-12 text-center" style="font-size:12pt">
+                   {{mensaje}}
+                </div>
+            </div>
+            <br>
+            <div class="row">
+            
+                <div class="col-xs-12">
+                    <button focus class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close">Aceptar</button>
+                </div>
+            </div>
+        </div> 
+    </div> 
+    
 </div>

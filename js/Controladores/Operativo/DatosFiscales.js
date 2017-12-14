@@ -113,12 +113,14 @@ app.controller("DatosFiscalesOperativo", function($scope, $rootScope, $http, $q,
     {   
         AgregarDatoFiscalPersona($http, CONFIG, $q, $scope.nuevoDato).then(function(data)
         {
-            if(data == "Exitoso")
+            if(data[0].Estatus == "Exitoso")
             {
                 $('#datoFiscalModal').modal('toggle');
                 $scope.mensaje = "El dato fiscal se ha agregado.";
                 
-                DATOSFISCALES.DatoFiscalTerminado();
+                $scope.nuevoDato.DatosFiscalesId = data[0].Id;
+                
+                DATOSFISCALES.DatoFiscalTerminado($scope.nuevoDato);
             }
             else
             {
@@ -238,9 +240,9 @@ app.factory('DATOSFISCALES',function($rootScope)
       $rootScope.$broadcast('EditarDatoFiscal');
     };
     
-    service.DatoFiscalTerminado = function()
+    service.DatoFiscalTerminado = function(dato)
     {
-        $rootScope.$broadcast('DatoFiscalTerminado');
+        $rootScope.$broadcast('DatoFiscalTerminado', dato);
     };
     
     service.GetDatoFiscal = function()

@@ -94,10 +94,12 @@
     border: solid 2px #262626;
 }
 
-.operacionPanelEntrada
+.operacionPanelEntrada, .operacionPanelEntrada:focus, .operacionPanelEntrada:hover, .operacionPanelEntrada:active
 {
     border-color: #262626;
     color: #262626;
+    
+    outline: none !important;
 }
 
 .operacionPanelBoton

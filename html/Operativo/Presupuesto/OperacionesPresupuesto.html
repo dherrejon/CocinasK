@@ -20,10 +20,9 @@
                         <label>Cliente</label>
                         
                         <div class="input-group">
-                            <input type="text"  class="form-control entrada" ng-model="buscarCliente" uib-typeahead="c as (c.NombreCompleto) for c in cliente | filter:{NombreCompleto:$viewValue}  | limitTo:5" typeahead-on-select="CambiarCliente()" typeahead-select-on-blur="false" typeahead-focus-first="false" typeahead-no-results="noResultados">
-                            <span class="input-group-addon entrada" ng-click="LimpiarCliente()" style="cursor: pointer"> <span class="fa fa-times-circle"></span> </span>  
+                            <input type="text"  class="form-control entrada" ng-model="buscarCliente" uib-typeahead="c as (c.NombreCompleto) for c in cliente | filter:{NombreCompleto:$viewValue}  | limitTo:5" typeahead-on-select="CambiarCliente()" typeahead-select-on-blur="false" typeahead-focus-first="true" typeahead-no-results="noResultados" autocomplete="off">
+                            <span class="input-group-addon entrada" ng-click="LimpiarCliente()" style="cursor: pointer"> <span class="fa fa-times-circle"></span></span>  
                         </div>  
-                         
 
                         <div ng-if="noResultados">
                             Sin Resultado
@@ -148,7 +147,7 @@
                         <label>Cliente</label>
                         
                         <div class="input-group">
-                            <input type="text"  class="form-control entrada" ng-model="buscarCliente" uib-typeahead="c as (c.NombreCompleto) for c in cliente | filter:{NombreCompleto:$viewValue}  | limitTo:5" typeahead-on-select="CambiarCliente()" typeahead-select-on-blur="false" typeahead-focus-first="false" typeahead-no-results="noResultados">
+                            <input type="text"  class="form-control entrada" ng-model="buscarCliente" uib-typeahead="c as (c.NombreCompleto) for c in cliente | filter:{NombreCompleto:$viewValue}  | limitTo:5" typeahead-on-select="CambiarCliente()" typeahead-select-on-blur="false" typeahead-focus-first="true" typeahead-no-results="noResultados" autocomplete="off">
                             <span class="input-group-addon entrada" ng-click="LimpiarCliente()" style="cursor: pointer"> <span class="fa fa-times-circle"></span> </span>  
                         </div>  
                          

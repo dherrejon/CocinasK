@@ -1,6 +1,7 @@
 app.controller("DescripcionContatoController", function($scope, $http, $q, CONFIG, $rootScope, datosUsuario, $window, $filter, $location)
 {       
     $scope.descripcion = [];
+    $scope.tipoVenta = [];
     $scope.mensajeError = [];
     $scope.buscarDesc = "";
 
@@ -15,6 +16,10 @@ app.controller("DescripcionContatoController", function($scope, $http, $q, CONFI
         });
     };
     
+    $scope.GetTipoVenta = function()
+    {
+        $scope.tipoVenta = GetTipoVentaContrato();
+    };
     
     /*-------------------Agregar Editar------------------------------*/
     //abre el pandel para agregar-editar un servicio
@@ -41,17 +46,23 @@ app.controller("DescripcionContatoController", function($scope, $http, $q, CONFI
         desc.Descripcion = data.Descripcion;
         desc.Activo = data.Activo;
         
+        desc.TipoVentaId = data.TipoVentaId;
+        desc.TipoVentaNombre = data.TipoVentaNombre;
+        
         return desc;
+    };
+    
+    $scope.CambiarTipoVenta = function(tipo)
+    {
+        $scope.nuevaDesc.TipoVentaId = tipo.TipoVentaId;
+        $scope.nuevaDesc.TipoVentaNombre = tipo.Nombre;
     };
     
     /*------------------Terminar Tipo Proyecto ----------------------*/
     $scope.TerminarDescripcionContrato = function(descInvalido)
-    {
-        $scope.mensajeError = [];
-        
-        if(descInvalido)
+    {    
+        if(!$scope.ValidarDatos(descInvalido))
         {
-            $scope.mensajeError[0] = "*Escribe una descripción.";
             return;
         }
         else
@@ -113,6 +124,30 @@ app.controller("DescripcionContatoController", function($scope, $http, $q, CONFI
             $scope.mensaje = "Ha ocurrido un error. Intente más tarde. Error: " + error;
             $('#mensajeDescripcionContrato').modal('toggle');
         });
+    };
+    
+    $scope.ValidarDatos = function(descInvalido) 
+    {
+        $scope.mensajeError = [];
+        
+        if(descInvalido)
+        {
+            $scope.mensajeError[0] = "*Escribe una descripción.";
+        }
+        
+        if($scope.nuevaDesc.TipoVentaId.length === 0)
+        {
+            $scope.mensajeError[$scope.mensajeError.length] = "*Selecciona un tipo de venta.";
+        }
+        
+        if($scope.mensajeError.length > 0)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     };
     
     $scope.CerrarDescripcion = function()
@@ -178,5 +213,4 @@ app.controller("DescripcionContatoController", function($scope, $http, $q, CONFI
     };
     
     /*-------------------- Inicializar ----------------------- */
-    $scope.GetDescripcionContrato();
 });

@@ -26,9 +26,11 @@ app.controller("CostoModuloControlador", function($scope, $http, $q, CONFIG, dat
     $scope.costosPuerta = null;
     $scope.medidaVer = null;
     $scope.calcular = false;
+    $scope.maqueo = [];
     
     $scope.moduloSeleccionado = new Modulo();
     $scope.puertaSeleccionada = null;
+    $scope.maqueoSeleccionado = null;
     
     /*--------- Catálogos -------------*/
     $scope.GetModulo = function()          
@@ -86,13 +88,24 @@ app.controller("CostoModuloControlador", function($scope, $http, $q, CONFIG, dat
             alert(error);
         });
     };
+    
+    $scope.GetMaqueo = function()      
+    {
+        GetMaqueo($http, $q, CONFIG).then(function(data)
+        {
+            $scope.maqueo = data;
+            //console.log(data);
+        }).catch(function(error)
+        {
+            alert(error);
+        });
+    };
                                           
     /*----------------- Datos de puertas -------------------*/
     $scope.GetComponentePorPuerta = function(puertaId, puerta)      
     {
         GetComponentePorPuerta($http, $q, CONFIG, puertaId).then(function(data)
         {
-            
             puerta.Seccion = $scope.SetComponentePuerta(data);
         }).catch(function(error)
         {
@@ -222,6 +235,7 @@ app.controller("CostoModuloControlador", function($scope, $http, $q, CONFIG, dat
         GetMedidasPorModulo($http, $q, CONFIG, moduloId).then(function(data)
         {
             $scope.moduloSeleccionado.Medida = data;
+            //console.log($scope.moduloSeleccionado);
             
         }).catch(function(error)
         {
@@ -449,6 +463,11 @@ app.controller("CostoModuloControlador", function($scope, $http, $q, CONFIG, dat
         $scope.puertaSeleccionada = puerta;
     };
     
+    
+    $scope.CambiarMaqueo = function(maqueo)
+    {
+        $scope.maqueoSeleccionado = maqueo;
+    };
     /*--------------------------------------- PUERTAS ----------------------------------*/
     /*$scope.SetSeccionPuerta = function()
     {  
@@ -498,6 +517,7 @@ app.controller("CostoModuloControlador", function($scope, $http, $q, CONFIG, dat
         
         //console.log($scope.moduloSeleccionado.Seccion);
     };*/
+    
     $scope.AgruparCombinacionComponentePuerta = function()
     {
         for(var k=0; k<$scope.puerta.length; k++)
@@ -581,12 +601,41 @@ app.controller("CostoModuloControlador", function($scope, $http, $q, CONFIG, dat
             for(var k=0; k<$scope.moduloSeleccionado.Medida.length; k++)
             {
                 $scope.SustituirFormula($scope.moduloSeleccionado, $scope.moduloSeleccionado.Medida[k], $scope.moduloSeleccionado.Seccion);
+                
+                $scope.CalcularCostoMaqueo($scope.moduloSeleccionado, $scope.moduloSeleccionado.Medida[k], $scope.moduloSeleccionado.Seccion);
             }
         }
         //console.log($scope.moduloSeleccionado.Medida);
         //console.log($scope.moduloSeleccionado.Entrepano);
     };
     
+    /*-------- Calcular costo del maqueo -------------*/
+    $scope.CalcularCostoMaqueo = function(modulo, medida, seccion)
+    {
+        var area = 0;
+        var costo = 0;
+        medida.Maqueo = [];
+        
+        area = $scope.FraccionADecimal(medida.Ancho) * $scope.FraccionADecimal(medida.Alto) * 0.00064517; // superficie del módulo
+        
+        for(var k=0; k<$scope.maqueo.length; k++)
+        {
+            costo = area * $scope.maqueo[k].CostoUnidad;
+            costo = costo + ((costo * $scope.maqueo[k].Margen)/100);
+            
+            var m = new Object();
+            
+            m.Costo = costo;
+            m.Nombre = $scope.maqueo[k].Nombre;
+            m.MaqueoId = $scope.maqueo[k].MaqueoId;
+            
+            medida.Maqueo.push(m);
+        }
+        
+        
+    };
+    
+    /*-------------------- Módulo medida ------------*/
     $scope.SustituirFormula = function( modulo, medida, seccion)
     {
         $scope.CalcularCostoPuerta(medida, modulo);
@@ -733,6 +782,10 @@ app.controller("CostoModuloControlador", function($scope, $http, $q, CONFIG, dat
                     else if(seccion.SeccionModuloId == "2")
                     {
                         componente = $scope.SustituirValoresComponentePuerta($scope.puerta[i].Seccion.Cajon, medida, seccion);
+                    }
+                    else if(seccion.SeccionModuloId == "3")
+                    {
+                        componente = [];
                     }
                     
                     for(var l=0; l<componente.length; l++)
@@ -1665,6 +1718,7 @@ app.controller("CostoModuloControlador", function($scope, $http, $q, CONFIG, dat
         $scope.GetCombinacionMaterial();
         $scope.GetPuerta();
         $scope.GetCostoMaterialTodos();
+        $scope.GetMaqueo();
     };
 
     /*------------------Indentifica cuando los datos del usuario han cambiado-------------------*/

@@ -1,4 +1,4 @@
-var app = angular.module('CocinasK',['ngRoute', 'angular.filter','angular-md5', 'angular-loading-bar']);
+var app = angular.module('CocinasK',['ngRoute', 'angular.filter','angular-md5', 'angular-loading-bar', 'ui.bootstrap']);
 
  //Configuracion del jason token, APIURL: indica la direccion del directorio de index.php
 app.constant('CONFIG',
@@ -268,6 +268,7 @@ app.run(function($rootScope, $location, $window, $http, CONFIG, $q, datosUsuario
     $rootScope.erNumeroEnteroSinCero = /^[1-9][0-9]*$/;   //expresion regular para un número entero
     $rootScope.erNumeroFraccionSinCero = /^((([1-9][0-9]*\s)?([1-9][0-9]*\/[1-9]{1,2}))|([1-9][0-9]*))$/;   //expresion regular para un número fraccional
     $rootScope.erPassword = /^(\w){6}(\w)*$/;   //expresion regular para un número entero
+    $rootScope.erNumeroDecimalCero = /^([1-9][0-9]*(\.[0-9][0-9]?)?)|(0(\.[0-9][0-9]?)?)$/;   //expresion regular para un número decimal
     
     /*---------------------------------- Mantener la barra de navegacion visible-----------------------*/
     /*$window.onscroll = function ()

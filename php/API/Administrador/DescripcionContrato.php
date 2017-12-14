@@ -9,7 +9,7 @@ function GetDescripcionContrato()
     $tipoGrupoId = json_decode($request->getBody());
     
     
-    $sql = "SELECT DescripcionContratoId, Descripcion, Activo FROM DescripcionContrato";
+    $sql = "SELECT DescripcionContratoId, Descripcion, Activo, TipoVentaId, TipoVentaNombre FROM DescripcionContratoVista";
     
     try 
     {
@@ -34,8 +34,8 @@ function AgregarDescripcionContrato()
     $request = \Slim\Slim::getInstance()->request();
     $desc = json_decode($request->getBody());
     global $app;
-    $sql = "INSERT INTO DescripcionContrato (Descripcion, Activo) 
-            VALUES(:Descripcion, :Activo)";
+    $sql = "INSERT INTO DescripcionContrato (Descripcion, Activo, TipoVentaId) 
+            VALUES(:Descripcion, :Activo, :TipoVentaId)";
 
     try 
     {
@@ -44,6 +44,7 @@ function AgregarDescripcionContrato()
 
         $stmt->bindParam("Descripcion", $desc->Descripcion);
         $stmt->bindParam("Activo", $desc->Activo);
+        $stmt->bindParam("TipoVentaId", $desc->TipoVentaId);
 
         $stmt->execute();
         $db = null;
@@ -65,7 +66,7 @@ function EditarDescripcionContrato()
     $request = \Slim\Slim::getInstance()->request();
     $desc = json_decode($request->getBody());
    
-    $sql = "UPDATE DescripcionContrato SET Descripcion='".$desc->Descripcion."', Activo = '".$desc->Activo."'  WHERE DescripcionContratoId=".$desc->DescripcionContratoId."";
+    $sql = "UPDATE DescripcionContrato SET Descripcion='".$desc->Descripcion."', Activo = '".$desc->Activo."', TipoVentaId = '".$desc->TipoVentaId."'  WHERE DescripcionContratoId=".$desc->DescripcionContratoId."";
     
     try 
     {

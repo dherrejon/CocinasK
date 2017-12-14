@@ -6,6 +6,7 @@ app.controller("OperacionesPresupuesto", function($scope, $http, $q, CONFIG, $ro
     $scope.pres = [];
     $scope.usuario = datosUsuario.getUsuario();
     
+    $scope.ciudad = ["aa", "a", "aguas", "aaguas", "todod"];
     
     $scope.$on('UnirPresupuestoCero',function()
     {
@@ -86,7 +87,6 @@ app.controller("OperacionesPresupuesto", function($scope, $http, $q, CONFIG, $ro
             
             var sql = "Select DISTINCT PersonaId, Nombre, PrimerApellido, SegundoApellido, NombreA, PrimerApellidoA, SegundoApellidoA, CONCAT(Nombre, ' ', PrimerApellido, ' ', SegundoApellido) as NombreCompleto  FROM ? ";
             $scope.cliente = alasql(sql,[$scope.datoCliente]);
-
             
         }).catch(function(error)
         {

@@ -559,6 +559,9 @@
     /*------------------ Variable del sistema ----------------------------------------------*/
     $app->get('/GetIVA', $seguridad, $ChecarSesion, 'GetIVA');
     $app->put('/EditarIVA', $seguridad, $ChecarSesion, 'EditarIVA');
+
+    $app->get('/GetParametro/:Id', $seguridad, $ChecarSesion, 'GetParametro');
+    $app->put('/EditarParametro', $seguridad, $ChecarSesion, 'EditarParametro');
     
     /*------------------------- Presupuesto ------------------------------*/
     $app->get('/GetPresupuestoPorProyecto/:id', $seguridad, $ChecarSesion, 'GetPresupuestoPorProyecto');
@@ -588,6 +591,9 @@
     $app->post('/AgregarDescripcionContrato', $seguridad, $ChecarSesion, 'AgregarDescripcionContrato');    
     $app->put('/EditarDescripcionContrato', $seguridad, $ChecarSesion, 'EditarDescripcionContrato');
     $app->post('/ActivarDesactivarDescripcion', $seguridad, $ChecarSesion, 'ActivarDesactivarDescripcion');
+
+    /*------------------------- Contratos ------------------------------*/
+    $app->post('/AgregarContrato', $seguridad, $ChecarSesion, 'AgregarContrato');
 
     $app->run(); 
 

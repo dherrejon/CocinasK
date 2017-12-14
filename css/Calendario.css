@@ -12,3 +12,57 @@
     color: white;
     background: #262626;
 }
+
+.btnSwitch2, .btnSwitch2:hover, .btnSwitch2:active, .btnSwitch2:focus, .btnSwitch2.active
+{
+    width: 40px;
+    height: 40px;
+    background: lightgray;
+    border-width: 0px !important;
+    border-color: red;
+    padding: 4px;
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.btnSwitch2.left
+{
+    border-radius: 20px 0px 0px 20px !important;
+}
+
+.btnSwitch2.right
+{
+    border-radius: 0px 20px 20px 0px !important;
+}
+
+.switchActive
+{
+    background: #262626;
+    color: #262626;
+    border-radius: 16px;
+    height: 32px;
+    width: 32px;
+}
+
+.btnInfo, .btnInfo:hover, .btnInfo:active, .btnInfo:focus, .btnInfo:disabled
+{
+    height: 40px;
+    border-width: 0px !important;
+    border-radius: 0px;
+    background: white;
+    color: gray;
+    cursor: default;
+    opacity: 1;
+    z-index: -1;
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.btnInfo.active
+{
+    color: #262626;
+    font-weight: bold;
+    font-size: 12pt;
+}

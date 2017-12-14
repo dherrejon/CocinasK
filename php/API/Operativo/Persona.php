@@ -522,9 +522,11 @@ function AgregarDatoFiscalPersona()
         $stmt->bindParam("Colonia", $datoFiscal->Colonia);
 
         $stmt->execute();
+        
+        $id = $db->lastInsertId();
 
         $db = null;
-        echo '[{"Estatus": "Exitoso"}]';
+        echo '[{"Estatus": "Exitoso"}, {"Id": "'.$id.'"}]';
 
     } catch(PDOException $e) 
     {

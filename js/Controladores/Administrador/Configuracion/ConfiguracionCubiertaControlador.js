@@ -124,7 +124,7 @@ app.controller("ConfiguaracionCubiertaControlador", function($scope, $http, $q, 
                 $('#Acabado').show();
                 $('#MuestrarioColor').hide();
                 $('#Ubicacion').hide();
-                $('#MuestrarioColor').hide();
+                $('#Fabricacion').hide();
                 break;
             default:
                 break;

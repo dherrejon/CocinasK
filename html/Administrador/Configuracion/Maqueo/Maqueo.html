@@ -116,7 +116,7 @@
                         
                         <br class="hidden-sm hidden-md hidden-lg">
                         <div class="col-sm-6">
-                            <button class="btn btn-block {{claseMaqueo.color}}" ng-click="CambiarMostrarColorMaqueo()">
+                            <button class="btn btn-block {{claseMaqueo.color}}" ng-click="CambiarMostrarColorMaqueo()" style="overflow: hidden">
                                 Colores: 
                                 <b ng-if="nuevoMaqueo.Grupo.Nombre.length > 0">{{nuevoMaqueo.Grupo.Nombre}}</b>
                                 <b  ng-if="nuevoMaqueo.Grupo.Nombre.length == 0">Selecciona uno</b>

@@ -1,4 +1,4 @@
-<div ng-controller="DescripcionContatoController as descon">
+<div ng-controller="DescripcionContatoController as descon" ng-init="GetDescripcionContrato(); GetTipoVenta()">
    
    <!-- Tabla de datos -->
     <div class="row">
@@ -8,6 +8,7 @@
                     <thead class="TituloTabla">
                       <tr>
                         <th><button class="btn botonFalso" style="text-align: left; "><b>Descipción</b></button></th>
+                        <th><button class="btn botonFalso" style="text-align: left; "><b>Tipo Venta</b></button></th>
                         <th><button class="btn botonFalso"><b>Editar</b></button></th>
                         <th><button class="btn botonFalso"><b>Activo</b></button></th>
                       </tr>
@@ -15,11 +16,15 @@
                     <tbody >
                       <tr ng-repeat="desc in descripcion | filter:buscarDesc">
                           <td>
-                              <a ng-if="permisoUsuario.descripcion.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirDetalleDescripcion(desc)">
+                              <a class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirDetalleDescripcion(desc)">
                                   <span class="fa fa-eye fa-2x" ></span>
                               </a>
                               <span> {{desc.Descripcion.slice(0,60)}}</span>
                               <span ng-if="desc.Descripcion.length > 60">...</span>
+                           </td>
+                           
+                           <td>
+                               {{desc.TipoVentaNombre}}
                            </td>
                         
                             <td class="text-center">
@@ -96,6 +101,37 @@
                 <br>
 
                 <form class="modal-body" name="fdc">
+                   
+                   <div class="row">
+                       
+                       <!-- Tipo Módulo -->
+                        <div class="col-sm-6 etiquetaDropdownList">
+                             <label>Tipo de Venta</label>
+                             <div class="dropdown">
+
+                                <button class="dropdown-toggle  dropdownListModal" data-toggle="dropdown">
+                                    <span>{{nuevaDesc.TipoVentaNombre}}</span>
+                                    <span class="caret"></span>
+                                </button>
+
+                                <ul class="dropdown-menu elemetosDropdownListModal">
+                                    <li ng-repeat="tipo in tipoVenta">
+                                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarTipoVenta(tipo)">
+                                            <span>{{tipo.Nombre}}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                            </div>
+                        </div>
+
+                        <!-- Activo -->
+                        <div class="col-sm-6">
+                             <label class="btn checkBoxActivo" style="margin-top: 5px">Activo <input type="checkbox" class="badgebox" ng-model="nuevaDesc.Activo"><span class="badge">&check;</span></label>
+                         </div>
+                        
+                    </div>
+                    
                     <!-- Descripción -->
                     <div class="row">
                         <div class="col-sm-12">
@@ -108,14 +144,6 @@
                             </div>
                             <br>
                         </div>
-                    </div> 
-                    
-                    <div class="row">
-                        <!-- Activo -->
-                        <div class="col-sm-6">
-                             <label class="btn checkBoxActivo">Activo <input type="checkbox" class="badgebox" ng-model="nuevaDesc.Activo"><span class="badge">&check;</span></label>
-                         </div>
-                        
                     </div> 
                     <br>
                     
@@ -167,13 +195,14 @@
                 
                    <div class="row">
                         <div class="col-xs-12">
+                           <b >{{detalle.TipoVentaNombre}}</b>
                             <b class="pull-right">{{detalle.Activo ? 'Activo' : 'Desactivo'}}</b>
                         </div>
                     </div>
-                   
+                   <br>
                     <div class="row">
                         <div class="col-xs-12">
-                            <span class="text-justify">{{detalle.Descripcion}}</span>
+                            <p >{{detalle.Descripcion}}</p>
                         </div>
                     </div>
                 </div>

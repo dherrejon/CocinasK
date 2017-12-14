@@ -545,17 +545,10 @@ function AgregarDatoFiscalPersona($http, CONFIG, $q, datoFiscal)
 
       }).success(function(data)
         {
-            if(data[0].Estatus == "Exitoso") 
-            {
-                q.resolve("Exitoso");
-            }
-            else
-            {
-                q.resolve("Fallido");
-            }
+            q.resolve(data);
             
         }).error(function(data, status){
-            q.resolve(status);
+            q.resolve([{Estatus:status}]);
 
      }); 
     return q.promise;

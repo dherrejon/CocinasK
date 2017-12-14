@@ -44,8 +44,10 @@ function SetCombinacionMaterial(data)
     
     combinacion.CombinacionMaterialId = data.CombinacionMaterialId;
     combinacion.Nombre = data.Nombre;
+    combinacion.Frente = data.Frente;
+    combinacion.Interior = data.Interior;
     combinacion.ActivoN = data.Activo;
-     combinacion.TipoCombinacionId = data.TipoCombinacionId;
+    combinacion.TipoCombinacionId = data.TipoCombinacionId;
     combinacion.TipoCombinacion.TipoCombinacionId = data.TipoCombinacionId;
     combinacion.TipoCombinacion.Nombre = data.NombreTipoCombinacion;
     combinacion.TipoCombinacion.Descripcion = data.Descripcion;
