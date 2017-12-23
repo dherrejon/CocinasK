@@ -941,7 +941,7 @@
                           </tr>
                         </thead>
                         <tbody >
-                          <tr ng-repeat="modulo in presupuesto.Modulo">
+                          <tr ng-repeat="modulo in presupuesto.Modulo | orderBy:['TipoModulo.Nombre', 'Nombre']">
 
                              <td>{{modulo.TipoModulo.Nombre}} {{modulo.Nombre}}</td>
                              <td class="text-center">{{modulo.Ancho}}</td>
@@ -1180,7 +1180,7 @@
                                                              
                             <span class="input-group-btn" >
                                <span class="btn entradaBtn">
-                                    <input type="text" placeholder="Cantidad" ng-model="presupuesto.CantidadMaqueo" class="entradaInput" min="0" />
+                                    <input type="text" placeholder="Cantidad" ng-model="presupuesto.CantidadMaqueo" class="entradaInput" min="0" disabled/>
                                 </span>
                             </span>
                                 
@@ -1513,10 +1513,9 @@
                                                            
                                     <div ng-repeat="grupo in cubierta.Grupo | orderBy:'Grupo.Nombre'" ng-show="grupo.Grupo.Activo && grupo.Color.length > 0">
                                         <div class=" itemPresupuesto" style="margin-left: 0px" ng-class="{itemPresupuestoPrimero: $first}">
-                                        
-                                               
+                                          
                                             <span class="checkbox checkboxOperativo">
-                                                <label style="width:100%">
+                                                <label style="width:100%;">
                                                     <input  ng-model="grupo.PorDefecto" type="checkbox" >
                                                     <span class="cr"> <i class="cr-icon fa fa-check"></i> </span>
                                                     <span>{{grupo.Grupo.Nombre}}</span>
@@ -1526,12 +1525,9 @@
                                                     </a>
                                                                                             
                                                 </label>
-                                            </span>
-                                            
+                                            </span> 
                                             
                                         </div>
-                                        
-                                        
                                     </div>
                                             
                                </div>
@@ -3045,7 +3041,7 @@
                              </span>
                         </td></tr>
                                
-                        <tr><td>*únicamente se puede elegir una promoción.</td></tr>
+                        <tr><td>*Únicamente se puede elegir una promoción.</td></tr>
                                 
                     </table>
                     
@@ -3057,8 +3053,30 @@
                              </span>
                         </td></tr>
                                
-                        <tr><td>*únicamente se puede elegir una promoción.</td></tr>
+                        <tr><td>*Únicamente se puede elegir una promoción.</td></tr>
                                 
+                    </table>
+                    
+                    <table id="msnPresupuesto" >
+                        
+                        <tr><td></td></tr>
+                        <tr><td>Este presupuesto no incluye ninguna modificación que se tenga que realizar en la habitación donde se instalará el trabajo (eléctricas, plomería, base de cemento, etc.). También este presupuesto está sujeto a cambios sin previo aviso.</td></tr>
+                                
+                    </table>
+                    
+                    <table id="Usuario">
+                        <tr><td></td></tr>
+                        <tr><td>______________________________</td></tr>
+                        <tr><td>Atentamente</td></tr>
+                        <tr><td>{{usuario.NombreCompletoColaborador}}</td></tr>
+                                
+                    </table>
+                    
+                    <table id="sucursal">
+                        <tr><td></td></tr>
+                        <tr><td>Sucursal {{UnidadNegocioDato.Ciudad}} {{UnidadNegocioDato.Estado}}</td></tr>
+                        <tr><td>Direccion {{UnidadNegocioDato.Domicilio}}</td></tr>
+                        <tr><td>Teléfoono {{UnidadNegocioDato.Telefono | tel}}</td></tr>     
                     </table>
                     
                 </div>

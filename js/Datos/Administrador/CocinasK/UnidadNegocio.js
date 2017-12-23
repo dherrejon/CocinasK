@@ -371,7 +371,27 @@ function GetUnidadNegocio($http, $q, CONFIG)
 
      }); 
     return q.promise;
-}
+} 
+
+function GetDatosUnidadNegocio($http, $q, CONFIG, id)    
+{
+    var q = $q.defer();
+
+    $http({      
+          method: 'GET',
+          url: CONFIG.APIURL + '/GetDatosUnidadNegocio/' + id,
+
+      }).success(function(data)
+        {
+            var unidadNegocio = new UnidadNegocio();
+            unidadNegocio = SetUnidadNegocio(data);
+            q.resolve(unidadNegocio);  
+        }).error(function(data, status){
+            q.resolve([]);
+
+     }); 
+    return q.promise;
+} 
 
 //copia los datos de las unidades de negocio
 function SetUnidadNegocio(data)

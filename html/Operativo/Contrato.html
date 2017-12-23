@@ -10,7 +10,7 @@
                <div class="row">
                     <div class="col-xs-12">
                         <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarPresupuestoModal()"><span aria-hidden="true">&times;</span></button>
-                        <span class="tituloModal">Contrato</span>
+                        <span class="tituloModal"> {{operacion == 'Editar' ? operacion : ''}}  Contrato</span>
                     </div>
                 </div>
                 <br>
@@ -233,6 +233,7 @@
                             </div>
                         </div>
                         <br>
+                        
                         <!--  Maqueo  -->
                         <div class="row">
                             <div class="col-sm-6 etiquetaDropdownList">
@@ -743,7 +744,7 @@
                                             </ul>
                                             
                                             <span class="input-group-btn" ng-if="contrato.PromocionMueble.TipoPromocionId == '1' || contrato.PromocionMueble.TipoPromocionId == '3'">
-                                                <button class="btn chgDescuento"  ng-disabled="contrato.PromocionMueble.Descuento == contrato.PromocionMueble.DescuentoMinimo" ng-click="contrato.PromocionMueble.Descuento = contrato.PromocionMueble.Descuento - 1; CalcularValoresContratoMueble()"> <span class="fa fa-minus"></span> </button>
+                                                <button class="btn chgDescuento"  ng-disabled="contrato.PromocionMueble.Descuento == GetDescuentoMinimo(contrato.PromocionMueble)" ng-click="contrato.PromocionMueble.Descuento = contrato.PromocionMueble.Descuento - 1; CalcularValoresContratoMueble()"> <span class="fa fa-minus"></span> </button>
                                                 <button class="btn chgDescuento" ng-disabled="contrato.PromocionMueble.Descuento == contrato.PromocionMueble.DescuentoMaximo" ng-click="contrato.PromocionMueble.Descuento = contrato.PromocionMueble.Descuento + 1; CalcularValoresContratoMueble()"> <span class="fa fa-plus"></span> </button>
                                             </span>
                                             
@@ -1429,7 +1430,7 @@
                              </div>
                              
                              
-                             <div ng-if="contrato.TipoCubierta.Nombre != 'Pendiente'" ng-repeat="grupo in contrato.TipoCubierta.GrupoUbicacion">
+                             <div ng-if="contrato.TipoCubierta.Nombre != 'No Incluye'" ng-repeat="grupo in contrato.TipoCubierta.GrupoUbicacion">
                                  
                                  <div class="col-xs-12" style="color: gray">
                                      {{grupo.Nombre}}
@@ -1454,12 +1455,12 @@
                                  
                              </div>
                              
-                             <div class="col-xs-12">
-                                     <label class="labeldetail">Ubicaciones: </label>
-                                     <li  ng-repeat="ubicacion in contrato.TipoCubierta.Ubicacion" ng-show="ubicacion.Contrato && ubicacion.UbicacionCubiertaId != '3'" style="margin-left:  110px">
-                                        {{ubicacion.Nombre}}
-                                     </li>
-                                 </div>
+                             <div class="col-xs-12" ng-if="contrato.TipoCubierta.Nombre != 'No Incluye'">
+                                 <label class="labeldetail">Ubicaciones: </label>
+                                 <li  ng-repeat="ubicacion in contrato.TipoCubierta.Ubicacion" ng-show="ubicacion.Contrato && ubicacion.UbicacionCubiertaId != '3'" style="margin-left:  110px">
+                                    {{ubicacion.Nombre}}
+                                 </li>
+                             </div>
                          </div>
                          
                     </div>
@@ -1778,7 +1779,7 @@
                                             <td id="">Concepto</td>
                                         </tr>
                                         
-                                       <tr ng-repeat="pago in contrato.PlanPago.Abono | orderBy:'FechaCompromiso2'" ng-show="pago.Pago > 0">
+                                       <tr ng-repeat="pago in contrato.PlanPago.Abono | orderBy:'FechaCompromiso2'" ng-show="pago.Pago > 0 && pago.NumeroAbono != 0">
                                             <td >{{pago.Pago | currency}}</td>
                                             <td >{{pago.FechaCompromiso}}</td>
                                             <td >{{pago.Concepto}}</td>

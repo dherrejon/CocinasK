@@ -1,7 +1,7 @@
 app.controller("PerfilClienteControlador", function($scope, $rootScope, $http, $q, CONFIG, $window,  $routeParams, $location, datosUsuario)
 {   
     /*----------------verificar los permisos---------------------*/
-    $rootScope.permisoOperativo = {verTodosCliente: false};
+    $rootScope.permisoOperativo = {verTodosCliente: false, editarContrato: false};
     $scope.IdentificarPermisos = function()
     {
         for(var k=0; k < $scope.usuarioLogeado.Permiso.length; k++)
@@ -10,11 +10,15 @@ app.controller("PerfilClienteControlador", function($scope, $rootScope, $http, $
             {
                 $rootScope.permisoOperativo.verTodosCliente = true;
             }
+            else if($scope.usuarioLogeado.Permiso[k] == "OpeHMCConsultar")
+            {
+                $rootScope.permisoOperativo.editarContrato = true;
+            }
         }
     };
     
     $rootScope.personaId = $routeParams.personaId;
-    $rootScope.seccion = $routeParams.seccion;
+    
     
     $rootScope.persona = new Persona();
     
@@ -41,6 +45,8 @@ app.controller("PerfilClienteControlador", function($scope, $rootScope, $http, $
         GetDatoPersona($http, $q, CONFIG, id).then(function(data)
         {
             $rootScope.persona = $scope.SetPersonaDatos(data);
+            
+            $rootScope.seccion = $routeParams.seccion;
         }).catch(function(error)
         {
             alert(error);

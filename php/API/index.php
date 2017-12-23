@@ -218,6 +218,7 @@
     $app->post('/AgregarUnidadNegocio', $seguridad, $ChecarSesion, 'AgregarUnidadNegocio');
     $app->put('/EditarUnidadNegocio', $seguridad, $ChecarSesion, 'EditarUnidadNegocio');
     
+    $app->get('/GetDatosUnidadNegocio/:id', $seguridad, $ChecarSesion, 'GetDatosUnidadNegocio');
     $app->get('/GetUnidadNegocioSencilla', $seguridad, $ChecarSesion, 'GetUnidadNegocioSencilla');
     $app->get('/GetUnidadNegocioSencillaPresupuesto', $seguridad, $ChecarSesion, 'GetUnidadNegocioSencillaPresupuesto');
     $app->get('/GetResponsable', $seguridad, $ChecarSesion, 'GetResponsable');
@@ -564,10 +565,11 @@
     $app->put('/EditarParametro', $seguridad, $ChecarSesion, 'EditarParametro');
     
     /*------------------------- Presupuesto ------------------------------*/
-    $app->get('/GetPresupuestoPorProyecto/:id', $seguridad, $ChecarSesion, 'GetPresupuestoPorProyecto');
+    $app->get('/GetPresupuestoPorProyecto/:id/:idpresupuesto', $seguridad, $ChecarSesion, 'GetPresupuestoPorProyecto');
     $app->post('/GetDatosPresupuesto', $seguridad, $ChecarSesion, 'GetDatosPresupuesto');
 
     /*------------------------- Proyecto ------------------------------*/
+    $app->get('/GetProyecto/:id', $seguridad, $ChecarSesion, 'GetProyecto');
     $app->post('/AgregarProyectoPresupuesto', $seguridad, $ChecarSesion, 'AgregarProyectoPresupuesto');
     $app->put('/EditarProyectoPresupuesto', $seguridad, $ChecarSesion, 'EditarProyectoPresupuesto');
     $app->post('/GetProyectoPersona', $seguridad, $ChecarSesion, 'GetProyectoPersona');
@@ -593,8 +595,21 @@
     $app->post('/ActivarDesactivarDescripcion', $seguridad, $ChecarSesion, 'ActivarDesactivarDescripcion');
 
     /*------------------------- Contratos ------------------------------*/
+    $app->get('/GetContrato/:id', $seguridad, $ChecarSesion, 'GetContrato');
+    $app->post('/GetDatosContrato', $seguridad, $ChecarSesion, 'GetDatosContrato');
     $app->post('/AgregarContrato', $seguridad, $ChecarSesion, 'AgregarContrato');
 
+    $app->put('/UpdateNumeroFactura', $seguridad, $ChecarSesion, 'UpdateNumeroFactura'); 
+    $app->post('/GuardarContratoPDF/:id', $seguridad, $ChecarSesion, 'GuardarContratoPDF');
+    $app->get('/DescargarContrato/:id', $seguridad, $ChecarSesion, 'DescargarContrato');
+    $app->post('/CambiarEstatusContrato', $seguridad, $ChecarSesion, 'CambiarEstatusContrato');
+    $app->post('/GetEstadoCuenta', $seguridad, $ChecarSesion, 'GetEstadoCuenta');
+    $app->post('/AgregarPago', $seguridad, $ChecarSesion, 'AgregarPago');
+    $app->get('/GetNotaCargo/:nota', $seguridad, $ChecarSesion, 'GetNotaCargo');
+    $app->get('/GetNoFactura/:factura', $seguridad, $ChecarSesion, 'GetNoFactura');
+    $app->post('/HabilitarEditarContrato', $seguridad, $ChecarSesion, 'HabilitarEditarContrato');
+    $app->post('/CancelarPago', $seguridad, $ChecarSesion, 'CancelarPago');
+    
     $app->run(); 
 
 ?>

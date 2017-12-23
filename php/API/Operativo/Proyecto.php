@@ -29,6 +29,35 @@ function GetProyectoPersona()
     }
 }
 
+function GetProyecto($id)
+{
+    global $app;
+    global $session_expiration_time;
+
+    $request = \Slim\Slim::getInstance()->request();
+    $persona = json_decode($request->getBody());
+    
+    
+    $sql = "SELECT * FROM ProyectoPersonaVista WHERE ProyectoId = ".$id;
+    
+    try 
+    {
+        $db = getConnection();
+        $stmt = $db->query($sql);
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $db = null;
+        
+        echo '[ { "Estatus": "Exito"}, {"Proyecto":'.json_encode($response).'} ]'; 
+    } 
+    catch(PDOException $e) 
+    {
+        echo $e;
+        echo '[ { "Estatus": "Fallo" } ]';
+        //$app->status(409);
+        $app->stop();
+    }
+}
+
 function AgregarProyectoPresupuesto()
 {
     $request = \Slim\Slim::getInstance()->request();
@@ -238,9 +267,9 @@ function AgregarProyectoPresupuesto()
     
     if($presupuesto->Proyecto->ProyectoId == "0")
     {
-        $sql = "INSERT INTO Proyecto (PersonaId, TipoProyectoId, EstatusProyectoId, DireccionPersonaId, Nombre, FechaCreacion) VALUES
+        $sql = "INSERT INTO Proyecto (PersonaId, TipoProyectoId, EstatusProyectoId, DireccionPersonaId, Nombre, FechaCreacion, UnidadNegocioId) VALUES
                 ('".$presupuesto->Persona->PersonaId."', '".$presupuesto->Proyecto->TipoProyecto->TipoProyectoId."', 1,
-                :DireccionPersonaId, '".$presupuesto->Proyecto->Nombre."', '".$presupuesto->Proyecto->FechaCreacion."')";
+                :DireccionPersonaId, '".$presupuesto->Proyecto->Nombre."', '".$presupuesto->Proyecto->FechaCreacion."', ".$presupuesto->Proyecto->UnidadNegocioId.")";
         
         try 
         {
@@ -814,13 +843,18 @@ function EditarProyecto()
     }
 }
 
-function GetPresupuestoPorProyecto($id)
+function GetPresupuestoPorProyecto($id, $idpresupuesto)
 {
     global $app;
     global $session_expiration_time;
 
     $request = \Slim\Slim::getInstance()->request();
     $sql = "SELECT * FROM PresupuestoVista WHERE ProyectoId = ".$id;
+    
+    if($idpresupusto > 0)
+    {
+        $sql .= " AND PresupuestoId = ".$idpresupuesto;
+    }
     
     try 
     {
@@ -1364,6 +1398,24 @@ function EditarProyectoPresupuesto()
                 $app->stop();
             }
         }
+    }
+    
+    $sql = "UPDATE Proyecto SET UnidadNegocioId = '".$presupuesto->Proyecto->UnidadNegocioId."' WHERE ProyectoId = ".$presupuesto->Proyecto->ProyectoId;
+        
+    try 
+    {
+        $stmt = $db->prepare($sql);
+        $stmt->execute();
+
+        //$presupuesto->PresupuestoId = $db->lastInsertId();
+    }
+    catch(PDOException $e) 
+    {    
+        echo $sql;
+        echo '[{"Estatus": "Fallido"}]';
+        $db->rollBack();
+        $app->status(409);
+        $app->stop();
     }
     
     $sql = "INSERT INTO Presupuesto (PresupuestoId, ProyectoId, PersonaId, UsuarioId, FechaCreacion, DescripcionInterna, DescripcionCliente, CantidadMaqueo, Titulo) VALUE

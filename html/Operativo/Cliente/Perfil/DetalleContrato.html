@@ -1,0 +1,528 @@
+<!-- Detalles Presupuesto -->
+<div class="modal fade sombraDivModal" id="ContratoDetalleModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+    <br>    <br>   <br>
+    <div class="modal-dialog modalPrincipal">
+
+        <div class="row">
+            <div class="col-xs-12">
+                <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarDireccionModal()"><span aria-hidden="true">&times;</span></button>
+                <span  class="tituloModal">Detalles Contrato</span>
+            </div>
+        </div>
+
+        <br><br>
+
+        <div class="row">
+
+            <div class="col-sm-12">
+               <!--Cliente-->
+                <span>
+                    <b>Cliente: </b> <span>{{detalle.NombreCliente}}</span>
+                </span><br>
+                <!-- Proyecto -->
+                <span>
+                    <b>Proyecto: </b> <span>{{detalle.Proyecto.NombreTipoProyecto}} - {{detalle.Proyecto.Nombre}}</span>
+                </span><br>
+                <!-- Proyecto -->
+                <span>
+                    <b>Presupuesto: </b> <span>{{detalle.Presupuesto.PresupuestoId}} - {{detalle.Presupuesto.Titulo}}</span>
+                </span><br>
+                <!-- Colaborador -->
+                <span>
+                    <b>Realizado Por: </b> <span>{{detalle.NombreColaborador}}</span>
+                </span><br>
+
+                <br>
+                <!-- Contrato -->
+                <span>
+                    <b>No. </b> <span>{{detalle.ContratoId}} - {{detalle.ProyectoNombre}}</span>
+                    <span class="pull-right">
+                        <b>Total del contrato:</b> <span>{{detalle.TotalContrato |currency }}</span>
+                    </span>
+                    <br>
+                </span>
+                <!-- Fechas -->
+                <span>
+                    <span>
+                        <b>Fecha Venta:</b> <span>{{detalle.FechaVentaFormato}}</span>
+                    </span>
+                    <span class="pull-right">
+                        <b>Fecha Entrega:</b> <span>{{detalle.FechaEntregaFormato}}</span>
+                    </span>
+                    <br>
+                </span>
+
+            </div>
+        </div>
+        <br>
+
+        <!-- Totales -->
+        <div class="row">
+            <div class="col-xs-12">
+
+                <div class="divisorGis1"> </div>
+
+                <button class="btn btn-block btnDetallePresupuesto" ng-click="verDetalle.total = !verDetalle.total">
+                    <span class="fa fa-chevron-right" style="width:20px;" ng-if="!verDetalle.total"></span>
+                    <span class="fa fa-chevron-up" style="width:20px;" ng-if="verDetalle.total"></span>
+                    <span>Total de la Venta</span>
+                </button>
+
+                <span ng-if="verDetalle.total">
+                    
+                    <div class="row">
+                        <!-- Muebles  -->
+                        <div class="col-xs-12" ng-class="detalle.Total.TotalCubierta > 0 ? 'col-sm-6' : 'col-sm-12'" ng-if="detalle.Total.TotalMueble > 0">
+                            
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div style="margin-top: 10px"></div>
+                                    <b>Muebles</b>
+                                </div>
+                            </div>
+                            <br>
+                            
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    Promoción: <span class="pull-right">{{GetPromocionTexto(detalle.Promocion, '1')}}</span><br><br>
+                                   
+                                    Subtotal:  <span class="pull-right">{{detalle.Total.SubtotalMueble | currency}}</span><br>
+                                    Descuento:  <span class="pull-right">-{{detalle.Total.DescuentoMueble | currency}}</span><br>
+                                    IVA:  <span class="pull-right">{{detalle.Total.IVAMueble | currency}}</span><br><br>
+
+                                    <b>TOTAL: <span class="pull-right">{{detalle.Total.TotalMueble | currency}}</span></b><br><br>
+                                    
+                                </div>
+                            </div>
+                            
+                        </div>
+                        
+                        <div ng-if="detalle.Total.TotalMueble > 0 && detalle.Total.TotalMueble > 0" class="col-xs-12 hidden-sm hidden-md hidden-lg"><div class="sepradorGris" style="height: 1px; margin: 10px 0px 10px 0px;"></div></div>
+                        
+                        <!-- Promocion de cubiertas -->
+                        <div class="col-xs-12"  ng-class="(detalle.Total.TotalMueble > 0&& anchoPantalla > 767) ? 'col-sm-6 divisorMitad' : detalle.Total.TotalMueble > 0 ? 'col-sm-6' : 'col-sm-12';" ng-if="detalle.Total.TotalCubierta > 0">
+                            <div class="row">
+                            
+                                <div class="col-xs-12">
+                                    <div style="margin-top: 10px"></div>
+                                    <b>Cubiertas</b>
+                                </div>
+                            </div>
+                            <br>
+                                
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    Promoción:  <span class="pull-right">{{GetPromocionTexto(detalle.Promocion, '2')}}</span><br><br>
+                                   
+                                    Subtotal:  <span class="pull-right">{{detalle.Total.SubtotalCubierta | currency}}</span><br>
+                                    Descuento:  <span class="pull-right">-{{detalle.Total.DescuentoCubierta | currency}}</span><br>
+                                    IVA:  <span class="pull-right">{{detalle.Total.IVACubierta | currency}}</span><br><br>
+
+                                    <b>TOTAL: <span class="pull-right">{{detalle.Total.TotalCubierta | currency}}</span></b><br><br>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                    </div>
+                    <br>
+                    
+                    <div class="row" ng-if="detalle.Total.TotalCubierta > 0 && detalle.Total.TotalMueble > 0">
+                        <div class="col-xs-12"><div class="sepradorGris" style="height: 1px"></div></div>
+                        
+                        <div class="col-xs-12">
+                            <div style="margin-top: 10px"></div>
+                            <b>Total</b>
+                        </div>
+                        <br><br>
+                        
+                        <div class="col-xs-12" ng-init="GetTotalesContrato(detalle.Total)">
+                                   
+                            Subtotal:  <span class="pull-right">{{detalle.Total.TotalSubtotal | currency}}</span><br>
+                            Descuento:  <span class="pull-right">-{{detalle.Total.TotalDescuento | currency}}</span><br>
+                            IVA:  <span class="pull-right">{{detalle.Total.TotalIVA | currency}}</span><br><br>
+
+                            <b>TOTAL: <span class="pull-right">{{detalle.TotalContrato | currency}}</span></b><br><br>
+                            
+                        </div>
+                        
+                    </div>
+                    
+                </span>
+                
+                
+
+                <div class="divisorGis1"> </div>
+
+            </div>
+        </div>
+        
+        <!-- Plan de pagos -->
+        <div class="row">
+            <div class="col-xs-12">
+
+              <div style="height: 10px"></div>
+
+                <div class="divisorGis1"> </div>
+
+                <button class="btn btn-block btnDetallePresupuesto" ng-click="verDetalle.plan = !verDetalle.plan">
+                    <span class="fa fa-chevron-right" style="width:20px;" ng-if="!verDetalle.plan"></span>
+                    <span class="fa fa-chevron-up" style="width:20px;" ng-if="verDetalle.plan"></span>
+                    <span>Plan de Pagos</span>
+                </button>
+
+                <span ng-if="verDetalle.plan">
+                    
+                    <div class="row">
+                        <div class="col-xs-12">
+
+                            <div class="text-center">
+
+                                <div class="planPagoSel">
+                                    <b class="fuente14">{{detalle.NombrePlanPagos}}</b>
+                                </div>
+
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-striped table-condensed">
+                                        <thead class="planPagoHeader">
+                                          <tr>
+                                            <th><span>Pago</span></th>
+                                            <th><span><b>Fecha Compromiso</b></span></th>
+                                            <th><span><b>Concepto</b></span></th>
+                                          </tr>
+                                        </thead>
+
+                                        <tbody>
+                                          <tr ng-repeat="abono in detalle.PlanPagos">
+
+                                                <td class="text-left">
+                                                    {{abono.Pago | currency}}
+                                                </td>
+
+                                                <td class="text-left">
+                                                    {{abono.FechaCompromiso}}
+                                                </td>
+
+                                                <td class="text-left">
+                                                    {{abono.Concepto}}
+                                                </td>
+
+                                          </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </span>
+
+                <div class="divisorGis1"> </div>
+
+            </div>
+        </div>
+        
+        <!-- Pagos Anticipo -->
+         <div class="row">
+            <div class="col-xs-12">
+
+              <div style="height: 10px"></div>
+
+                <div class="divisorGis1"> </div>
+
+                <button class="btn btn-block btnDetallePresupuesto" ng-click="verDetalle.pago = !verDetalle.pago">
+                    <span class="fa fa-chevron-right" style="width:20px;" ng-if="!verDetalle.pago"></span>
+                    <span class="fa fa-chevron-up" style="width:20px;" ng-if="verDetalle.pago"></span>
+                    <span>Anticipo</span>
+                </button>
+
+                <span ng-if="verDetalle.pago">
+                    <br>
+                    <div class="row">
+                        <div class="col-xs-12">
+
+                            <div class="text-center">
+
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-striped table-condensed">
+                                        <thead class="planPagoHeader">
+                                          <tr>
+                                            <th><span>Pago</span></th>
+                                            <th><span><b>Medio de Pago</b></span></th>
+                                            <th><span><b>Tipo Pago</b></span></th>
+                                          </tr>
+                                        </thead>
+
+                                        <tbody>
+                                          <tr ng-repeat="pago in detalle.Pago" ng-show="pago.Concepto == 'Anticipo' && pago.Cancelado == '0'">
+
+                                                <td class="text-left">
+                                                    {{pago.Pago | currency}}
+                                                </td>
+
+                                                <td class="text-left">
+                                                    {{pago.NombreMedioPago}}
+                                                </td>
+
+                                                <td class="text-left">
+                                                    {{pago.NombreTipoPago}}
+                                                </td>
+
+                                          </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </span>
+
+                <div class="divisorGis1"> </div>
+
+            </div>
+        </div>
+
+        <!-- Datos fiscales -->
+        <div class="row">
+            <div class="col-xs-12">
+
+              <div style="height: 10px"></div>
+
+                <div class="divisorGis1"> </div>
+
+                <button class="btn btn-block btnDetallePresupuesto" ng-click="verDetalle.fiscal = !verDetalle.fiscal">
+                    <span class="fa fa-chevron-right" style="width:20px;" ng-if="!verDetalle.fiscal"></span>
+                    <span class="fa fa-chevron-up" style="width:20px;" ng-if="verDetalle.fiscal"></span>
+                    <span>Datos Fiscales</span>
+                </button>
+
+                <span ng-if="verDetalle.fiscal">
+                    <br>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <b>Concepto de Venta: </b> {{detalle.ConceptoVenta.Nombre}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6">
+                            <b>No. Factura: </b> {{detalle.NoFactura == null ? 'Sin Factura' : detalle.NoFactura}}
+                        </div>
+                        
+                        <div class="col-xs-12 col-sm-6">
+                            <b>No. Nota Cargo: </b> <span>{{detalle.NoNotaCargo == null ? 'Sin nota de cargo' : detalle.NoNotaCargo}}</span>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div ng-if="detalle.DatoFiscal.RFC.length > 0">
+                          <div class="col-xs-12 " >
+                           <b>Nombre: </b> {{detalle.DatoFiscal.Nombre}}
+                            </div>
+                           <div class="col-xs-12 col-sm-6">
+                               <b>RFC: </b> {{detalle.DatoFiscal.RFC}}
+                            </div>
+                            <div class="col-xs-12 col-sm-6">
+                               <b>Correo: </b> {{detalle.DatoFiscal.CorreoElectronico}}
+                            </div>
+                           
+                            <div class="col-xs-12 " >
+                               <span >
+                                    <b>Dirección: </b> <span>{{detalle.DatoFiscal.Domicilio}}, {{detalle.DatoFiscal.Colonia}}. {{detalle.DatoFiscal.Ciudad}}, {{detalle.DatoFiscal.Estado}}. C.P. {{detalle.DatoFiscal.Codigo}}</span><br>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 " ng-if="detalle.DatoFiscal.RFC.length == 0">
+                            <span >
+                                <b>VENTA AL PÚBLICO</b><br>
+                            </span>
+                        </div>
+                    </div>
+                </span>
+                
+                <div class="divisorGis1"> </div>
+            </div>
+        </div>
+        
+        <!-- Opciones del Contrato -->
+        <div class="row">
+            <div class="col-xs-12">
+
+              <div style="height: 10px"></div>
+
+                <div class="divisorGis1"> </div>
+
+                <button class="btn btn-block btnDetallePresupuesto" ng-click="verDetalle.dato = !verDetalle.dato">
+                    <span class="fa fa-chevron-right" style="width:20px;" ng-if="!verDetalle.dato"></span>
+                    <span class="fa fa-chevron-up" style="width:20px;" ng-if="verDetalle.dato"></span>
+                    <span>Opciones del Contrato</span>
+                </button>
+
+                <span ng-if="verDetalle.dato">
+                    <br>
+                    <div class="row">
+                        
+                         <div ng-if="detalle.Total.TotalMueble > 0">
+                           
+                             <div class="col-xs-12">
+                                 <label class="labeldetail">Combinación: </label>
+
+                                 <span>{{detalle.OpcionContrato.NombreCombinacionMaterial}}</span>
+                             </div>
+
+                             <div class="col-xs-12 ">
+                                <label class="labeldetail">Puerta: </label>
+                                 <span >{{detalle.OpcionContrato.NombreMuestrarioPuerta}} - {{detalle.OpcionContrato.NombrePuerta}}</span>
+                             </div>
+
+                             <div class="col-xs-12">
+                                <label class="labeldetail">Maqueo: </label>
+
+                                 <span>{{detalle.OpcionContrato.NombreMaqueo}} - {{detalle.OpcionContrato.NombreColor}}</span>
+                             </div>
+
+                             <div class="col-xs-12" ng-if="detalle.Servicio.length > 0">
+                                 <label class="labeldetail"> Servicios: <br>  </label>
+
+                                 <li  ng-repeat="servicio in detalle.Servicio" style="margin-left: 110px">{{servicio.Nombre}}<br></li>
+
+                             </div>
+
+                             <div class="col-xs-12" ng-if="detalle.Accesorio.length > 0">
+
+                                <label class="labeldetail">Accesorio:<br> </label>
+
+                                 <li  ng-repeat="accesorio in detalle.Accesorio" style="margin-left:  110px">
+                                    <b>{{accesorio.NombreTipoAccesorio}}: </b>  {{accesorio.NombreMuestrario}} - {{accesorio.NombreAccesorio}}<br>
+                                 </li>
+
+                             </div>
+                         </div>
+                         
+                         <div ng-if="detalle.Cubierta.TipoCubiertaId.length > 0" >
+                            
+                            <div class="col-xs-12">
+                               <br>
+                                <span class="labeldetail">
+                                     <b>Cubierta: </b> <span >{{detalle.Cubierta.NombreTipoCubierta}}</span>
+                                 </span>
+                                 <br><br>
+                             </div>
+                             
+                             
+                             <div>
+             
+                                 <div class="col-xs-12">
+                                     <label class="labeldetail">Material: </label>
+                                     <span>{{detalle.Cubierta.NombreMaterial}} - {{detalle.Cubierta.NombreGrupo}}</span>
+                                 </div>
+                                 
+                                 <div class="col-xs-12">
+                                     <label class="labeldetail">Color: </label>
+                                     <span>{{detalle.Cubierta.NombreColor}}</span>
+                                 </div>
+                                 
+                                 <div class="col-xs-12" ng-if="detalle.Cubierta.TipoCubiertaId == '2'">
+                                     <label class="labeldetail">Acabado: </label>
+                                     <span>{{detalle.Cubierta.NombreAcabadoCubierta}}</span>
+                                 </div>
+                                 
+                                 <div ng-if="!$last" style="height: 15px" class="col-xs-12"></div>
+                                 
+                             </div>
+                             
+                             <div class="col-xs-12" >
+                                 <label class="labeldetail">Ubicaciones: </label>
+                                 <li  ng-repeat="ubicacion in detalle.UbicacionCubierta"  style="margin-left:  110px">
+                                    {{ubicacion.Nombre}}
+                                 </li>
+                             </div>
+                         </div>
+                         
+                    </div>
+                    <br>
+                </span>
+                
+                <div class="divisorGis1"> </div>
+            </div>
+        </div>
+        
+        <!-- Especificaciones -->
+         <div class="row" ng-if="detalle.Especificacion.length > 0">
+            <div class="col-xs-12">
+
+              <div style="height: 10px"></div>
+
+                <div class="divisorGis1"> </div>
+
+                <button class="btn btn-block btnDetallePresupuesto" ng-click="verDetalle.especificacion = !verDetalle.especificacion">
+                    <span class="fa fa-chevron-right" style="width:20px;" ng-if="!verDetalle.especificacion"></span>
+                    <span class="fa fa-chevron-up" style="width:20px;" ng-if="verDetalle.especificacion"></span>
+                    <span>Especificaciones</span>
+                </button>
+
+                <span ng-if="verDetalle.especificacion">
+                    <br>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            
+                            <div  ng-repeat="especificacion in detalle.Especificacion">
+                                
+                                <li>
+                                    <b>{{especificacion.Ubicacion}}</b><br>
+                                    <span>{{especificacion.Descripcion}}</span>
+                                    <br><br>
+                                </li>
+                                
+                            </div>
+                            
+                        </div>
+                    </div>
+                    
+                </span>
+
+                <div class="divisorGis1"> </div>
+
+            </div>
+        </div>
+        
+        <!-- Descripción -->
+         <div class="row" ng-if="detalle.Descripcion.length > 0">
+            <div class="col-xs-12">
+
+              <div style="height: 10px"></div>
+
+                <div class="divisorGis1"> </div>
+
+                <button class="btn btn-block btnDetallePresupuesto" ng-click="verDetalle.descripcion = !verDetalle.descripcion">
+                    <span class="fa fa-chevron-right" style="width:20px;" ng-if="!verDetalle.descripcion"></span>
+                    <span class="fa fa-chevron-up" style="width:20px;" ng-if="verDetalle.descripcion"></span>
+                    <span>Descripciones</span>
+                </button>
+
+                <span ng-if="verDetalle.descripcion">
+                    <br>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            
+                            <div  ng-repeat="descripcion in detalle.Descripcion">
+                                <li>
+                                    <span>{{descripcion.Descripcion}}</span>
+                                    <br><br>
+                                </li>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    
+                </span>
+
+                <div class="divisorGis1"> </div>
+
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+     

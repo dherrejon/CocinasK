@@ -122,7 +122,7 @@ app.controller("OperacionesPresupuesto", function($scope, $http, $q, CONFIG, $ro
     
     $scope.GetPresupuestoPorProyecto = function(proyecto)              
     {
-        GetPresupuestoPorProyecto($http, $q, CONFIG, proyecto.ProyectoId).then(function(data)
+        GetPresupuestoPorProyecto($http, $q, CONFIG, proyecto.ProyectoId, 0).then(function(data)
         {
             $scope.pres = data;
         

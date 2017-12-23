@@ -7,7 +7,7 @@ function GetMedioPago()
 
     $request = \Slim\Slim::getInstance()->request();
 
-    $sql = "SELECT MedioPagoId, Nombre, Activo, Defecto FROM MedioPago";
+    $sql = "SELECT MedioPagoId, Nombre, Activo, Defecto FROM MedioPago WHERE MedioPagoId > 0";
 
     try 
     {
@@ -139,7 +139,7 @@ function EditarMedioPago()
         }
     }
    
-    $sql = "UPDATE  MedioPAgo SET Nombre='".$medioPago->Nombre."', Activo='".$medioPago->Activo."', Defecto='".$medioPago->Defecto."'
+    $sql = "UPDATE  MedioPago SET Nombre='".$medioPago->Nombre."', Activo='".$medioPago->Activo."', Defecto='".$medioPago->Defecto."'
     WHERE MedioPagoId=".$medioPago->MedioPagoId."";
     
     try 

@@ -16,17 +16,39 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
         $scope.usuario = datosUsuario.getUsuario();
         
         $scope.contrato = new Contrato();
-        $scope.pasoContrato = 2;
+        $scope.pasoContrato = 1;
         $scope.presupuesto = presupuesto;
         
         $scope.GetDatosPresupuesto();
         
         $scope.verPlanPago = false;
         //paso 2
-        $scope.presupuesto.Proyecto.TipoProyecto.IVA = false;
+        /*$scope.presupuesto.Proyecto.TipoProyecto.IVA = false;
         $scope.contrato.Subtotal = 16853;
         $scope.contrato.SubtotalCubierta = 7694;
-        $scope.GetCatalogosPaso2();
+        $scope.GetCatalogosPaso2();*/
+        
+        $scope.mensajeError = [];
+        
+        $('#contratoModal').modal('toggle');
+    });
+    
+    $scope.$on('EditarContrato',function(evento, presupuesto, contrato)
+    {        
+        console.log(presupuesto);
+        $scope.contratoAux = contrato;
+        $scope.catalogos = {paso2: false, paso3: false, paso4: false, paso5:false, paso6:false};
+        $scope.operacion = "Editar";
+        $scope.usuario = datosUsuario.getUsuario();
+        
+        $scope.contrato = new Contrato();
+        $scope.pasoContrato = 1;
+        $scope.presupuesto = presupuesto;
+        
+        $scope.GetPresupuestoPorProyecto(presupuesto.Proyecto.ProyectoId);
+        $scope.GetDatosPresupuesto();
+        
+        $scope.verPlanPago = false;
         
         $scope.mensajeError = [];
         
@@ -98,7 +120,93 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
         $scope.grupoUbicacion = [];
         $scope.grupoUbicacion[0] = {Nombre:'', MaterialAux:"", MaterialSel:""};
         $scope.grupoUbicacion[1] = {Nombre: "Cubierta", Grupo:"13", MaterialAux:"", MaterialSel:""};
-        $scope.grupoUbicacion[2] = {Nombre: "Backsplash e Isla", Grupo:"24", MaterialAux:"", MaterialSel:""};    
+        $scope.grupoUbicacion[2] = {Nombre: "Backsplash e Isla", Grupo:"24", MaterialAux:"", MaterialSel:""};
+        
+        if($scope.operacion == "Editar")
+        {
+            $scope.SetDatosContrato($scope.contratoAux, $scope.contrato);
+        }
+    };
+    
+    $scope.SetDatosContrato = function(data, contrato)
+    {
+        console.log(data);
+        contrato.FechaVenta = data.FechaVentaFormato;
+        contrato.NoNotaCargo = data.NoNotaCargo;
+        contrato.NoFactura = data.NoFactura;
+        
+        //--- Paso 1---
+        
+            //combinacion
+        for(var k=0; k<$scope.presupuesto.CombinacionMaterial.length; k++)
+        {
+            if($scope.presupuesto.CombinacionMaterial[k].CombinacionMaterialId == data.OpcionContrato.CombinacionMaterialId)
+            {
+                $scope.SeleccionarCombinacion($scope.presupuesto.CombinacionMaterial[k]);
+                break;
+            }
+        }
+        
+            //puerta    
+        for(var k=0; k<$scope.presupuesto.Puerta.length; k++)
+        {
+            if($scope.presupuesto.Puerta[k].MuestrarioId == data.OpcionContrato.MuestrarioPuertaId)
+            {
+                contrato.Puerta = $scope.presupuesto.Puerta[k];
+            }
+        }
+        
+            //Servicios
+        for(var k=0; k<$scope.presupuesto.Servicio.length; k++)
+        {
+            for(var i=0; i<data.Servicio.length; i++)
+            {
+                if($scope.presupuesto.Servicio[k].ServicioId == data.Servicio[i].ServicioId)
+                {
+                    data.Servicio[k].Contrato = true;
+                    break;
+                }
+            }
+        }
+        
+            //Maqueo    
+        for(var k=0; k<$scope.presupuesto.Maqueo.length; k++)
+        {
+            if($scope.presupuesto.Maqueo[k].MaqueoId == data.OpcionContrato.MaqueoId)
+            {
+                contrato.Maqueo = $scope.presupuesto.Maqueo[k];
+            }
+        }
+        
+        
+            //accesorios
+        for(var k=0; k<contrato.Accesorio.length; k++)
+        {
+            if(!contrato.Accesorio[k].Contrato)
+            {
+                for(var i=0; i<data.Accesorio.length; k++)
+                {
+                    if(contrato.Accesorio[k].TipoAccesorioId == data.Accesorio[i].TipoAccesorioId)
+                    {
+                        contrato.Accesorio[k].Contrato = true;
+                        break;
+                    }
+                }
+            }
+        }
+        
+            //cubierta
+        contrato.TipoCubierta = {Nombre: 'No Incluye', TipoCubiertaId: null};
+
+        for(var k=0; k<$scope.presupuesto.TipoCubierta.length; k++)
+        {
+            if($scope.presupuesto.TipoCubierta[k].TipoCubiertaId == data.OpcionContrato.MaqueoId)
+            {
+                contrato.Maqueo = $scope.presupuesto.Maqueo[k];
+            }
+        }
+        
+        
     };
     
     $scope.GetIVA = function()
@@ -195,6 +303,18 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
         {
             $scope.acabado = alasql("SELECT * FROM ? WHERE Activo = true", [data]);
             
+        }).catch(function(error)
+        {
+            alert(error);
+        });
+    };
+    
+    $scope.GetPresupuestoPorProyecto = function(id)              
+    {
+        GetPresupuestoPorProyecto($http, $q, CONFIG, id, 0).then(function(data)
+        {
+            $scope.presupuestoProyecto = data;
+        
         }).catch(function(error)
         {
             alert(error);
@@ -655,6 +775,7 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
     {
         $scope.contrato.Servicio = [];
         $scope.contrato.Accesorio = [];
+        
         $scope.contrato.Subtotal = 0;
         $scope.contrato.SubtotalCubierta = 0;
         
@@ -685,8 +806,9 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
                 if($scope.presupuesto.Accesorio[k].Contrato)
                 {
                     $scope.contrato.Subtotal += parseFloat($scope.presupuesto.Accesorio[k].MuestrarioSel.PrecioVenta);
-                    $scope.contrato.Accesorio.push($scope.presupuesto.Accesorio[k]);
                 }
+                
+                $scope.contrato.Accesorio.push($scope.presupuesto.Accesorio[k]);
             }
             
             if($scope.presupuesto.Proyecto.TipoProyecto.IVA)
@@ -747,6 +869,11 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
     
     $scope.CalcularValoresContratoMueble = function()
     {   
+        $scope.contrato.TotalMueble = 0;
+        $scope.contrato.DescuentoMueble = 0;
+        $scope.contrato.IVAMueble = 0;
+        $scope.contrato.SubtotalMueble = 0;
+        
         if($scope.presupuesto.Proyecto.TipoProyecto.Mueble)
         {
             if($scope.presupuesto.Proyecto.TipoProyecto.IVA || ($scope.contrato.ConceptoVenta.ConceptoVentaId.length > 0 && $scope.contrato.ConceptoVenta.IVA))
@@ -796,6 +923,11 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
     
     $scope.CalcularValoresContratoCubierta = function()
     {    
+        $scope.contrato.TotalCubierta = 0;
+        $scope.contrato.DescuentoCubierta = 0;
+        $scope.contrato.IVACubierta = 0;
+        $scope.contrato.SubtotalCubierta2 = 0;
+        
         if($scope.contrato.SubtotalCubierta > 0)
         {
             if($scope.presupuesto.Proyecto.TipoProyecto.IVA || ($scope.contrato.ConceptoVenta.ConceptoVentaId.length > 0 && $scope.contrato.ConceptoVenta.IVA))
@@ -917,6 +1049,18 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
             return true;
         }
             
+    };
+    
+    $scope.GetDescuentoMinimo = function(promocion)
+    {
+        if(promocion.FechaLimite2 >= $scope.hoy)
+        {
+            return promocion.DescuentoMinimo;
+        }
+        else
+        {
+            return 0;
+        }
     };
     
     //----------------------- PASO 3 ---------------------------
@@ -1340,7 +1484,6 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
             $scope.contrato.TotalContado = $scope.pagos.contado;
             return true;
         }
-        
     };
     
     $scope.ValidarPagos = function(pagos, total)
@@ -1454,18 +1597,10 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
     
     $scope.ValidarPaso5 = function()
     {
+        var q = $q.defer();
+        var promesa = [];
+        
         $scope.mensajeError = [];
-        if($scope.docFiscal.nota)
-        {
-            if($scope.contrato.NoNotaCargo === undefined || $scope.contrato.NoNotaCargo == "" || $scope.contrato.NoNotaCargo === null)
-            {
-                $scope.mensajeError[$scope.mensajeError.length] = "*Escribe un número de nota de cargo válido.";
-            }
-        }
-        else
-        {
-            $scope.contrato.NoNotaCargo = null;
-        }
         
         if($scope.docFiscal.factura)
         {
@@ -1473,20 +1608,99 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
             {
                 $scope.mensajeError[$scope.mensajeError.length] = "*Escribe un número de factura válido.";
             }
+            else
+            {
+                promesa[promesa.length] = $scope.GetNoFactura($scope.contrato.NoFactura).then(function(data)
+                {
+                    if(data > 0)
+                    {
+                        $scope.mensajeError[$scope.mensajeError.length] = "*El número de factura ya existe.";
+                    }
+                    if(data < 0)
+                    {
+                        $scope.mensajeError[$scope.mensajeError.length] = "*No se puedo verificar el número de factura.";
+                    }
+                });
+            }
         }
         else
         {
             $scope.contrato.NoFactura = null;
         }
         
-        if($scope.mensajeError.length > 0)
+        if($scope.docFiscal.nota)
         {
-            return false;
+            if($scope.contrato.NoNotaCargo === undefined || $scope.contrato.NoNotaCargo == "" || $scope.contrato.NoNotaCargo === null)
+            {
+                $scope.mensajeError[$scope.mensajeError.length] = "*Escribe un número de nota de cargo válido.";
+            }
+            else
+            {
+                promesa[promesa.length] = $scope.GetNotaCargo($scope.contrato.NoNotaCargo).then(function(data)
+                {
+                    if(data > 0)
+                    {
+                        $scope.mensajeError[$scope.mensajeError.length] = "*El número de la nota de cargo ya existe.";
+                    }
+                    if(data < 0)
+                    {
+                        $scope.mensajeError[$scope.mensajeError.length] = "*No se puedo verificar el número de la nota de cargo.";
+                    }
+                });
+            }
         }
         else
         {
-            return true;
+            $scope.contrato.NoNotaCargo = null;
         }
+        
+        if($scope.contrato.DatoFiscal.Nombre.length == 0)
+        {
+            $scope.mensajeError[$scope.mensajeError.length] = "*Selecciona los datos fiscales.";
+        }
+        
+        $q.all(promesa).then(function()
+        {
+            if($scope.mensajeError.length > 0)
+            {
+                 q.resolve(false);
+            }
+            else
+            {
+                q.resolve(true);
+            }
+        });
+           
+        return q.promise;
+    };
+    
+    $scope.GetNoFactura = function(factura)              
+    {
+        var q  = $q.defer();
+        
+        GetNoFactura($http, $q, CONFIG, factura).then(function(data)
+        {
+           q.resolve(data);
+        }).catch(function(error)
+        {
+            q.resolve(-1);
+        });
+        
+        return q.promise;
+    };
+    
+    $scope.GetNotaCargo = function(nota)              
+    {
+        var q  = $q.defer();
+        GetNotaCargo($http, $q, CONFIG, nota).then(function(data)
+        {
+            return q.resolve(data);
+        }).catch(function(error)
+        {
+            return q.resolve(-1);
+        });
+        
+        return q.promise;
     };
     
     //-------------------------- PASO 6 -----------------------------
@@ -1680,22 +1894,24 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
         $scope.contrato.Persona = $scope.presupuesto.Persona;
         $scope.contrato.Proyecto = $scope.presupuesto.Proyecto;
         
-        $scope.PDFContrato();
+        
         AgregarContrato($http, CONFIG, $q, $scope.contrato).then(function(data)
         {
             if(data[0].Estatus == "Exitoso")
             {
                 $scope.contrato.ContratoId = data[1].ContratoId;
                 
-                //$scope.pasoContrato = 7;
+                $scope.pasoContrato = 7;
+                $scope.PDFContrato();
                 
-                CONTRATO.ContratoGuardado();
+                CONTRATO.ContratoGuardado($scope.contrato);
             }
             else
             {
-                //$scope.mensaje = "Ha ocurrido un error. Intente más tarde.";
+                $scope.mensaje = "Ha ocurrido un error. Intente más tarde.";
+                $('#mensajeContrato').modal('toggle');
             }
-            //$('#mensajeCita').modal('toggle');
+            
             
         }).catch(function(error)
         {
@@ -1739,56 +1955,71 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
         var lastH = 0;
         
         
-        var colaborador = $scope.usuario.NombreColaborador;
+        var colaborador = $scope.usuario.NombreCompletoColaborador;
         var cliente = $scope.contrato.Persona.Nombre + " " + $scope.contrato.Persona.PrimerApellido + " " + $scope.contrato.Persona.SegundoApellido;
-        var fechaContrato = "CD. Obregón Sonora; A "  + $scope.GetFechaContrato(new Date());
+        var fechaContrato = $scope.usuario.Ciudad.toUpperCase() + ' ' + $scope.usuario.Estado.toUpperCase() + '; A ' + $scope.GetFechaContrato(new Date()).toUpperCase();
+        var page = 0;
         
         var pageContent = function (data) 
         {
-            // HEADER
-            if (base64Img) 
+            if(page < doc.internal.getCurrentPageInfo().pageNumber)
             {
+                // HEADER
+                if (base64Img) 
+                {
+                    doc.setFontSize(10);
+                    doc.addImage(base64Img, 'JPEG', 15, 10, 30, 10);
+                }
+
+                doc.text(venta, x, 13);
+                doc.text(fecha, x, 18);
+
+                //footer
+                var cols = ["", "", ];
+                var datatabla = [
+                    ["______________________________________", "______________________________________"],
+                    ["Cliente", "Recibimos"],
+                    [cliente, "Cocinas k"],
+                    ["", colaborador],
+                ];
+
+                doc.autoTable(cols, datatabla, 
+                {
+                    margin: {top: 257},
+                    showHeader: 'never',
+                    styles: { overflow: 'linebreak', fontSize:10, fillColor: [255, 255, 255], textColor: [0, 0, 0], lineWidth: 0, halign: 'center'},
+                    columnStyles: {fillColor: [255, 255, 255]},
+                    theme: 'grid',
+                    createdCell: function(cell, opts) 
+                    {
+                        cell.styles.cellPadding = 0;
+                    }
+
+                });
+
+                var cols2 = ["" ];
+                var datatabla2 = [
+                    [fechaContrato]
+                ];
+
+                doc.autoTable(cols2, datatabla2, 
+                {
+                    margin: {top: 257},
+                    startY: doc.autoTable.previous.finalY,
+                    showHeader: 'never',
+                    styles: { overflow: 'linebreak', fontSize:10, fillColor: [255, 255, 255], textColor: [0, 0, 0], lineWidth: 0, halign: 'center'},
+                    columnStyles: {fillColor: [255, 255, 255]},
+                    theme: 'grid',
+                    createdCell: function(cell, opts) 
+                    {
+                        cell.styles.cellPadding = 0;
+                    }
+                });
+
                 doc.setFontSize(10);
-                doc.addImage(base64Img, 'JPEG', 15, 10, 30, 10);
+                
+                page = doc.internal.getCurrentPageInfo().pageNumber;
             }
-            
-            doc.text(venta, x, 13);
-            doc.text(fecha, x, 18);
-        
-            //footer
-            var cols = ["", "", ];
-            var datatabla = [
-                ["______________________________________", "______________________________________"],
-                ["Cliente", "Recibimos"],
-                [cliente, "Cocinas k"],
-                ["", colaborador],
-            ];
-
-            doc.autoTable(cols, datatabla, 
-            {
-                margin: {top: 243},
-                showHeader: 'never',
-                styles: { overflow: 'linebreak', fontSize:10, fillColor: [255, 255, 255], textColor: [0, 0, 0], lineWidth: 0, halign: 'center'},
-                columnStyles: {fillColor: [255, 255, 255]},
-                theme: 'grid',
-            });
-            
-            var cols2 = ["" ];
-            var datatabla2 = [
-                [fechaContrato]
-            ];
-
-            doc.autoTable(cols2, datatabla2, 
-            {
-                margin: {top: 243},
-                startY: doc.autoTable.previous.finalY,
-                showHeader: 'never',
-                styles: { overflow: 'linebreak', fontSize:10, fillColor: [255, 255, 255], textColor: [0, 0, 0], lineWidth: 0, halign: 'center'},
-                columnStyles: {fillColor: [255, 255, 255]},
-                theme: 'grid',
-            });
-            
-            doc.setFontSize(10);
         };
         
         //encabezado
@@ -1802,57 +2033,63 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
         
         lastH = doc.autoTable.previous.finalY;
         
-        //combinacion y proyecto
-        doc.autoTable(comt.columns, comt.data, {
-            startY: lastH + 5,
-            headerStyles: {fillColor: [255, 255, 255], textColor: 20, fontStyle: 'bold'}, 
-            styles: { overflow: 'linebreak', fontSize:10},
-            columnStyles: {text: {columnWidth: 'auto'}}
-        });
-        
-        doc.autoTable(comc.columns, comc.data, {
-            margin: {top: 25},
-            startY: doc.autoTable.previous.finalY,
-            showHeader: 'never', 
-            headerStyles: {fillColor: [230, 230, 230], fontSize:10, textColor: [0,0, 0], halign:'left', fontStyle: 'bold'},
-            styles: { overflow: 'linebreak', fontSize:10, fillColor: [255, 255, 255], textColor: [0, 0, 0], lineWidth: 0},
-            columnStyles: {fillColor: [255, 255, 255]},
-            theme: 'grid',
-        });
-        
-        //servicios
-        if($scope.contrato.Servicio.length > 0)
+        if($scope.contrato.Proyecto.TipoProyecto.Mueble)
         {
-             doc.autoTable(ser.columns, ser.data,  {
-                 margin: {top: 25},
-                startY: doc.autoTable.previous.finalY + 5,
+            //combinacion y proyecto
+            doc.autoTable(comt.columns, comt.data, {
+                startY: lastH + 5,
+                headerStyles: {fillColor: [255, 255, 255], textColor: 20, fontStyle: 'bold'}, 
+                styles: { overflow: 'linebreak', fontSize:10},
+                columnStyles: {text: {columnWidth: 'auto'}}
+            });
+
+            doc.autoTable(comc.columns, comc.data, {
+                margin: {top: 25},
+                startY: doc.autoTable.previous.finalY,
+                showHeader: 'never', 
                 headerStyles: {fillColor: [230, 230, 230], fontSize:10, textColor: [0,0, 0], halign:'left', fontStyle: 'bold'},
+                styles: { overflow: 'linebreak', fontSize:10, fillColor: [255, 255, 255], textColor: [0, 0, 0], lineWidth: 0},
+                columnStyles: {fillColor: [255, 255, 255]},
+                theme: 'grid',
+            });
+
+            //servicios
+            if($scope.contrato.Servicio.length > 0)
+            {
+                 doc.autoTable(ser.columns, ser.data,  {
+                     margin: {top: 25},
+                    startY: doc.autoTable.previous.finalY + 5,
+                    headerStyles: {fillColor: [230, 230, 230], fontSize:10, textColor: [0,0, 0], halign:'left', fontStyle: 'bold'},
+                    styles: { overflow: 'linebreak', fontSize:10, fillColor: [255, 255, 255], textColor: [0, 0, 0]},
+                    columnStyles: {fillColor: [255, 255, 255]},
+                    theme: 'grid',
+                });
+            }
+
+            //accesorio
+            doc.autoTable(acc.columns, acc.data,  {
+                margin: {top: 25},
+                startY: doc.autoTable.previous.finalY + 5,
+               headerStyles: {fillColor: [230, 230, 230], fontSize:10, textColor: [0,0, 0], halign:'left', fontStyle: 'bold'},
                 styles: { overflow: 'linebreak', fontSize:10, fillColor: [255, 255, 255], textColor: [0, 0, 0]},
                 columnStyles: {fillColor: [255, 255, 255]},
                 theme: 'grid',
             });
         }
         
-        //accesorio
-        doc.autoTable(acc.columns, acc.data,  {
-            margin: {top: 25},
-            startY: doc.autoTable.previous.finalY + 5,
-           headerStyles: {fillColor: [230, 230, 230], fontSize:10, textColor: [0,0, 0], halign:'left', fontStyle: 'bold'},
-            styles: { overflow: 'linebreak', fontSize:10, fillColor: [255, 255, 255], textColor: [0, 0, 0]},
-            columnStyles: {fillColor: [255, 255, 255]},
-            theme: 'grid',
-        });
-        
-        //cubierta
-        doc.autoTable(cub.columns, cub.data, {
-            margin: {top: 25, bottom: 50},
-            showHeader: 'firstPage',
-            startY: doc.autoTable.previous.finalY + 5,
-            headerStyles: {fillColor: [230, 230, 230], textColor: 20, fontStyle: 'bold'}, 
-            styles: { overflow: 'linebreak', fontSize:10, fillColor: [255, 255, 255], textColor: [0, 0, 0]},
-            columnStyles: {fillColor: [255, 255, 255]},
-            theme: 'grid',
-        });
+        if(($scope.contrato.Proyecto.TipoProyecto.CubiertaAglomerado || $scope.contrato.Proyecto.TipoProyecto.CubiertaPiedra ) && $scope.contrato.TipoCubierta.TipoCubiertaId != null)
+        {
+            //cubierta
+            doc.autoTable(cub.columns, cub.data, {
+                margin: {top: 25, bottom: 50},
+                showHeader: 'firstPage',
+                startY: doc.autoTable.previous.finalY + 5,
+                headerStyles: {fillColor: [230, 230, 230], textColor: 20, fontStyle: 'bold'}, 
+                styles: { overflow: 'linebreak', fontSize:10, fillColor: [255, 255, 255], textColor: [0, 0, 0]},
+                columnStyles: {fillColor: [255, 255, 255]},
+                theme: 'grid',
+            });
+        }
         
         lastH = doc.autoTable.previous.finalY;
         
@@ -1899,7 +2136,7 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
         {
                 doc.autoTable(desc.columns, desc.data, {
                 margin: {top: 25, bottom: 50},
-                addPageContent: pageContent,
+                ///addPageContent: pageContent,
                 startY: lastH + 5,
                 showHeader: 'never',
                 headerStyles: {fillColor: [255, 255, 255], textColor: 20, fontStyle: 'normal'}, 
@@ -1907,6 +2144,8 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
                 theme: 'grid',
             });
         }
+        
+        pageContent();
         
         //especificaciones
         if($scope.contrato.Especificacion.length > 0)
@@ -1948,7 +2187,7 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
         }
         
         //Desacargar pdf
-        var nombre = $scope.presupuesto.Persona.Nombre + $scope.presupuesto.Persona.PrimerApellido + $scope.contrato.ContratoId + ".pdf";
+        var nombre = 'C_' + $scope.presupuesto.Persona.Nombre + $scope.presupuesto.Persona.PrimerApellido + $scope.contrato.ContratoId + ".pdf";
         
         doc.save(nombre);
     };
@@ -1968,7 +2207,7 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
                 acc += ":";
             }
             
-            acc += accesorio.MuestrarioSel === null ? 'Pendiente (' + accesorio.MuestrarioSel.Nombre + ')' : " " + accesorio.MuestrarioSel.AccesorioSel.Nombre;
+            acc += accesorio.MuestrarioSel.AccesorioSel.AccesorioId === null ? ' Pendiente (' + accesorio.MuestrarioSel.Nombre + ')' : " " + accesorio.MuestrarioSel.AccesorioSel.Nombre;
         }
         else
         {
@@ -2089,15 +2328,18 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
                 break;
                 
             case 5:
-                if($scope.ValidarPaso5())
+                $scope.ValidarPaso5().then(function(data)
                 {
-                    $scope.GetCatalogosPaso6();
-                    $scope.pasoContrato++;
-                }
-                else
-                {
-                    return;
-                }
+                    if(data)
+                    {
+                        $scope.GetCatalogosPaso6();
+                        $scope.pasoContrato++;
+                    }
+                    else
+                    {
+                        return;
+                    }
+                });
                 break;
                 
             default: 
@@ -2165,9 +2407,14 @@ app.factory('CONTRATO',function($rootScope)
         $rootScope.$broadcast('AgregarContrato', presupuesto);
     };
     
-    service.ContratoGuardado = function()
+    service.EditarContrato = function(presupuesto, contrato)
     {
-        $rootScope.$broadcast('ContratoGuardado');
+        $rootScope.$broadcast('EditarContrato', presupuesto, contrato);
+    };
+    
+    service.ContratoGuardado = function(contrato)
+    {
+        $rootScope.$broadcast('ContratoGuardado', contrato);
     };
     
   return service;

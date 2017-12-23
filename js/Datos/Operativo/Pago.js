@@ -8,8 +8,6 @@ class Pago
         this.MedioPago = new MedioPago();
         this.Fecha = "";
         this.Hora = "";
-        this.Fecha1 = "";
-        this.Hora2 = "";
     }
 }
 

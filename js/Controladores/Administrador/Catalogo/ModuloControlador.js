@@ -287,6 +287,15 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
     $scope.AbrirModuloModal = function(operacion, objeto)
     {
         $scope.operacion = operacion;
+        
+        for(var k=0; k<$scope.consumible.length; k++)
+        {
+            $scope.consumible[k].mostrar = true;
+        }
+        for(var k=0; k<$scope.componente.length; k++)
+        {
+            $scope.componente[k].mostrar = true;
+        }
 
         if(operacion == "Agregar")
         {
@@ -1519,15 +1528,7 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
         $scope.mensajeError = [];
         $scope.nuevaMedida = {Ancho:"", Alto:"", Profundo:""};
         $scope.medidasClase = {ancho:"entrada", alto:"entrada", profundo:"entrada"};
-        
-        for(var k=0; k<$scope.consumible.length; k++)
-        {
-            $scope.consumible[k].mostrar = true;
-        }
-        for(var k=0; k<$scope.componente.length; k++)
-        {
-            $scope.componente[k].mostrar = true;
-        }
+    
     };
     
     $scope.LimpiarImagenModulo = function()
@@ -1732,6 +1733,7 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
             {
                 for(var j=0; j<$scope.consumible.length; j++)
                 {
+                    $scope.consumible[j].mostrar = true;
                     if(data[i].Consumible.ConsumibleId == $scope.consumible[j].ConsumibleId)
                     {
                         $scope.consumible[j].mostrar = false;
@@ -1757,6 +1759,7 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
             {
                 for(var j=0; j<$scope.componente.length; j++)
                 {
+                    $scope.componente[j].mostrar = true;
                     if($scope.componenteModulo[i].Componente.ComponenteId == $scope.componente[j].ComponenteId)
                     {
                         $scope.componente[j].mostrar = false;
@@ -1878,8 +1881,6 @@ app.controller("ModuloControlador", function($scope, $http, $q, CONFIG, datosUsu
     {
         $scope.tipoSeccion = GetSeccionModulo();
     };
-    
-    
     
     /*-------Inicializar-------*/
     $scope.InicializarModuloModulos = function()

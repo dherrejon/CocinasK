@@ -150,3 +150,147 @@
     outline: none !important;
     box-shadow: none !important;
 }
+
+.btnOptContrato, .btnOptContrato:active, .btnOptContrato:focus
+{
+    border: 1px solid lightgray;
+    background: white;
+    color: #262626;
+    border-radius: 0px;
+    width: 22px;
+    
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.btnOptContrato:hover
+{
+    background: lightgray;
+}
+
+/*--------- Archivos Arrastar -------------------*/
+.files input 
+{
+    outline: 2px dashed gray;
+    outline-offset: -10px;
+    -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear;
+    transition: outline-offset .15s ease-in-out, background-color .15s linear;
+    padding: 60px 0px 70px 20%;
+    text-align: center !important;
+    margin: 0;
+    width: 100% !important;
+    border-radius: 0px;
+    
+    
+    opacity: 0;
+	filter: alpha(opacity=0);
+}
+
+
+.files:hover
+{
+    outline: 2px dashed #262626;  outline-offset: -10px;
+    -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear;
+    transition: outline-offset .15s ease-in-out, background-color .15s linear; border:1px solid #262626;
+    
+    box-shadow: none;
+ }
+
+.files
+{ 
+    position:relative;
+    background: white;
+    outline: 2px dashed gray;
+    outline-offset: -10px;
+    text-align: center !important;
+    border:1px solid gray;
+}
+
+.color input
+{ 
+    background-color:gray;
+}
+
+.files:after 
+{  
+    pointer-events: none;
+    position: absolute;
+    top: 25px;
+    width: 100%;
+    right: 0;
+    
+    content: "\f093";
+    font-family: FontAwesome;
+    font-size: 24pt;
+    
+    display: block;
+    margin: 0 auto;
+    
+     text-align: center;
+}
+
+.files:before 
+{
+    position: absolute;
+    bottom: 25px;
+    left: 0;  
+    pointer-events: none;
+    width: 100%;
+    right: 0;
+    height: auto;
+    content: " Selecciona o arrastra tu imagen aqui. ";
+    display: block;
+    margin: 0 auto;
+    color: #262626;
+    font-weight: 600;
+    text-align: center;
+}
+
+.textoSaldos
+{
+    color: gray;
+    font-size: 13pt;
+}
+
+.textoSaldosInfo
+{
+    font-size: 13pt;
+    color: black;
+}
+
+@media (max-width: 767px)
+{    
+    .textoSaldos
+    {
+        color: gray;
+        font-size: 11pt;
+    }
+
+    .textoSaldosInfo
+    {
+        font-size: 11pt;
+    }
+}
+
+.marginDropdown
+{
+    margin-left:  50%;
+}
+
+/*----- Cancelar ---*/
+.btnRed, .btnRed:focus, .btnRed:active
+{
+    background: white;  
+    color:  #970000;
+    border: 2px solid  #970000;
+    border-radius: 0px;
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.btnRed:hover
+{
+    color: white;  
+    background:  #970000; 
+}

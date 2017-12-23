@@ -126,6 +126,10 @@ function SetUsuario(data)
     usuario.Password = "";
     usuario.SesionIniciada = true;
     usuario.NombreColaborador = data[0].NombreColaborador;
+    usuario.NombreCompletoColaborador = data[0].NombreCompletoColaborador;
+    usuario.Estado = data[0].Estado;
+    usuario.Ciudad = data[0].Ciudad;
+    usuario.Municipio = data[0].NombreCompletoColaborador;
 
     var administrador = false;
     var ejecutivo = false;

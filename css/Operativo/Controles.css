@@ -211,7 +211,7 @@
 }
 
 /*------- dropdown punta ---------*/
-.dropdownRight
+.dropdownRight, .dropdownLeft
 {
     border-radius: 0px;
     border: solid 2px #262626;
@@ -235,6 +235,28 @@
     position: absolute;
     top: -18px;
     right: 5px;
+    
+    border: 9px solid transparent;
+    border-bottom-color: white;
+}
+
+.dropdownLeft:before
+{
+    content: "";
+    position: absolute;
+    top: -24px;
+    left: 2px;
+    
+    border: 12px solid transparent;
+    border-bottom-color: #262626;
+}
+
+.dropdownLeft:after
+{
+    content: "";
+    position: absolute;
+    top: -18px;
+    left: 5px;
     
     border: 9px solid transparent;
     border-bottom-color: white;

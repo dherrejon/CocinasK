@@ -1,4 +1,4 @@
-app.controller("ProyectoClienteControlador", function($scope, $rootScope, CITA, $http, $q, CONFIG, PRESUPUESTO, DOMICILIO, OPEPRESUPUESTO, CONTRATO)
+app.controller("ProyectoClienteControlador", function($scope, $rootScope, CITA, $http, $q, CONFIG, PRESUPUESTO, DOMICILIO, OPEPRESUPUESTO, CONTRATO, $filter, datosUsuario)
 {  
     $scope.proyecto = [];
     $scope.estatus = [];
@@ -9,6 +9,8 @@ app.controller("ProyectoClienteControlador", function($scope, $rootScope, CITA, 
     
     $scope.verDetalle = {desCliente: false, desInterna: false, combinacion: false, modulo: false, puerta: false, servicio: false, maqueo: false, accesorio: false, cubiertaAglomerado: false, cubiertaPiedra: false, promocion: false};
     $scope.verTipoCubierta = {aglomerado: false, piedra: false};
+    
+    $scope.usuario =  datosUsuario.getUsuario(); 
     
     $scope.GetPromocionPersona = function(id)              
     {
@@ -33,7 +35,22 @@ app.controller("ProyectoClienteControlador", function($scope, $rootScope, CITA, 
     {
         GetProyectoPersona($http, $q, CONFIG, id).then(function(data)
         {
-            $scope.proyecto = data;
+            
+            if(!$rootScope.permisoOperativo.verTodosCliente)
+            {
+                $scope.proyecto = [];
+                for(var k=0; k<data.length; k++)
+                {
+                    if(data[k].UnidadNegocioId == $scope.usuario.UnidadNegocioId)
+                    {
+                        $scope.proyecto.push(data[k]);
+                    }
+                }
+            }
+            else
+            {
+                $scope.proyecto = data;
+            }
         
         }).catch(function(error)
         {
@@ -43,7 +60,7 @@ app.controller("ProyectoClienteControlador", function($scope, $rootScope, CITA, 
     
     $scope.GetPresupuestoPorProyecto = function(proyecto)              
     {
-        GetPresupuestoPorProyecto($http, $q, CONFIG, proyecto.ProyectoId).then(function(data)
+        GetPresupuestoPorProyecto($http, $q, CONFIG, proyecto.ProyectoId, 0).then(function(data)
         {
             proyecto.Presupuesto = data;
             console.log(data);
@@ -56,6 +73,7 @@ app.controller("ProyectoClienteControlador", function($scope, $rootScope, CITA, 
     
     $scope.GetDatosPresupuesto = function(presupuesto, opt)              
     {
+        console.log(presupuesto);
         GetDatosPresupuesto($http, $q, CONFIG, presupuesto).then(function(data)
         {
             if(data[0].Estatus == "Exitoso")
@@ -256,6 +274,7 @@ app.controller("ProyectoClienteControlador", function($scope, $rootScope, CITA, 
         proyecto.Nombre = data.Nombre;
         proyecto.TipoProyecto.TipoProyectoId = data.TipoProyecto.TipoProyectoId;
         proyecto.TipoProyecto.Nombre = data.TipoProyecto.Nombre;
+        proyecto.UnidadNegocioId = data.UnidadNegocioId;
         
         proyecto.Domicilio = jQuery.extend({}, data.Domicilio);
         
@@ -312,6 +331,7 @@ app.controller("ProyectoClienteControlador", function($scope, $rootScope, CITA, 
     {
         $scope.SetDatosPresupuesto(presupuesto, proyecto);
         $scope.presupuestoEditar = presupuesto;
+        $scope.proyectoEditar = proyecto;
         
         $scope.GetDatosPresupuesto(presupuesto, "Editar");
     };
@@ -326,8 +346,10 @@ app.controller("ProyectoClienteControlador", function($scope, $rootScope, CITA, 
         $scope.presupuestoEditar.CantidadMaqueo = parseFloat(pre.CantidadMaqueo);
         $scope.presupuestoEditar.FechaCreacion = TransformarFecha(pre.FechaCreacion);
         $scope.presupuestoEditar.Titulo = pre.Titulo;
-        $scope.presupuestoEditar.UsuarioId = pre.UsuarioId; 
+        $scope.presupuestoEditar.UsuarioId = pre.UsuarioId;  
         $scope.presupuestoEditar = null;
+        
+        $scope.proyectoEditar.UnidadNegocioId = pre.Proyecto.UnidadNegocioId;
         
         $scope.GetPromocionPersona($rootScope.personaId);
     });
@@ -562,6 +584,31 @@ app.controller("ProyectoClienteControlador", function($scope, $rootScope, CITA, 
         $scope.proyectoContrato = proyecto;
         $scope.GetDatosPresupuesto(presupuesto, "Contrato");
     };
+    
+    $scope.$on('ContratoGuardado',function(evento, contrato)
+    {
+        console.log(contrato);
+        
+        for(var i=0; i<$scope.proyecto.length; i++)
+        {
+            if($scope.proyecto[i].ProyectoId == contrato.ProyectoId)
+            {
+                $scope.proyecto[i].EstatusProyecto.EstatusProyectoId = "2";
+                $scope.proyecto[i].EstatusProyecto.Nombre = "Contratado";
+                
+                for(var j=0; j<$scope.proyecto[i].Presupuesto.length; j++)
+                {
+                    if($scope.proyecto[i].Presupuesto[j].PresupuestoId == contrato.PresupuestoId)
+                    {
+                        $scope.proyecto[i].Presupuesto[j].ContratoId = contrato.ContratoId;  
+                        break;
+                    }
+                }
+                
+                break;
+            }
+        }
+    });
     
     
     //Inicializar

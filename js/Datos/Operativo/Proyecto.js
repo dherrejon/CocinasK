@@ -162,6 +162,40 @@ function GetProyectoPersona($http, $q, CONFIG, id)
     return q.promise;
 }
 
+function GetProyecto($http, $q, CONFIG, id)    
+{
+    var q = $q.defer();
+
+    $http({      
+          method: 'GET',
+          url: CONFIG.APIURL + '/GetProyecto/'+id,
+
+      }).success(function(data)
+        {
+            if(data[0].Estatus == "Exito")
+            {
+                var proyecto = [];
+                
+                for(var k=0; k<data[1].Proyecto.length; k++)
+                {
+                    proyecto[k] = SetProyecto(data[1].Proyecto[k]);
+                }
+                
+                q.resolve(proyecto);
+            }
+            else
+            {
+               q.resolve([]);  
+            }
+            
+        }).error(function(data){
+            q.resolve([]);
+     }); 
+    
+    return q.promise;
+}
+
+
 function SetProyecto(data)
 {
     var proyecto = new Proyecto();
@@ -172,6 +206,7 @@ function SetProyecto(data)
     proyecto.TipoProyecto = new TipoProyecto();
     proyecto.TipoProyecto.TipoProyectoId = data.TipoProyectoId;
     proyecto.TipoProyecto.Nombre = data.NombreTipoProyecto;
+    proyecto.UnidadNegocioId = data.UnidadNegocioId;
     
     proyecto.EstatusProyecto = new EstatusProyecto();
     proyecto.EstatusProyecto.EstatusProyectoId = data.EstatusProyectoId;
@@ -318,13 +353,13 @@ function EditarProyecto($http, $q, CONFIG, proyecto)
 }
 
 //----------------------- Presupuesto --------------------
-function GetPresupuestoPorProyecto($http, $q, CONFIG, id)    
+function GetPresupuestoPorProyecto($http, $q, CONFIG, id, presupuestoId)    
 {
     var q = $q.defer();
     
     $http({      
           method: 'GET',
-          url: CONFIG.APIURL + '/GetPresupuestoPorProyecto/' + id,
+          url: CONFIG.APIURL + '/GetPresupuestoPorProyecto/' + id + "/" +presupuestoId,
         
       }).success(function(data)
         {

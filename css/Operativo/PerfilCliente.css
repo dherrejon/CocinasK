@@ -87,6 +87,11 @@
     color: #970000;
 }
 
+.textoRojoClaro
+{
+    color: red;
+}
+
 .textoVerde
 {
     color: green;
@@ -100,6 +105,11 @@
 .textoNaranja
 {
     color: rgb(250, 97, 21) !important;
+}
+
+.textoRojo
+{
+    color: #970000 !important;
 }
 
 /*----------------proyecto----------*/
@@ -136,51 +146,64 @@
 }
 
 
-.btnStatusProyecto.Activo
+.btnStatusProyecto.Activo, .btnStatusProyecto.Pagado
 {
     border: 2px solid #08088A;
     color: #08088A;
 }
 
-.btnStatusProyecto.Cancelado
+.btnStatusProyecto.Cancelado, .btnStatusProyecto.Detenido
 {
     border: 2px solid #B40404;
     color: #B40404;
 }
 
-.btnStatusProyecto.Contratado, .btnStatusProyecto.Contratado:hover:disabled
+.btnStatusProyecto.Contratado, .btnStatusProyecto.Contratado:hover:disabled, .btnStatusProyecto.Entregado, .btnStatusProyecto.Entregado:hover:disabled
 {
     border: 2px solid #088A29;
     color: #088A29;
 }
 
-.btnStatusProyecto.Pendiente
+.btnStatusProyecto.Pendiente, .btnStatusProyecto.Atrasado
 {
     border: 2px solid #FF8000;
     color: #FF8000;
 }
 
-.btnStatusProyecto.Activo:hover
+.btnStatusProyecto.Activo:hover, .btnStatusProyecto.Pagado:hover
 {
     background: #08088A;
     color: white;
 }
 
-.btnStatusProyecto.Cancelado:hover
+.btnStatusProyecto.Cancelado:hover, .btnStatusProyecto.Detenido:hover
 {
     background: #B40404;
     color: white;
 }
 
-.btnStatusProyecto.Contratado:hover
+.btnStatusProyecto.Contratado:hover, .btnStatusProyecto.Entregado:hover
 {
     background: #088A29;
     color: white;
 }
 
-.btnStatusProyecto.Pendiente:hover
+.btnStatusProyecto.Pendiente:hover, .btnStatusProyecto.Atrasado:hover
 {
     background: #FF8000;
+    color: white;
+}
+
+.btnStatusProyecto.EnProgreso
+{
+    color: #2E9AFE;
+    background: white;
+    border: 2px solid #2E9AFE;
+}
+
+.btnStatusProyecto.EnProgreso:hover
+{
+    background: #2E9AFE;
     color: white;
 }
 
