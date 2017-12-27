@@ -291,13 +291,14 @@ function AgregarProyectoPresupuesto()
     }
     else
     {
-        $sql = "UPDATE Proyecto SET DireccionPersonaId = :DireccionPersonaId WHERE ProyectoId = ".$presupuesto->Proyecto->ProyectoId."";
+        $sql = "UPDATE Proyecto SET DireccionPersonaId = :DireccionPersonaId, UnidadNegocioId = :UnidadNegocioId WHERE ProyectoId = ".$presupuesto->Proyecto->ProyectoId."";
         
         try 
         {
             $stmt = $db->prepare($sql);
             
             $stmt->bindParam("DireccionPersonaId", $presupuesto->Proyecto->Domicilio->DomicilioId);
+            $stmt->bindParam("UnidadNegocioId", $presupuesto->Proyecto->UnidadNegocioId);
             
             $stmt->execute();
 
@@ -851,7 +852,7 @@ function GetPresupuestoPorProyecto($id, $idpresupuesto)
     $request = \Slim\Slim::getInstance()->request();
     $sql = "SELECT * FROM PresupuestoVista WHERE ProyectoId = ".$id;
     
-    if($idpresupusto > 0)
+    if($idpresupuesto > 0)
     {
         $sql .= " AND PresupuestoId = ".$idpresupuesto;
     }

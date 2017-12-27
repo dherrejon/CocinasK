@@ -131,6 +131,8 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
     $scope.SetDatosContrato = function(data, contrato)
     {
         console.log(data);
+        console.log($scope.presupuesto);
+
         contrato.FechaVenta = data.FechaVentaFormato;
         contrato.NoNotaCargo = data.NoNotaCargo;
         contrato.NoFactura = data.NoFactura;
@@ -153,60 +155,192 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
             if($scope.presupuesto.Puerta[k].MuestrarioId == data.OpcionContrato.MuestrarioPuertaId)
             {
                 contrato.Puerta = $scope.presupuesto.Puerta[k];
+                
+                if(data.OpcionContrato.PuertaId)
+                {
+                    contrato.Puerta.PuertaSeleccionada = {Nombre:data.OpcionContrato.NombrePuerta, PuertaId: data.OpcionContrato.PuertaId}; 
+                }
+                else
+                {
+                    contrato.Puerta.PuertaSeleccionada = {Nombre:'Pendiente', PuertaId: null}; 
+                }
+                break;
             }
         }
         
             //Servicios
         for(var k=0; k<$scope.presupuesto.Servicio.length; k++)
-        {
+        {            
             for(var i=0; i<data.Servicio.length; i++)
             {
                 if($scope.presupuesto.Servicio[k].ServicioId == data.Servicio[i].ServicioId)
                 {
-                    data.Servicio[k].Contrato = true;
+                    $scope.presupuesto.Servicio[k].Contrato = true;
                     break;
                 }
             }
         }
         
-            //Maqueo    
+            //Maqueo  
         for(var k=0; k<$scope.presupuesto.Maqueo.length; k++)
         {
             if($scope.presupuesto.Maqueo[k].MaqueoId == data.OpcionContrato.MaqueoId)
             {
                 contrato.Maqueo = $scope.presupuesto.Maqueo[k];
+                
+                if(data.OpcionContrato.ColorMaqueoId)
+                {
+                    contrato.Maqueo.ColorSel = {Nombre:data.OpcionContrato.NombreColor, ColorId: data.OpcionContrato.ColorMaqueoId}; 
+                }
+                else
+                {
+                    contrato.Maqueo.ColorSel = {Nombre:'Pendiente', ColorId: null};    
+                }
+                
+                break;
             }
         }
         
         
             //accesorios
-        for(var k=0; k<contrato.Accesorio.length; k++)
+        for(var k=0; k<$scope.presupuesto.Accesorio.length; k++)
         {
-            if(!contrato.Accesorio[k].Contrato)
+            for(var i=0; i<data.Accesorio.length; i++)
             {
-                for(var i=0; i<data.Accesorio.length; k++)
+                if($scope.presupuesto.Accesorio[k].TipoAccesorioId == data.Accesorio[i].TipoAccesorioId)
                 {
-                    if(contrato.Accesorio[k].TipoAccesorioId == data.Accesorio[i].TipoAccesorioId)
+                    $scope.presupuesto.Accesorio[k].Contrato = true;
+
+                    for(var j=0; j<$scope.presupuesto.Accesorio[k].Muestrario.length; j++)
                     {
-                        contrato.Accesorio[k].Contrato = true;
-                        break;
+                        if($scope.presupuesto.Accesorio[k].Muestrario[j].MuestrarioId == data.Accesorio[i].MuestrarioId)
+                        {
+                            $scope.presupuesto.Accesorio[k].MuestrarioSel = $scope.presupuesto.Accesorio[k].Muestrario[j];
+                            break;
+                        }
                     }
+                    
+                    
+                    if(data.Accesorio[i].AccesorioId)
+                    {
+                        $scope.presupuesto.Accesorio[k].MuestrarioSel.AccesorioSel = {Nombre:data.Accesorio[i].NombreAccesorio, AccesorioId: data.Accesorio[i].AccesorioId};
+                    }
+                    else
+                    {
+                        $scope.presupuesto.Accesorio[k].MuestrarioSel.AccesorioSel = {Nombre:'Pendiente', AccesorioId: null};
+                    }
+
+                    break;
                 }
             }
         }
         
             //cubierta
         contrato.TipoCubierta = {Nombre: 'No Incluye', TipoCubiertaId: null};
-
+            
+            //tipo cubierta
         for(var k=0; k<$scope.presupuesto.TipoCubierta.length; k++)
         {
-            if($scope.presupuesto.TipoCubierta[k].TipoCubiertaId == data.OpcionContrato.MaqueoId)
+            if($scope.presupuesto.TipoCubierta[k].TipoCubiertaId == data.Cubierta.TipoCubiertaId)
             {
-                contrato.Maqueo = $scope.presupuesto.Maqueo[k];
+                $scope.CambiarTipoCubierta($scope.presupuesto.TipoCubierta[k]);
+                
+                
+                for(var j=0; j<$scope.presupuesto.TipoCubierta[k].Material.length; j++)
+                {
+                    if($scope.presupuesto.TipoCubierta[k].Material[j].MaterialId == data.Cubierta.MaterialId && $scope.presupuesto.TipoCubierta[k].Material[j].GrupoId == data.Cubierta.GrupoId )
+                    {
+                        $scope.contrato.TipoCubierta.GrupoUbicacion[0].MaterialAux = $scope.presupuesto.TipoCubierta[k].Material[j].NombreMaterial;
+                        $scope.contrato.TipoCubierta.GrupoUbicacion[0].MaterialSel = $scope.presupuesto.TipoCubierta[k].Material[j];
+                        break;
+                    }
+                }
+                
+                if(data.Cubierta.AcabadoCubiertaId)
+                {
+                    contrato.TipoCubierta.Acabado = {Nombre:data.Cubierta.NombreAcabadoCubierta, AcabadoCubiertaId:data.Cubierta.AcabadoCubiertaId};
+                }
+                else
+                {
+                    contrato.TipoCubierta.Acabado = {Nombre:'Pendiente', AcabadoCubiertaId:null};
+                }
+                
+                if(data.Cubierta.ColorId)
+                {
+                    $scope.contrato.TipoCubierta.GrupoUbicacion[0].MaterialSel.ColorSel = {Nombre:data.Cubierta.NombreColor, ColorId:data.Cubierta.ColorId}
+                }
+                else
+                {
+                    $scope.contrato.TipoCubierta.GrupoUbicacion[0].MaterialSel.ColorSel = {Nombre:'Pendiente', ColorId:null};
+                }
+                
+                
+                break;
             }
         }
         
+            //ubicacion
+        for(var k=0; k<$scope.contrato.TipoCubierta.Ubicacion.length; k++)
+        {
+            $scope.contrato.TipoCubierta.Ubicacion[k].Contrato = false;
+            
+            for(var i=0; i<data.UbicacionCubierta.length; i++)
+            {
+                if(data.UbicacionCubierta[i].UbicacionCubiertaId == $scope.contrato.TipoCubierta.Ubicacion[k].UbicacionCubiertaId)
+                {
+                    $scope.contrato.TipoCubierta.Ubicacion[k].Contrato = true;
+                    $scope.GetPrecioVentaCubierta($scope.contrato.TipoCubierta.Ubicacion[k]);
+                    break;
+                }
+            }
+        }
         
+        //--- Paso 2 ---
+        contrato.ConceptoVenta = new ConceptoVenta();
+        contrato.ConceptoVenta.Nombre = data.ConceptoVenta.Nombre;
+        contrato.ConceptoVenta.ConceptoVentaId = data.ConceptoVenta.ConceptoVentaId;
+        contrato.ConceptoVenta.IVA = data.ConceptoVenta.IVA == "1" ? true:false;
+        
+        $scope.QuitarPromocion('Mueble');
+        $scope.QuitarPromocion('Cubierta');
+        
+        for(var k=0; k<data.Promocion.length; k++)
+        {
+            if(data.Promocion[k].TipoVentaId == "1")
+            {
+                contrato.PromocionMueble = $scope.SetPromocionDato(data.Promocion[k]);
+            }
+            else if(data.Promocion[k].TipoVentaId == "2")
+            {
+                contrato.PromocionCubierta = $scope.SetPromocionDato(data.Promocion[k]);
+            }
+        }
+        
+    };
+    
+    $scope.SetPromocionDato = function(data)
+    {
+        var promocion = new Promocion();
+        
+        promocion.Descuento = parseInt(data.Descuento);
+        promocion.DescuentoMinimo = parseInt(data.DescuentoMinimo);
+        promocion.DescuentoMaximo = parseInt(data.DescuentoMaximo);
+        promocion.NumeroPagos = parseInt(data.NumeroPagos);
+        promocion.FechaLimite2 = data.FechaLimite;
+        
+        if(data.FechaLimite)
+        {
+            promocion.FechaLimite = TransformarFecha(data.FechaLimite);
+        }
+        else
+        {
+            promocion.FechaLimite  = null;
+        }
+        
+        promocion.TipoVentaId = data.TipoVentaId;
+        promocion.TipoPromocionId = data.TipoPromocionId;
+        
+        return promocion;
     };
     
     $scope.GetIVA = function()
@@ -240,7 +374,7 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
             {
                 $scope.GetAcabadoCubierta();
             }
-            
+                    
         }).catch(function(error)
         {
             alert(error);
@@ -278,6 +412,7 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
         GetAccesorioPorMuestrario($http, $q, CONFIG, muestrario.MuestrarioId).then(function(data)
         {
             muestrario.Accesorio = alasql("SELECT * FROM ? WHERE Activo = true", [data]);
+            
             
         }).catch(function(error)
         {
@@ -356,6 +491,15 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
                     
                     fechaEnt = new Date();
                     
+                    if($scope.operacion == "Editar")
+                    {
+                        var y = $scope.contratoAux.FechaVenta.slice(0,4);
+                        var m = parseInt($scope.contratoAux.FechaVenta.slice(5,7))-1;
+                        var d = $scope.contratoAux.FechaVenta.slice(8);
+
+                        fecha = new Date(y, m, d);
+                    }
+                    
                     fechaEnt.setDate(fecha.getDate()+parseInt($scope.planPago[k].FechaEntrega));
 
                     $scope.planPago[k].FechaFin = fechaEnt.getDate() + "/" + GetMesNombre(fechaEnt.getMonth()) + "/" + fechaEnt.getFullYear();
@@ -364,6 +508,18 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
                     $scope.planPago[k].Contrato = false;
                 }
                 
+                if($scope.operacion == "Editar")
+                {
+                    for(var k=0; k<data.length; k++)
+                    {
+                        data[k].Contrato = true;
+                        if(data[k].PlanPagoId == $scope.contratoAux.PlanPagoId)
+                        {
+                            $scope.CambiarPlan(data[k]);
+                            break;
+                        }
+                    }
+                }
             }
             else
             {
@@ -574,11 +730,11 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
     {
         var grupo = [];
         
-        if(tipo.TipoCubiertaId == "2")
-        {
+        //if(tipo.TipoCubiertaId == "2")
+        //{
             grupo[0] = $scope.grupoUbicacion[0];
-        }
-        else if(tipo.TipoCubiertaId == "1")
+        //}
+        /*else if(tipo.TipoCubiertaId == "1")
         {
             var c13 = false; //grupo de ubicacion cubierta y barra
             var c24 = false; //grupo de ubicacion backsplash e isla
@@ -606,7 +762,7 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
             {
                 grupo[grupo.length] = $scope.grupoUbicacion[2];
             }
-        }
+        }*/
     
         $scope.contrato.TipoCubierta.GrupoUbicacion = grupo;
         
@@ -1206,6 +1362,16 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
         for(var k=0; k<plan.Abono.length; k++)
         {
             fecha = new Date();
+            
+            if($scope.operacion == "Editar")
+            {
+                var y = $scope.contratoAux.FechaVenta.slice(0,4);
+                var m = parseInt($scope.contratoAux.FechaVenta.slice(5,7))-1;
+                var d = $scope.contratoAux.FechaVenta.slice(8);
+                
+                fecha = new Date(y, m, d);
+            }
+            
             fecha.setDate(fecha.getDate() + parseInt(plan.Abono[k].Dias));
             
             mes = parseInt(fecha.getMonth());

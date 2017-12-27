@@ -136,8 +136,7 @@ app.controller("ContratoClienteControlador", function($scope, $rootScope, CITA, 
         GetProyecto($http, $q, CONFIG, id).then(function(data)
         {
             $scope.detalle.Proyecto = data[0];
-            $scope.GetDatosPresupuesto();
-        
+            $scope.GetPromocionPersona($scope.detalle.Persona.PersonaId);        
         }).catch(function(error)
         {
             alert(error);
@@ -154,6 +153,29 @@ app.controller("ContratoClienteControlador", function($scope, $rootScope, CITA, 
                 $scope.detalle.Persona = $rootScope.persona;
                 $scope.GetProyecto(proyectoId); 
             }
+        
+        }).catch(function(error)
+        {
+            alert(error);
+        });
+    };
+    
+    $scope.GetPromocionPersona = function(id)              
+    {
+        GetPromocionPersona($http, $q, CONFIG, id).then(function(data)
+        {
+            if(data[0].Estatus == "Exitoso")
+            {
+                $scope.detalle.PromocionCubierta = data[1].Promocion.PromocionCubierta;
+                $scope.detalle.PromocionMueble = data[1].Promocion.PromocionMueble;
+            }
+            else
+            {
+                $scope.detalle.PromocionCubierta = [];
+                $scope.detalle.PromocionMueble = [];
+            }
+            
+            $scope.GetDatosPresupuesto();
         
         }).catch(function(error)
         {

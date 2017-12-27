@@ -1499,14 +1499,14 @@
                         
                         <div class="panelItemPresupuesto itemPuerta">
                         
-                            <div class="row" style="margin-bottom: 10px">
+                            <!--<div class="row" style="margin-bottom: 10px">
                                <div class="col-xs-12">
                                    <span ng-repeat="disponible in cubierta.Ubicacion" class="textoInstruccion">
                                        <span ng-if="!$last">{{disponible.Nombre}},</span>
                                        <span ng-if="$last">{{disponible.Nombre}}</span>
                                    </span>
                                </div>
-                            </div>
+                            </div>-->
                         
                             <div class="row">
                                <div class="col-xs-12">
@@ -2097,9 +2097,9 @@
                         </div>
                     </div>
                 
-                    <span class="textoInstruccion" ng-show="tipoCubiertaPresupuesto == '2' ">Selecciona un material</span><br ng-show="tipoCubiertaPresupuesto == '2' ">
+                    <span class="textoInstruccion" ng-show="tipoCubiertaPresupuesto">Selecciona un material</span><br ><!-- ng-show="tipoCubiertaPresupuesto == '2' " -->
                     <div class="row">
-                      <div ng-repeat="cubierta in cubierta | orderBy:'Material.Nombre'" ng-show=" tipoCubiertaPresupuesto == '2' && cubierta.TipoCubierta.TipoCubiertaId == '2'">
+                      <div ng-repeat="cubierta in cubierta | orderBy:'Material.Nombre'" ng-show="tipoCubiertaPresupuesto  && cubierta.TipoCubierta.TipoCubiertaId == tipoCubiertaPresupuesto"><!-- ng-show=" tipoCubiertaPresupuesto == '2' && cubierta.TipoCubierta.TipoCubiertaId == '2'" -->
                            <div ng-repeat="grupo in cubierta.Grupo | orderBy:'Total'" ng-show="grupo.PorDefecto && grupo.Grupo.Activo && grupo.Color.length > 0">
                                <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4" style="margin-bottom:15px">
 
@@ -2122,10 +2122,10 @@
                         </div>
                     </div>
                     
-                    <div ng-if="MotrarLabelCubiertaAglomerado13()">
+                    <!--<div ng-if="MotrarLabelCubiertaAglomerado13()">
                         <span class="textoInstruccion" ng-show="tipoCubiertaPresupuesto == '1' ">Selecciona un material para la cubierta y la barra</span><br>
                         <div class="row">
-                          <div ng-repeat="cubierta in cubierta | orderBy:'Material.Nombre'" ng-if=" tipoCubiertaPresupuesto == '1' && cubierta.TipoCubierta.TipoCubiertaId == '1' && MostrarCubiertaAglomerado13(cubierta.Ubicacion)"><!-- 1 y 3 el id de las ubicaciones de cubierta y barra -->
+                          <div ng-repeat="cubierta in cubierta | orderBy:'Material.Nombre'" ng-if=" tipoCubiertaPresupuesto == '1' && cubierta.TipoCubierta.TipoCubiertaId == '1' && MostrarCubiertaAglomerado13(cubierta.Ubicacion)"><!-- 1 y 3 el id de las ubicaciones de cubierta y barra --
                                <div ng-repeat="grupo in cubierta.Grupo | orderBy:'Total'" ng-show="grupo.PorDefecto && grupo.Grupo.Activo && grupo.Color.length > 0">
                                    <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4" style="margin-bottom:15px">
 
@@ -2152,7 +2152,7 @@
                     <div ng-if="MotrarLabelCubiertaAglomerado24()">
                         <span class="textoInstruccion" ng-show="tipoCubiertaPresupuesto == '1' ">Selecciona un material para el backsplash y la Isla</span><br>
                         <div class="row">
-                          <div ng-repeat="cubierta in cubierta | orderBy:'Material.Nombre'" ng-if="tipoCubiertaPresupuesto == '1' && cubierta.TipoCubierta.TipoCubiertaId == '1' && MostrarCubiertaAglomerado24(cubierta.Ubicacion)"> <!-- 2 y 4 el id de las ubicaciones de backsplash e isla -->
+                          <div ng-repeat="cubierta in cubierta | orderBy:'Material.Nombre'" ng-if="tipoCubiertaPresupuesto == '1' && cubierta.TipoCubierta.TipoCubiertaId == '1' && MostrarCubiertaAglomerado24(cubierta.Ubicacion)"> <!-- 2 y 4 el id de las ubicaciones de backsplash e isla --
                                <div ng-repeat="grupo in cubierta.Grupo | orderBy:'Total'" ng-show="grupo.PorDefecto && grupo.Grupo.Activo && grupo.Color.length > 0">
                                    <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4" style="margin-bottom:15px">
 
@@ -2174,7 +2174,7 @@
                               </div>
                             </div>
                         </div>
-                    </div>
+                    </div>-->
 
                     <!-- Divisor -->
                     <div class="divisorGis1"></div> 

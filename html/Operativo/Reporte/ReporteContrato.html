@@ -184,7 +184,7 @@
 
                                     <ul class="dropdown-menu dropdown-menu-right dropdownRight" style="margin-top: 5px; width: auto">
                                         <li>
-                                            <a class="dropdownOpcionModal" ng-click="VerDetallePresupuesto(contrato.PresupuestoId, contrato.ProyectoId)">
+                                            <a class="dropdownOpcionModal" ng-click="VerDetallePresupuesto(contrato.PresupuestoId, contrato.ProyectoId, contrato)">
                                                 <span class="fa fa-file-text-o"></span> Ver Presupuesto
                                             </a>
                                         </li>
@@ -192,6 +192,12 @@
                                         <li >
                                             <a class="dropdownOpcionModal" ng-click="DetalleContrato(contrato)">
                                                 <span class="fa fa-eye"></span> Ver Contrato
+                                            </a>
+                                        </li>
+                                        
+                                        <li>
+                                            <a class="dropdownOpcionModal"  ng-click="DescargarContrato(contrato)">
+                                                <span class="fa fa-download"></span> Descargar Contrato
                                             </a>
                                         </li>
                                     </ul>
@@ -213,6 +219,29 @@
                </div>
            </div>
        </div>
+    </div>
+    
+    <div ng-include=" 'html/Operativo/Cliente/Perfil/DetalleProyecto.html' "> </div>
+    <div ng-include=" 'html/Operativo/Cliente/Perfil/DetalleContrato.html' "> </div> 
+    
+    <!-- Modal para mensajes -->
+    <div class="modal fade sombraDivModal" id="mensajeReporteContrato" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <br>    <br>   <br>
+        <div class="modal-dialog modalPrincipal modal-sm">
+           <br>
+            <div class="row">
+                <div class="col-xs-12 text-center" style="font-size:12pt">
+                   {{mensaje}}
+                </div>
+            </div>
+            <br>
+            <div class="row">
+            
+                <div class="col-xs-12">
+                    <button focus class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close">Aceptar</button>
+                </div>
+            </div>
+        </div>   
     </div>
     
 </div>

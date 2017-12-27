@@ -21,8 +21,6 @@ app.controller("ReportePagoController", function($scope, $rootScope, $http, $q, 
                 $scope.permiso.ver = true;
             }
         }
-        
-        console.log($scope.permiso);
     };
     
     $scope.GetUnidadNegocio = function()
@@ -32,7 +30,6 @@ app.controller("ReportePagoController", function($scope, $rootScope, $http, $q, 
             if(data.length > 0)
             {
                 $scope.unidad = data;
-                console.log(data);
             }
             else
             {

@@ -381,38 +381,58 @@ function AgregarContrato()
 
 
     //--------------------- Promocion Contrato ------------
-    $count = 0;
-    $sql = "INSERT INTO PromocionContrato(ContratoId, TipoVentaId, TipoPromocionId, Descuento, NumeroPago) VALUES";
-
     if($contrato->TotalMueble > 0  && $contrato->PromocionMueble->TipoPromocionId != "0")
     {
-        $count = 1;
-        $sql .= " ('".$contrato->ContratoId."', '".$contrato->PromocionMueble->TipoVentaId."', '".$contrato->PromocionMueble->TipoPromocionId."', '".$contrato->PromocionMueble->Descuento."', '".$contrato->PromocionMueble->NumeroPagos."'),";
-    }
+         $sql = "INSERT INTO PromocionContrato(ContratoId, TipoVentaId, TipoPromocionId, Descuento, NumeroPago, DescuentoMinimo, DescuentoMaximo, FechaLimite) VALUES";
+        $sql .= " ('".$contrato->ContratoId."', '".$contrato->PromocionMueble->TipoVentaId."', '".$contrato->PromocionMueble->TipoPromocionId."', '".$contrato->PromocionMueble->Descuento."', '".$contrato->PromocionMueble->NumeroPagos."', :DescuentoMinimo, :DescuentoMaximo, :FechaLimite)";
 
-    if($contrato->TotalCubierta > 0 && $contrato->PromocionCubierta->TipoPromocionId != "0")
-    {
-        $count = 1;
-        $sql .= " ('".$contrato->ContratoId."', '".$contrato->PromocionCubierta->TipoVentaId."', '".$contrato->PromocionCubierta->TipoPromocionId."', '".$contrato->PromocionCubierta->Descuento."', '".$contrato->PromocionCubierta->NumeroPagos."'),";
-    }
 
-    $sql = rtrim($sql, ",");
-    if($count > 0)
-    {
         try 
         {            
             $stmt = $db->prepare($sql);
+
+            $stmt->bindParam("DescuentoMinimo", $contrato->PromocionMueble->DescuentoMinimo);
+            $stmt->bindParam("DescuentoMaximo", $contrato->PromocionMueble->DescuentoMaximo);
+            $stmt->bindParam("FechaLimite", $contrato->PromocionMueble->FechaLimite2);
+
             $stmt->execute();
         } 
         catch(PDOException $e) 
         {
-            echo($e);
+            echo($sql);
+            $db->rollBack();
+            echo '[ { "Estatus": "Fallo" } ]';
+            $app->status(409);
+            $app->stop();
+        }
+        
+    }
+
+    if($contrato->TotalCubierta > 0 && $contrato->PromocionCubierta->TipoPromocionId != "0")
+    {
+         $sql = "INSERT INTO PromocionContrato(ContratoId, TipoVentaId, TipoPromocionId, Descuento, NumeroPago, DescuentoMinimo, DescuentoMaximo, FechaLimite) VALUES";
+        $sql .= " ('".$contrato->ContratoId."', '".$contrato->PromocionCubierta->TipoVentaId."', '".$contrato->PromocionCubierta->TipoPromocionId."', '".$contrato->PromocionCubierta->Descuento."', '".$contrato->PromocionCubierta->NumeroPagos."', :DescuentoMinimo, :DescuentoMaximo, :FechaLimite)";
+        
+        try 
+        {            
+            $stmt = $db->prepare($sql);
+
+            $stmt->bindParam("DescuentoMinimo", $contrato->PromocionCubierta->DescuentoMinimo);
+            $stmt->bindParam("DescuentoMaximo", $contrato->PromocionCubierta->DescuentoMaximo);
+            $stmt->bindParam("FechaLimite", $contrato->PromocionCubierta->FechaLimite);
+
+            $stmt->execute();
+        } 
+        catch(PDOException $e) 
+        {
+            echo($sql);
             $db->rollBack();
             echo '[ { "Estatus": "Fallo" } ]';
             $app->status(409);
             $app->stop();
         }
     }
+    
 
     //--------------------- Plan pago Contrato ------------
     $count = count($contrato->PlanPago->Abono);
@@ -866,7 +886,7 @@ function HabilitarEditarContrato()
     {
         $stmt = $db->prepare($sql);
         $stmt->execute();
-
+        $db->commit();
         $db = null;
 
         echo '[{"Estatus": "Exitoso"}]';
@@ -988,7 +1008,7 @@ function GetDatosContrato()
     }
     
     //Concepto de venta
-    $sql = "SELECT Nombre, ConceptoVentaId FROM ConceptoVenta WHERE ConceptoVentaId = ".$contrato->ConceptoVentaId;
+    $sql = "SELECT Nombre, ConceptoVentaId, IVA FROM ConceptoVenta WHERE ConceptoVentaId = ".$contrato->ConceptoVentaId;
 
     try 
     {
@@ -1026,7 +1046,7 @@ function GetDatosContrato()
     }
     
     //Promocion
-    $sql = "SELECT TipoVentaId, TipoPromocionId, Descuento, NumeroPago FROM PromocionContrato WHERE ContratoId = ".$contrato->ContratoId;
+    $sql = "SELECT TipoVentaId, TipoPromocionId, Descuento, NumeroPago as NumeroPagos, DescuentoMinimo, DescuentoMaximo, FechaLimite FROM PromocionContrato WHERE ContratoId = ".$contrato->ContratoId;
 
     try 
     {
@@ -1094,7 +1114,7 @@ function GetDatosContrato()
         $stmt = $db->query($sql);
         $response = $stmt->fetchAll(PDO::FETCH_OBJ);
 
-        $contrato->Servico = $response;
+        $contrato->Servicio = $response;
     } 
     catch(PDOException $e) 
     {

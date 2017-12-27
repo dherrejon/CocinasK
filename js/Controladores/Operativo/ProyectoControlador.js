@@ -4338,8 +4338,6 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
             {
                 $scope.CalcularPrecioVentaCubiertaAglomerado();
             }
-            
-            
         }
         //$scope.CalcularPrecioVenta();
     };

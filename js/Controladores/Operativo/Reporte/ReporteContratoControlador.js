@@ -31,7 +31,6 @@ app.controller("ReporteContratoControlador", function($scope, $rootScope, $http,
             if(data.length > 0)
             {
                 $scope.unidad = data;
-                console.log(data);
             }
             else
             {
@@ -277,6 +276,233 @@ app.controller("ReporteContratoControlador", function($scope, $rootScope, $http,
             return true;
         }
     };
+    
+    //---------------- Presupuesto ---------
+    //-------------- DETALLES PRESUPUESTO ------------------
+    $scope.GetProyecto = function(id)              
+    {
+        GetProyecto($http, $q, CONFIG, id).then(function(data)
+        {
+            $scope.detalle.Proyecto = data[0];
+            $scope.GetDatosPresupuesto();
+        
+        }).catch(function(error)
+        {
+            alert(error);
+        });
+    };
+    
+    $scope.GetPresupuestoPorProyecto = function(presupuestoId, proyectoId)              
+    {
+        GetPresupuestoPorProyecto($http, $q, CONFIG, proyectoId, presupuestoId).then(function(data)
+        {
+            if(data.length > 0)
+            {
+                $scope.detalle = data[0];
+                $scope.detalle.Persona = new Object();
+                $scope.detalle.Persona.Nombre = $scope.cliente;
+                $scope.GetProyecto(proyectoId); 
+            }
+        
+        }).catch(function(error)
+        {
+            alert(error);
+        });
+    };
+    
+    $scope.GetDatosPresupuesto = function()              
+    {
+        GetDatosPresupuesto($http, $q, CONFIG, $scope.detalle).then(function(data)
+        {
+            if(data[0].Estatus == "Exitoso")
+            {
+                $scope.detalle = data[1].Presupuesto;
+                $scope.VerTipoCubierta(data[1].Presupuesto);
+            }
+            else
+            {
+                $rootScope.mensaje = "Ha ocurrido un error intente más tarde.";
+                $('#mensajeReporteContrato').modal('toggle');
+            }
+        
+        }).catch(function(error)
+        {
+            $rootScope.mensaje = "Ha ocurrido un error intente más tarde.";
+            $('#mensajeReporteContrato').modal('toggle');
+        });
+    };
+
+    $scope.VerTipoCubierta = function(data)
+    {
+        $scope.verTipoCubierta = {aglomerado: false, piedra: false};
+        for(var k=0; k<data.TipoCubierta.length; k++)
+        {
+            if(data.TipoCubierta[k].TipoCubiertaId == "1")
+            {
+                $scope.verTipoCubierta.aglomerado = true;
+                
+                $scope.SetUbicacionMaterialCubierta(data.TipoCubierta[k]);
+            }
+            else if(data.TipoCubierta[k].TipoCubiertaId == "2")
+            {
+                $scope.verTipoCubierta.piedra = true;
+            }
+        }
+    };
+    
+    $scope.SetUbicacionMaterialCubierta = function(data)
+    {
+        for(var i=0; i<data.Material.length; i++)
+        {
+            for(var k=0; k<data.Ubicacion.length; k++)
+            {
+                var ubicado = false;
+                for(var j=0; j<data.Material[i].Ubicacion.length; j++)
+                {
+                    if(data.Material[i].Ubicacion[j].UbicacionCubiertaId == data.Ubicacion[k].UbicacionCubiertaId)
+                    {
+                        ubicado = true;
+                        break;
+                    }
+                }
+                
+                if(!ubicado)
+                {
+                    var ubicacion = new Object();
+                    ubicacion.UbicacionCubiertaId = data.Ubicacion[k].UbicacionCubiertaId;
+                    ubicacion.PrecioVenta = "No Disponible";
+                    
+                    data.Material[i].Ubicacion.push(ubicacion);
+                }
+            }
+        }
+    
+    };
+    
+    $scope.VerDetallePresupuesto = function(presupuestoId, proyectoId, contrato)
+    {
+        $scope.verDetalle = {desCliente: false, desInterna: false, combinacion: false, modulo: false, puerta: false, servicio: false, maqueo: false, accesorio: false, cubiertaAglomerado: false, cubiertaPiedra: false, promocion: false};
+        $scope.detalle = new Object();
+        $scope.cliente = contrato.Cliente;
+        
+        $scope.GetPresupuestoPorProyecto(presupuestoId, proyectoId);
+        
+        $('#presupuestoDetalleModal').modal('toggle');
+    };
+    
+    //--------------------- Detalles contrato -----------------------
+    $scope.DetalleContrato = function(contrato)
+    {
+        $scope.verDetalle = {total:false, plan: false, pago: false, fiscal: false, dato:false, especificacion: false, descripcion: false};
+        $scope.GetDatosContrato(contrato, "Detalle");
+    };
+    
+    $scope.GetDatosContrato = function(contrato, opt)              
+    {
+        GetDatosContrato($http, $q, CONFIG, contrato).then(function(data)
+        {
+            if(data[0].Estatus == "Exitoso")
+            {
+                 $scope.OperacionContrato(opt, data[1].Contrato);
+            }
+            else
+            {
+                $rootScope.mensaje = "Ha ocurrido un error intente más tarde.";
+                $('#mensajeReporteContrato').modal('toggle');
+            }
+            //proyecto.Presupuesto = data;
+        
+        }).catch(function(error)
+        {
+            $rootScope.mensaje = "Ha ocurrido un error intente más tarde.";
+            $('#mensajeReporteContrato').modal('toggle');
+        });
+    };
+    
+    $scope.OperacionContrato = function(opt, contrato)
+    {
+        switch(opt)
+        {
+            case "Detalle":
+                $scope.detalle = contrato;
+                $('#ContratoDetalleModal').modal('toggle');
+                break;
+                
+            default:
+                break;
+        }
+    };
+    
+    $scope.GetPromocionTexto = function(promocion, tipoventa)
+    {
+        var promo = "";
+        for(var k=0; k<promocion.length; k++)
+        {
+            if(tipoventa == promocion[k].TipoVentaId)
+            {
+                if(promocion[k].TipoPromocionId == "2")
+                {
+                    promo = promocion[k].NumeroPago + " Meses sin Intereses";
+                }
+                else
+                {
+                    promo = parseInt(promocion[k].Descuento) + "% de decuento";
+                }
+                
+                
+                break;
+            }
+        }
+        
+        if(promo.length == 0)
+        {
+            promo = "Sin Promoción";
+        }
+        
+        return promo;
+    };
+    
+    $scope.GetTotalesContrato = function(total)
+    {
+        total.TotalDescuento = parseFloat(total.DescuentoMueble) + parseFloat(total.DescuentoCubierta);
+        total.TotalIVA = parseFloat(total.IVAMueble) + parseFloat(total.IVACubierta);
+        total.TotalSubtotal = parseFloat(total.SubtotalMueble) + parseFloat(total.SubtotalCubierta);
+    };
+    
+    //----------------- Descargar contrato --------------
+    $scope.DescargarContrato = function(contrato)
+    {
+        DescargarContrato($http, $q, CONFIG, contrato.ContratoId).then(function(data)
+        {
+            if(data != [])
+            {
+                if(data.Archivo.length > 0)
+                {
+                    var file = 'data:application/PDF;base64,' + data.Archivo;
+                    var link = document.createElement('a');
+
+                    link.href = file;
+                    link.setAttribute('target','_blank');
+
+                    link.download = "C_" + contrato.Cliente + contrato.ContratoId;
+
+                    var e = document.createEvent('MouseEvents');
+                    e.initEvent('click', true, true);
+                    link.dispatchEvent(e);
+                }
+                else
+                {
+                    $rootScope.mensaje = "Aun no haz cargado el contrato.";
+                    $('#mensajeReporteContrato').modal('toggle');
+                }
+            }
+
+        }).catch(function(error)
+        {
+            alert(error);
+        });
+    };
+    
     /*------------------Indentifica cuando los datos del usuario han cambiado-------------------*/
     $scope.Inicializar = function()
     {

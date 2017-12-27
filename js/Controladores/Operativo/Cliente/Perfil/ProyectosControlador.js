@@ -268,6 +268,7 @@ app.controller("ProyectoClienteControlador", function($scope, $rootScope, CITA, 
     
     $scope.SetProyecto = function(data)
     {
+        console.log(data);
         var proyecto = new Proyecto();
     
         proyecto.ProyectoId = data.ProyectoId;
@@ -380,19 +381,21 @@ app.controller("ProyectoClienteControlador", function($scope, $rootScope, CITA, 
     //---------------------------------- Agregar Presupuesto -------------------------------
     $scope.AgregarPresupuesto = function(proyecto)
     {
+        $scope.proyectoEditar = proyecto;
         PRESUPUESTO.AgregarPresupuestoProyecto($rootScope.persona, proyecto);
     };
     
     $scope.$on('PresupuestoProyectoAgregado',function()
     {
         var pre = PRESUPUESTO.GetPresupuesto();
+        $scope.proyectoEditar.UnidadNegocioId = pre.Proyecto.UnidadNegocioId;
         
         var presupuesto = SetPresupuesto(pre);
+        
         presupuesto.PersonaId = pre.Persona.PersonaId;
         presupuesto.ProyectoId = pre.Proyecto.ProyectoId;
         
         $scope.proyectoAgregar.Presupuesto.push(presupuesto);
-        
         
         $scope.GetPromocionPersona($rootScope.personaId);
     });
@@ -431,6 +434,7 @@ app.controller("ProyectoClienteControlador", function($scope, $rootScope, CITA, 
             {
                 if(pre.Proyecto.ProyectoId == $scope.proyectoAgregar.ProyectoId)
                 {
+                    $scope.proyectoAgregar.UnidadNegocioId = pre.Proyecto.UnidadNegocioId;
                      //presupuesto al proyecto
                      var presupuesto = SetPresupuesto(pre);
                     presupuesto.PersonaId = pre.Persona.PersonaId;
