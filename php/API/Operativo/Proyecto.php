@@ -282,7 +282,7 @@ function AgregarProyectoPresupuesto()
         }
         catch(PDOException $e) 
         {    
-            echo $e;
+            echo $sql;
             echo '[{"Estatus": "Fallido"}]';
             $db->rollBack();
             $app->status(409);

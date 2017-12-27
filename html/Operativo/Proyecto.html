@@ -530,7 +530,7 @@
                     </div>
                 </div>
                 
-                <div ng-show="presupuesto.Persona.UnidadNegocio.length > 1 && permisoOperativo.verTodosCliente && (unidadResponsable || presupuesto.Margen == -1)">
+                <div ng-show="presupuesto.Persona.UnidadNegocio.length > 1 && permisoOperativo.verTodosCliente">
                     <br>
                     <div class="row">
                         <div class="col-xs-12">
@@ -693,7 +693,7 @@
                     </div>
                 </div>
                 
-                <div ng-show="presupuesto.Persona.UnidadNegocio.length > 1 && permisoOperativo.verTodosCliente && (unidadResponsable || presupuesto.Margen == -1) && (operacion == 'Editar' || opt == 'AgregarPresupuesto')">
+                <div ng-show="presupuesto.Persona.UnidadNegocio.length > 1 && permisoOperativo.verTodosCliente  && (operacion == 'Editar' || opt == 'AgregarPresupuesto')">
                     <br>
                     <div class="row">
                         <div class="col-xs-12">

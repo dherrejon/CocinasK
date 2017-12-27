@@ -384,13 +384,13 @@ function AgregarContrato()
     $count = 0;
     $sql = "INSERT INTO PromocionContrato(ContratoId, TipoVentaId, TipoPromocionId, Descuento, NumeroPago) VALUES";
 
-    if($contrato->TotalMueble > 0  && $contrato->PromocionMueble->TipoPromocionId != "")
+    if($contrato->TotalMueble > 0  && $contrato->PromocionMueble->TipoPromocionId != "0")
     {
         $count = 1;
         $sql .= " ('".$contrato->ContratoId."', '".$contrato->PromocionMueble->TipoVentaId."', '".$contrato->PromocionMueble->TipoPromocionId."', '".$contrato->PromocionMueble->Descuento."', '".$contrato->PromocionMueble->NumeroPagos."'),";
     }
 
-    if($contrato->TotalCubierta > 0 && $contrato->PromocionCubierta->TipoPromocionId != "")
+    if($contrato->TotalCubierta > 0 && $contrato->PromocionCubierta->TipoPromocionId != "0")
     {
         $count = 1;
         $sql .= " ('".$contrato->ContratoId."', '".$contrato->PromocionCubierta->TipoVentaId."', '".$contrato->PromocionCubierta->TipoPromocionId."', '".$contrato->PromocionCubierta->Descuento."', '".$contrato->PromocionCubierta->NumeroPagos."'),";
@@ -1322,6 +1322,52 @@ function CancelarPago()
     {
         $db = null;
         echo '[{"Estatus": "Fallido"}]';
+    }
+}
+
+function GetReporteContrato()
+{
+    global $app;
+    global $session_expiration_time;
+
+    $request = \Slim\Slim::getInstance()->request();
+    $filtro = json_decode($request->getBody());
+    
+    
+    if($filtro->unidadId == -1 && $filtro->fecha1 == -1 && $filtro->fecha2 == -1)
+    {
+        $sql = "SELECT * FROM ReporteContratotoVista";
+    }
+    else if($filtro->unidadId != -1 && $filtro->fecha1 == -1 && $filtro->fecha2 == -1)
+    {
+         $sql = "SELECT * FROM ReporteContratotoVista WHERE UnidadNegocioId = ".$filtro->unidadId."";
+    }
+    else if($filtro->unidadId == -1 && $filtro->fecha1 != -1 && $filtro->fecha2 != -1)
+    {
+         $sql = "SELECT * FROM ReporteContratotoVista WHERE FechaVenta >= '".$filtro->fecha1."' AND FechaVenta <= '".$filtro->fecha2."'";
+    }
+    else
+    {
+        $sql = "SELECT * FROM ReporteContratotoVista WHERE UnidadNegocioId = ".$filtro->unidadId." AND FechaVenta >= '".$filtro->fecha1."' AND FechaVenta <= '".$filtro->fecha2."'";
+    }
+
+    try 
+    {
+        $db = getConnection();
+
+        $stmt = $db->query($sql);
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+        $db = null;
+        echo json_encode($response);  
+    } 
+    catch(PDOException $e) 
+    {
+        $db = null;
+        echo $e;
+        echo '[ { "Estatus": "Fallo" } ]';
+        //$app->status(409);
+        $app->stop();
     }
 }
 

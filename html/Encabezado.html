@@ -48,9 +48,8 @@
                             <li ng-repeat="opcion in barraNavegacionOpciones"  data-toggle="dropdown" class="dropdown-toggle"  ng-mouseenter="MouseEnterarElemento($index);" ng-mouseleave="MouseSalirElemento($index);" id="{{opcion.Opcion.id}}">
                                 
                                 <!-- menú principal -->
-                                <a class="claseSeccion" ng-click="MouseClickElemento($index);">
+                                <a class="claseSeccion" ng-click="MouseClickElemento($index);" ng-show="opcion.Opcion.show">
                                     <span>{{opcion.Opcion.texto}}</span>
-                                 
                                 </a>
 
                                 <!-- módulos desplegados en dropdown list -->

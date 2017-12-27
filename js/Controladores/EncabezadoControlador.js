@@ -337,10 +337,16 @@ function SetPerfilNombre($rootScope, usuario)
 }
 function HabilitarOpcionesMenu(usuario, $rootScope)
 {
+    for(var i=0; i<$rootScope.barraNavegacionOpciones.length; i++)
+    {
+        $rootScope.barraNavegacionOpciones[i].Opcion.show = false;
+    }
     for(var k=0; k<usuario.Permiso.length; k++)
     {
-        for(var i=0; i<$rootScope.barraNavegacionOpciones.length ;i++)
+        for(var i=0; i<$rootScope.barraNavegacionOpciones.length; i++)
         {
+            var permisoPrincipal = false;
+
             for(var j=0; j<$rootScope.barraNavegacionOpciones[i].elemento.length; j++)
             {
                 if($rootScope.barraNavegacionOpciones[i].elemento[j].tipo == "enlace")
@@ -350,6 +356,7 @@ function HabilitarOpcionesMenu(usuario, $rootScope)
                         if(usuario.Permiso[k] == ($rootScope.barraNavegacionOpciones[i].elemento[j].permiso[m].clave))
                         {
                             $rootScope.barraNavegacionOpciones[i].elemento[j].show = true;
+                            permisoPrincipal = true;
                             break;
                         }
                     }
@@ -372,12 +379,19 @@ function HabilitarOpcionesMenu(usuario, $rootScope)
                     if(permiso)
                     {
                         $rootScope.barraNavegacionOpciones[i].elemento[j].show = true;
+                        permisoPrincipal = true;
                     }
                 }
                 else if($rootScope.barraNavegacionOpciones[i].elemento[j].tipo == "funcion")
                 {
                     $rootScope.barraNavegacionOpciones[i].elemento[j].show = true;
+                    permisoPrincipal = true;
                 }
+            }
+            
+            if(permisoPrincipal)
+            {
+                $rootScope.barraNavegacionOpciones[i].Opcion.show = true;
             }
         }
     }
@@ -513,6 +527,14 @@ var OpcionOperativo =
                     { divider: true, menu: 3, texto:"Agregar Presupuesto", funcion:"AgregarPresupuesto", show:true, tipo:"funcion"},
                     { menu: 3, texto:"Unir Presupuesto", funcion:"UnirPresupuesto", show:true, tipo:"funcion"},
                     { menu: 3, texto:"Clonar Presupuesto", funcion:"ClonarPresupuesto", show:true, tipo:"funcion"}
+                  ]                      
+    },
+    
+    { 
+        Opcion: {texto:"Reportes", id:"reportes"},
+        elemento: [ 
+                    { menu: 1, referencia: "#ReporteContrato", texto:"Contratos",  show:false, tipo:"enlace", permiso:[{clave:"OpeVRCConsultar"}]},
+                    { menu: 1, referencia: "#ReportePago", texto:"Pagos",  show:false, tipo:"enlace", permiso:[{clave:"OpeVRPConsultar"}]},
                   ]                      
     },
     

@@ -39,6 +39,7 @@
     require 'Operativo/Persona.php';
     require 'Operativo/Proyecto.php';
     require 'Operativo/Contrato.php';
+    require 'Operativo/Pago.php';
 
     /*------------General----------*/
     require 'General/Direccion.php';
@@ -609,6 +610,11 @@
     $app->get('/GetNoFactura/:factura', $seguridad, $ChecarSesion, 'GetNoFactura');
     $app->post('/HabilitarEditarContrato', $seguridad, $ChecarSesion, 'HabilitarEditarContrato');
     $app->post('/CancelarPago', $seguridad, $ChecarSesion, 'CancelarPago');
+
+    $app->post('/GetReporteContrato', $seguridad, $ChecarSesion, 'GetReporteContrato');
+
+    /*------------------------- Pagos ------------------------------*/
+    $app->post('/GetReportePago', $seguridad, $ChecarSesion, 'GetReportePago');
     
     $app->run(); 
 

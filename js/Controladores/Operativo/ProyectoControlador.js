@@ -167,8 +167,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
             $scope.proyectoNuevo = true;
             $scope.EstatusProyecto = "Nuevo";
         }
-        
-        
+    
     
         $('#agregarPresupuestoModal').modal('toggle');
     });
@@ -477,6 +476,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
          $scope.idPromocion = -1;
         $scope.promoActualizar = false;
         $scope.GetDatosUnidadNegocio();
+        $scope.margenDireccion = true;
     };
     
     $scope.CargarCatalogoPresupuesto = function()
@@ -853,14 +853,17 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                 
                 $scope.unidadNegocio = data;
                 
-                for(var k=0; k<data.length; k++)
+                /*if($scope.operacion == "Editar" || $scope.opt== "Agregar")
                 {
-                    if(data[k].UnidadNegocioId == $scope.presupuestoBase.Proyecto.UnidadNegocioId)
+                    for(var k=0; k<data.length; k++)
                     {
-                        $scope.CambiarMargenPresupuesto(data[k].UnidadNegocioId, true);
-                        break;
+                        if(data[k].UnidadNegocioId == $scope.presupuestoBase.Proyecto.UnidadNegocioId)
+                        {
+                            $scope.CambiarMargenPresupuesto(data[k].UnidadNegocioId, true);
+                            break;
+                        }
                     }
-                }
+                }*/
             }
             else
             {
@@ -935,15 +938,18 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         GetUnidadNegocioPersona($http, $q, CONFIG, id).then(function(data)
         {
             
-            for(var k=0; k<data.length; k++)
+            /*if($scope.operacion == "Editar")
             {
-                if(data[k].UnidadNegocioId == $scope.presupuestoBase.Proyecto.UnidadNegocioId)
+                for(var k=0; k<data.length; k++)
                 {
-                    data[k].MargenSel = true;
-                    //$scope.CambiarMargenPresupuesto(data[k].UnidadNegocioId, data.MargenSel);
-                    break;
+                    if(data[k].UnidadNegocioId == $scope.presupuestoBase.Proyecto.UnidadNegocioId)
+                    {
+                        data[k].MargenSel = true;
+                        //$scope.CambiarMargenPresupuesto(data[k].UnidadNegocioId, data.MargenSel);
+                        break;
+                    }
                 }
-            }
+            }*/
             
             $scope.presupuesto.Persona.UnidadNegocio = data;
             
@@ -1810,8 +1816,22 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
             //console.log(data);
             if(data !== "fallo")
             {
-                $scope.presupuesto.Margen = parseFloat(data[1].Margen);
-                $scope.presupuesto.UnidadNegocioId = data[2].UnidadNegocioId;
+                if($scope.operacion != "Editar" || data[1].Margen != "-1")
+                {
+                    $scope.presupuesto.Margen = parseFloat(data[1].Margen);
+                    $scope.presupuesto.UnidadNegocioId = data[2].UnidadNegocioId;
+                }
+                
+                if(data[1].Margen != "-1")
+                {
+                    $scope.margenDireccion = false;
+                }
+                else
+                {
+                    $scope.margenDireccion = true;
+                    
+                    $scope.SetMargenUnidadSel();
+                }
                 //console.log($scope.presupuesto.Margen);
             }
             else
@@ -1826,6 +1846,19 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
             alert(error);
         });
     };
+    
+    $scope.SetMargenUnidadSel = function()
+    {
+        for(var k=0; k<$scope.presupuesto.Persona.UnidadNegocio.length; k++)
+        {
+            if($scope.presupuesto.Persona.UnidadNegocio[k].MargenSel == true)
+            {
+                $scope.CambiarMargenPresupuesto($scope.presupuesto.Persona.UnidadNegocio[k].UnidadNegocioId, true);
+                break;
+            }
+        }
+    };
+        
     
     $scope.GetPromocionPorUnidadNegocio = function(id)
     {
@@ -2511,12 +2544,12 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
             
             $scope.GetMargenDireccion(domicilio);
             
-            for(var k=0; k<$scope.presupuesto.Persona.UnidadNegocio.length; k++)
+            /*for(var k=0; k<$scope.presupuesto.Persona.UnidadNegocio.length; k++)
             {
                 $scope.presupuesto.Persona.UnidadNegocio[k].MargenSel = false;
             }
             
-            $scope.unidadResponsable = false;
+            $scope.unidadResponsable = false;*/
         }
         else
         {
@@ -2538,6 +2571,8 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                  $scope.presupuesto.Domicilio.DireccionPersonaId =  domicilio.DireccionPersonaId;
                  $scope.presupuesto.Domicilio.UnidadNegocioId = $scope.usuario.UnidadNegocioId;
             }
+            $scope.margenDireccion = true;
+            $scope.SetMargenUnidadSel();
         }
     };
     
@@ -2560,6 +2595,24 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         {
             $scope.mensajeError[$scope.mensajeError.length] = "*Indica el nombre del proyecto."; 
         }
+        
+        if($scope.presupuesto.Persona.UnidadNegocio.length > 1 && $rootScope.permisoOperativo.verTodosCliente)
+        {
+            var sel = false;
+            for(var k=0; k<$scope.presupuesto.Persona.UnidadNegocio.length; k++)
+            {
+                if($scope.presupuesto.Persona.UnidadNegocio[k].MargenSel == true)
+                {
+                    sel =  true;
+                    break;
+                }
+            }
+            if(!sel)
+            {
+                $scope.mensajeError[$scope.mensajeError.length] = "*Selecciona la unidad de negocio responsable."; 
+            }
+        }
+        
         
         if($scope.mensajeError.length > 0)
         {
@@ -2669,12 +2722,15 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
     {
         if(sel)
         {
-            for(var k=0; k<$scope.unidadNegocio.length; k++)
+            if($scope.margenDireccion != false)
             {
-                if($scope.unidadNegocio[k].UnidadNegocioId == id)
+                for(var k=0; k<$scope.unidadNegocio.length; k++)
                 {
-                    $scope.presupuesto.Margen = parseFloat($scope.unidadNegocio[k].Margen);
-                    break;
+                    if($scope.unidadNegocio[k].UnidadNegocioId == id)
+                    {
+                        $scope.presupuesto.Margen = parseFloat($scope.unidadNegocio[k].Margen);
+                        break;
+                    }
                 }
             }
 
@@ -2686,10 +2742,14 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                 }
 
             }
+            
         }
         else
         {
-            $scope.presupuesto.Margen = -1;
+            if($scope.margenDireccion != false)
+            {
+                $scope.presupuesto.Margen = -1;
+            }
         }
         
         $scope.unidadResponsable = true;
@@ -2697,7 +2757,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
     
     $scope.CambiarProyectoPersona = function(proyecto)
     {
-        //console.log(proyecto);
+        console.log(proyecto);
         if($scope.proyectoPresupuesto != proyecto)
         {
             $scope.proyectoPresupuesto = proyecto;
@@ -2736,6 +2796,19 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
             
             $scope.presupuesto.Proyecto.ProyectoId = proyecto.ProyectoId;
             $scope.presupuesto.Proyecto.Nombre = proyecto.Nombre;
+            
+            for(var k=0; k<$scope.presupuesto.Persona.UnidadNegocio.length; k++)
+            {
+                if($scope.presupuesto.Persona.UnidadNegocio[k].UnidadNegocioId == proyecto.UnidadNegocioId)
+                {
+                    $scope.presupuesto.Persona.UnidadNegocio[k].MargenSel = true;
+                    $scope.SetMargenUnidadSel();
+                }
+                else
+                {
+                    $scope.presupuesto.Persona.UnidadNegocio[k].MargenSel = false;
+                }
+            }
         }
     };
     
@@ -2837,6 +2910,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                 //console.log($scope.presupuesto.Margen);
             }
             
+            console.log($scope.presupuesto.Margen);
             if($scope.presupuesto.Proyecto.TipoProyecto.Mueble)
             {
                 $scope.GetModuloInicio();
@@ -2865,8 +2939,8 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                 {
                     $scope.pasoPresupuesto = 8;
                 }
+                
                 $scope.GetCubiertaInicio();
-               
             }
         }
     };
@@ -2937,6 +3011,23 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
             if(!seleccion)
             {
                 $scope.mensajeError[$scope.mensajeError.length] = "*Selecciona al menos un tipo de cubierta.";
+            }
+        }
+        
+        if($scope.presupuesto.Persona.UnidadNegocio.length > 1 && $rootScope.permisoOperativo.verTodosCliente && ($scope.operacion == 'Editar' || $scope.opt == 'AgregarPresupuesto'))
+        {
+            var sel = false;
+            for(var k=0; k<$scope.presupuesto.Persona.UnidadNegocio.length; k++)
+            {
+                if($scope.presupuesto.Persona.UnidadNegocio[k].MargenSel == true)
+                {
+                    sel =  true;
+                    break;
+                }
+            }
+            if(!sel)
+            {
+                $scope.mensajeError[$scope.mensajeError.length] = "*Selecciona la unidad de negocio responsable."; 
             }
         }
         
@@ -6508,12 +6599,23 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
     
     $scope.SetUnidadNegocio = function()
     {
-        for(var k=0; k<$scope.presupuesto.Persona.UnidadNegocio.length; k++)
+        if(!$rootScope.permisoOperativo.verTodosCliente)
         {
-            if($scope.presupuesto.Persona.UnidadNegocio[k].MargenSel)
+            $scope.presupuesto.Proyecto.UnidadNegocioId = $scope.usuario.UnidadNegocioId;
+        }
+        else if($scope.presupuesto.Persona.UnidadNegocio.length == 1)
+        {
+            $scope.presupuesto.Proyecto.UnidadNegocioId = $scope.presupuesto.Persona.UnidadNegocio[0].UnidadNegocioId;
+        }
+        else
+        {
+            for(var k=0; k<$scope.presupuesto.Persona.UnidadNegocio.length; k++)
             {
-                $scope.presupuesto.Proyecto.UnidadNegocioId = $scope.presupuesto.Persona.UnidadNegocio[k].UnidadNegocioId;
-                break;
+                if($scope.presupuesto.Persona.UnidadNegocio[k].MargenSel)
+                {
+                    $scope.presupuesto.Proyecto.UnidadNegocioId = $scope.presupuesto.Persona.UnidadNegocio[k].UnidadNegocioId;
+                    break;
+                }
             }
         }
     }
