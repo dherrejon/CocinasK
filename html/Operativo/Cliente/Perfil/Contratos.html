@@ -15,7 +15,7 @@
        
         <div class="col-xs-12" >
             
-            <div ng-repeat="contrato in contrato | orderBy:'EstatusContrato.EstatusContratoId'">
+            <div ng-repeat="contrato in contrato ">
                
                <div class="input-group" >
                    
@@ -75,13 +75,13 @@
                                     </a>
                                 </li>
                                 
-                                <li ng-show="contrato.Modificar == '1'">
+                                <li ng-show="contrato.Modificar == '1' || contrato.ModificarCompleto == '1'">
                                     <a class="dropdownOpcionModal"  ng-click="EditarContrato(contrato)">
                                         <span class="fa fa-pencil"></span> Editar Contrato
                                     </a>
                                 </li>
                                 
-                                <li ng-show="contrato.Modificar == '0' && permisoOperativo.editarContrato">
+                                <li ng-show="contrato.Modificar == '0' && permisoOperativo.editarContrato && contrato.ModificarCompleto == '0'">
                                     <a class="dropdownOpcionModal"  ng-click="HabilitarEditarContrato(contrato)">
                                         <span class="fa fa-unlock"></span> Permitir Modificar
                                     </a>
@@ -207,7 +207,7 @@
                                                                     <b >{{pago.Concepto}}</b>   
                                                                </div>
 
-                                                                <div class="pull-right" ng-if="pago.Cancelado == '0'">
+                                                                <div class="pull-right" ng-if="pago.Cancelado == '0' && pago.Concepto != 'Anticipo'">
                                                                     <button class="btn btnRed" ng-click="AbrirCancelarPago(pago, contrato)">
                                                                         Cancelar
                                                                     </button>
@@ -374,7 +374,7 @@
 
                        <div  method="post" enctype="multipart/form-data">
 
-                            <div class="form-group files">
+                            <div class="form-group files contrato">
                                 <input id="contratopdf" type="file" class="form-control" multiple accept="application/pdf" name="pdf" > 
                             </div>
                         </div>

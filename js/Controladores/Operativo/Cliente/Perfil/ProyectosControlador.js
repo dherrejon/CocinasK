@@ -63,7 +63,6 @@ app.controller("ProyectoClienteControlador", function($scope, $rootScope, CITA, 
         GetPresupuestoPorProyecto($http, $q, CONFIG, proyecto.ProyectoId, 0).then(function(data)
         {
             proyecto.Presupuesto = data;
-            console.log(data);
         
         }).catch(function(error)
         {
@@ -73,7 +72,6 @@ app.controller("ProyectoClienteControlador", function($scope, $rootScope, CITA, 
     
     $scope.GetDatosPresupuesto = function(presupuesto, opt)              
     {
-        console.log(presupuesto);
         GetDatosPresupuesto($http, $q, CONFIG, presupuesto).then(function(data)
         {
             if(data[0].Estatus == "Exitoso")
@@ -268,7 +266,6 @@ app.controller("ProyectoClienteControlador", function($scope, $rootScope, CITA, 
     
     $scope.SetProyecto = function(data)
     {
-        console.log(data);
         var proyecto = new Proyecto();
     
         proyecto.ProyectoId = data.ProyectoId;
@@ -591,8 +588,6 @@ app.controller("ProyectoClienteControlador", function($scope, $rootScope, CITA, 
     
     $scope.$on('ContratoGuardado',function(evento, contrato)
     {
-        console.log(contrato);
-        
         for(var i=0; i<$scope.proyecto.length; i++)
         {
             if($scope.proyecto[i].ProyectoId == contrato.ProyectoId)

@@ -144,7 +144,6 @@ app.controller("CubiertaControlador", function($scope, $http, $q, CONFIG, datosU
         var q = $q.defer();
         GetCubiertaUbicacion($http, $q, CONFIG, id).then(function(data)
         {
-            console.log(data);
             q.resolve(data);
         }).catch(function(error)
         {
@@ -358,7 +357,6 @@ app.controller("CubiertaControlador", function($scope, $http, $q, CONFIG, datosU
         
         $scope.GetCubiertaUbicacion(cubierta.Material.MaterialId).then(function(data)
         {
-            console.log(data);
             if(data != "error")
             {
                 cubierta.Ubicacion = [];
@@ -378,8 +376,6 @@ app.controller("CubiertaControlador", function($scope, $http, $q, CONFIG, datosU
                     }
                 }
             }
-            
-            console.log(cubierta);
         });
         
         $scope.GetGrupoColorCubierta(cubierta.Material.MaterialId).then(function(data)

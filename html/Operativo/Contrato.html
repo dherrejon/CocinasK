@@ -50,8 +50,39 @@
                                 <b>Proyecto: </b> <span>{{presupuesto.Proyecto.TipoProyecto.Nombre}} - {{presupuesto.Proyecto.Nombre}}</span>
                             </span><br>
                             <!-- Presupuesto -->
-                            <span>
+                            <span ng-show="operacion == 'Agregar'">
                                 <b>Presupuesto: </b> <span>No.{{presupuesto.PresupuestoId}} - {{presupuesto.Titulo}}</span>
+                            </span>
+                            
+                            <span ng-show="operacion == 'Editar'">
+                               <div class="input-group">
+                                   <span class="input-group-addon addonGroupBtn">
+                                        <b>Presupuesto: </b>
+                                   </span>
+                                   
+                                   <span class="dropdown col-xs-12" style="padding: 0px">
+
+                                        <button class="dropdown-toggle  dropdownlistModal " data-toggle="dropdown">
+                                            <span>No.{{presupuesto.PresupuestoId}} - {{presupuesto.Titulo}}</span>
+                                            
+                                            <span class="pull-right">
+                                                <span class="caret"></span>
+                                            </span>
+                                        </button>
+
+                                        <ul class="dropdown-menu listaOpcionesDropdownList " style="min-width: 100%">                                
+                                            <li ng-repeat="pre in presupuestoProyecto ">
+                                                <button  href="" class="dropdownOpcionModalbtn" ng-click="CambiarPresupuesto(pre)">
+                                                   <span style="margin: 0px 15px 0px 10px;">
+                                                        <span>No.{{pre.PresupuestoId}} - {{pre.Titulo}}</span>
+                                                    </span>
+                                                </button>
+                                            </li>
+                                        </ul>
+
+                                    </span>
+                                   
+                               </div>
                             </span>
                         </div>
                     </div>
@@ -916,7 +947,7 @@
                             </div>
 
                             <div class="col-xs-12 col-sm-6 ">
-                                <b>Fecha de entraga: </b><span class="pull-right">{{contrato.PlanPago.FechaFin}}</span><br>
+                                <b>Fecha de entrega: </b><span class="pull-right">{{contrato.PlanPago.FechaFin}}</span><br>
                             </div>
 
                             <div class="col-xs-12 hidden-sm hidden-md hidden-lg">
@@ -979,7 +1010,7 @@
                             <!-- Anticipo 1 -->
                             <div class="col-sm-6 col-xs-12">
                                <div class="entrada2">
-                                    <input type="text" autocomplete="off" required ng-pattern="erNumeroEnteroSinCero" class="entrada form-control" name="anticipo1" currency-input ng-model="anticipo.uno" ng-blur="SetAnticipo1(paso3.anticipo1.$invalid)" />
+                                    <input type="text" autocomplete="off" required ng-pattern="erNumeroEnteroSinCero" class="entrada form-control" name="anticipo1" currency-input ng-model="anticipo.uno" ng-blur="SetAnticipo1(paso3.anticipo1.$invalid)" ng-disabled="operacion == 'Editar' && contratoAux.ModificarCompleto == '0'"/>
                                     <label>Anticipo 1*</label>
                                 </div>
                            </div> 
@@ -1066,8 +1097,8 @@
                                         <b style="margin-left: 10px">{{contrato.PagoMeses.length }}</b>
                                     </button>
 
-                                    <button class="btn chgDescuento" ng-disabled="contrato.PagoMeses.length == 1" ng-click="QuitarPago(contrato.PagoMeses, pagos.meses)"> <span class="fa fa-minus"></span></button>
-                                    <button class="btn chgDescuento" ng-disabled="contrato.PagoMeses.length  == 2" ng-click="AgregarPago(contrato.PagoMeses, pagos.meses)"> <span class="fa fa-plus"></span></button>
+                                    <button class="btn chgDescuento" ng-disabled="contrato.PagoMeses.length == 1 || (operacion == 'Editar' && contratoAux.ModificarCompleto == '0')"  ng-click="QuitarPago(contrato.PagoMeses, pagos.meses)"> <span class="fa fa-minus"></span></button>
+                                    <button class="btn chgDescuento" ng-disabled="contrato.PagoMeses.length  == 2 || (operacion == 'Editar' && contratoAux.ModificarCompleto == '0')" ng-click="AgregarPago(contrato.PagoMeses, pagos.meses)"> <span class="fa fa-plus"></span></button>
                                 </div>
 
                             </div>
@@ -1080,7 +1111,7 @@
                                <!-- pago -->
                                 <div class="col-xs-6">
                                    <div class="entrada2">
-                                        <input type="text" currency-input  autocomplete="off" required ng-pattern="erNumeroEnteroSinCero" class="entrada form-control" name="pago{{$index}}"  ng-model="pago.Pago" ng-blur="CalcularUltimoPago(contrato.PagoMeses, pagos.meses)" ng-disabled="$last"/>
+                                        <input type="text" currency-input  autocomplete="off" required ng-pattern="erNumeroEnteroSinCero" class="entrada form-control" name="pago{{$index}}"  ng-model="pago.Pago" ng-blur="CalcularUltimoPago(contrato.PagoMeses, pagos.meses)" ng-disabled="$last || (operacion == 'Editar' && contratoAux.ModificarCompleto == '0')"/>
                                         <label>Pago {{$index + 1}}</label>
                                     </div>
                                 </div>
@@ -1092,7 +1123,7 @@
 
                                      <div class="dropdown">
 
-                                        <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown">
+                                        <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown" ng-disabled="operacion == 'Editar' && contratoAux.ModificarCompleto == '0'">
                                             <span>{{pago.MedioPago.Nombre}}</span>
 
                                             <span class="pull-right">
@@ -1143,8 +1174,8 @@
                                         <b style="margin-left: 10px">{{contrato.PagoContado.length }}</b>
                                     </button>
 
-                                    <button class="btn chgDescuento" ng-disabled="contrato.PagoContado.length == 1" ng-click="QuitarPago(contrato.PagoContado, pagos.contado)"> <span class="fa fa-minus"></span></button>
-                                    <button class="btn chgDescuento" ng-disabled="contrato.PagoContado.length  == 3" ng-click="AgregarPago(contrato.PagoContado, pagos.contado)"> <span class="fa fa-plus"></span></button>
+                                    <button class="btn chgDescuento" ng-disabled="contrato.PagoContado.length == 1 || (operacion == 'Editar' && contratoAux.ModificarCompleto == '0')" ng-click="QuitarPago(contrato.PagoContado, pagos.contado)"> <span class="fa fa-minus"></span></button>
+                                    <button class="btn chgDescuento" ng-disabled="contrato.PagoContado.length  == 3 || (operacion == 'Editar' && contratoAux.ModificarCompleto == '0')" ng-click="AgregarPago(contrato.PagoContado, pagos.contado)"> <span class="fa fa-plus"></span></button>
                                 </div>
 
                             </div>
@@ -1157,7 +1188,7 @@
                                <!-- pago -->
                                 <div class="col-xs-6">
                                    <div class="entrada2">
-                                        <input type="text" currency-input  autocomplete="off" required ng-pattern="erNumeroEnteroSinCero" class="entrada form-control" name="pago{{$index}}"  ng-model="pago.Pago" ng-blur="CalcularUltimoPago(contrato.PagoContado, pagos.contado)" ng-disabled="$last"/>
+                                        <input type="text" currency-input  autocomplete="off" required ng-pattern="erNumeroEnteroSinCero" class="entrada form-control" name="pago{{$index}}"  ng-model="pago.Pago" ng-blur="CalcularUltimoPago(contrato.PagoContado, pagos.contado)" ng-disabled="$last || (operacion == 'Editar' && contratoAux.ModificarCompleto == '0')"/>
                                         <label>Pago {{$index + 1}}</label>
                                     </div>
                                 </div>
@@ -1169,7 +1200,7 @@
 
                                      <div class="dropdown">
 
-                                        <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown">
+                                        <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown" ng-disabled="operacion == 'Editar' && contratoAux.ModificarCompleto == '0'">
                                             <span>{{pago.MedioPago.Nombre}}</span>
 
                                             <span class="pull-right">
@@ -1744,7 +1775,7 @@
                                         </tr>
                                         
                                        <tr id="fecha">
-                                            <td >Fecha Entraga</td>
+                                            <td >Fecha Entrega</td>
                                             <td >{{GetFechaContrato(contrato.PlanPago.FechaFin2)}}</td>
                                         </tr>
                                         

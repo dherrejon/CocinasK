@@ -596,9 +596,10 @@
     $app->post('/ActivarDesactivarDescripcion', $seguridad, $ChecarSesion, 'ActivarDesactivarDescripcion');
 
     /*------------------------- Contratos ------------------------------*/
-    $app->get('/GetContrato/:id', $seguridad, $ChecarSesion, 'GetContrato');
+    $app->get('/GetContrato/:id/:cid', $seguridad, $ChecarSesion, 'GetContrato');
     $app->post('/GetDatosContrato', $seguridad, $ChecarSesion, 'GetDatosContrato');
     $app->post('/AgregarContrato', $seguridad, $ChecarSesion, 'AgregarContrato');
+    $app->put('/EditarContrato', $seguridad, $ChecarSesion, 'EditarContrato');
 
     $app->put('/UpdateNumeroFactura', $seguridad, $ChecarSesion, 'UpdateNumeroFactura'); 
     $app->post('/GuardarContratoPDF/:id', $seguridad, $ChecarSesion, 'GuardarContratoPDF');
@@ -606,8 +607,8 @@
     $app->post('/CambiarEstatusContrato', $seguridad, $ChecarSesion, 'CambiarEstatusContrato');
     $app->post('/GetEstadoCuenta', $seguridad, $ChecarSesion, 'GetEstadoCuenta');
     $app->post('/AgregarPago', $seguridad, $ChecarSesion, 'AgregarPago');
-    $app->get('/GetNotaCargo/:nota', $seguridad, $ChecarSesion, 'GetNotaCargo');
-    $app->get('/GetNoFactura/:factura', $seguridad, $ChecarSesion, 'GetNoFactura');
+    $app->get('/GetNotaCargo/:nota/:contrato', $seguridad, $ChecarSesion, 'GetNotaCargo');
+    $app->get('/GetNoFactura/:factura/:contrato', $seguridad, $ChecarSesion, 'GetNoFactura');
     $app->post('/HabilitarEditarContrato', $seguridad, $ChecarSesion, 'HabilitarEditarContrato');
     $app->post('/CancelarPago', $seguridad, $ChecarSesion, 'CancelarPago');
 

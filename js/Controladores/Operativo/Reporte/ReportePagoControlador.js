@@ -2,6 +2,8 @@ app.controller("ReportePagoController", function($scope, $rootScope, $http, $q, 
 {   
     /*----------------verificar los permisos---------------------*/
     $scope.permiso = {verTodo: false, ver: false};
+    $rootScope.permisoOperativo = {verTodosCliente: false};
+
     $scope.unidad = [];
     $scope.filtro = {fecha1: "", fecha2: "", unidad: new Object()};
     $scope.buscar = false;
@@ -15,6 +17,7 @@ app.controller("ReportePagoController", function($scope, $rootScope, $http, $q, 
             if($scope.usuarioLogeado.Permiso[k] == "OpeCliConsultar")
             {
                 $scope.permiso.verTodo = true;
+                $rootScope.permisoOperativo.verTodosCliente = true;
             }
             else if($scope.usuarioLogeado.Permiso[k] == "OpeVRPConsultar")
             {

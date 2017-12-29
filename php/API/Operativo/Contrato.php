@@ -399,7 +399,7 @@ function AgregarContrato()
         } 
         catch(PDOException $e) 
         {
-            echo($sql);
+            echo($e);
             $db->rollBack();
             echo '[ { "Estatus": "Fallo" } ]';
             $app->status(409);
@@ -425,7 +425,7 @@ function AgregarContrato()
         } 
         catch(PDOException $e) 
         {
-            echo($sql);
+            echo($e);
             $db->rollBack();
             echo '[ { "Estatus": "Fallo" } ]';
             $app->status(409);
@@ -545,14 +545,21 @@ function AgregarContrato()
 
 }
 
-function GetContrato($id)
+function GetContrato($id, $cid)
 {
     global $app;
     global $session_expiration_time;
 
     $request = \Slim\Slim::getInstance()->request();
-
-    $sql = "SELECT *  FROM ContratoVista WHERE PersonaId = ".$id." ORDER BY ContratoId DESC";
+    
+    if($cid > 0)
+    {
+        $sql = "SELECT *  FROM ContratoVista WHERE ContratoId = ".$cid;
+    }
+    else
+    {
+        $sql = "SELECT *  FROM ContratoVista WHERE PersonaId = ".$id." ORDER BY EstatusContratoId ASC, ContratoId DESC";
+    }
 
     try 
     {
@@ -568,7 +575,7 @@ function GetContrato($id)
     catch(PDOException $e) 
     {
         echo '[{"Estatus":"Fallo"}]';
-        //echo($e);
+        echo($sql);
         $app->status(409);
         $app->stop();
     }
@@ -801,14 +808,21 @@ function AgregarPago()
 
 }
 
-function GetNotaCargo($nota)
+function GetNotaCargo($nota, $contrato)
 {
     global $app;
     global $session_expiration_time;
 
     $request = \Slim\Slim::getInstance()->request();
-
-    $sql = "SELECT count(*) as Count FROM PagoContrato WHERE Cancelado = 0 AND NoNotaCargo = '".$nota."'";
+    
+    if($contrato == -1)
+    {
+        $sql = "SELECT count(*) as Count FROM PagoContrato WHERE Cancelado = 0 AND NoNotaCargo = '".$nota."'";
+    }
+    else
+    {
+        $sql = "SELECT count(*) as Count FROM PagoContrato WHERE Cancelado = 0 AND NoNotaCargo = '".$nota."' AND ContratoId != ".$contrato;
+    }
 
     try 
     {
@@ -827,14 +841,22 @@ function GetNotaCargo($nota)
     }
 }
 
-function GetNoFactura($factura)
+function GetNoFactura($factura, $contrato)
 {
     global $app;
     global $session_expiration_time;
 
     $request = \Slim\Slim::getInstance()->request();
 
-    $sql = "SELECT count(*) as Count FROM Contrato WHERE NoFactura = '".$factura."'";
+    if($contrato == -1)
+    {
+        $sql = "SELECT count(*) as Count FROM Contrato WHERE NoFactura = '".$factura."'";
+    }
+    else
+    {
+        $sql = "SELECT count(*) as Count FROM Contrato WHERE NoFactura = '".$factura."' AND ContratoId != ".$contrato;
+    }
+    
 
     try 
     {
@@ -1389,6 +1411,617 @@ function GetReporteContrato()
         //$app->status(409);
         $app->stop();
     }
+}
+
+
+function EditarContrato()
+{
+    $request = \Slim\Slim::getInstance()->request();
+    $contrato = json_decode($request->getBody());
+    global $app;
+    $sql;
+
+    //--------------- Eliminar Contrato ------------------------------
+    $sql = "DELETE FROM Contrato WHERE ContratoId = ".$contrato->ContratoId;
+    try 
+    {
+        $db = getConnection();
+        $db->beginTransaction();
+        
+        $stmt = $db->prepare($sql); 
+        $stmt->execute(); 
+        
+    } 
+    catch(PDOException $e) 
+    {
+        //echo '[ { "Estatus": "Fallo" } ]';
+        echo $e;
+        $db->rollBack();
+        $db = null;
+        $app->status(409);
+        $app->stop();
+    }
+    
+    $estatus = 1;
+    
+    if($contrato->TotalContrato == ($contrato->TotalContado + $contrato->TotalMeses))
+    {
+        $estatus = 2;
+    }
+    
+    //--------------------- Datos contrato ---------------------
+    $sql = "INSERT INTO Contrato(ContratoId, PersonaId, EstatusContratoId, ProyectoId, PresupuestoId, PlanPagoId, ConceptoVentaId, UsuarioId, FechaVenta, FechaEntrega, Encabezado, ProyectoNombre, NoFactura, NoNotaCargo, Modificar) 
+                        VALUES (:ContratoId, :PersonaId, ".$estatus.", :ProyectoId, :PresupuestoId, :PlanPagoId, :ConceptoVentaId, :UsuarioId, :FechaVenta, :FechaEntrega, :Encabezado, :ProyectoNombre, :NoFactura, :NoNotaCargo, NULL)";
+
+    try 
+    {
+        $stmt = $db->prepare($sql);
+
+        $stmt->bindParam("ContratoId", $contrato->ContratoId);
+        $stmt->bindParam("PersonaId", $contrato->PersonaId);
+        $stmt->bindParam("ProyectoId", $contrato->ProyectoId);
+        $stmt->bindParam("PresupuestoId", $contrato->PresupuestoId);
+        $stmt->bindParam("PlanPagoId", $contrato->PlanPago->PlanPagoId);
+        $stmt->bindParam("ConceptoVentaId", $contrato->ConceptoVenta->ConceptoVentaId);
+        $stmt->bindParam("UsuarioId", $contrato->UsuarioId);
+        $stmt->bindParam("FechaVenta", $contrato->FechaVenta2);
+        $stmt->bindParam("FechaEntrega", $contrato->PlanPago->FechaFin);
+        $stmt->bindParam("Encabezado", $contrato->Encabezado);
+        $stmt->bindParam("ProyectoNombre", $contrato->ProyectoNombre);
+        $stmt->bindParam("NoFactura", $contrato->NoFactura);
+        $stmt->bindParam("NoNotaCargo", $contrato->NoNotaCargo);
+
+        $stmt->execute();
+    } 
+    catch(PDOException $e) 
+    {
+        echo($e);
+        $db->rollBack();
+        echo '[ { "Estatus": "Fallo" } ]';
+        $app->status(409);
+        $app->stop();
+    }
+
+    //--------------------- Opcion contrato ------------
+    if($contrato->Proyecto->TipoProyecto->Mueble)
+    {
+        $sql = "INSERT INTO OpcionContrato(ContratoId, CombinacionMaterialId, MuestrarioPuertaId, PuertaId, PrecioPuerta, MaqueoId, ColorMaqueoId, PrecioMaqueo) 
+                            VALUES (:ContratoId, :CombinacionMaterialId, :MuestrarioPuertaId, :PuertaId, :PrecioPuerta, :MaqueoId, :ColorMaqueoId, :PrecioMaqueo)";
+
+        try 
+        {            
+            $stmt = $db->prepare($sql);
+
+            $stmt->bindParam("ContratoId", $contrato->ContratoId);
+            $stmt->bindParam("CombinacionMaterialId", $contrato->Combinacion->CombinacionMaterialId);
+            $stmt->bindParam("MuestrarioPuertaId", $contrato->Puerta->MuestrarioId);
+            $stmt->bindParam("PuertaId", $contrato->Puerta->PuertaSeleccionada->PuertaId);
+            $stmt->bindParam("PrecioPuerta", $contrato->Puerta->Precio);
+            $stmt->bindParam("MaqueoId", $contrato->Maqueo->MaqueoId);
+            $stmt->bindParam("ColorMaqueoId", $contrato->Maqueo->ColorSel->ColorId);
+            $stmt->bindParam("PrecioMaqueo", $contrato->Maqueo->PrecioVenta);
+
+            $stmt->execute();
+        } 
+        catch(PDOException $e) 
+        {
+            echo($e);
+            $db->rollBack();
+            echo '[ { "Estatus": "Fallo" } ]';
+            $app->status(409);
+            $app->stop();
+        }
+
+
+        //--------------------- Servicio Contrato ------------
+        $count = count($contrato->Servicio);
+        $sql = "INSERT INTO ServicioContrato(ContratoId, ServicioId, PrecioVenta) VALUES";
+
+        if($count > 0)
+        {
+            for($k=0; $k<$count; $k++)
+            {
+                $sql .= " ('".$contrato->ContratoId."', '".$contrato->Servicio[$k]->ServicioId."', '".$contrato->Servicio[$k]->PrecioVenta."'),";
+            }
+
+            $sql = rtrim($sql, ",");
+
+            try 
+            {            
+                $stmt = $db->prepare($sql);
+                $stmt->execute();
+            } 
+            catch(PDOException $e) 
+            {
+                echo($sql);
+                $db->rollBack();
+                echo '[ { "Estatus": "Fallo" } ]';
+                $app->status(409);
+                $app->stop();
+            }
+        }
+
+        //--------------------- Accesorio Contrato ------------
+        $count = count($contrato->Accesorio);
+        if($count > 0)
+        {
+            for($k=0; $k<$count; $k++)
+            {
+                if($contrato->Accesorio[$k]->Contrato)
+                {
+                    $sql = "INSERT INTO AccesorioContrato(ContratoId, TipoAccesorioId, MuestrarioId, AccesorioId, PrecioVenta) 
+                                                  VALUES (:ContratoId, :TipoAccesorioId, :MuestrarioId, :AccesorioId, :PrecioVenta)";
+
+
+                    $sql = rtrim($sql, ",");
+
+                    try 
+                    {            
+                        $stmt = $db->prepare($sql);
+
+                        $stmt->bindParam("ContratoId", $contrato->ContratoId);
+                        $stmt->bindParam("TipoAccesorioId", $contrato->Accesorio[$k]->TipoAccesorioId);
+                        $stmt->bindParam("MuestrarioId", $contrato->Accesorio[$k]->MuestrarioSel->MuestrarioId);
+                        $stmt->bindParam("AccesorioId", $contrato->Accesorio[$k]->MuestrarioSel->AccesorioSel->AccesorioId);
+                        $stmt->bindParam("PrecioVenta", $contrato->Accesorio[$k]->MuestrarioSel->PrecioVenta);
+
+                        $stmt->execute();
+                    } 
+                    catch(PDOException $e) 
+                    {
+                        echo($e);
+                        $db->rollBack();
+                        echo '[ { "Estatus": "Fallo" } ]';
+                        $app->status(409);
+                        $app->stop();
+                    }
+                }
+            }
+        }
+    }
+
+    //--------------------- Total Contrato ------------
+    $sql = "INSERT INTO TotalContrato(ContratoId, SubtotalMueble, DescuentoMueble, IVAMueble, TotalMueble, SubtotalCubierta, DescuentoCubierta, IVACubierta, TotalCubierta, TotalContrato) 
+                              VALUES (:ContratoId, :SubtotalMueble, :DescuentoMueble, :IVAMueble, :TotalMueble, :SubtotalCubierta, :DescuentoCubierta, :IVACubierta, :TotalCubierta, :TotalContrato)";
+
+
+    try 
+    {            
+        $stmt = $db->prepare($sql);
+
+        $stmt->bindParam("ContratoId", $contrato->ContratoId);
+        $stmt->bindParam("SubtotalMueble", $contrato->SubtotalMueble);
+        $stmt->bindParam("DescuentoMueble", $contrato->DescuentoMueble);
+        $stmt->bindParam("IVAMueble", $contrato->IVAMueble);
+        $stmt->bindParam("TotalMueble", $contrato->TotalMueble);
+        $stmt->bindParam("SubtotalCubierta", $contrato->SubtotalCubierta2);
+        $stmt->bindParam("DescuentoCubierta", $contrato->DescuentoCubierta);
+        $stmt->bindParam("IVACubierta", $contrato->IVACubierta);
+        $stmt->bindParam("TotalCubierta", $contrato->TotalCubierta);
+        $stmt->bindParam("TotalContrato", $contrato->TotalContrato);
+
+        $stmt->execute();
+    } 
+    catch(PDOException $e) 
+    {
+        echo($e);
+        $db->rollBack();
+        echo '[ { "Estatus": "Fallo" } ]';
+        $app->status(409);
+        $app->stop();
+    }
+
+    //--------------------- Especificacion Contrato ------------
+    $count = count($contrato->Especificacion);
+
+    if($count > 0)
+    {
+        $sql = "INSERT INTO EspecificacionContrato(ContratoId, Ubicacion, Descripcion) VALUES";
+
+        if($count > 0)
+        {
+            for($k=0; $k<$count; $k++)
+            {
+                $sql .= " ('".$contrato->ContratoId."', '".$contrato->Especificacion[$k]->Ubicacion."', '".$contrato->Especificacion[$k]->Descripcion."'),";
+            }
+
+            $sql = rtrim($sql, ",");
+
+            try 
+            {            
+                $stmt = $db->prepare($sql);
+                $stmt->execute();
+            } 
+            catch(PDOException $e) 
+            {
+                echo($e);
+                $db->rollBack();
+                echo '[ { "Estatus": "Fallo" } ]';
+                $app->status(409);
+                $app->stop();
+            }
+        }
+    }
+
+    //--------------------- Descripcion Contrato ------------
+    $count = count($contrato->Descripcion);
+
+    if($count > 0)
+    {
+        $sql = "INSERT INTO DescricpcionPorContrato(ContratoId, Descripcion) VALUES";
+
+        if($count > 0)
+        {
+            for($k=0; $k<$count; $k++)
+            {
+                $sql .= " ('".$contrato->ContratoId."', '".$contrato->Descripcion[$k]->Descripcion."'),";
+            }
+
+            $sql = rtrim($sql, ",");
+
+            try 
+            {            
+                $stmt = $db->prepare($sql);
+                $stmt->execute();
+            } 
+            catch(PDOException $e) 
+            {
+                echo($e);
+                $db->rollBack();
+                echo '[ { "Estatus": "Fallo" } ]';
+                $app->status(409);
+                $app->stop();
+            }
+        }
+    }
+
+    //--------------------- Datos Fiscales ------------
+    $sql = "INSERT INTO DatoFiscalContrato(ContratoId, Nombre, RFC, CorreoElectronico, Codigo, Estado, Municipio, Ciudad, Colonia, Domicilio) 
+                              VALUES (:ContratoId, :Nombre, :RFC, :CorreoElectronico, :Codigo, :Estado, :Municipio, :Ciudad, :Colonia, :Domicilio)";
+
+
+    try 
+    {            
+        $stmt = $db->prepare($sql);
+
+        $stmt->bindParam("ContratoId", $contrato->ContratoId);
+        $stmt->bindParam("Nombre", $contrato->DatoFiscal->Nombre);
+        $stmt->bindParam("RFC", $contrato->DatoFiscal->RFC);
+        $stmt->bindParam("CorreoElectronico", $contrato->DatoFiscal->CorreoElectronico);
+        $stmt->bindParam("Codigo", $contrato->DatoFiscal->Codigo);
+        $stmt->bindParam("Estado", $contrato->DatoFiscal->Estado);
+        $stmt->bindParam("Municipio", $contrato->DatoFiscal->Municipio);
+        $stmt->bindParam("Ciudad", $contrato->DatoFiscal->Ciudad);
+        $stmt->bindParam("Colonia", $contrato->DatoFiscal->Colonia);
+        $stmt->bindParam("Domicilio", $contrato->DatoFiscal->Domicilio);
+
+        $stmt->execute();
+    } 
+    catch(PDOException $e) 
+    {
+        echo($e);
+        $db->rollBack();
+        echo '[ { "Estatus": "Fallo" } ]';
+        $app->status(409);
+        $app->stop();
+    }
+
+    //--------------------- Cubierta Contrato ------------
+    if(($contrato->Proyecto->TipoProyecto->CubiertaAglomerado || $contrato->Proyecto->TipoProyecto->CubiertaPiedra) && $contrato->TipoCubierta->TipoCubiertaId != null)
+    {
+        $sql = "INSERT INTO CubiertaContrato(ContratoId, TipoCubiertaId, MaterialId, GrupoId, ColorId, AcabadoCubiertaId, Precio) 
+                            VALUES (:ContratoId, :TipoCubiertaId, :MaterialId, :GrupoId, :ColorId, :AcabadoCubiertaId, :Precio)";
+
+        try 
+        {            
+            $stmt = $db->prepare($sql);
+
+            $stmt->bindParam("ContratoId", $contrato->ContratoId);
+            $stmt->bindParam("TipoCubiertaId", $contrato->TipoCubierta->TipoCubiertaId);
+            $stmt->bindParam("MaterialId", $contrato->TipoCubierta->GrupoUbicacion[0]->MaterialSel->MaterialId);
+            $stmt->bindParam("GrupoId", $contrato->TipoCubierta->GrupoUbicacion[0]->MaterialSel->GrupoId);
+            $stmt->bindParam("ColorId", $contrato->TipoCubierta->GrupoUbicacion[0]->MaterialSel->ColorId);
+            $stmt->bindParam("AcabadoCubiertaId", $contrato->TipoCubierta->Acabado->AcabadoCubiertaId);
+            $stmt->bindParam("Precio", $contrato->TipoCubierta->GrupoUbicacion[0]->MaterialSel->PrecioVenta);
+
+            $stmt->execute();
+        } 
+        catch(PDOException $e) 
+        {
+            echo($e);
+            $db->rollBack();
+            echo '[ { "Estatus": "Fallo" } ]';
+            $app->status(409);
+            $app->stop();
+        }
+
+
+        //--------------------- Ubicación Cubierta ------------
+        $count = count($contrato->TipoCubierta->Ubicacion);
+        $sql = "INSERT INTO UbicacionCubiertaContrato(ContratoId, UbicacionCubiertaId) VALUES";
+
+        for($k=0; $k<$count; $k++)
+        {
+            if($contrato->TipoCubierta->Ubicacion[$k]->Contrato)
+            {
+                $sql .= " ('".$contrato->ContratoId."', '".$contrato->TipoCubierta->Ubicacion[$k]->UbicacionCubiertaId."'),";
+
+            }
+        }
+
+        $sql = rtrim($sql, ",");
+
+        try 
+        {            
+            $stmt = $db->prepare($sql);
+            $stmt->execute();
+        } 
+        catch(PDOException $e) 
+        {
+            echo($e);
+            $db->rollBack();
+            echo '[ { "Estatus": "Fallo" } ]';
+            $app->status(409);
+            $app->stop();
+        }
+    }
+
+
+    //--------------------- Promocion Contrato ------------
+    if($contrato->TotalMueble > 0  && $contrato->PromocionMueble->TipoPromocionId != "0")
+    {
+         $sql = "INSERT INTO PromocionContrato(ContratoId, TipoVentaId, TipoPromocionId, Descuento, NumeroPago, DescuentoMinimo, DescuentoMaximo, FechaLimite) VALUES";
+        $sql .= " ('".$contrato->ContratoId."', '".$contrato->PromocionMueble->TipoVentaId."', '".$contrato->PromocionMueble->TipoPromocionId."', '".$contrato->PromocionMueble->Descuento."', '".$contrato->PromocionMueble->NumeroPagos."', :DescuentoMinimo, :DescuentoMaximo, :FechaLimite)";
+
+
+        try 
+        {            
+            $stmt = $db->prepare($sql);
+
+            $stmt->bindParam("DescuentoMinimo", $contrato->PromocionMueble->DescuentoMinimo);
+            $stmt->bindParam("DescuentoMaximo", $contrato->PromocionMueble->DescuentoMaximo);
+            $stmt->bindParam("FechaLimite", $contrato->PromocionMueble->FechaLimite2);
+
+            $stmt->execute();
+        } 
+        catch(PDOException $e) 
+        {
+            echo($sql);
+            $db->rollBack();
+            echo '[ { "Estatus": "Fallo" } ]';
+            $app->status(409);
+            $app->stop();
+        }
+        
+    }
+
+    if($contrato->TotalCubierta > 0 && $contrato->PromocionCubierta->TipoPromocionId != "0")
+    {
+         $sql = "INSERT INTO PromocionContrato(ContratoId, TipoVentaId, TipoPromocionId, Descuento, NumeroPago, DescuentoMinimo, DescuentoMaximo, FechaLimite) VALUES";
+        $sql .= " ('".$contrato->ContratoId."', '".$contrato->PromocionCubierta->TipoVentaId."', '".$contrato->PromocionCubierta->TipoPromocionId."', '".$contrato->PromocionCubierta->Descuento."', '".$contrato->PromocionCubierta->NumeroPagos."', :DescuentoMinimo, :DescuentoMaximo, :FechaLimite)";
+        
+        try 
+        {            
+            $stmt = $db->prepare($sql);
+
+            $stmt->bindParam("DescuentoMinimo", $contrato->PromocionCubierta->DescuentoMinimo);
+            $stmt->bindParam("DescuentoMaximo", $contrato->PromocionCubierta->DescuentoMaximo);
+            $stmt->bindParam("FechaLimite", $contrato->PromocionCubierta->FechaLimite2);
+
+            $stmt->execute();
+        } 
+        catch(PDOException $e) 
+        {
+            echo($e);
+            $db->rollBack();
+            echo '[ { "Estatus": "Fallo" } ]';
+            $app->status(409);
+            $app->stop();
+        }
+    }
+    
+
+    //--------------------- Plan pago Contrato ------------
+    $count = count($contrato->PlanPago->Abono);
+
+    if($count > 0)
+    {
+        $sql = "INSERT INTO PlanPagoContrato(ContratoId, Pago, Concepto, FechaCompromiso, NumeroAbono) VALUES";
+
+        if($count > 0)
+        {
+            for($k=0; $k<$count; $k++)
+            {
+                $sql .= " ('".$contrato->ContratoId."', '".$contrato->PlanPago->Abono[$k]->Pago."', '".$contrato->PlanPago->Abono[$k]->Concepto."', '".$contrato->PlanPago->Abono[$k]->FechaCompromiso."', '".$contrato->PlanPago->Abono[$k]->NumeroAbono."'),";
+            }
+
+            $sql = rtrim($sql, ",");
+
+            try 
+            {            
+                $stmt = $db->prepare($sql);
+                $stmt->execute();
+            } 
+            catch(PDOException $e) 
+            {
+                echo($e);
+                $db->rollBack();
+                echo '[ { "Estatus": "Fallo" } ]';
+                $app->status(409);
+                $app->stop();
+            }
+        }
+    }
+
+    //--------------------- Pago Contrato ------------
+    $count = count($contrato->AbonoContrato);
+    
+    if($count > 0)
+    {
+        $sql = "INSERT INTO PagoContrato(ContratoId, MedioPagoId, TipoPagoId, Pago, Fecha, NoNotaCargo, Concepto, MotivoCancelacion, Cancelado) VALUES";
+        
+        if($count > 0)
+        {
+            for($k=0; $k<$count; $k++)
+            {
+                $sql .= " ('".$contrato->ContratoId."', '".$contrato->AbonoContrato[$k]->MedioPagoId."', '".$contrato->AbonoContrato[$k]->TipoPagoId."', '".$contrato->AbonoContrato[$k]->Pago."', STR_TO_DATE('".$contrato->AbonoContrato[$k]->Fecha." ".$contrato->AbonoContrato[$k]->Hora."', '%Y-%m-%d %H:%i'), '".$contrato->AbonoContrato[$k]->NoNotaCargo."', '".$contrato->AbonoContrato[$k]->Concepto."', '".$contrato->AbonoContrato[$k]->MotivoCancelacion."',  '".$contrato->AbonoContrato[$k]->Cancelado."'),";
+            }
+
+            $sql = rtrim($sql, ",");
+
+            try 
+            {            
+                $stmt = $db->prepare($sql);
+                $stmt->execute();
+            } 
+            catch(PDOException $e) 
+            {
+                echo($sql);
+                $db->rollBack();
+                echo '[ { "Estatus": "Fallo" } ]';
+                $app->status(409);
+                $app->stop();
+            }
+        }
+    }
+    
+    
+    if($contrato->CancelarAnticipo)
+    {
+        $sql = "SELECT SUM(Pago) as Anticipo, NoNotaCargo FROM PagoContrato WHERE Concepto = 'Anticipo' AND ContratoId = '".$contrato->ContratoId."'  AND Cancelado = '0'";
+        try 
+        {
+            $stmt = $db->prepare($sql);
+            $stmt->execute();
+            $anticipo = $stmt->fetchAll(PDO::FETCH_OBJ);
+        }
+        catch(PDOException $e) 
+        {
+            echo '[{"Estatus":"Fallo"}]';
+            $db->rollBack();
+            echo ($sql);
+            $app->status(409);
+            $app->stop();
+        }
+        
+        //Cancelar Anticipo
+        $sql = "UPDATE PagoContrato SET Cancelado = 1 WHERE Concepto = 'Anticipo' AND ContratoId  = '".$contrato->ContratoId."'";
+        try 
+        {
+            $stmt = $db->prepare($sql);
+            $stmt->execute();
+        }
+        catch(PDOException $e) 
+        {
+            echo '[{"Estatus":"Fallo"}]';
+            $db->rollBack();
+            echo ($sql);
+            $app->status(409);
+            $app->stop();
+        }
+        
+        
+        $sql = "INSERT INTO PagoContrato(ContratoId, MedioPagoId, TipoPagoId, Pago, Fecha, NoNotaCargo, Concepto, MotivoCancelacion, Cancelado) VALUES
+                ('".$contrato->ContratoId."', 0, 1, '-".$anticipo[0]->Anticipo."', NOW() - INTERVAL 9 HOUR, '".$anticipo[0]->NoNotaCargo."', 'Cancelación', 'Modificación del Contrato', '1')";
+
+
+        try 
+        {
+            $stmt = $db->prepare($sql);
+            $stmt->execute();
+        }
+        catch(PDOException $e) 
+        {
+            echo '[{"Estatus":"Fallo"}]';
+            $db->rollBack();
+            echo ($sql);
+            $app->status(409);
+            $app->stop();
+        }
+        
+        $countMeses = count($contrato->PagoMeses);
+        $countContado = count($contrato->PagoContado);
+
+        $sql = "INSERT INTO PagoContrato(ContratoId, MedioPagoId, TipoPagoId, Pago, Fecha, NoNotaCargo, Concepto) VALUES";
+
+        if($countMeses > 0)
+        {
+            if($contrato->PagoMeses[0]->MedioPago->MedioPagoId != "")
+            {
+                for($k=0; $k<$countMeses; $k++)
+                {
+                    $sql .= " ('".$contrato->ContratoId."', '".$contrato->PagoMeses[$k]->MedioPago->MedioPagoId."', 2, '".$contrato->PagoMeses[$k]->Pago."', NOW() - INTERVAL 9 HOUR, '".$contrato->NoNotaCargo."', 'Anticipo'),";
+                }
+            }
+        }
+
+        if($countContado > 0)
+        {
+            if($contrato->PagoContado[0]->MedioPago->MedioPagoId)
+            {
+                for($k=0; $k<$countContado; $k++)
+                {
+                    $sql .= " ('".$contrato->ContratoId."', '".$contrato->PagoContado[$k]->MedioPago->MedioPagoId."', 1, '".$contrato->PagoContado[$k]->Pago."', NOW() - INTERVAL 9 HOUR, '".$contrato->NoNotaCargo."', 'Anticipo'),";
+                }
+            }
+        }
+
+        $sql = rtrim($sql, ",");
+
+        try 
+        {            
+            $stmt = $db->prepare($sql);
+            $stmt->execute();
+        } 
+        catch(PDOException $e) 
+        {
+            echo($sql);
+            $db->rollBack();
+            echo '[ { "Estatus": "Fallo" } ]';
+            $app->status(409);
+            $app->stop();
+        }
+    }
+
+    //-------------------- Actualizar Estus Presupuesto ------
+    $sql = "UPDATE Proyecto SET EstatusProyectoId = 2 WHERE ProyectoId = '".$contrato->ProyectoId."'";
+
+    try 
+    {
+        $stmt = $db->prepare($sql); 
+        $stmt->execute(); 
+    } 
+    catch(PDOException $e) 
+    {
+        echo '[ { "Estatus": "Fallo" } ]';
+        echo $sql;
+        $db->rollBack();
+        $app->status(409);
+        $app->stop();
+    }
+
+    //--------------------- Actualizar persona a cliente ------------
+    $sql = "UPDATE Persona SET TipoPersonaId = 1 WHERE PersonaId = '".$contrato->PersonaId."'";
+
+    try 
+    {
+        $stmt = $db->prepare($sql); 
+        $stmt->execute(); 
+
+        $db->commit();
+        $db = null;
+
+        echo '[{"Estatus": "Exitoso"}, {"ContratoId":'.$contrato->ContratoId.'} ]';
+    } 
+    catch(PDOException $e) 
+    {
+        echo '[ { "Estatus": "Fallo" } ]';
+        echo $sql;
+        $db->rollBack();
+        $app->status(409);
+        $app->stop();
+    }
+
 }
 
 ?>

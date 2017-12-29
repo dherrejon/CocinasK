@@ -80,9 +80,9 @@ function AgregarProyectoPresupuesto()
     
     if($presupuesto->Persona->PersonaId == "0")
     {
-        $sql = "INSERT Persona (MedioCaptacionId, TipoPersonaId, Nombre, PrimerApellido, SegundoApellido, NombreMedioCaptacion) VALUES
+        $sql = "INSERT Persona (MedioCaptacionId, TipoPersonaId, Nombre, PrimerApellido, SegundoApellido, NombreMedioCaptacion, Registro) VALUES
         ('".$presupuesto->Persona->MedioCaptacion->MedioCaptacionId."', 2, '".$presupuesto->Persona->Nombre."', '".$presupuesto->Persona->PrimerApellido."', '".$presupuesto->Persona->SegundoApellido."',
-        '".$presupuesto->Persona->NombreMedioCaptacion."')";
+        '".$presupuesto->Persona->NombreMedioCaptacion."', NOW() - INTERVAL 9 HOUR)";
         
         try 
         {
@@ -93,7 +93,7 @@ function AgregarProyectoPresupuesto()
         }
         catch(PDOException $e) 
         {    
-            echo $e;
+            echo $sql;
             echo '[{"Estatus": "Fallido"}]';
             $db->rollBack();
             $app->status(409);

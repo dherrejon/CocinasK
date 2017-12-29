@@ -7,29 +7,50 @@ app.controller("ContratoClienteControlador", function($scope, $rootScope, CITA, 
     $scope.contratoDetalle = "";
     $scope.usuario =  datosUsuario.getUsuario(); 
     
-    $scope.GetContrato = function()
+    $scope.GetContrato = function(contratoId)
     {
-        GetContrato($http, $q, CONFIG, $rootScope.personaId).then(function(data)
+        var idc = contratoId ? contratoId : -1;
+        GetContrato($http, $q, CONFIG, $rootScope.personaId, idc).then(function(data)
         {
             for(var k=0; k<data.length; k++)
             {
                  data[k].EstatusContrato = $scope.CambiarEstatusPagado(data[k].EstatusContrato, data[k].FechaEntrega);
             }
             
-            if(!$rootScope.permisoOperativo.verTodosCliente)
+            if(!contratoId)
             {
-                $scope.contrato = [];
-                for(var k=0; k<data.length; k++)
+                if(!$rootScope.permisoOperativo.verTodosCliente)
                 {
-                    if(data[k].UnidadNegocioId == $scope.usuario.UnidadNegocioId)
+                    $scope.contrato = [];
+                    for(var k=0; k<data.length; k++)
                     {
-                        $scope.contrato.push(data[k]);
+                        if(data[k].UnidadNegocioId == $scope.usuario.UnidadNegocioId)
+                        {
+                            $scope.contrato.push(data[k]);
+                        }
                     }
+                }
+                else
+                {
+                    $scope.contrato = data;
                 }
             }
             else
             {
-                $scope.contrato = data;
+                for(var k=0; k<$scope.contrato.length; k++)
+                {
+                    if($scope.contrato[k].ContratoId == contratoId)
+                    {
+                        $scope.contrato[k] = data[0];
+                        
+                        if( $scope.contratoDetalle == contratoId)
+                        {
+                            $scope.CambiarContratoDetalle($scope.contrato[k], true);   
+                        }
+                        
+                        break;
+                    }
+                }
             }
             
         }).catch(function(error)
@@ -50,9 +71,9 @@ app.controller("ContratoClienteControlador", function($scope, $rootScope, CITA, 
     };
     
     //------------- Vista -----------------------------
-    $scope.CambiarContratoDetalle = function(contrato)
+    $scope.CambiarContratoDetalle = function(contrato, recalcular)
     {
-        if($scope.contratoDetalle == contrato.ContratoId)
+        if($scope.contratoDetalle == contrato.ContratoId && !recalcular)
         {
             $scope.contratoDetalle = "";
         }
@@ -61,7 +82,6 @@ app.controller("ContratoClienteControlador", function($scope, $rootScope, CITA, 
             $scope.contratoDetalle = contrato.ContratoId;
             $scope.GetEstadoCuenta(contrato);
         }
-
     };
     
     $scope.MostrarEstatus = function(actualId, cambiarId)
@@ -193,7 +213,6 @@ app.controller("ContratoClienteControlador", function($scope, $rootScope, CITA, 
                 {
                     $scope.detalle = data[1].Presupuesto;
                     $scope.VerTipoCubierta(data[1].Presupuesto);
-                    console.log($scope.detalle);
                 }
                 else if($scope.optPresupuesto == "EditarContrato")
                 {
@@ -534,7 +553,7 @@ app.controller("ContratoClienteControlador", function($scope, $rootScope, CITA, 
             if(val == "Recibo")
             {
                 $scope.$apply();
-                 $scope.ReciboPagoPDF();
+                $scope.ReciboPagoPDF();
             }
                 
         }).catch(function(error)
@@ -632,9 +651,6 @@ app.controller("ContratoClienteControlador", function($scope, $rootScope, CITA, 
             cuenta.Pago[k].Pago = alasql("SELECT * FROM ? WHERE Cancelado = '" + cuenta.Pago[k].Cancelado + "' AND NoNotaCargo = '" + cuenta.Pago[k].NoNotaCargo + "' AND Concepto = '" + cuenta.Pago[k].Concepto + "'", [pagos]);
         }
         
-        console.log(pagos);
-        console.log(cuenta);
-        
         return cuenta;
     };
     
@@ -694,10 +710,7 @@ app.controller("ContratoClienteControlador", function($scope, $rootScope, CITA, 
         $scope.nuevoPago.NoNotaCargoVal = false;
         
         $scope.nuevoPago.Pago = [new Pago()];
-        
-        console.log($scope.nuevoPago);
-        
-        
+
         $('#PagoModal').modal('toggle');
     };
     
@@ -1094,13 +1107,11 @@ app.controller("ContratoClienteControlador", function($scope, $rootScope, CITA, 
     
     $scope.GetDatosContrato = function(contrato, opt)              
     {
-        console.log(contrato);
         GetDatosContrato($http, $q, CONFIG, contrato).then(function(data)
         {
             if(data[0].Estatus == "Exitoso")
             {
                  $scope.OperacionContrato(opt, data[1].Contrato);
-                console.log(data[1].Contrato);
             }
             else
             {
@@ -1177,6 +1188,11 @@ app.controller("ContratoClienteControlador", function($scope, $rootScope, CITA, 
         $scope.optPresupuesto = "EditarContrato";
         $scope.GetPresupuestoPorProyecto(contrato.PresupuestoId, contrato.ProyectoId);
     };
+    
+    $scope.$on('ContratoEditado',function(evento, contrato)
+    {
+        $scope.GetContrato(contrato.ContratoId);
+    });
     
 });
 

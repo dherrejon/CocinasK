@@ -2757,7 +2757,6 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
     
     $scope.CambiarProyectoPersona = function(proyecto)
     {
-        console.log(proyecto);
         if($scope.proyectoPresupuesto != proyecto)
         {
             $scope.proyectoPresupuesto = proyecto;
@@ -2910,7 +2909,6 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                 //console.log($scope.presupuesto.Margen);
             }
             
-            console.log($scope.presupuesto.Margen);
             if($scope.presupuesto.Proyecto.TipoProyecto.Mueble)
             {
                 $scope.GetModuloInicio();
@@ -3145,7 +3143,6 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         $scope.moduloAgregar.Alto = "";
         $scope.moduloAgregar.Profundo = "";
         
-        console.log($scope.presupuesto.Modulo);
     };
     
     $scope.SetModuloNuevo = function(modulo, cantidad)
@@ -6501,7 +6498,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
     $scope.AgregarProyectoPresupuesto = function()
     {  
         $scope.SetUnidadNegocio();
-        console.log($scope.presupuesto);
+
         AgregarProyectoPresupuesto($http, CONFIG, $q, $scope.presupuesto).then(function(data)
         {
             //console.log(data);
@@ -6564,7 +6561,6 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
     $scope.EditarProyectoPresupuesto = function()
     {  
         $scope.SetUnidadNegocio();
-        console.log($scope.presupuesto);
         EditarProyectoPresupuesto($http, CONFIG, $q, $scope.presupuesto).then(function(data)
         {
             //console.log(data);

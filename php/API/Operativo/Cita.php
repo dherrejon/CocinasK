@@ -22,9 +22,9 @@ function AgregarCita()
     
     if($cita->Persona->PersonaId == "0")
     {
-        $sql = "INSERT Persona (MedioCaptacionId, TipoPersonaId, Nombre, PrimerApellido, SegundoApellido, NombreMedioCaptacion) VALUES
+        $sql = "INSERT Persona (MedioCaptacionId, TipoPersonaId, Nombre, PrimerApellido, SegundoApellido, NombreMedioCaptacion, Registro) VALUES
         ('".$cita->Persona->MedioCaptacion->MedioCaptacionId."', 2, '".$cita->Persona->Nombre."', '".$cita->Persona->PrimerApellido."', '".$cita->Persona->SegundoApellido."',
-        '".$cita->Persona->NombreMedioCaptacion."')";
+        '".$cita->Persona->NombreMedioCaptacion."', NOW() - INTERVAL 9 HOUR)";
         
         try 
         {
@@ -35,7 +35,7 @@ function AgregarCita()
         }
         catch(PDOException $e) 
         {    
-            echo $e;
+            echo $sql;
             echo '[{"Estatus": "Fallido"}]';
             $db->rollBack();
             $app->status(409);

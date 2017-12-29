@@ -246,6 +246,13 @@
     text-align: center;
 }
 
+.files.contrato:before 
+{
+  
+    content: " Selecciona o arrastra tu contrato aqui. ";
+
+}
+
 .textoSaldos
 {
     color: gray;
@@ -293,4 +300,13 @@
 {
     color: white;  
     background:  #970000; 
+}
+
+.addonGroupBtn
+{
+    background: white;
+    color: black;
+    border-width: 0px;
+    padding-left: 0px;
+    border-radius: 0px;
 }

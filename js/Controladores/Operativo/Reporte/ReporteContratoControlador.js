@@ -2,12 +2,15 @@ app.controller("ReporteContratoControlador", function($scope, $rootScope, $http,
 {   
     /*----------------verificar los permisos---------------------*/
     $scope.permiso = {verTodo: false, ver: false};
+    $rootScope.permisoOperativo = {verTodosCliente: false};
+    
     $scope.unidad = [];
     $scope.filtro = {fecha1: "", fecha2: "", unidad: new Object()};
     $scope.buscar = false;
     $scope.ordenar = "-Fecha";
     $scope.busqueda = "";
     $scope.ordenar = "-Contrato";
+    
     
     $scope.IdentificarPermisos = function()
     {
@@ -16,6 +19,7 @@ app.controller("ReporteContratoControlador", function($scope, $rootScope, $http,
             if($scope.usuarioLogeado.Permiso[k] == "OpeCliConsultar")
             {
                 $scope.permiso.verTodo = true;
+                $rootScope.permisoOperativo.verTodosCliente = true;
             }
             else if($scope.usuarioLogeado.Permiso[k] == "OpeVRCConsultar")
             {

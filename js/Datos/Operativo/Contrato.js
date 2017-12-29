@@ -42,13 +42,13 @@ class Contrato
     }
 }
 
-function GetContrato($http, $q, CONFIG, id)     
+function GetContrato($http, $q, CONFIG, PersonaId, ContratoId)     
 {
     var q = $q.defer();
 
     $http({      
           method: 'GET',
-          url: CONFIG.APIURL + '/GetContrato/' + id,
+          url: CONFIG.APIURL + '/GetContrato/' + PersonaId + "/" + ContratoId,
 
       }).success(function(data)
         {
@@ -87,6 +87,33 @@ function AgregarContrato($http, CONFIG, $q, contrato)
     $http({      
           method: 'POST',
           url: CONFIG.APIURL + '/AgregarContrato',
+          data: contrato
+
+      }).success(function(data)
+        {
+            if(data[0].Estatus == "Exitoso") 
+            {
+                q.resolve(data);
+            }
+            else
+            {
+                q.resolve([{Estatus:"Fallo"}]);
+            }
+            
+        }).error(function(data, status){
+            q.resolve([{Estatus:status}]);
+
+     }); 
+    return q.promise;
+}
+
+function EditarContrato($http, CONFIG, $q, contrato)
+{
+    var q = $q.defer();
+
+    $http({      
+          method: 'PUT',
+          url: CONFIG.APIURL + '/EditarContrato',
           data: contrato
 
       }).success(function(data)
@@ -287,13 +314,23 @@ function CancelarPago($http, $q, CONFIG, pago)
     return q.promise;
 }
 
-function GetNotaCargo($http, $q, CONFIG, nota) 
+function GetNotaCargo($http, $q, CONFIG, nota, contrato) 
 {
     var q = $q.defer();
+    
+    var url = "";
+    if(contrato)
+    {
+        url = CONFIG.APIURL + '/GetNotaCargo/' + nota + "/" + contrato;
+    }
+    else
+    {
+        url = CONFIG.APIURL + '/GetNotaCargo/' + nota + "/-1";
+    }
 
     $http({      
           method: 'GET',
-          url: CONFIG.APIURL + '/GetNotaCargo/' + nota,
+          url: url
       }).success(function(data)
         {
             if(data[0].Estatus == "Exito")
@@ -312,13 +349,24 @@ function GetNotaCargo($http, $q, CONFIG, nota)
     return q.promise;
 }
 
-function GetNoFactura($http, $q, CONFIG, factura) 
+function GetNoFactura($http, $q, CONFIG, factura, contrato) 
 {
     var q = $q.defer();
+    
+    var url = "";
+    
+    if(contrato)
+    {
+        url = CONFIG.APIURL + '/GetNoFactura/' + factura + "/" + contrato;
+    }
+    else
+    {
+        url = CONFIG.APIURL + '/GetNoFactura/' + factura + "/-1";
+    }
 
     $http({      
           method: 'GET',
-          url: CONFIG.APIURL + '/GetNoFactura/' + factura,
+          url: url,
       }).success(function(data)
         {
             if(data[0].Estatus == "Exito")
