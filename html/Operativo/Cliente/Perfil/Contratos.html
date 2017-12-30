@@ -1,0 +1,737 @@
+<div ng-controller="ContratoClienteControlador" ng-init="GetContrato()">
+    <br><br>
+    
+    <div class="row" ng-if="contrato.length == 0">
+        <div class="col-xs-12" >
+            
+            <div  class="textoPerfilHome">
+                <span>Sin Contratos</span>
+            </div>
+                        
+        </div>
+    </div>
+    
+    <div class="row" ng-if="contrato.length > 0">
+       
+        <div class="col-xs-12" >
+            
+            <div ng-repeat="contrato in contrato ">
+               
+               <div class="input-group" >
+                   
+                    <span class="btnStatusProyecto form-control"  style="overflow:hidden !important;  font-weight: normal; height: 34px;" ng-click="CambiarContratoDetalle(contrato)" ng-class="{Seleccionado: contratoDetalle == contrato.ContratoId}"> 
+                        <span class="fa  fa-chevron-right" style="width:20px;" ng-if="contratoDetalle != contrato.ContratoId"></span>
+                        <span class="fa fa-chevron-up " style="width:20px;" ng-if="contratoDetalle == contrato.ContratoId"></span>
+                        <b ng-class="{ textoRojoClaro: contrato.NoFactura == null}" data-toggle="tooltip" data-placement="top" title="{{contrato.NoFactura == null ? 'Contrato SIN Facturar' : 'Contrato Facturado' }}">{{contrato.ContratoId}}:</b> {{contrato.ProyectoNombre}}
+                        <span class="pull-right">
+                            <b style="margin-right: 10px">({{contrato.TotalContrato | currency}})</b> {{contrato.FechaVentaFormato}} | {{contrato.FechaEntregaFormato}} 
+                        </span>
+                    </span>
+                    
+                    <div class="input-group-btn">
+                        <button class="btn  btnStatusProyecto {{GetEstatusContrato(contrato.EstatusContrato.EstatusContratoId)}}" data-toggle="dropdown" style=" height: 34px" ng-disabled="contrato.EstatusContrato.EstatusContratoId == '3'">
+                            <span>{{contrato.EstatusContrato.Nombre}} </span>
+                            <span class="fa fa-caret-down pull-right" ng-show="contrato.EstatusContrato.EstatusContratoId != '3'"> </span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right dropdownRight" style="margin-right: 20px">
+                            <li ng-repeat="estatus in estatus" ng-show="MostrarEstatus(contrato.EstatusContrato.EstatusContratoId, estatus.EstatusContratoId)">
+                                <a class="dropdownOpcionModal" ng-click="CambiarEstatus(contrato, estatus)"> {{estatus.Nombre}} </a> 
+                            </li>
+                        </ul>
+                        
+                        <span class="dropdown">
+                            <a  class="btn btnOptContrato dropdown-toggle" data-toggle="dropdown" >
+                                <span class="fa fa-ellipsis-v text-center"></span>
+                            </a>
+                            
+                            <ul class="dropdown-menu dropdown-menu-right dropdownRight" role="menu" style="margin-top: 19px">
+                                <li>
+                                    <a class="dropdownOpcionModal" ng-click="VerDetallePresupuesto(contrato.PresupuestoId, contrato.ProyectoId)">
+                                        <span class="fa fa-file-text-o"></span> Ver Presupuesto
+                                    </a>
+                                </li>
+
+                                <li >
+                                    <a class="dropdownOpcionModal" ng-click="DetalleContrato(contrato)">
+                                        <span class="fa fa-eye"></span> Ver Contrato
+                                    </a>
+                                </li>
+                                
+                                <li ng-show="contrato.NoFactura == null">
+                                    <a class="dropdownOpcionModal" ng-click="Facturar(contrato)">
+                                        <span class="fa fa-file-code-o"></span> Facturar
+                                    </a>
+                                </li>
+                                
+                                <li>
+                                    <a class="dropdownOpcionModal" ng-click="CargarContrato(contrato.ContratoId)">
+                                        <span class="fa fa-cloud-upload" ></span> Cargar Contrato
+                                    </a>
+                                </li>
+                                
+                                <li>
+                                    <a class="dropdownOpcionModal"  ng-click="DescargarContrato(contrato)">
+                                        <span class="fa fa-download"></span> Descargar Contrato
+                                    </a>
+                                </li>
+                                
+                                <li ng-show="contrato.Modificar == '1' || contrato.ModificarCompleto == '1'">
+                                    <a class="dropdownOpcionModal"  ng-click="EditarContrato(contrato)">
+                                        <span class="fa fa-pencil"></span> Editar Contrato
+                                    </a>
+                                </li>
+                                
+                                <li ng-show="contrato.Modificar == '0' && permisoOperativo.editarContrato && contrato.ModificarCompleto == '0'">
+                                    <a class="dropdownOpcionModal"  ng-click="HabilitarEditarContrato(contrato)">
+                                        <span class="fa fa-unlock"></span> Permitir Modificar
+                                    </a>
+                                </li>
+
+                            </ul>
+                        </span>
+                    </div>
+                    
+                </div>  
+                
+                <!-- estado de cuenta -->
+               <div ng-if="contratoDetalle == contrato.ContratoId" >
+                   <br>
+                   
+                   <!-- Saldos -->
+                   <div class="row">
+                       
+                       
+                       <div class="col-sm-4 col-xs-12" ng-if="contrato.EstadoCuenta.SaldoPendiente == 0">
+                           <b class="textoSaldos textoNaranja">Pagado</b>
+                       </div>
+                       
+                       <div ng-if="contrato.EstadoCuenta.SaldoPendiente > 0">
+                          
+                            <div class="col-sm-4 col-xs-12 {{anchoPantalla > 767 ? 'text-center' : 'text-left'}}">
+                               <span class="textoSaldos">Saldo Pendiente</span><br  class="hidden-xs">
+                               <b class="textoSaldosInfo">{{contrato.EstadoCuenta.SaldoPendiente | currency}}</b>
+                           </div>
+                           
+                           <div class="col-sm-4  col-xs-12 {{anchoPantalla > 767 ? 'text-center' : 'text-left'}}" >
+                               <span class="textoSaldos">Próximo Pago</span> <br class="hidden-xs">
+                               <b class="textoSaldosInfo">{{contrato.EstadoCuenta.ProximoPago | currency}}</b> 
+                           </div>
+
+                           <div class="col-sm-3 col-xs-12 {{anchoPantalla > 767 ? 'text-center' : 'text-left'}}">
+                               <span class="textoSaldos">Fecha Compromiso</span><br class="hidden-xs">
+                               <b class="textoSaldosInfo " ng-class="{textoRojo : contrato.EstadoCuenta.Vencido > 0}">{{contrato.EstadoCuenta.FechaCompromiso}}</b> 
+                           </div>
+                       </div>
+                       
+                   </div>
+                   <div class="row" ng-if="contrato.EstadoCuenta.Vencido > 0">
+                       <div class="col-xs-12 {{anchoPantalla > 767 ? 'text-center' : 'text-left'}}">
+                            <div class="dropdown">
+                               <button class="botonAgregarAcordion dropdown-toggle " style="font-size: 11pt; padding: 0px;" data-toggle="dropdown">
+                                   <b class="textoRojo">Saldo Vencido {{contrato.EstadoCuenta.Vencido | currency}}</b>
+                                </button>
+                                
+                                <ul class="dropdown-menu dropdownLeft" ng-class="{marginDropdown : anchoPantalla > 767}" style="margin-top: 5px; width: auto">
+                                    <form style="padding: 10px">
+                                        <b>Pagos Vencido </b>
+                                        <br><br>
+                                        <div class="table-responsive">
+                                            <table class="table table-hover table-striped table-condensed">
+                                                <thead class="TituloTabla" >
+                                                    <tr>
+                                                        <th>Pago</th>
+                                                        <th>Fecha</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="pago in contrato.EstadoCuenta.PagoVencido | orderBy:'FechaCompromiso2'">
+                                                        <td>{{pago.Pago | currency}} </td>
+                                                        <td>{{pago.FechaCompromiso}} </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </form>
+                                </ul>
+                             </div>
+                            
+                       </div>
+                   </div>
+                   
+                   <br>
+                   
+                   <div class="row" ng-show="contrato.EstatusContrato.EstatusContratoId != '2' && contrato.EstatusContrato.EstatusContratoId != '3' ">
+                       <div class="col-xs-12">
+                           <button class="btn botonAgregarAcordion pull-right" ng-click="AbrirPago(contrato)" style="font-size: 12pt">
+                                <span>
+                                    <span class="fa fa-plus"></span>
+                                    <span> Registrar Pago</span> 
+                                </span>
+                            </button>
+                       </div>
+                   </div>
+                   <!-- Pagos (movimientos) -->
+                   <div class="row">
+                       <div class="col-xs-12">
+                           <div class="" >
+                                <table class="table table-hover table-striped">
+                                    <thead class="TituloTabla" style="background: lightgray; border-color: lightgray; color:black">
+                                      <tr>
+                                        <th><span class=""><b>Fecha</b></span></th>
+                                        <th><span class=""><b># Doc. Fiscal</b></span></th>
+                                        <th><span class=""><b>Cantidad</b></span></th>
+                                      </tr>
+                                    </thead>
+                                    <tbody >
+                                       
+                                        
+                                        <tr ng-repeat="pago in contrato.EstadoCuenta.Pago">
+                                            <td>{{pago.FechaFormato}} {{pago.Hora}}</td>
+                                            <td>
+                                                {{pago.NoNotaCargo == '' ? 'Fac: ' : 'NC: '}} 
+                                                {{pago.NumeroDocumentoFiscal}}
+                                            </td>
+                                            
+                                            <td class="">
+                                               <div class="dropdown">
+                                                   <button class="botonAgregarAcordion dropdown-toggle " style="font-size: 11pt; padding: 0px; background: transparent" data-toggle="dropdown" >
+                                                       <b ng-if="pago.Concepto != 'Cancelación'">{{pago.Total | currency}}</b>
+                                                       <b ng-if="pago.Concepto == 'Cancelación'" class="textoRojo">-{{-pago.Total | currency}}</b>
+                                                    </button>
+
+                                                    <ul class="dropdown-menu dropdown-menu-right dropdownLeft" style="margin-top: 5px; width: auto">
+                                                        <form style="padding: 10px">
+                                                           
+                                                           <div ng-if="pago.Total > 0">
+                                                               <div style="margin-top: 5px" class="pull-left">
+                                                                    <b >{{pago.Concepto}}</b>   
+                                                               </div>
+
+                                                                <div class="pull-right" ng-if="pago.Cancelado == '0' && pago.Concepto != 'Anticipo'">
+                                                                    <button class="btn btnRed" ng-click="AbrirCancelarPago(pago, contrato)">
+                                                                        Cancelar
+                                                                    </button>
+                                                                </div>
+
+                                                                <br><br>
+                                                                <div class="table-responsive">
+                                                                    <table class="table table-hover table-striped table-condensed">
+                                                                        <thead class="TituloTabla" >
+                                                                            <tr>
+                                                                                <th style="min-width: 120px">Pago</th>
+                                                                                <th style="min-width: 120px">Medio de Pago</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <tr ng-repeat="desg in pago.Pago track by $index">
+                                                                                <td>{{desg.Pago | currency}} </td>
+                                                                                <td>{{desg.NombreMedioPago}} </td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <div ng-if="pago.Total < 0">
+                                                                {{pago.MotivoCancelacion}}
+                                                            </div>
+                                                        </form>
+                                                    </ul>
+                                                 </div>
+                                                
+                                            </td>
+                                        </tr>
+                                        
+                                        <tr >
+                                           <td>{{contrato.FechaVentaFormato}}</td>
+                                           <td>{{contrato.NoFactura != null ? 'Fac: ' + contrato.NoFactura : 'Sin factura'}}</td>
+                                           <td class="textoRojo"><b>- {{contrato.TotalContrato | currency}}</b></td>
+                                        </tr>
+                                    </tbody>
+                               </table>
+                            </div>
+                       </div>
+                   </div>
+                    
+                   <!-- Plan de Pagos -->
+                   <!--<div class="row">
+                       <div class="col-xs-12">
+                           <div class="table-responsive" >
+                                <table class="table table-hover table-striped">
+                                    <thead class="TituloTabla">
+                                      <tr>
+                                        <th><span class=""><b>Pago</b></span></th>
+                                        <th><span class=""><b>Fecha Compromiso</b></span></th>
+                                        <th><span class=""><b>Concepto</b></span></th>
+                                      </tr>
+                                    </thead>
+                                    <tbody >
+                                        <tr ng-repeat="pago in contrato.EstadoCuenta.PlanPagos">
+                                            <td>{{pago.Pago | currency}}</td>
+                                            <td>{{pago.FechaCompromiso}}</td>
+                                            <td class=""><b>{{pago.Concepto}}</b></td>
+                                        </tr>
+                                    </tbody>
+                               </table>
+                            </div>
+                       </div>
+                   </div>-->
+                    
+                   <div class="row"><div class="col-xs-12"><div style="margin-top: 20px"></div> </div></div>
+                
+               </div>
+                
+                <div style="margin-top: 10px"></div>         
+            </div>
+            
+           
+        </div>
+        
+    </div>
+    
+    <div ng-include=" 'html/Operativo/Cliente/Perfil/DetalleProyecto.html' "> </div>
+    <div ng-include=" 'html/Operativo/Cliente/Perfil/DetalleContrato.html' "> </div> 
+    
+    <!-- Modal para facturar -->
+    <div class="modal fade sombraDivModal" id="FacturaModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="true" data-backdrop="static">
+        <br>    <br>   <br>
+        <div class="modal-dialog modalPrincipal">
+           
+            <div class="row">
+                <div class="col-xs-12">
+                    <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+                    <span class="tituloModal">Facturar</span>
+                </div>
+            </div>
+            <br><br><br>
+        
+            <form name="factura">
+               
+               <!-- Facturar -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <a class="btn botonOperacionRecto pull-right" href="http://www.fel.mx/CFDI33/Presentacion/Usuario/Ingreso.aspx" target="_blank">
+                            Facturar
+                        </a>
+                    </div>
+                </div>
+                <br>
+                
+                <!-- número  -->
+                <div class="row"> 
+                    <div class="col-sm-12">
+                       <div class="entrada2">
+                            <input  type="text" required class="entrada form-control" name="numerofac" ng-model="noFactura" ng-maxlength="45" autocomplete="off" ng-blur="ValidarNumeroFactura(factura.numerofac.$invalid)"/>
+                            <label>Número de Factura</label>
+                        </div>
+                   </div>             
+                </div>
+                <br><br>
+                
+                <!-------- mensaje de error ---->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div ng-repeat="error in mensajeError">
+                            <span class="textoError">{{error}}</span>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <!---- botones de operacion -->
+                <div class="row">
+                    <div class="col-xs-6">
+                        <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" >CANCELAR</button>
+                    </div>
+
+                    <div class="col-xs-6">
+                        <button focus class="btn botonOperacionModal btn-block" ng-click="TerminarFacturar()">TERMINAR</button>
+                    </div>
+                </div>
+                <br>
+            </form>
+             
+            
+        </div>
+    </div> 
+    
+    <!-- Modal para cargar contrato -->
+    <div class="modal fade sombraDivModal" id="CargarContratoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="true" data-backdrop="static">
+        <br>    <br>   <br>
+        <div class="modal-dialog modalPrincipal">
+           
+            <div class="row">
+                <div class="col-xs-12">
+                    <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+                    <span class="tituloModal">Cargar Contrato</span>
+                </div>
+            </div>
+            <br><br><br>
+        
+            <form name="contratoPdf">
+                   
+                <div class="row">
+                    <div class="col-sm-12">
+
+                       <div  method="post" enctype="multipart/form-data">
+
+                            <div class="form-group files contrato">
+                                <input id="contratopdf" type="file" class="form-control" multiple accept="application/pdf" name="pdf" > 
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="text-center">
+                            <b>{{contratoPDF.name}}</b>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                
+                <!-------- mensaje de error ---->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div ng-repeat="error in mensajeError">
+                            <span class="textoError">{{error}}</span>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <!---- botones de operacion -->
+                <div class="row">
+                    <div class="col-xs-6">
+                        <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" >CANCELAR</button>
+                    </div>
+
+                    <div class="col-xs-6">
+                        <button focus class="btn botonOperacionModal btn-block" ng-click="GuardarContratoPDF()">TERMINAR</button>
+                    </div>
+                </div>
+                <br>
+            </form>
+             
+        </div>
+    </div>
+    
+    <!-- Modal para Registrar Pago -->
+    <div class="modal fade sombraDivModal" id="PagoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="true" data-backdrop="static">
+        <br>    <br>   <br>
+        <div class="modal-dialog modalPrincipal">
+           
+            <div class="row">
+                <div class="col-xs-12">
+                    <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+                    <span class="tituloModal">Registrar Pago</span>
+                </div>
+            </div>
+            <br><br><br>
+        
+            <form name="pago">
+                
+                
+                <div class="row">
+                   <div class="col-sm-6">
+
+                       <div class="entrada2">
+                            <input type="text"  autocomplete="off" required ng-pattern="erNumeroEnteroSinCero" currency-input class="entrada form-control" name="total"  ng-model="nuevoPago.Total" ng-blur="CalcularUltimoPago(nuevoPago.Pago, nuevoPago.Total)"/>
+                            <label>Total</label>
+                        </div>
+
+                    </div>
+                    
+                    <div class="hidden-md hidden-sm hidden-lg"><br><br></div>
+                    
+                    <div class="col-sm-6">
+
+                       <div class="entrada2">
+                            <input type="text"  autocomplete="off" required  class="entrada form-control" name="noNotaCargo"  ng-model="nuevoPago.NoNotaCargo" ng-blur="ValidarNotaCargo(pago.noNotaCargo.$invalid)"/>
+                            <label>Número de Nota de Cargo</label>
+                        </div>
+
+                    </div>
+                </div>
+                <br><br>
+                
+                <!-- Numero de pagos -->
+                 <div class="row">
+                    <div class="col-xs-12">
+                       <div class="btn-group">
+
+                            <button class="btn btnTitle" style="padding-right: 10px;" ng-disabled="true">
+                                <span >Número de pagos: </span>
+                                <b style="margin-left: 10px">{{nuevoPago.Pago.length }}</b>
+                            </button>
+
+                            <button class="btn chgDescuento" ng-disabled="nuevoPago.Pago.length == 1 " ng-click="QuitarPagoNuevoPago()"> <span class="fa fa-minus"></span></button>
+                            <button class="btn chgDescuento" ng-disabled="nuevoPago.Pago.length  == 3 " ng-click="AgregarPagoNuevoPago()"> <span class="fa fa-plus"></span></button>
+                        </div>
+
+                    </div>
+                </div>
+                <br><br>
+                
+                <div ng-repeat="pago in nuevoPago.Pago track by $index">
+                    <div class="row" >
+                       <!-- pago -->
+                        <div class="col-xs-6">
+                           <div class="entrada2">
+                                <input type="text" currency-input  autocomplete="off" required ng-pattern="erNumeroEnteroSinCero" class="entrada form-control" ng-model="pago.Pago" ng-disabled="$last" ng-blur="CalcularUltimoPago(nuevoPago.Pago, nuevoPago.Total)"/>
+                                <label>Pago {{$index + 1}}</label>
+                            </div>
+                        </div>
+
+                        <!-- Medio de pago -->
+                        <div class="col-xs-6 etiquetaDropdownList">
+
+                            <label>Medio de pago</label>
+
+                             <div class="dropdown">
+
+                                <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown">
+                                    <span>{{pago.MedioPago.Nombre}}</span>
+
+                                    <span class="pull-right">
+                                        <span class="caret"></span>
+                                    </span>
+
+                                </button>
+
+                                <ul class="dropdown-menu listaOpcionesDropdownList" style="width: 100%">                                
+                                    <li ng-repeat="medio in medioPago">
+                                        <a  href="" class="dropdownOpcionModal" ng-click="pago.MedioPago = medio">
+                                           <span style="margin: 0px 15px 0px 10px;">
+                                                <span>{{medio.Nombre}}</span>
+                                            </span>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                            </div>
+
+                        </div>
+
+                        
+                    </div>
+                    <br>
+                </div>
+                <br>
+                
+                <!-------- mensaje de error ---->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div ng-repeat="error in mensajeError">
+                            <span class="textoError">{{error}}</span>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <!---- botones de operacion -->
+                <div class="row">
+                    <div class="col-xs-6">
+                        <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" >CANCELAR</button>
+                    </div>
+
+                    <div class="col-xs-6">
+                        <button focus class="btn botonOperacionModal btn-block" ng-click="TerminarPago(pago.noNotaCargo.$invalid, pago.total.$invalid)">TERMINAR</button>
+                    </div>
+                </div>
+                <br>
+            </form>
+             
+            
+        </div>
+    </div> 
+    
+    <!-- Modal para cancelar pago -->
+    <div class="modal fade sombraDivModal" id="cancelarPagoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="true" data-backdrop="static">
+        <br>    <br>   <br>
+        <div class="modal-dialog modalPrincipal">
+           
+            <div class="row">
+                <div class="col-xs-12">
+                    <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+                    <span class="tituloModal">Cancelar Pago ({{pagoCancelado.Total | currency}})</span>
+                </div>
+            </div>
+            <br><br><br>
+        
+            <form name="cancelacion">
+                   
+                <div class="row">
+                    
+                    <!-- Usuario -->
+                    <div class="col-sm-6">
+                        <div class="entrada2"> 
+                            <input type="text" class="form-control entrada" name="usuario" required ng-model="pagoCancelado.Usuario"> 
+                            <label>Usuario</label>
+                        </div>
+                    </div>
+                    
+                    <br class="hidden-sm hidden-md hidden-lg"> <br class="hidden-sm hidden-md hidden-lg">
+                    
+                    <div class="col-sm-6">
+                       <div class="entrada2">
+                            <input type="password" class="form-control entrada" name="usuario" required ng-model="pagoCancelado.Password"> 
+                            <label>Contraseña</label>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                
+                <!-- Motivo de la cancelación -->        
+                <div class="row">
+                    <div class="col-sm-12" >
+                         <div class="">
+                            <label class="labelEntrada">Motivo de la Cancelación</label>
+
+                            <textarea required type="text"  class="form-control descripcionArea" ng-model="pagoCancelado.Motivo" ng-maxlength="200" style="min-height: 100px; min-width: 100%"></textarea>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                
+                <!-------- mensaje de error ---->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div ng-repeat="error in mensajeError">
+                            <span class="textoError">{{error}}</span>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <!---- botones de operacion -->
+                <div class="row">
+                    <div class="col-xs-6">
+                        <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" >CANCELAR</button>
+                    </div>
+
+                    <div class="col-xs-6">
+                        <button focus class="btn botonOperacionModal btn-block" ng-click="CancelarPago()">TERMINAR</button>
+                    </div>
+                </div>
+                <br>
+            </form>
+             
+        </div>
+    </div>
+    
+    <!-- Camabiar Estatus contrato -->
+    <div class="modal fade" id="modalEstatusContrato">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm modalPrincipal text-center">
+           
+            <div class="row">
+                <div class="col-xs-12">
+                    <span style="font-size:14pt">{{mensajeAdvertencia}}</span>
+                </div>
+            </div>
+            <br><br>
+            <div class="row">
+                <div class="col-xs-6">
+                    <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="CancelarEstatusContrato()">No</button>
+                </div>
+                <div class="col-xs-6">
+                    <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="ConfirmarActualizarContrato()">Si</button>
+                </div>
+            </div>
+                        
+        </div>
+    </div>
+    
+    
+     <!-- Habilitar modificar contrato -->
+    <div class="modal fade" id="modalHabilitarEditarContrato">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm modalPrincipal text-center">
+           
+            <div class="row">
+                <div class="col-xs-12">
+                    <span style="font-size:14pt">{{mensajeAdvertencia}}</span>
+                </div>
+            </div>
+            <br><br>
+            <div class="row">
+                <div class="col-xs-6">
+                    <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="CancelarHabilitarEditraContrato()">No</button>
+                </div>
+                <div class="col-xs-6">
+                    <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="ConfirmarHabilitarModificarContrato()">Si</button>
+                </div>
+            </div>
+                        
+        </div>
+    </div>
+    
+    <!-- Tablas de recibos de pago -->
+    <div ng-show="false">
+        
+        <table id="datos">
+            <tbody>
+               <tr>
+                    <td ></td><td ></td>
+                </tr>
+                
+                <tr>
+                    <td >Cliente</td> <td >{{persona.Nombre}} {{persona.PrimerApellido}} {{persona.SegundoApellido}}</td>
+                </tr>
+                
+                <tr>
+                    <td >No. Contrato</td> <td >{{pagoContrato.ContratoId}}</td>
+                </tr>
+
+                <tr>
+                    <td >Pago</td> <td >{{nuevoPago.Total | currency}} ({{nuevoPago.NumeroPago}})</td>
+                </tr>
+                
+                <tr>
+                    <td >Fecha</td> <td >{{hoyFormato}}</td>
+                </tr>
+                
+                <tr>
+                    <td >Saldo Pendiento</td> <td >{{pagoContrato.EstadoCuenta.SaldoPendiente | currency}}</td>
+                </tr>
+                
+            </tbody>
+        </table>
+        
+        <table id="pago">
+            <tbody>
+               <tr>
+                    <td ></td><td ></td> <td ></td><td ></td>
+                </tr>
+
+                <tr>
+                    <td >Próximo Pago</td> <td >{{pagoContrato.EstadoCuenta.ProximoPago | currency}}</td>
+                    <td >Fecha Compromiso</td> <td >{{pagoContrato.EstadoCuenta.FechaCompromiso}}</td>
+                </tr>                
+            </tbody>
+        </table>
+        
+        <table id="usuarioRecibo">
+            <tbody>
+               <tr>
+                    <td ></td>
+                </tr>
+
+                <tr>
+                    <td >_________________________________________</td>
+                </tr>  
+                
+                <tr>
+                    <td >Recibe</td>
+                </tr>  
+                
+                <tr>
+                    <td >{{usuario.NombreCompletoColaborador}}</td>
+                </tr>                
+            </tbody>
+        </table>
+        
+    </div>
+</div>
+
+<div ng-include=" 'html/Operativo/Contrato.html' "> </div>
+

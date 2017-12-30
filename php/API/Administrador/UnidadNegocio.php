@@ -1,5 +1,6 @@
 <?php
 
+
 function GetUnidadNegocio()
 {
     global $app;
@@ -27,6 +28,35 @@ function GetUnidadNegocio()
         $app->stop();
     }
 }
+
+function GetDatosUnidadNegocio($id)
+{
+    global $app;
+    global $session_expiration_time;
+
+    $request = \Slim\Slim::getInstance()->request();
+
+    $sql = "SELECT * FROM VistaUnidadNegocio WHERE UnidadNegocioId = ".$id;
+
+    try 
+    {
+
+        $db = getConnection();
+        $stmt = $db->query($sql);
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $db = null;
+
+        
+        echo json_encode($response);  
+    } 
+    catch(PDOException $e) 
+    {
+        echo($e);
+        $app->status(409);
+        $app->stop();
+    }
+}
+
 
 function AgregarUnidadNegocio()
 {
@@ -125,7 +155,7 @@ function GetResponsable()
 
     $request = \Slim\Slim::getInstance()->request();
 
-    $sql = "SELECT CONCAT(c.PrimerApellido, ' ', c.SegundoApellido, ' ', c.Nombre) AS Nombre, c.ColaboradorId FROM Colaborador c ";
+    $sql = "SELECT CONCAT(c.PrimerApellido, ' ', c.SegundoApellido, ' ', c.Nombre) AS Nombre, c.ColaboradorId, c.UnidadNegocioId FROM Colaborador c WHERE Activo = 1";
 
     try 
     {
@@ -153,6 +183,46 @@ function GetUnidadNegocioSencilla()
     $request = \Slim\Slim::getInstance()->request();
 
     $sql = "SELECT u.Nombre, u.UnidadNegocioId, tu.Nombre as NombreTipoUnidadNegocio FROM UnidadNegocio u, TipoUnidadNegocio tu WHERE tu.TipoUnidadNegocioId = u.TipoUnidadNegocioId AND u.Activo=1";
+
+    try 
+    {
+
+        $db = getConnection();
+        $stmt = $db->query($sql);
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $db = null;
+
+        
+        echo json_encode($response);  
+    } 
+    catch(PDOException $e) 
+    {
+        echo($e);
+        $app->status(409);
+        $app->stop();
+    }
+}
+
+
+function GetUnidadNegocioSencillaPresupuesto()
+{
+    global $app;
+    global $session_expiration_time;
+
+    $request = \Slim\Slim::getInstance()->request();
+
+    $sql = "SELECT u.Nombre, u.UnidadNegocioId, u.Activo, tu.Nombre as NombreTipoUnidadNegocio, x.Margen
+    FROM TipoUnidadNegocio tu, UnidadNegocio u
+
+    INNER JOIN (
+
+    SELECT p.Ciudad, p.Municipio, p.Estado, t.Margen
+    FROM Plaza p
+    INNER JOIN Territorio t ON t.TerritorioId = p.TerritorioId
+    ) x ON u.Estado = x.Estado AND u.Ciudad = x.Ciudad AND u.Municipio = x.Municipio
+
+
+    WHERE tu.TipoUnidadNegocioId = u.TipoUnidadNegocioId";
 
     try 
     {

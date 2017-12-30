@@ -20,20 +20,25 @@
 .textoPerfil /*Texto en el encabezado que indica el perfil del usuario*/
 {
     font-size: 12pt;
+    overflow: hidden;
 }
 
-.botonPerfil, .botonPerfil:disabled
+.botonPerfil, .botonPerfil:disabled, .botonPerfil:active, .botonPerfil:focus
 {
+    border-radius: 0px;
     border: solid 2px white;
     background: transparent;
     color: white;
     opacity: 1.0;
+    
+    outline: none !important;
+    box-shadow: none;
 }
 
 .botonPerfil:hover:disabled
 {
     border: solid 2px white;
-    background:rgb(250, 97, 21);
+    background: transparent;
     color: white;
     opacity: 1.0;
     cursor: text;
@@ -57,6 +62,7 @@
     margin-top: 0px;
     margin-bottom: 0px;
     border-radius: 0px;
+    position: relative;
 }
 
 .barraNavegacionBoton  /*Boton de hamburguesa de la barra de navegacion en xs*/
@@ -87,12 +93,26 @@
 .dropdownOpcion /*Opciones de los dropdown list*/
 {
     color: white !important;
-    border-bottom: solid 1px white;
+    /*border-bottom: solid 1px white;*/
     margin-left: 3px;
     margin-right: 3px;
 }
 
 .dropdownOpcion:hover, .dropdownOpcion:focus, .dropdownOpcion:active  /*Hover en las opciones de las dropdown list*/
+{
+    background-color: white !important;
+    color: rgb(250, 97, 21) !important;
+    cursor: hand !important;
+}
+
+.dropdownOpcion2level /*Opciones de los dropdown list*/
+{
+    color: white !important;
+    margin-left: 40px;
+    margin-right: 40px;
+}
+
+.dropdownOpcion2level:hover, .dropdownOpcion2level:focus, .dropdownOpcion2level:active  /*Hover en las opciones de las dropdown list*/
 {
     background-color: white !important;
     color: rgb(250, 97, 21) !important;
@@ -153,4 +173,152 @@
     margin-left: -15px;
     max-height: 50px !important;
     max-width: 170 !important;
+}
+
+.mayuscula
+{
+    text-transform: uppercase;
+}
+
+.minuscula
+{
+    text-transform: lowercase;
+}
+
+.columna
+{
+    display: inline;
+    display: block;
+    background: yellow;
+}
+
+.encabezadoArriba
+{
+    padding-right: 25px;
+    padding-left: 10px;
+    position:fixed;
+    top: 0;
+    z-index:  100000000000;
+    width: 100%;
+}
+
+/*-----Reportar bug--------*/
+.BugButton
+{
+    position: absolute;
+    top: 400px;
+    right: 0px !important;
+    height: 30px !important;
+
+    -ms-transform: rotate(-90deg); /* IE 9 */
+    -ms-transform-origin: right bottom; /* IE 9 */
+    -webkit-transform: rotate(-90deg); /* Chrome, Safari, Opera */
+    -webkit-transform-origin: right bottom; /* Chrome, Safari, Opera */
+    transform: rotate(-90deg);
+    transform-origin: right bottom;
+
+    /*
+    -moz-transform: rotate(-90deg);
+    -o-transform: rotate(-90deg);
+    */
+    z-index: 10000;
+}
+
+.AddonBugButton
+{
+    background-color: #01DF01;
+    color: #B40404 !important;
+    font-weight: bold;
+    font-size:14px;
+}
+
+.BtnBugButton
+{
+    background-color: #B40404; 
+    color: #01DF01 !important; 
+    font-weight: bold;  
+    font-size:14px;
+}
+
+.renglonBug
+{
+    background: rgba(180, 4, 4, 0.2);
+}
+
+.renglonBug:hover
+{
+    background: rgba(180, 4, 4, 0.2) !important;
+}
+
+.bordeBug
+{
+    border: solid 2px #262626;
+    padding: 5px;
+    max-height: 100px;
+    overflow: scroll;
+}
+
+/*------ SubMenu del encabezado -------------------*/
+.dropdown-submenu 
+{
+    position: relative;
+}
+
+.dropdown-submenu>.dropdown-menu 
+{
+    top: 0;
+    right: 100%;
+    margin-top: -6px;
+    margin-left: -1px;
+    -webkit-border-radius: 0 6px 6px 6px;
+    -moz-border-radius: 0 6px 6px;
+    border-radius: 0 0px 0px 0px;
+    
+    background: rgba(250,97,21,1);
+    background: -moz-linear-gradient(top, rgba(250,97,21,1) 0%, rgba(238,132,21,1) 74%, rgba(232,153,21,1) 100%);
+    background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(250,97,21,1)), color-stop(74%, rgba(238,132,21,1)), color-stop(100%, rgba(232,153,21,1)));
+    background: -webkit-linear-gradient(top, rgba(250,97,21,1) 0%, rgba(238,132,21,1) 74%, rgba(232,153,21,1) 100%);
+    background: -o-linear-gradient(top, rgba(250,97,21,1) 0%, rgba(238,132,21,1) 74%, rgba(232,153,21,1) 100%);
+    background: -ms-linear-gradient(top, rgba(250,97,21,1) 0%, rgba(238,132,21,1) 74%, rgba(232,153,21,1) 100%);
+    background: linear-gradient(to bottom, rgba(250,97,21,1) 0%, rgba(238,132,21,1) 74%, rgba(232,153,21,1) 100%);
+}
+
+.dropdown-submenu:hover>.dropdown-menu {
+    display: block;
+}
+
+.dropdown-submenu>a:after {
+    display: block;
+    float: left;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+    border-width: 5px 0 5px 5px;
+    border-left-color: #ccc;
+    margin-top: 5px;
+    margin-right: -10px;
+}
+
+.dropdown-submenu:hover>a:after {
+    border-left-color: #fff;
+}
+
+.dropdown-submenu.pull-left {
+    float: none;
+}
+
+.dropdown-submenu.pull-left>.dropdown-menu {
+    left: 100%;
+    margin-left: 10px;
+    -webkit-border-radius: 6px 0 6px 6px;
+    -moz-border-radius: 6px 0 6px 6px;
+    border-radius: 6px 0 6px 6px;
+}
+
+.separadorDropdown
+{
+    border-bottom: 2px solid white;
+    margin-top: 2px;
+    margin-bottom: 2px;
 }

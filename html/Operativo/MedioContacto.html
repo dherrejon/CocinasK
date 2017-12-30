@@ -1,0 +1,134 @@
+<div ng-controller="MedioContactoOperativo as medioContactoOpe">
+
+     <!-- Modal para mensajes -->
+    <div class="modal fade sombraDivModal" id="medioContactoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="true" data-backdrop="static">
+        <br>    <br>   <br>
+        <div class="modal-dialog modalPrincipal">
+           
+            <div class="row">
+                <div class="col-xs-12">
+                    <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarContactoModal()"><span aria-hidden="true">&times;</span></button>
+                    <span ng-if="operacion == 'Agregar'" class="tituloModal">Agregar Medio de Contacto</span>
+                    <span ng-if="operacion == 'Editar'" class="tituloModal">Editar Medio de Contacto</span>
+                </div>
+            </div>
+            <br><br><br>
+        
+            <form name="contactoForma">
+                <!-- Medio Contacto -->
+                <div class="row">
+                    <div class="col-sm-6 etiquetaDropdownList">
+                         <label>Medio de Contacto</label>
+                         <div class="dropdown">
+
+                            <button class="dropdown-toggle  {{claseContacto.medio}}" data-toggle="dropdown">
+                                <span>{{nuevoContacto.MedioContacto.Nombre}}</span>
+                                <span class="caret"></span>
+                            </button>
+                            
+                            <ul class="dropdown-menu listaOpcionesDropdownList " >
+                                <li ng-repeat="medio in medioContacto | orderBy:'Nombre'" ng-show="medio.MedioContactoId != '3' && MostrarMedioContacto(medio)">
+                                    <a  href="" class="dropdownOpcionModal" ng-click="CambiarMedioContacto(medio)">
+                                        <span>{{medio.Nombre}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div>
+                    
+                    <div class="hidden-sm hidden-md hidden-lg"><br></div>
+                        
+                    <div class="col-sm-6 etiquetaDropdownList" ng-show="fuente != 'Fiscal'">
+                         <label>Tipo Medio de Contacto</label>
+                         <div class="dropdown">
+
+                            <button class="dropdown-toggle  {{claseContacto.tipo}}" data-toggle="dropdown" ng-disabled="nuevoContacto.MedioContacto.MedioContactoId.length == 0">
+                                <span>{{nuevoContacto.TipoMedioContacto.Nombre}}</span>
+                                <span class="caret"></span>
+                            </button>
+                            
+                            <ul class="dropdown-menu listaOpcionesDropdownList " >
+                                <li ng-repeat="tipo in tipoMedioContacto | orderBy:'Nombre' | filter:{MedioContactoId:nuevoContacto.MedioContacto.MedioContactoId}:true" ng-show="tipo.Activo && MostarTipoMedioContacto(tipo)">
+                                    <a  href="" class="dropdownOpcionModal" ng-click="CambiarTipoMedioContacto(tipo)">
+                                        <span>{{tipo.Nombre}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div> 
+                             
+                </div>
+                <br><br>
+                <!-- Contacto -->
+                <!-- Telefono -->
+                <div class="row" ng-if="nuevoContacto.MedioContacto.MedioContactoId == '2'"> 
+                    <div class="col-sm-12 etiquetaDropdownList">
+                       <div class="entrada2">
+                            <input  ng-pattern="erTelefono" phone-input type="text" required class="{{claseContacto.contacto}} form-control" name="telefono" ng-model="nuevoContacto.Contacto" ng-maxlength="120"/>
+                            <label>Teléfono</label>
+                        </div>
+                   </div>             
+                </div>
+                <!-- email -->
+                <div class="row"> 
+                    <div class="col-sm-12 etiquetaDropdownList" ng-if="nuevoContacto.MedioContacto.MedioContactoId == '1'">
+                       <div class="entrada2">
+                            <input  ng-pattern="erEmail" type="text" required class="{{claseContacto.contacto}} form-control" name="email" ng-model="nuevoContacto.Contacto" ng-maxlength="120"/>
+                            <label>Correo Electrónico</label>
+                        </div>
+                   </div>             
+                </div>
+                <br>
+                <!-------- mensaje de error ---->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div ng-repeat="error in mensajeError">
+                            <span class="textoError">{{error}}</span>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <!---- botones de operacion -->
+                <div class="row">
+                    <div class="col-xs-6">
+                        <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarContactoModal()">CANCELAR</button>
+                    </div>
+
+                    <div class="col-xs-6">
+                        <button focus class="btn botonOperacionModal btn-block" ng-click="TerminarMedioContacto(contactoForma.telefono.$invalid, contactoForma.email.$invalid)">TERMINAR</button>
+                    </div>
+                </div>
+                <br>
+            </form>
+             
+            
+        </div>
+    </div> 
+    
+    
+    <!-- Modal para mensajes -->
+    <div class="modal fade sombraDivModal" id="mensajeMedioContacto" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <br>    <br>   <br>
+        <div class="modal-dialog modalPrincipal modal-sm">
+           <br>
+            <div class="row">
+                <div class="col-xs-12 text-center" style="font-size:12pt">
+                   {{mensaje}}
+                </div>
+            </div>
+            <br>
+            <div class="row">
+            
+                <div class="col-xs-12">
+                    <button focus class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close">Aceptar</button>
+                </div>
+            </div>
+        </div>   
+    </div> 
+    
+    
+</div>
+
+     

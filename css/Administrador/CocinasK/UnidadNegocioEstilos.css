@@ -7,7 +7,7 @@
 
 .TablaUnidadNegocio
 {
-    max-height: 500px;
+    max-height: 500px !important;
     overflow: scroll;
 }
 
@@ -19,8 +19,9 @@
 
 .TituloTabla
 {
-    color: #D9D9D9;
+    color: white;
     background: #262626;
+    border: 1px solid #262626;
 }
 
 .botonOperacion
@@ -28,6 +29,8 @@
     border: 2px solid #262626;
     color: #262626;
     background: white;
+    outline: none !important;
+    box-shadow: none;
 }
 
 .botonOperacionError
@@ -37,15 +40,14 @@
     background: white;
 }
 
-.botonOrdenar
+.botonOrdenar, .botonOrdenar:focus, .botonOrdenar:active, .botonOrdenar:hover
 {
     background: transparent;
-}
-
-
-.botonOrdenar:hover, .botonOrdenar:focus
-{
-    color: #D9D9D9 !important;
+    color: white;
+    width: 100%;
+    text-align: left !important;
+    padding-left: 0px;
+    
     outline: none !important;
     box-shadow: none;
 }
@@ -53,21 +55,27 @@
 .botonFalso
 {
     background: transparent;
+    width: 100%;
 }
-
+.botonFalsoLeft
+{
+    text-align: left !important;
+    padding-left: 0px;
+}
 
 .botonFalso:hover, .botonFalso:focus
 {
-    color: #D9D9D9 !important;
+    color: white !important;
     outline: none !important;
     box-shadow: none;
     vertical-align: bottom !important;
     cursor: default;
 }
 
-.botonOperacion:hover, .botonOperacion:active
+.botonOperacion:hover, .botonOperacion:active, .botonOperacionMarcoNaranja:hover
+.botonOperacion:hover, .botonOperacion:active, .botonOperacionMarcoNaranja:hover
 {
-    color: white;
+    color: white !important;
     background:  rgb(250, 97, 21);
     border: 2px solid rgb(250, 97, 21);
     outline: none !important;
@@ -76,7 +84,7 @@
 
 .botonRegistroDeshabilitado
 {
-    color: rgb(89, 89, 89);
+    color: rgba(38, 38, 38, 0.3);
 }
 
  /*-----------------dropdonw de buscar y filtrar --------------*/
@@ -87,10 +95,12 @@
     border: solid 2px #262626;
 }
 
-.operacionPanelEntrada
+.operacionPanelEntrada, .operacionPanelEntrada:focus, .operacionPanelEntrada:hover, .operacionPanelEntrada:active
 {
     border-color: #262626;
     color: #262626;
+    
+    outline: none !important;
 }
 
 .operacionPanelBoton
@@ -121,6 +131,7 @@
 .BotonOperacion, .BotonOperacion:focus
 {
     color: #262626;
+    cursor: pointer;
 }
 
 .BotonOperacion:hover
@@ -150,8 +161,8 @@
 
     border: 1px solid #262626;
     border-radius: .25em;
-    width: 1.3em;
-    height: 1.3em;
+    width: 1.5em;
+    height: 1.5em;
     float: left;
     margin-right: .5em;
 }
@@ -255,6 +266,8 @@
     border-bottom-style: solid;
     border-bottom-width: 1px;
     border-bottom-color: rgba(38,38,38,0.4);
+    cursor: pointer;
+    white-space: normal;
 }
 
 .dropdownOpcionModal:hover
@@ -262,6 +275,12 @@
     color: white !important;
     background-color: rgb(250, 97, 21) !important;
     cursor: hand !important;
+}
+
+.dropdownOpcionModal:disabled
+{
+    cursor: not-allowed;
+    background: lightgray; 
 }
 
 .buscar
@@ -282,6 +301,8 @@
 {
     background: #262626;
     color: white !important;
+    outline: none;
+    box-shadow: none;
 }
 
 .botonPanelOculto:hover
@@ -308,6 +329,8 @@
     color: #262626;
     opacity: 1.0;
     font-size: 30px;
+    outline: none !important;
+    box-shadow: none;
 }
 
 .cerrarModal:hover
@@ -404,6 +427,8 @@
     color: #262626;
     border: 2px solid  #262626;
     border-radius: 0px 0px 0px 3px;
+    max-height: 200px;
+    overflow: scroll;
 }
 
 .checkBoxActivoFiltro
@@ -424,13 +449,15 @@
 
 /*-------- check box ---------*/
 
-.checkBoxActivo
+.checkBoxActivo, .checkBoxActivo:focus
 {
     color: #262626;
     border: 2px solid #262626;
     width: 100%;
     display: block;
     background: white;
+    outline: none !important;
+    box-shadow: none;
 }
 
 .checkBoxActivo:disabled

@@ -19,7 +19,7 @@
             <div class="row">
                 <div class="col-sm-offset-2 col-sm-8 col-xs-offset-1 col-xs-10">
                      <div class="entrada2">
-                        <input type="text" required class="entrada form-control" name="usuario" ng-model="usuario.Nombre"/>
+                        <input autofocus type="text" required class="entrada form-control" name="usuario" ng-model="usuario.Nombre"/>
                         <label>Nombre de Usuario</label>
                     </div>
                 </div>
@@ -50,9 +50,91 @@
                     <button class="btn btn-lg btn-block botonLogin" ng-click="IniciarSesion(login.usuario.$invalid, login.password.$invalid)"> Iniciar Sesión </button>
                 </div>
             </div>
-            <br><br>
+            <br>
             
+            <!-- Recuperar contraseña -->
+            <div class="row">
+                <div class="col-xs-12 text-center">
+                    <a href="#" class="recuperarPassword" data-toggle="modal" data-target="#recuperarPasswordModal">¿Has olvidado tu contraseña?</a>
+                </div>
+            </div>
+            <br>
         </div>
     </form>
     <br> 
+    
+    <!--------------------------- Modales ------------------------------------------------>
+    <!---- Recuperar contraseña -->
+    <div class="modal fade" id="recuperarPasswordModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static" >
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content modalPrincipal">
+                <!-- encabezado del modal -->                
+                <div class="row">
+                    <div class="col-xs-12">
+                        <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarCambiarPasswordForma()"><span aria-hidden="true">&times;</span></button>
+                        <span  class="tituloModal">Recuperar Contraseña</span>
+                    </div>
+                </div>
+                <br>
+
+                <form class="" name="recuperarPasswordForma">
+                <!-- Datos -->
+                    <!-- Nombre de Usuario -->
+                    <br>
+                    <div class="row">
+                        <div class="col-sm-12">
+                             <div class="entrada2">
+                                <input required ng-pattern="erNombreUsuario" type="text" class="entrada form-control" name="usuario" ng-model="usuario.Nombre"/>
+                                <label>Nombre de Usuario</label>
+                            </div>
+                        </div>
+                        
+                    </div> 
+                    <br><br>
+        
+                    <!-- mensaje de error -->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <span class="textoError">{{mensajeErrorPassword}}</span>
+                        </div>
+                    </div>
+                    <br>
+                    <!--- botones de operacion -->
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarRecuperarPasswordForma()">CANCELAR</button>
+                        </div>
+                        
+                        <div class="col-xs-6">
+                            <button focus class="btn botonOperacionModal btn-block" ng-click="RecuperarPassword(recuperarPasswordForma.usuario.$invalid)">TERMINAR</button>
+                        </div>
+                    </div>
+                    <br> 
+                </form>
+            </div>
+            <br><br><br>
+        </div>
+    </div>
+           
+    <!-- Modal para mensajes -->
+    <div class="modal fade sombraDivModal" id="mensajeLogin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <br>    <br>   <br>
+        <div class="modal-dialog modalPrincipal modal-sm">
+           <br>
+            <div class="row">
+                <div class="col-xs-12 text-center" style="font-size:12pt">
+                   {{mensaje}}
+                </div>
+            </div>
+            <br>
+            <div class="row">
+            
+                <div class="col-xs-12">
+                    <button focus class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close">Aceptar</button>
+                </div>
+            </div>
+        </div> 
+    </div>
+    
 </div>

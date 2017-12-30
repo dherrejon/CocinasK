@@ -1,4 +1,4 @@
-app.controller("UsuarioPerfilControlador", function($scope, $http, $q, CONFIG, datosUsuarioPerfil, $rootScope, $window, md5, datosUsuario)
+app.controller("UsuarioPerfilControlador", function($scope, $http, $q, CONFIG, datosUsuarioPerfil, $rootScope, $window, md5, datosUsuario, $location)
 {   
     $rootScope.clasePrincipal = "";
     
@@ -214,11 +214,11 @@ app.controller("UsuarioPerfilControlador", function($scope, $http, $q, CONFIG, d
     //Se confirmo que se desea editar el usuario
     //Verifica que el nombre de usuario es correcto y que al menos se hay seleccionado un perfil
     //Si los datos son correctos se pasa a elegir los permisos del usuario
-    $scope.TerminarUsuario = function(usuarioInvallido)
+    $scope.TerminarUsuario = function(usuarioInvalido)
     {   
         $scope.mensajeError = [];
         
-        if(usuarioInvallido)
+        if(usuarioInvalido)
         {
             $scope.mensajeError[$scope.mensajeError.length] = "*El nombre del usuario puede tener letras en minúscula y números sin espacios. Mínimo debe tener 4 caracteres.";
             $scope.claseUsuario.usuario = "entradaError";
@@ -253,13 +253,18 @@ app.controller("UsuarioPerfilControlador", function($scope, $http, $q, CONFIG, d
         
         for(var k=0; k<$scope.colaborador.length; k++)
         {
-            if($scope.colaborador[k].NombreUsuario == $scope.nuevoUsuario.NombreUsuario && $scope.colaborador[k].ColaboradorId !== $scope.nuevoUsuario.ColaboradorId)
+            if($scope.colaborador[k].UsuarioId !== null)
             {
-                $scope.mensajeError[$scope.mensajeError.length] = "*El nombre del usuario " + $scope.nuevoUsuario.NombreUsuario + " ya existe.";
-                $scope.claseUsuario.usuario = "entradaError";
-                return;
+                if($scope.colaborador[k].NombreUsuario.toLowerCase() == $scope.nuevoUsuario.NombreUsuario.toLowerCase() && $scope.colaborador[k].ColaboradorId !== $scope.nuevoUsuario.ColaboradorId)
+                {
+                    $scope.mensajeError[$scope.mensajeError.length] = "*El nombre del usuario " + $scope.nuevoUsuario.NombreUsuario + " ya existe.";
+                    $scope.claseUsuario.usuario = "entradaError";
+                    return;
+                }
             }
         }
+        
+        $scope.nuevoUsuario.NombreUsuario = $scope.nuevoUsuario.NombreUsuario.toLowerCase();
         
         //validación correcta
             
@@ -498,28 +503,30 @@ app.controller("UsuarioPerfilControlador", function($scope, $http, $q, CONFIG, d
     {
         if($scope.usuarioLogeado.SesionIniciada)
         {
-            $scope.IdentificarPermisos();
-            if(!$scope.permisoUsuario.consultar)
+            if($scope.usuarioLogeado.PerfilSeleccionado == "Administrador")
             {
-               for(var k=0; k<$rootScope.Perfiles.length; k++)
+                $scope.IdentificarPermisos();
+                if(!$scope.permisoUsuario.consultar)
                 {
-                    if($scope.usuarioLogeado.PerfilSeleccionado == $rootScope.Perfiles[k].nombre)         //Se verifica con que perfil cuenta el usuario
-                    {
-                        $window.location = $rootScope.Perfiles[k].paginaPrincipal;
-                    }
-                } 
-            }
-            else
-            {
-                if($scope.permiso === null)
+                   $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
+                }
+                else
                 {
                     $scope.GetPermiso();
                 }
             }
+            else if($scope.usuarioLogeado.PerfilSeleccionado === "")
+            {
+                $window.location = "#Perfil";
+            }
+            else
+            {
+                $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
+            }   
         }
         else
         {
-            $window.location = "#Login";
+            $location.path('/Login');
         }
     }
     
@@ -530,28 +537,31 @@ app.controller("UsuarioPerfilControlador", function($scope, $http, $q, CONFIG, d
     
         if(!$scope.usuarioLogeado.SesionIniciada)
         {
-            $window.location = "#Login";
+            $location.path('/Login');
             return;
         }
         else
         {
-            $scope.IdentificarPermisos();
-            if(!$scope.permisoUsuario.consultar)
+            if($scope.usuarioLogeado.PerfilSeleccionado == "Administrador")
             {
-               for(var k=0; k<$rootScope.Perfiles.length; k++)
+                $scope.IdentificarPermisos(); 
+
+                if(!$scope.permisoUsuario.consultar)
                 {
-                    if($scope.usuarioLogeado.PerfilSeleccionado == $rootScope.Perfiles[k].nombre)         //Se verifica con que perfil cuenta el usuario
-                    {
-                        $window.location = $rootScope.Perfiles[k].paginaPrincipal;
-                    }
-                } 
-            }
-            else
-            {
-                if($scope.permiso === null)
+                    $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
+                }
+                else
                 {
                     $scope.GetPermiso();
                 }
+            }
+            else if($scope.usuarioLogeado.PerfilSeleccionado === "")
+            {
+                $window.location = "#Perfil";
+            }
+            else
+            {
+                $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
             }
         }
     });

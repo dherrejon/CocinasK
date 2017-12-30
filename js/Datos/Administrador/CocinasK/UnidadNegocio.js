@@ -371,7 +371,27 @@ function GetUnidadNegocio($http, $q, CONFIG)
 
      }); 
     return q.promise;
-}
+} 
+
+function GetDatosUnidadNegocio($http, $q, CONFIG, id)    
+{
+    var q = $q.defer();
+
+    $http({      
+          method: 'GET',
+          url: CONFIG.APIURL + '/GetDatosUnidadNegocio/' + id,
+
+      }).success(function(data)
+        {
+            var unidadNegocio = new UnidadNegocio();
+            unidadNegocio = SetUnidadNegocio(data);
+            q.resolve(unidadNegocio);  
+        }).error(function(data, status){
+            q.resolve([]);
+
+     }); 
+    return q.promise;
+} 
 
 //copia los datos de las unidades de negocio
 function SetUnidadNegocio(data)
@@ -509,10 +529,32 @@ function ActivarDesactivarUnidad($http, $q, CONFIG, datos)
 function GetUnidadNegocioSencilla($http, $q, CONFIG)    
 {
     var q = $q.defer();
+    
+    
 
     $http({      
           method: 'GET',
           url: CONFIG.APIURL + '/GetUnidadNegocioSencilla',
+
+      }).success(function(data)
+        {
+            q.resolve(data);  
+        }).error(function(data, status){
+            q.resolve(status);
+
+     }); 
+    return q.promise;
+}
+
+function GetUnidadNegocioSencillaPresupuesto($http, $q, CONFIG)    
+{
+    var q = $q.defer();
+    
+    
+
+    $http({      
+          method: 'GET',
+          url: CONFIG.APIURL + '/GetUnidadNegocioSencillaPresupuesto',
 
       }).success(function(data)
         {
@@ -552,6 +594,7 @@ function GetResponsable($http, $q, CONFIG)
                 responsable[k] = new Responsable();
                 responsable[k].Nombre = data[k].Nombre;
                 responsable[k].ColaboradorId = data[k].ColaboradorId;
+                responsable[k].UnidadNegocioId = data[k].UnidadNegocioId;
             }
         
             q.resolve(responsable);  

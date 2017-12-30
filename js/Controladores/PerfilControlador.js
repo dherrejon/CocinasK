@@ -1,4 +1,4 @@
-app.controller("PerfilControlador", function($scope, $window, $rootScope, $http, CONFIG, datosUsuario, datosPerfil)
+app.controller("PerfilControlador", function($scope, $window, $rootScope, $http, CONFIG, datosUsuario, datosPerfil, $location)
 {   
     $rootScope.clasePrincipal = "login";
     
@@ -63,7 +63,7 @@ app.controller("PerfilControlador", function($scope, $window, $rootScope, $http,
         }
         else
         {
-            $window.location = "#Login";
+            $location.path('/Login');
         }
     }
     
@@ -73,12 +73,12 @@ app.controller("PerfilControlador", function($scope, $window, $rootScope, $http,
     
         if(!$scope.usuarioLogeado.SesionIniciada)
         {
-            $window.location = "#Login";
+            $location.path('/Login');
             return;
         }
         else
         {
-            
+            $scope.HabilitarPerfiles();
         }
     });
     
@@ -95,58 +95,23 @@ function SetPerfil(perfil, $rootScope, $window, $http, CONFIG, usuario)
     $window.location = perfil.paginaPrincipal;
     SetPerfilInSesion(perfil.nombre, $http, CONFIG);                    //Coloca el perfil seleccionado en _$Session
     
-    for(var k=0; k< $rootScope.barraNavegacionOpciones[0].elemento.length; k++)
-    {
-        $rootScope.barraNavegacionOpciones[0].elemento[k].show = false;
-    }
     
-    for(var k=0; k< $rootScope.barraNavegacionOpciones[1].elemento.length; k++)
+    for(var i=0;  i<$rootScope.barraNavegacionOpciones.length; i++)
     {
-        $rootScope.barraNavegacionOpciones[1].elemento[k].show = false;
-    }
-    
-    for(var k=0; k< $rootScope.barraNavegacionOpciones[2].elemento.length; k++)
-    {
-        $rootScope.barraNavegacionOpciones[2].elemento[k].show = false;
-    }
-
-    for(var k=0; k<usuario.Permiso.length; k++)
-    {
-        if(perfil.nombre == "Administrador")
+        for(var j=0; j<$rootScope.barraNavegacionOpciones[i].elemento.length; j++)
         {
-            if(usuario.Permiso[k] == "AdmColConsultar")
+            $rootScope.barraNavegacionOpciones[i].elemento[j].show = false;
+            
+            if($rootScope.barraNavegacionOpciones[i].elemento[j].tipo == "dropdownlist")
             {
-                $rootScope.barraNavegacionOpciones[0].elemento[0].show = true;
-            }
-            else if(usuario.Permiso[k] == "AdmUNeConsultar")
-            {
-                $rootScope.barraNavegacionOpciones[0].elemento[1].show = true;
-            }
-            else if(usuario.Permiso[k] == "AdmPlaConsultar")
-            {
-                $rootScope.barraNavegacionOpciones[0].elemento[2].show = true;
-            }
-            else if(usuario.Permiso[k] == "AdmTerConsultar")
-            {
-                $rootScope.barraNavegacionOpciones[0].elemento[3].show= true;
-            }
-            else if(usuario.Permiso[k] == "ConModConfigurar")
-            {
-                $rootScope.barraNavegacionOpciones[2].elemento[0].show = true;
-            }
-            else if(usuario.Permiso[k] == "ConEmpConsultar" || usuario.Permiso[k] == "ConTUNConsultar")
-            {
-                $rootScope.barraNavegacionOpciones[2].elemento[1].show = true;
-            }
-            else if(usuario.Permiso[k] == "ConMatConfigurar")
-            {
-                $rootScope.barraNavegacionOpciones[2].elemento[2].show = true;
-            }
-            else if(usuario.Permiso[k] == "AdmComConsultar")
-            {
-                $rootScope.barraNavegacionOpciones[1].elemento[0].show = true;
+                for(var m=0; m<$rootScope.barraNavegacionOpciones[i].elemento[j].opcion.length; m++)
+                {
+                     $rootScope.barraNavegacionOpciones[i].elemento[j].opcion[m].show = false; 
+                }
             }
         }
     }
+
+    HabilitarOpcionesMenu(usuario, $rootScope);
 }
 

@@ -6,7 +6,7 @@ app.controller("LoginControlador", function($window,$scope, $http, $rootScope, $
     /*------------------Indentifica cuando los datos del usuario han cambiado-------------------*/
     $scope.$on('cambioUsuario',function()
     {
-        $scope.usuario =  datosUsuario.getUsuario();    
+        $scope.usuario =  datosUsuario.getUsuario();
         
         if($scope.usuario.SesionIniciada)
         {
@@ -17,6 +17,7 @@ app.controller("LoginControlador", function($window,$scope, $http, $rootScope, $
     /*------------------------------------------------------------------------------*/
     
     $scope.mensajeError = ""; // Mensaje de error en el login
+    $scope.mensajeErrorPassword = "";
     
     //Inicia sesión del usuario
     $scope.IniciarSesion = function(usuarioInvalido, passwordInvalado)
@@ -83,6 +84,51 @@ app.controller("LoginControlador", function($window,$scope, $http, $rootScope, $
             $scope.usuario = new Usuario("","","");
             alert(error);
         });
+    };
+    
+    /*---------Recuperar Password-----------------*/
+    $scope.RecuperarPassword = function(usuarioInvalido)
+    {
+        $scope.mensajeErrorPassword = "";
+        if(usuarioInvalido)
+        {
+            $scope.mensajeErrorPassword = "*Escribe un usuario válido.";
+            return;
+        }
+        
+        var usuario = new Object();
+        usuario.Nombre = $scope.usuario.Nombre;
+        
+        RecuperarPassword($http, CONFIG, $q, usuario).then(function(data)
+        {
+            if(data == "Exitoso")
+            {
+                $scope.mensaje = "Se te ha enviado un correo para que puedas reiniciar tu contraseña.";
+                $('#recuperarPasswordModal').modal('toggle');
+                $('#mensajeLogin').modal('toggle');
+            }
+            else if(data == "ErrorUsuario")
+            {
+                $scope.mensajeErrorPassword = "*El usuario no es válido.";
+            }
+            else if(data == "ErrorContacto")
+            {
+                $scope.mensajeErrorPassword = "*El usuario no tiene correos electrónicos registrados. Es necesario que al menos tenga un correo electrónico registrado.";
+            }
+            else
+            {
+                alert("Ha ocurrido un error. Intente más tarde.");
+            }
+        }).catch(function(error)
+        {
+            alert("Ha ocurrido un error. Intente más tarde." +error);
+            return;
+        });
+    };
+    
+    $scope.CerrarRecuperarPasswordForma = function()
+    {
+        $scope.mensajeErrorPassword = "";
     };
     
    /*Identifica si el usuariario esta logeado e impide el acceso a login*/

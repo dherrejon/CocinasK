@@ -18,7 +18,8 @@
     border-radius: 0px;
     color: #262626;
 }
-.PerfilBoton:hover
+
+.PerfilBoton:hover:enabled
 {
     text-transform: uppercase;
     color: rgb(198,58,19);
@@ -45,7 +46,7 @@
     border-bottom: 2px solid rgb(198,58,19);
 }
 
-.PerfilBoton:hover:before
+.PerfilBoton:hover:enabled:before
 {
     transform: scale(1);
 }
@@ -56,4 +57,12 @@
     {  
         margin-bottom: 15px; 
     }
+}
+
+/*------ Filtros citas ----------------*/
+.ellText
+{
+    overflow:hidden; 
+    white-space: nowrap; 
+    text-overflow: ellipsis;
 }

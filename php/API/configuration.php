@@ -8,7 +8,15 @@
     
     $db_password = "";
     
-    $db_name = "cocinasketapa1";
+    $db_name = "cocinask"; /*cocinasketapa1*/
+
+    /*$db_host = "us-cdbr-azure-southcentral-f.cloudapp.net";
+    
+    $db_user = "b337199bb09b0a";
+    
+    $db_password = "2eb5773c";
+    
+    $db_name = "sistemaintegralcocinask";*/
 
     $key = "2016.C0c1N4sK.S1st3M4InT3gR4lCk";
     $token_expiration_time = '+1 hour';

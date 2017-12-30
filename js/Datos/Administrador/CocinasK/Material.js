@@ -1,5 +1,4 @@
 /*----------------------------------Material ----------------------------------*/
-
 class Material
 {
     constructor()
@@ -8,6 +7,7 @@ class Material
         this.MaterialId = "";
         this.Nombre = "";
         this.CostoUnidad = ""; 
+        this.MaterialDe = "";
         this.Activo = true; 
     }
 }
@@ -45,10 +45,29 @@ function SetMaterial(data)
     
     material.MaterialId = data.MaterialId;
     material.Nombre = data.Nombre;
+    material.MaterialDe = data.MaterialDe;
     material.CostoUnidad = parseFloat(data.CostoUnidad);
     
     tipoMaterial.Nombre = data.NombreTipoMaterial;
     tipoMaterial.TipoMaterialId = data.TipoMaterialId;
+    
+    if(data.DisponibleModulo == "1")
+    {
+        tipoMaterial.DisponibleModulo = true;
+    }
+    else
+    {
+        tipoMaterial.DisponibleModulo = false;
+    }
+    
+    if(data.DisponibleCubierta == "1")
+    {
+        tipoMaterial.DisponibleCubierta = true;
+    }
+    else
+    {
+        tipoMaterial.DisponibleCubierta = false;
+    }
     
     material.TipoMaterial = SetTipoMaterial(tipoMaterial);
     
@@ -143,16 +162,37 @@ function ActivarDesactivarMaterial($http, $q, CONFIG, material)
     return q.promise;
 }
 
+//obtiene los tipos de módulos
+function GetCostoMaterial($http, $q, CONFIG, material)     
+{
+    var q = $q.defer();
+
+    $http({      
+          method: 'POST',
+          url: CONFIG.APIURL + '/GetCostoMaterial',
+          //data: material
+      }).success(function(data)
+        {
+            var material = []; 
+
+            q.resolve(data);  
+        }).error(function(data, status){
+            q.resolve(status);
+     }); 
+    return q.promise;
+}
+
 /*---------------------------------Tipo de material------------------------------*/
 class TipoMaterial
 {
     constructor()
     {
         this.TipoMaterialId = "";
-        this.MaterialParaId = "";
-        this.NombreMaterialPara = "";
         this.Nombre = ""; 
         this.Activo = true; 
+        this.DisponibleModulo = false;
+        this.DisponibleCubierta = false;
+        this.TipoCubierta = new TipoCubierta();
     }
 }
 
@@ -188,8 +228,6 @@ function SetTipoMaterial(data)
     var tipoMaterial = new TipoMaterial();
     
     tipoMaterial.TipoMaterialId = data.TipoMaterialId;
-    tipoMaterial.MaterialParaId = data.MaterialParaId;
-    tipoMaterial.NombreMaterialPara = data.NombreMaterialPara;
     tipoMaterial.Nombre = data.Nombre;
     
     if(data.Activo == "1")
@@ -201,6 +239,27 @@ function SetTipoMaterial(data)
         tipoMaterial.Activo = false;
     }
     
+    if(data.DisponibleModulo == "1")
+    {
+        tipoMaterial.DisponibleModulo = true;
+    }
+    else
+    {
+        tipoMaterial.DisponibleModulo = false;
+    }
+    
+    if(data.DisponibleCubierta == "1")
+    {
+        tipoMaterial.DisponibleCubierta = true;
+    }
+    else
+    {
+        tipoMaterial.DisponibleCubierta = false;
+    }
+
+    tipoMaterial.TipoCubierta.TipoCubiertaId = data.TipoCubiertaId;
+    tipoMaterial.TipoCubierta.Nombre = data.NombreTipoCubierta;
+
     return tipoMaterial;
 }
 
@@ -216,6 +275,24 @@ function AgregarTipoMaterial($http, CONFIG, $q, tipoMaterial)
     else
     {
         tipoMaterial.Activo = 0;
+    }
+    
+    if(tipoMaterial.DisponibleModulo)
+    {
+        tipoMaterial.DisponibleModulo = 1;
+    }
+    else
+    {
+        tipoMaterial.DisponibleModulo = 0;
+    }
+
+    if(tipoMaterial.DisponibleCubierta)
+    {
+        tipoMaterial.DisponibleCubierta = 1;
+    }
+    else
+    {
+        tipoMaterial.DisponibleCubierta = 0;
     }
 
     $http({      
@@ -255,6 +332,24 @@ function EditarTipoMaterial($http, CONFIG, $q, tipoMaterial)
     {
         tipoMaterial.Activo = 0;
     }
+    
+    if(tipoMaterial.DisponibleModulo)
+    {
+        tipoMaterial.DisponibleModulo = 1;
+    }
+    else
+    {
+        tipoMaterial.DisponibleModulo = 0;
+    }
+
+    if(tipoMaterial.DisponibleCubierta)
+    {
+        tipoMaterial.DisponibleCubierta = 1;
+    }
+    else
+    {
+        tipoMaterial.DisponibleCubierta = 0;
+    }
 
     $http({      
           method: 'PUT',
@@ -279,7 +374,6 @@ function EditarTipoMaterial($http, CONFIG, $q, tipoMaterial)
      }); 
     return q.promise;
 }
-
 
 //Activar - Desactivar Tipo de Material
 function ActivarDesactivarTipoMaterial($http, $q, CONFIG, tipoMaterial) 
@@ -459,3 +553,53 @@ function GetTipoMaterialParaModulos($http, $q, CONFIG)
     return q.promise;
 }
 
+//obtiene los tipos de módulos
+function GetTipoMaterialParaCubierta($http, $q, CONFIG)     
+{
+    var q = $q.defer();
+
+    $http({      
+          method: 'GET',
+          url: CONFIG.APIURL + '/GetTipoMaterialParaCubierta',
+
+      }).success(function(data)
+        {
+            var tipoMaterial = []; 
+            
+            for(var k=0; k<data.length; k++)
+            {
+                tipoMaterial[k] = new TipoMaterial();
+                tipoMaterial[k] = SetTipoMaterial(data[k]);
+            }
+        
+            q.resolve(tipoMaterial);  
+        }).error(function(data, status){
+            q.resolve(status);
+     }); 
+    return q.promise;
+}
+
+function GetMaterialCubierta($http, $q, CONFIG)     
+{
+    var q = $q.defer();
+
+    $http({      
+          method: 'GET',
+          url: CONFIG.APIURL + '/GetMaterialCubierta',
+
+      }).success(function(data)
+        {
+            var material = []; 
+
+            for(var k=0; k<data.length; k++)
+            {
+                material[k] = new Material();
+                material[k] = SetMaterial(data[k]);
+            }
+            q.resolve(material);  
+        }).error(function(data, status){
+            q.resolve(status);
+     }); 
+    return q.promise;
+}
+ 

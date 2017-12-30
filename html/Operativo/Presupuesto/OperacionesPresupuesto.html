@@ -1,0 +1,239 @@
+<div ng-controller="OperacionesPresupuesto as opPre">
+
+   <div class="modal fade" id="unirPresupuesto">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-md modalPrincipal">
+           
+           <div class="row">
+                <div class="col-xs-12">
+                    <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarPresupuestoModal()"><span aria-hidden="true">&times;</span></button>
+                    <span class="tituloModal">Unir Presupuestos</span>
+                </div>
+            </div>
+            <br><br>
+            <form name="proyectoForma">
+                <!-- Tipo de proyecto -->
+                <div class="row">
+                    <!-- tipo de proyecto -->
+                  <div class="col-sm-12 etiquetaDropdownList">
+  
+                        <label>Cliente</label>
+                        
+                        <div class="input-group">
+                            <input type="text"  class="form-control entrada" ng-model="buscarCliente" uib-typeahead="c as (c.NombreCompleto) for c in cliente | filter:{NombreCompleto:$viewValue}  | limitTo:5" typeahead-on-select="CambiarCliente()" typeahead-select-on-blur="false" typeahead-focus-first="true" typeahead-no-results="noResultados" autocomplete="off">
+                            <span class="input-group-addon entrada" ng-click="LimpiarCliente()" style="cursor: pointer"> <span class="fa fa-times-circle"></span></span>  
+                        </div>  
+
+                        <div ng-if="noResultados">
+                            Sin Resultado
+                        </div>
+
+                    </div>
+                </div>
+                <br>
+                
+                <div class="row" >
+
+                    <div class="col-sm-12 etiquetaDropdownList">
+                         <label>Proyecto</label>
+                         <div class="dropdown">
+
+                            <button class="dropdown-toggle  dropdownlistModal " data-toggle="dropdown" ng-class="{disabled: presupuesto.Cliente == null}">
+                                <span>{{presupuesto.Proyecto.TipoProyecto.Nombre}} <span ng-show="presupuesto.Proyecto != null"> - </span> {{presupuesto.Proyecto.Nombre}}</span>
+                                <span class="caret"></span>
+                            </button>
+
+                            <ul class="dropdown-menu listaOpcionesDropdownList" >                                
+                                <li ng-repeat="proyecto in proyecto | orderBy:'TipoProyecto.Nombre'">
+                                    <a  href="" class="dropdownOpcionModal" ng-click="CambiarProyecto(proyecto)">
+                                        <span>{{proyecto.TipoProyecto.Nombre}} - {{proyecto.Nombre}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div>
+                </div>
+                <br>
+                
+                <div class="row">
+
+                    <div class="col-sm-12 etiquetaDropdownList">
+                         <label>Presupuesto</label>
+                         <div class="dropdown">
+
+                            <button class="dropdown-toggle  dropdownlistModal " data-toggle="dropdown" ng-class="{disabled: presupuesto.Proyecto == null}">
+                                <span ><b>{{presupuesto.Presupuesto.PresupuestoId}}</b> {{presupuesto.Presupuesto.Titulo}}</span>
+                                <span class="caret"></span>
+                            </button>
+
+                            <ul class="dropdown-menu listaOpcionesDropdownList" >                                
+                                <li ng-repeat="presupuesto in GetPresupuestosOrdenados(pres)">
+                                    <a  href="" class="dropdownOpcionModal" ng-click="CambiarPresupuesto(presupuesto)">
+                                        <span><b>{{presupuesto.PresupuestoId}}</b> {{presupuesto.Titulo}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div>
+                </div>
+                
+                <br>
+                
+                <div class="row" ng-show="!proyectoNuevo">
+
+                    <div class="col-sm-12 etiquetaDropdownList">
+                          <button class="btn botonOperacionModal btn-block" ng-click="AgregarPresupuesto()" ng-disabled="presupuesto.Presupuesto == null">Unir Presupuesto</button>
+                    </div>
+                </div>
+                <br>
+                <div class="row" ng-show="!proyectoNuevo">
+
+                    <div class="col-sm-12 etiquetaDropdownList" ng-repeat="presupuesto in unir track by $index">
+                       
+                        <div class="divisorGis1" style="margin-bottom:10px"></div>
+                        <a class="botonAgregarAcordion pull-right" ng-click="QuitarPresupuesto($index)" style="font-size: 10pt"><span class="fa fa-times"></span> Quitar</a>
+                        <span>{{presupuesto.Cliente.NombreCompleto}}: {{presupuesto.Proyecto.TipoProyecto.Nombre}} - {{presupuesto.Proyecto.Nombre}}</span><br>
+                        <span>{{presupuesto.Presupuesto.PresupuestoId}} {{presupuesto.Presupuesto.Titulo}}</span>
+                        <div class="divisorGis1" ng-if="$last" style="margin-top:10px"></div>
+                    </div>
+                </div>
+
+                
+            </form>
+            
+            <!-------- mensaje de error ---->
+            <div class="row">
+                <div class="col-xs-12">
+                    <div ng-repeat="error in mensajeError">
+                        <span class="textoError">{{error}}</span>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <!---- botones de operacion -->
+            <div class="row">
+               <div class="col-xs-6">
+                    <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarProyecto()">CANCELAR</button>
+                </div>
+
+                <div class="col-xs-6">
+                    <button focus class="btn botonOperacionModal btn-block" ng-class="{disabled: unir.length < 2}" ng-click="UnirPresupuestos()">TERMINAR</button>
+                </div>
+            </div>
+                        
+        </div>
+    </div>
+    
+    
+    <div class="modal fade" id="clonarPresupuesto">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-md modalPrincipal">
+           
+           <div class="row">
+                <div class="col-xs-12">
+                    <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarPresupuestoModal()"><span aria-hidden="true">&times;</span></button>
+                    <span class="tituloModal">Clonar Presupuesto</span>
+                </div>
+            </div>
+            <br><br>
+            <form name="proyectoForma">
+                <!-- Tipo de proyecto -->
+                <div class="row">
+                    <!-- tipo de proyecto -->
+                  <div class="col-sm-12 etiquetaDropdownList">
+  
+                        <label>Cliente</label>
+                        
+                        <div class="input-group">
+                            <input type="text"  class="form-control entrada" ng-model="buscarCliente" uib-typeahead="c as (c.NombreCompleto) for c in cliente | filter:{NombreCompleto:$viewValue}  | limitTo:5" typeahead-on-select="CambiarCliente()" typeahead-select-on-blur="false" typeahead-focus-first="true" typeahead-no-results="noResultados" autocomplete="off">
+                            <span class="input-group-addon entrada" ng-click="LimpiarCliente()" style="cursor: pointer"> <span class="fa fa-times-circle"></span> </span>  
+                        </div>  
+                         
+
+                        <div ng-if="noResultados">
+                            Sin Resultado
+                        </div>
+
+                    </div>
+                </div>
+                <br>
+                
+                <div class="row" >
+
+                    <div class="col-sm-12 etiquetaDropdownList">
+                         <label>Proyecto</label>
+                         <div class="dropdown">
+
+                            <button class="dropdown-toggle  dropdownlistModal " data-toggle="dropdown" ng-class="{disabled: presupuesto.Cliente == null}">
+                                <span>{{presupuesto.Proyecto.TipoProyecto.Nombre}} <span ng-show="presupuesto.Proyecto != null"> - </span> {{presupuesto.Proyecto.Nombre}}</span>
+                                <span class="caret"></span>
+                            </button>
+
+                            <ul class="dropdown-menu listaOpcionesDropdownList" >                                
+                                <li ng-repeat="proyecto in proyecto | orderBy:'TipoProyecto.Nombre'">
+                                    <a  href="" class="dropdownOpcionModal" ng-click="CambiarProyecto(proyecto)">
+                                        <span>{{proyecto.TipoProyecto.Nombre}} - {{proyecto.Nombre}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div>
+                </div>
+                <br>
+                
+                <div class="row">
+
+                    <div class="col-sm-12 etiquetaDropdownList">
+                         <label>Presupuesto</label>
+                         <div class="dropdown">
+
+                            <button class="dropdown-toggle  dropdownlistModal " data-toggle="dropdown" ng-class="{disabled: presupuesto.Proyecto == null}">
+                                <span ><b>{{presupuesto.Presupuesto.PresupuestoId}}</b> {{presupuesto.Presupuesto.Titulo}}</span>
+                                <span class="caret"></span>
+                            </button>
+
+                            <ul class="dropdown-menu listaOpcionesDropdownList" >                                
+                                <li ng-repeat="presupuesto in GetPresupuestosOrdenados(pres)">
+                                    <a  href="" class="dropdownOpcionModal" ng-click="CambiarPresupuestoClon(presupuesto)">
+                                        <span><b>{{presupuesto.PresupuestoId}}</b> {{presupuesto.Titulo}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div>
+                </div>
+                
+
+                
+            </form>
+            
+            <!-------- mensaje de error ---->
+            <div class="row">
+                <div class="col-xs-12">
+                    <div ng-repeat="error in mensajeError">
+                        <span class="textoError">{{error}}</span>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <!---- botones de operacion -->
+            <div class="row">
+               <div class="col-xs-6">
+                    <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarClon()">CANCELAR</button>
+                </div>
+
+                <div class="col-xs-6">
+                    <button focus class="btn botonOperacionModal btn-block" ng-click="ClonarPresupuestos()">TERMINAR</button>
+                </div>
+            </div>
+                        
+        </div>
+    </div>
+    
+</div>
+
+     

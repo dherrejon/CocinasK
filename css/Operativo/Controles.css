@@ -1,0 +1,306 @@
+.botonDatePicker
+{
+    border: none;
+    background: white;
+    border-radius: 0px;
+    color: rgba(250, 97, 21, 1.0);
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.botonDatePicker:hover
+{
+    background: rgba(250, 97, 21, 1.0);
+    color: white;
+    
+}
+
+.descripcionArea, .descripcionArea:focus, .descripcionArea:hover
+{
+    border:solid 2px #262626; 
+    max-width:100%;
+    border-radius: 0px;
+    outline: none !important;
+    box-shadow: none;
+}
+
+.descripcionAreaError, .descripcionAreaError:focus, .descripcionAreaError:hover
+{
+    border:solid 2px rgba(250, 97, 21, 1.0); 
+    max-width:100%;
+    border-radius: 0px;
+    outline: none !important;
+    box-shadow: none;
+}
+
+.labelEntrada
+{
+    color: rgb(89, 89, 89);
+    opacity:1;
+    font-weight:400;
+    font-size:14px;
+    font-weight: bold;
+}
+
+
+/*------------botones-------*/
+.botonTabActive, .botonTabActive:hover, .botonTabActive:focus, .botonTabActive:active
+{
+    background: #262626;
+    color: #D9D9D9;
+    border-radius: 0px;
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.botonTab, .botonTab:focus, .botonTab:active
+{
+    background: white;
+    color: #777;
+    border: 0px;
+    border-radius: 0px;
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.botonTab:hover
+{
+    background: white;
+    color: #262626;
+}
+
+.panelSelector
+{
+    border: 2px solid #262626;
+    padding: 20px !important;
+}
+
+.panelOpciones
+{
+    border: 2px solid #262626;
+    border-radius: 0px;
+}
+
+.botonAcordion, .botonAcordion:hover, .botonAcordion:focus, .botonAcordion:active
+{
+    border-radius: 0px;
+    background: white;
+    border-width: 0px 0px 3px 0px;
+    border-bottom: 3px solid #262626;
+    font-size: 12pt;
+    color: #262626 !important;
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.botonAcordion:disabled, .botonAcordion:disabled:hover, botonAcordion.disabled
+{
+    background: rgb(234, 234, 234);
+    cursor: not-allowed;
+}
+
+.botonAcordion.active
+{
+    background:  #262626;
+    color: white !important;
+}
+
+.botonAgregarAcordion, .botonAgregarAcordion:active, .botonAgregarAcordion:focus
+{
+    border-radius: 0px;
+    border: none;
+    background: white;
+    color: #262626;
+    font-size: 16pt;
+    cursor: pointer;
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.botonAgregarAcordion:disabled:hover, .botonAgregarAcordion:disabled
+{
+    opacity: 0.6;
+    color: #262626 !important;
+}
+
+.botonAgregarAcordion:hover
+{
+    color: rgba(250, 97, 21, 1.0);
+}
+
+.botonBordeNegro, .botonBordeNegro:active, .botonBordeNegro:focus, .botonBordeNegro:disabled:hover
+{
+    border-radius: 0px;
+    border: 2px solid #262626;
+    
+    background: white;
+    color: #262626;
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.botonBordeNegro:hover
+{
+    background: rgba(250, 97, 21, 1.0);
+    border-color: rgba(250, 97, 21, 1.0);
+    color: white;
+}
+
+
+/*---------------------- Citas ------------*/
+.listaOpcionesDropdownListTabla
+{
+    background: white;
+    border: solid 2px #262626;
+    max-height: 150px;
+    overflow: scroll;
+    border-radius: 0px;
+    margin-top: -5px;
+}
+
+/*-------------------Acordio vertical---------------*/
+.opcionAcordionCita, .opcionAcordionCita:active, .opcionAcordionCita:focus
+{
+    background: rgb(249, 249, 249);
+    border-radius: 0px;
+    border-color: #262626;
+    border-style: solid;
+    border-width: 0px 0px 0px 6px;
+    text-align: left;
+    font-size: 14pt;
+    font-weight: bold;
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.opcionAcordionCita.active
+{
+    background: rgb(249, 249, 249);
+    border-radius: 0px;
+    border-color: rgb(250, 97, 21);
+    border-style: solid;
+    border-width: 0px 0px 0px 6px;
+    color: rgb(250, 97, 21);
+    text-align: left;
+    font-size: 14pt;
+    font-weight: bold;
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.opcionAcordionCita:hover, .opcionAcordionSeleccionadoCita:hover
+{
+    background: rgba(38,38, 38, 0.2);
+}
+
+/*------------- margen dropdonwlist -------------------*/
+.margenDropdownlistContenido
+{
+    padding: 10px;
+    border-width: 0px 2px 2px 2px;
+    border-style: solid;
+    border-color: #262626;
+}
+
+/*------- dropdown punta ---------*/
+.dropdownRight, .dropdownLeft
+{
+    border-radius: 0px;
+    border: solid 2px #262626;
+    margin-top: 2px;
+}
+
+.dropdownRight:before
+{
+    content: "";
+    position: absolute;
+    top: -24px;
+    right: 2px;
+    
+    border: 12px solid transparent;
+    border-bottom-color: #262626;
+}
+
+.dropdownRight:after
+{
+    content: "";
+    position: absolute;
+    top: -18px;
+    right: 5px;
+    
+    border: 9px solid transparent;
+    border-bottom-color: white;
+}
+
+.dropdownLeft:before
+{
+    content: "";
+    position: absolute;
+    top: -24px;
+    left: 2px;
+    
+    border: 12px solid transparent;
+    border-bottom-color: #262626;
+}
+
+.dropdownLeft:after
+{
+    content: "";
+    position: absolute;
+    top: -18px;
+    left: 5px;
+    
+    border: 9px solid transparent;
+    border-bottom-color: white;
+}
+
+.marcoNegro
+{
+    border-radius: 0px;
+    border: 2px solid #262626; 
+    padding: 10px;
+    
+    min-width: 100%;
+}
+
+.btnContornoNegro, .btnContornoNegro:focus, .btnContornoNegro:active
+{
+    background: white;
+    color: #262626;
+    border: 2px solid #262626;
+    border-radius: 0px;
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.btnContornoNegro:hover
+{
+    background: #262626;
+    color: white;
+}
+
+.btnTimes, .btnTimes:focus, .btnTimes:active, .btnTimes:hover
+{
+    background: white;
+    color: #262626;
+    border-radius: 0px;
+    
+    border-width: 0px 0px 3px 0px;
+    border-style: solid;
+    border-color:  #262626;
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+
+

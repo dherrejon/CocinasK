@@ -1,0 +1,639 @@
+<div ng-controller="PromocionControlador as promocion" class="container-fluid">
+
+   <br><br>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="tituloModulo">
+                <span>Promociones</span>
+            </div>
+        </div>
+    </div>
+    <br>
+   
+    <div class="row" ng-if="permisoUsuario.consultar">
+        <div class="col-md-11 col-xs-10">
+            <div class="table-responsive TablaUnidadNegocio">
+                <table class="table table-hover table-striped table-condensed">
+                    <thead class="TituloTabla">
+                      <tr>
+                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('TipoPromocion.Nombre')"><b>Tipo Promoción </b><b ng-if="ordenarPor === 'TipoPromocion.Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-TipoPromocion.Nombre'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('TipoVenta.Nombre')"><b>Tipo Venta </b><b ng-if="ordenarPor === 'TipoVenta.Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-TipoVenta.Nombre'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonFalso"><b>Vigencia / pagos</b></button></th>
+                        <th><button class="btn botonFalso"><b>Detalles</b></button></th>
+                        <th><button class="btn botonFalso"><b>Editar</b></button></th>
+                        <th><button class="btn botonFalso"><b>Activo</b></button></th>
+                        <!--<th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('ActivoN')"><b>Activo</b> <b ng-if="ordenarPor === 'ActivoN'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-ActivoN'" class="fa fa-arrow-down"></b></button></th>-->
+                      </tr>
+                    </thead>
+                    <tbody >
+                      <tr ng-repeat="promo in promocion  | filter:buscar | filter:FiltrarPromocion | orderBy:[ordenarPor, 'TipoPromocion.Venta']">
+                        <td>{{promo.TipoPromocion.Nombre}}</td>
+                        <td>{{promo.TipoVenta.Nombre}}</td>
+                         
+                        <td ng-if="promo.TipoPromocion.TipoPromocionId == '1'" class="text-center">{{promo.FechaLimite}}</td>
+                        <td ng-if="promo.TipoPromocion.TipoPromocionId == '3'" class="text-center">{{promo.Vigencia}} días</td>
+                        <td ng-if="promo.TipoPromocion.TipoPromocionId == '2'" class="text-center">{{promo.NumeroPagos}} pagos</td>
+                          
+                        <td class="text-center">
+                            <a  class="BotonOperacion" href="" data-toggle="modal" data-target="#DetallePromocion" ng-click="DetallePromocion(promo)">
+                                <span class="fa fa-eye fa-2x"></span>
+                            </a>
+                        </td>
+
+                        <td class="text-center">
+                            <a ng-if="permisoUsuario.editar"  class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirPromocionModal('Editar', promo)">
+                                <span class="fa fa-pencil fa-2x"></span>
+                            </a>
+                            <span ng-if="!permisoUsuario.editar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
+                        </td>
+
+                        <td class="text-center">
+                            <div class="checkbox">
+                                <label>
+                                    <input ng-disabled="!permisoUsuario.activar"  ng-model="promo.Activo" type="checkbox" value="" ng-click="CambiarEstadoActivo(promo)">
+                                    <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+                                </label>
+                            </div>
+                        </td>
+
+                      </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-xs-2 col-md-1">
+            <button ng-disabled="!permisoUsuario.agregar" class="btn btn-block botonOperacion fa fa-plus text-center" data-toggle="tooltip" data-placement="bottom" title="Agregar Promocion" ng-click="AbrirPromocionModal('Agregar', null)"></button>
+            
+            <br><br>
+            
+            <!-- Boton filtrar -->
+            <div class="dropdown">
+                
+                <button class="btn btn btn-block botonOperacion fa fa-filter text-center" data-toggle="dropdown" ></button>
+                    
+                <ul class="dropdown-menu dropdown-menu-right operacionPanel">
+                    
+                    <div  class="row ">
+                        <div class="col-xs-9"> 
+                            <li  class="dropdown-header tituloOpcionLateral">FILTRAR</li>
+                        </div>
+                        <div class="col-xs-3">
+                            <li> <button class="btn botonOperacion fa fa-ban" data-toggle="tooltip" data-placement="bottom" title="Limpiar filtro" ng-click="LimpiarFiltro()"></button></li>
+                        </div>
+                    </div>
+                    <li role="separator" class="divider"></li>
+
+                    <li style="width: 275px;">
+
+                        <form role="filtro">
+                            <!------ Tipo Promocion ------>
+                            <button class="btn btn-block botonFiltro" ng-click="MostrarFiltros('tipoPromocion')">Tipo Promoción</button>
+                            
+                            <div class="row" ng-show="mostrarFiltro.tipoPromocion">
+                                <div class="col-xs-12" >
+                                    <div class="opcionFiltro">
+                                        <div  ng-repeat="tipo in tipoPromocion | orderBy:'Nombre'">
+                                            <label class="checkBoxActivoFiltro">
+                                                <input type="checkbox" class="badgebox" ng-model="filtroCheckboxTipoPromocion[$index]" ng-click="setFilterTipoPromocion(tipo.TipoPromocionId)"><span class="badge">&check;</span>
+                                                {{tipo.Nombre}}
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                        
+                            <!------ Tipo VENTA ------>
+                            <button class="btn btn-block botonFiltro" ng-click="MostrarFiltros('tipoVenta')">Tipo Venta</button>
+                            
+                            <div class="row" ng-show="mostrarFiltro.tipoVenta">
+                                <div class="col-xs-12" >
+                                    <div class="opcionFiltro">
+                                        <div  ng-repeat="tipo in tipoVenta | orderBy:'Nombre'">
+                                            <label class="checkBoxActivoFiltro">
+                                                <input type="checkbox" class="badgebox" ng-model="filtroCheckboxTipoVenta[$index]" ng-click="setFilterTipoVenta(tipo.TipoVentaId)"><span class="badge">&check;</span>
+                                                {{tipo.Nombre}}
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            
+                            <!------ Unidad de Negocio ------>
+                            <button class="btn btn-block botonFiltro" ng-click="MostrarFiltros('unidadNegocio')">Unidad de Negocio</button>
+                            
+                            <div class="row" ng-show="mostrarFiltro.unidadNegocio">
+                                <div class="col-xs-12" >
+                                    <div class="opcionFiltro">
+                                        <div  ng-repeat=" unidad in unidadNegocio | orderBy:'Nombre' | unique: 'unidad.Nombre' track by $index">
+                                            <label class="checkBoxActivoFiltro">
+                                                <input type="checkbox" class="badgebox" ng-model="filtroCheckboxUnidadNegocio[$index]" ng-click="setFilterUnidadNeogocio(unidad.UnidadNegocioId)"><span class="badge">&check;</span>
+                                                {{unidad.NombreTipoUnidadNegocio}} - {{unidad.Nombre}}
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            
+                            <!------ Activo ------>
+                            <button class="btn btn-block botonFiltro" ng-click="MostrarFiltros('activo')">Activo</button>
+                            
+                            <div class="row" ng-show="mostrarFiltro.activo">
+                                <div class="col-xs-12" >
+                                    <div class="opcionFiltro">
+                                        <div>
+                                            <label class="checkBoxActivoFiltro">
+                                                <input type="checkbox" class="badgebox" ng-model="filtro.activo.activo"><span class="badge">&check;</span>
+                                                Promociones Activas
+                                            </label>
+                                            
+                                            <label class="checkBoxActivoFiltro">
+                                                <input type="checkbox" class="badgebox" ng-model="filtro.activo.inactivo"><span class="badge">&check;</span>
+                                                Promociones No Activas
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            
+                        </form>
+                    </li>
+                </ul>
+                
+            </div>
+            
+            <br>
+            <!-- Boton buscar -->
+            <div class="dropdown">
+                
+                <button class="btn btn btn-block botonOperacion fa fa-search text-center" data-toggle="dropdown" ></button>
+                    
+                <ul class="dropdown-menu dropdown-menu-right operacionPanel">
+
+                    <li style="width: 225px; height: 35px !important;">
+
+                        <form role="buscar" style="max-width: 200px; height: 25px !important;">
+                            <div class="input-group" >
+                              <input  type="text" class="form-control operacionPanelEntrada" placeholder="Buscar" style="margin-left: 5px; width: 175px;" ng-model="buscar">
+                              <span class="input-group-btn" style="width: 25px;">
+                                <button class="btn operacionPanelBoton" type="button">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                              </span>
+                            </div>
+                        </form>
+                    </li>
+                </ul>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+    <!-------- Modals ---------------->
+    <!--- Modal para Detalles de la promoción --->
+    <div class="modal fade " id="DetallePromocion">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <!-- encabezado del modal -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center">Detalles de la Promoción</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- cuerpo del modal -->
+                <div class="modal-body">
+                    <!-- Opciones de unidad de negocio -->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="pull-right">
+                                <button ng-disabled="!permisoUsuario.editar" class="btn botonOperacion" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" data-placement="bottom" title="Editar Promocion"  ng-click="AbrirPromocionModal('Editar', promocionActualizar)"><span class="fa fa-pencil fa-2x"></span></button>
+                                <button ng-disabled="!permisoUsuario.activar" ng-if="promocionActualizar.Activo" class="btn botonOperacion activo"  data-toggle="tooltip" data-placement="bottom" title="Desactivar" ng-click="CambiarActivoModal()"><span class="fa fa-power-off fa-2x"></span></button>
+                                <button ng-disabled="!permisoUsuario.activar" ng-if="!promocionActualizar.Activo" class="btn botonOperacion desactivo" data-toggle="tooltip" data-placement="bottom" title="Activar" ng-click="CambiarActivoModal()"><span class="fa fa-power-off fa-2x"></span></button>
+                            </div>
+                        </div>
+                    </div>
+                        
+                    <h4>Datos de la Promoción</h4><br>
+                    <!-- Tipo Promocion y venta -->
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="subrayado">
+                            <label>Tipo Promoción</label><br>
+                            <span class="textoModal">{{promocionActualizar.TipoPromocion.Nombre}}</span>
+                            </div>
+                        </div>
+                        <br class="hidden-sm hidden-md hidden-lg">
+                        <div class="col-sm-6">
+                            <div class="subrayado">
+                            <label>Tipo Venta</label><br>
+                            <span class="textoModal">{{promocionActualizar.TipoVenta.Nombre}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!--  Descripcion de la promoción -->
+                    <div class="row">
+                        <div class="col-sm-12">
+                           <label>Descripción de la promoción</label><br>
+                            <div class="bordeBug">
+                                <span>{{promocionActualizar.Descripcion}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!-- Decuentos -->
+                    <div class="row" ng-if="promocionActualizar.TipoPromocion.TipoPromocionId == '1' || promocionActualizar.TipoPromocion.TipoPromocionId == '3'">
+                        <div class="col-sm-6">
+                            <div class="subrayado">
+                            <label>Descuento Mínimo</label><br>
+                            <span class="textoModal">{{promocionActualizar.DescuentoMinimo}}</span>
+                            </div>
+                        </div>
+                        <br class="hidden-sm hidden-md hidden-lg">
+                        <div class="col-sm-6">
+                            <div class="subrayado">
+                            <label>Descuento Máximo</label><br>
+                            <span class="textoModal">{{promocionActualizar.DescuentoMaximo}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Número de pagos -->
+                    <div class="row" ng-if="promocionActualizar.TipoPromocion.TipoPromocionId == '2' ">
+                        <div class="col-sm-6">
+                            <div class="subrayado">
+                            <label>Número de Pagos</label><br>
+                            <span class="textoModal">{{promocionActualizar.NumeroPagos}}</span>
+                            </div>
+                        </div>
+    
+                    </div>
+                    <br>
+                    <!-- Fecha Límite -->
+                    <div class="row" ng-if="promocionActualizar.TipoPromocion.TipoPromocionId == '1' ">
+                        <div class="col-sm-6">
+                            <div class="subrayado">
+                            <label>Fecha Límite</label><br>
+                            <span class="textoModal">{{promocionActualizar.FechaLimite}}</span>
+                            </div>
+                        </div>
+    
+                    </div>
+                    <!-- Vigencia -->
+                    <div class="row" ng-if="promocionActualizar.TipoPromocion.TipoPromocionId == '3' ">
+                        <div class="col-sm-6">
+                            <div class="subrayado">
+                            <label>Vigencia</label><br>
+                            <span class="textoModal">{{promocionActualizar.Vigencia}} días</span>
+                            </div>
+                        </div>
+    
+                    </div>
+                    <br ng-if="promocionActualizar.TipoPromocion.TipoPromocionId != '2' ">
+                    
+                    <!-- Unidades de Negocio -->
+                    <div class="row" ng-if="promocionActualizar.UnidadNegocio.length > 0">
+                        <div class="col-xs-12">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <button class="btn btn-block"  ng-class="GetClaseDetallesSeccion('unidadNegocio')" ng-click="MostrarDetalle('unidadNegocio')">Unidades de Negocio</button>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="table-responsive TablaModal" ng-show="detalle == 'unidadNegocio'">
+                                <ul>
+                                    <div class="row">
+                                        <li ng-repeat="unidad in promocionActualizar.UnidadNegocio"  class="col-xs-6 col-sm-4">
+                                            <span>{{unidad.NombreTipoUnidadNegocio}} - {{unidad.Nombre}}</span>
+                                        </li>
+                                    </div>
+                                </ul>
+                                    
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!---- Modal para Agregar-editar Promoción -->
+    <div class="modal fade" id="promocionModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static" >
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <!-- encabezado del modal -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarPromocion()"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center" ng-if="operacion === 'Agregar'">Agregar Promoción</h3>
+                            <h3 class="text-center" ng-if="operacion === 'Editar'">Editar Promoción</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+                <br>
+
+                <form class="modal-body" name="promocionForma">
+                    <div class="row">
+                       <!-- clase de accesorio -->
+                        <div class="col-sm-6 etiquetaDropdownList">
+                             <label>Tipo Promoción</label>
+                             <div class="dropdown">
+
+                                <button class="dropdown-toggle  {{clase.tipoPromocion}}" data-toggle="dropdown">
+                                    <span>{{nuevaPromocion.TipoPromocion.Nombre}}</span>
+                                    <span class="caret"></span>
+                                </button>
+
+                                <ul class="dropdown-menu elemetosDropdownListModal">
+                                    <li ng-repeat="tipo in tipoPromocion | orderBy:'Nombre'">
+                                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarTipoPromocion(tipo)">
+                                            <span>{{tipo.Nombre}}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                            </div>
+                        </div>
+                        <br class="hidden-sm hidden-md hidden-lg">
+                           
+                        <div class="col-sm-6 etiquetaDropdownList">
+                             <label>Tipo Venta</label>
+                             <div class="dropdown">
+
+                                <button class="dropdown-toggle  {{clase.tipoVenta}}" data-toggle="dropdown">
+                                    <span>{{nuevaPromocion.TipoVenta.Nombre}}</span>
+                                    <span class="caret"></span>
+                                </button>
+
+                                <ul class="dropdown-menu elemetosDropdownListModal">
+                                    <li ng-repeat="tipo in tipoVenta | orderBy:'Nombre'">
+                                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarTipoVenta(tipo)">
+                                            <span>{{tipo.Nombre}}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                            </div>
+                        </div>
+
+                    </div>
+                    
+                    <br>
+                    <div class="row" ng-if="nuevaPromocion.TipoPromocion.TipoPromocionId != '2'">
+                        <div class="col-sm-6">
+                            <!-- descuento mínimo -->
+                             <div class="entrada2">
+                                <input ng-pattern="erNumeroEntero" type="text" required class="{{clase.minimo}} form-control" name="minimo" ng-model="nuevaPromocion.DescuentoMinimo"/>
+                                <label>Descuento Mínimo</label>
+                            </div>
+                        </div>
+
+                        <div class="hidden-sm hidden-md hidden-lg"><br><br></div>
+                        <div class="col-sm-6">
+                            <!-- descuento máximo -->
+                             <div class="entrada2">
+                                <input ng-pattern="erNumeroEntero" type="text" required class="{{clase.maximo}} form-control" name="maximo" ng-model="nuevaPromocion.DescuentoMaximo"/>
+                                <label>Descuento Máximo</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row" ng-if="nuevaPromocion.TipoPromocion.TipoPromocionId == '2'">
+                                
+                        <div class="col-xs-12 col-sm-6">
+                            <!-- número de pagos -->
+                             <div class="entrada2">
+                                <input ng-pattern="erNumeroEntero" type="text" required class="{{clase.numeroPagos}} form-control" name="numeroPagos" ng-model="nuevaPromocion.NumeroPagos"/>
+                                <label>Número de Pagos</label>
+                            </div>
+                        </div>
+                        <div class="hidden-sm hidden-md hidden-lg"><br><br><br></div>
+                        <!-- Activo -->
+                       <div class="col-xs-12 col-sm-6">
+                             <label class="btn checkBoxActivo">Promoción Activa <input type="checkbox" class="badgebox" ng-model="nuevaPromocion.Activo"><span class="badge">&check;</span></label>
+                        </div>
+                       
+                    </div>
+                    <br ng-if="nuevaPromocion.TipoPromocion.TipoPromocionId != '2'"><br ng-if="nuevaPromocion.TipoPromocion.TipoPromocionId != '2'">
+                    
+                    <div class="row" ng-if="nuevaPromocion.TipoPromocion.TipoPromocionId == '3'">
+                       <div class="col-xs-12 col-sm-6">
+                            <!-- número de pagos -->
+                             <div class="entrada2">
+                                <input ng-pattern="erNumeroEntero" type="text" required class="{{clase.vigencia}} form-control" name="vigencia" ng-model="nuevaPromocion.Vigencia"/>
+                                <label>Vigencia</label>
+                            </div>
+                        </div>
+                        <div class="hidden-sm hidden-md hidden-lg"><br><br><br></div>
+                        <!-- Activo -->
+                       <div class="col-xs-12 col-sm-6">
+                             <label class="btn checkBoxActivo">Promoción Activa <input type="checkbox" class="badgebox" ng-model="nuevaPromocion.Activo"><span class="badge">&check;</span></label>
+                        </div>
+
+                    </div>
+                    
+                    <div class="row" ng-show="nuevaPromocion.TipoPromocion.TipoPromocionId == '1'">
+                      
+                        <div class="col-xs-12 col-sm-6" >
+                          <div class="entrada2">
+                                <input type="text" class="form-control entrada"  id="fechaLimite" onchange="angular.element(this).scope().CambiarFecha(this)">
+                                <label>Fecha Límite</label>
+                            </div>
+                        </div>
+   
+                        <div class="hidden-sm hidden-md hidden-lg"><br><br><br></div>
+                        <!-- Activo -->
+                       <div class="col-xs-12 col-sm-6">
+                             <label class="btn checkBoxActivo">Promoción Activa <input type="checkbox" class="badgebox" ng-model="nuevaPromocion.Activo"><span class="badge">&check;</span></label>
+                        </div>
+
+                    </div>
+                    
+                    <br>
+                    <!-- Descripcion -->
+                    <div class="row">
+                       <div class="col-xs-12 subtituloModal">
+                            <b>¿En que unidades de negocio esta disponible la promoción?</b>
+                        </div>
+                        <br><br>
+                        <div class="col-sm-12">
+                             <div class="">
+                                <label>Descripción</label>
+                                <textarea required type="text" style="border:solid 2px #262626; max-width:100%" class="form-control" name="descripcion" ng-model="nuevaPromocion.Descripcion" maxlength="1000"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <br>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <button class="btn btn-block {{clase.unidad}}" ng-click="CambiarMotrarUnidad()">Unidades de Negocio {{mostrarUnidad.texto}}</button>
+                        </div>
+                        <br><br>
+
+                        <div ng-show="mostrarUnidad.mostrar">
+                            <div class="col-xs-12">
+                               <div class="panelOculto">
+                                    <input type="text" class="buscar input-md form-control" placeholder="Buscar" ng-model="buscarUnidad"/>
+                                    <br>
+                                    <div class="panel panel-default  tablaDropdowlist" >
+                                        <table class="table table-hover table-responsive">
+                                          <tbody  style="cursor: pointer">
+                                            <tr ng-repeat="unidad in unidadNegocio | filter:buscarUnidad | orderBy:'NombreTipoUnidadNegocio'" ng-show="unidad.show">
+                                        
+                                              <td >
+                                                 {{unidad.NombreTipoUnidadNegocio}} - {{unidad.Nombre}}
+                                              </td>
+                                              
+                                              <td>
+                                                <span class="pull-right">
+                                                   <a style="margin-left:10px" class="BotonOperacion" href=""  ng-click="AgregarUnidad(unidad)">
+                                                        <span class="fa fa-plus fa-2x"></span>
+                                                    </a>
+                                                  </span>
+                                               </td>
+                                            </tr>
+                                          </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                   
+                    <div class="row" ng-if="nuevaPromocion.UnidadNegocio.length > 0">
+                        <div class="col-xs-12 subtituloModal">
+                            <b>Unidades de Negocio</b>
+                        </div>
+                        <br> <br>
+                        <div class="col-xs-12">
+                            <div class="piezaPorComponenteTabla">
+                                <table class="table table-hover">
+                                    <thead class="TituloTabla">
+                                      <tr>
+                                        <th><button class="btn botonOrdenar"><b>Tipo Unidad Negocio</b></button></th>
+                                        <th><button class="btn botonOrdenar"><b>Nombre</b></button></th>
+                                        <th><button class="btn botonFalso"><b>Quitar</b></button></th>
+                                      </tr>
+                                    </thead>
+                                    <tbody ng-repeat="unidad in nuevaPromocion.UnidadNegocio | orderBy:'NombreTipoUnidadNegocio'">
+                                      <tr>
+                                        
+                                        <td>{{unidad.NombreTipoUnidadNegocio}}</td>
+                                        <td>{{unidad.Nombre}}</td>
+                                        
+                                        <td class="text-center">
+                                            <a class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="QuitarUnidad(unidad)">
+                                                <span class="fa fa-times fa-2x"></span>
+                                            </a>
+                                          </td>
+                                         
+
+                                      </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                  
+                    <br>
+                    <!-------- mensaje de error ---->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div ng-repeat="error in mensajeError">
+                                <span class="textoError">{{error}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!---- botones de operacion --->
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <button class="btn botonCancelar btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarPromocion()">CANCELAR</button>
+                        </div>
+                        
+                        <div class="col-xs-6">
+                            <button focus class="btn botonAvanzar btn-block" ng-click="TerminarPromocion(promocionForma.descripcion.$invalid)">TERMINAR</button>
+                        </div>
+                    </div>
+                    <br>
+                </form>
+            </div>
+            <br><br><br>
+        </div>
+    </div>
+    
+    <!-- Desactivar Modal -->
+    <div class="modal fade" id="modalActivoPromocion" data-keyboard="false" data-backdrop="static">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                
+                <div class="modal-body">
+                    <br>
+                    <div class="panel panel-default modalMensaje">
+                        <br>
+                        <b>{{mensajeAdvertencia}}</b>
+                        <br><br>
+
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <button class="btn botonCancelar" data-dismiss="modal" aria-label="Close" ng-click="CancelarCambioActivo()">No</button>
+                            </div>
+                            <div class="col-xs-6">
+                                <button class="btn botonAvanzar" data-dismiss="modal" aria-label="Close" ng-click="ConfirmarActualizarPromocion()">Si</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div> 
+    
+    
+    <!-- Modal para mensajes -->
+    <div class="modal fade" id="mensajePromocion">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                
+                <div class="modal-body">
+                    <div class="panel panel-default modalMensaje">
+                        <br>
+                        <b>{{mensaje}}</b>
+
+                        <br><br>
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <button class="btn  botonAvanzar" data-dismiss="modal" aria-label="Close">Aceptar</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div> 
+</div>
+
+     

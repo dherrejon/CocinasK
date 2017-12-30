@@ -1,5 +1,49 @@
-app.controller("ConfiguaracionMaterial", function($scope, $http, $q, CONFIG, $rootScope, datosUsuario, $window, $filter)
-{   
+app.controller("ConfiguaracionMaterial", function($scope, $http, $q, CONFIG, $rootScope, datosUsuario, $window, $filter, $location)
+{
+    $rootScope.clasePrincipal = "";
+    $scope.permisoUsuario = {
+                            material:{consultar:false, agregar:false, editar:false, activar:false}, 
+                            tipoMaterial:{consultar:false, agregar:false, editar:false, activar:false}
+                            };
+    $scope.IdentificarPermisos = function()
+    {
+        for(var k=0; k < $scope.usuarioLogeado.Permiso.length; k++)
+        {
+            if($scope.usuarioLogeado.Permiso[k] == "AdmMatConsultar")
+            {
+                $scope.permisoUsuario.material.consultar = true;
+            }
+            else if($scope.usuarioLogeado.Permiso[k] == "AdmMatAgregar")
+            {
+                $scope.permisoUsuario.material.agregar= true;
+            }
+            else if($scope.usuarioLogeado.Permiso[k] == "AdmMatEditar")
+            {
+                $scope.permisoUsuario.material.editar = true;
+            }
+            else if($scope.usuarioLogeado.Permiso[k] == "AdmMatActivar")
+            {
+                $scope.permisoUsuario.material.activar= true;
+            }
+            else if($scope.usuarioLogeado.Permiso[k] == "AdmTMaConsultar")
+            {
+                $scope.permisoUsuario.tipoMaterial.consultar= true;
+            }
+            else if($scope.usuarioLogeado.Permiso[k] == "AdmTMaAgregar")
+            {
+                $scope.permisoUsuario.tipoMaterial.agregar= true;
+            }
+            else if($scope.usuarioLogeado.Permiso[k] == "AdmTMaEditar")
+            {
+                $scope.permisoUsuario.tipoMaterial.editar = true;
+            }
+            else if($scope.usuarioLogeado.Permiso[k] == "AdmTMaActivar")
+            {
+                $scope.permisoUsuario.tipoMaterial.activar = true;
+            }
+        }
+    };
+    
     $scope.titulo = "Tipo Material";
     $scope.tabs = tabMaterial;
     $scope.tipoMaterial = null;
@@ -12,11 +56,19 @@ app.controller("ConfiguaracionMaterial", function($scope, $http, $q, CONFIG, $ro
     $scope.filtro = [];
     $scope.filtroCheckbox = [];
     
-    $scope.claseTipoModulo = {nombre:"entrada", material:"dropdownListModal"};
+    $scope.filtroCubierta = [];
+    $scope.filtroCheckboxCubierta = [];
+    
+    $scope.claseTipoModulo = {nombre:"entrada", material:"dropdownListModal", tipoCubierta:"dropdownListModal"};
     $scope.claseMaterial= {tipoMaterial:"dropdownListModal", nombre:"entrada", costo:"entrada"};
     
     $scope.ordenarPorTipo = "Nombre";
     $scope.ordenarPorMaterial = "Nombre";
+    $scope.ordenarPorMaterialCubierta = "Nombre";
+    
+    $scope.tipoCubierta= [];
+    
+    $scope.materialDeSeleccionado = "";  //identifica que material que va agregar o editar (cubierta o módulo)
     
     
     //Cambia el contenido de la pestaña
@@ -29,10 +81,17 @@ app.controller("ConfiguaracionMaterial", function($scope, $http, $q, CONFIG, $ro
             case 0:  
                 $('#TipoMaterial').show();
                 $('#Material').hide();
+                $('#MaterialCubierta').hide();
                 break;
             case 1:
                 $('#Material').show();
                 $('#TipoMaterial').hide();
+                $('#MaterialCubierta').hide();
+                break;
+            case 2:
+                $('#MaterialCubierta').show();
+                $('#TipoMaterial').hide();
+                $('#Material').hide();
                 break;
             default:
                 break;
@@ -63,6 +122,18 @@ app.controller("ConfiguaracionMaterial", function($scope, $http, $q, CONFIG, $ro
         else
         {
             $scope.ordenarPorMaterial = campoOrdenar;
+        }
+    };
+    
+    $scope.CambiarOrdenarMaterialCubierta = function(campoOrdenar)
+    {
+        if($scope.ordenarPorMaterialCubierta == campoOrdenar)
+        {
+            $scope.ordenarPorMaterialCubierta = "-" + campoOrdenar;
+        }
+        else
+        {
+            $scope.ordenarPorMaterialCubierta = campoOrdenar;
         }
     };
     
@@ -119,6 +190,59 @@ app.controller("ConfiguaracionMaterial", function($scope, $http, $q, CONFIG, $ro
         }
     };
     
+    
+    $scope.setFiltroCubierta = function(campo)
+    {
+        for(var k=0; k<$scope.filtroCubierta.length; k++)
+        {
+            if($scope.filtroCubierta[k] == campo)
+            {
+                $scope.filtroCubierta.splice(k,1);
+                return;
+            }
+        }
+        $scope.filtroCubierta.push(campo);
+        return;
+    };
+    
+    $scope.LimpiarFiltroCubierta = function()
+    {
+        $scope.filtroCubierta = [];
+        
+        for(var k=0; k<$scope.filtroCheckboxCubierta.length; k++)
+        {
+            $scope.filtroCheckboxCubierta[k] = false;
+        }
+        
+    };
+    
+    $scope.FiltrarMaterialCubierta = function(material)
+    {
+        if($scope.filtroCubierta.length === 0)
+        {
+            return true;
+        }
+        else
+        {
+            var cumpleFiltro = false;
+            
+            
+            for(var k=0; k<$scope.filtroCubierta.length; k++)
+            {
+                if(material.TipoMaterial.Nombre == $scope.filtroCubierta[k])
+                {
+                    cumpleFiltro = true;
+                    break;
+                }
+            }
+        
+            if(cumpleFiltro)
+                return true;
+            else
+                return false;
+        }
+    };
+    
     /*-----------------------------------Tipo Material----------------------------------------------------------*/
     
     $scope.GetTipoMaterial = function()      
@@ -132,17 +256,6 @@ app.controller("ConfiguaracionMaterial", function($scope, $http, $q, CONFIG, $ro
         });
     };
     
-    $scope.GetMaterialPara = function()      
-    {
-        GetMaterialPara($http, $q, CONFIG).then(function(data)
-        {
-            $scope.materialPara = data;
-        }).catch(function(error)
-        {
-            alert(error);
-        });
-    };
-    
     $scope.AbrirTipoMaterialForma = function(operacion, tipoMaterial)
     {
         $scope.operacion = operacion;
@@ -150,21 +263,19 @@ app.controller("ConfiguaracionMaterial", function($scope, $http, $q, CONFIG, $ro
         if(operacion == "Agregar")
         {
             $scope.nuevoTipoMaterial = new TipoMaterial();
-            $scope.nuevoTipoMaterial.MaterialParaId = $scope.materialPara[0].MaterialParaId;
-            $scope.nuevoTipoMaterial.NombreMaterialPara = $scope.materialPara[0].Nombre;
         }
         else if(operacion == "Editar")
         {
             $scope.nuevoTipoMaterial = SetTipoMaterial(tipoMaterial);
+            $scope.nuevoTipoMaterial.TipoCubierta = SetTipoCubierta(tipoMaterial.TipoCubierta);
         }
         
         $('#tipoMaterialForma').modal('toggle');
     };
     
-    $scope.CambiarMaterialPara = function(materialPara)
+    $scope.CambiarTipoCubierta = function(tipo)
     {  
-        $scope.nuevoTipoMaterial.MaterialParaId = materialPara.MaterialParaId;
-        $scope.nuevoTipoMaterial.NombreMaterialPara = materialPara.Nombre; 
+        $scope.nuevoTipoMaterial.TipoCubierta = SetTipoCubierta(tipo); 
     };
     
     $scope.TerminarTipoMaterial = function(nombreInvalido)
@@ -181,6 +292,21 @@ app.controller("ConfiguaracionMaterial", function($scope, $http, $q, CONFIG, $ro
             $scope.claseTipoModulo.nombre = "entrada";
         }
         
+        if(!$scope.nuevoTipoMaterial.DisponibleCubierta && !$scope.nuevoTipoMaterial.DisponibleModulo)
+        {
+            $scope.mensajeError[$scope.mensajeError.length] = "*Selecciona al menos una opción de donde se usará este tipo de material.";
+        }
+        
+        if(($scope.nuevoTipoMaterial.TipoCubierta.TipoCubiertaId != "1" && $scope.nuevoTipoMaterial.TipoCubierta.TipoCubiertaId != "2") && $scope.nuevoTipoMaterial.DisponibleCubierta)
+        {
+            $scope.mensajeError[$scope.mensajeError.length] = "*Selecciona un tipo de cubierta.";
+            $scope.claseTipoModulo.tipoCubierta = "dropdownListModalError";
+        }
+        else
+        {
+            $scope.claseTipoModulo.tipoCubierta = "dropdownListModal";
+        }
+        
         if($scope.mensajeError.length > 0)
         {
             return; 
@@ -188,7 +314,7 @@ app.controller("ConfiguaracionMaterial", function($scope, $http, $q, CONFIG, $ro
         
         for(var k=0; k<$scope.tipoMaterial.length; k++)
         {
-            if($scope.tipoMaterial[k].Nombre == $scope.nuevoTipoMaterial.Nombre && $scope.tipoMaterial[k].TipoMaterialId != $scope.nuevoTipoMaterial.TipoMaterialId && $scope.tipoMaterial[k].MaterialParaId == $scope.nuevoTipoMaterial.MaterialParaId)
+            if($scope.tipoMaterial[k].Nombre.toLowerCase() == $scope.nuevoTipoMaterial.Nombre.toLowerCase() && $scope.tipoMaterial[k].TipoMaterialId != $scope.nuevoTipoMaterial.TipoMaterialId)
             {
                 $scope.mensajeError[$scope.mensajeError.length] = "El tipo de material " + $scope.nuevoTipoMaterial.Nombre + " ya existe.";
                 return;
@@ -254,7 +380,7 @@ app.controller("ConfiguaracionMaterial", function($scope, $http, $q, CONFIG, $ro
     $scope.CerrarTipoMaterialForma = function()
     {
         $scope.mensajeError = [];
-        $scope.claseTipoModulo = {nombre:"entrada", material:"dropdownListModal"};
+        $scope.claseTipoModulo = {nombre:"entrada", material:"dropdownListModal", tipoCubierta:"dropdownListModal"};
     };
     
     /*----------------------------------- Material----------------------------------------------------------*/    
@@ -310,6 +436,11 @@ app.controller("ConfiguaracionMaterial", function($scope, $http, $q, CONFIG, $ro
         }
     };
     
+    $scope.GetTipoCubierta = function()
+    {
+        $scope.tipoCubierta = GetTipoCubierta();
+    };
+    
     $scope.AbrirGruesoForma = function(material)
     {
         $scope.costoPorGrueso = material;
@@ -318,21 +449,35 @@ app.controller("ConfiguaracionMaterial", function($scope, $http, $q, CONFIG, $ro
     };
     
     /*Agregar-Editar material*/
-    $scope.AbrirMaterialForma = function(operacion, material)
+    $scope.AbrirMaterialForma = function(operacion, material, materialDe)
     {
         $scope.operacion = operacion;
+        $scope.materialDeSeleccionado = materialDe;
         
         if(operacion == "Agregar")
         {
             $scope.nuevoMaterial = new Material();
             $scope.nuevoMaterial.grueso = [];
             
+            $scope.nuevoMaterial.MaterialDe = materialDe;
+            
             for(var k=0; k<$scope.tipoMaterial.length; k++)
             {
-                if($scope.tipoMaterial[k].Activo)
+                if(materialDe == "Módulo")
                 {
-                    $scope.CambiarTipoMaterial($scope.tipoMaterial[k]);
-                    break;
+                    if($scope.tipoMaterial[k].Activo && $scope.tipoMaterial[k].DisponibleModulo)
+                    {
+                        $scope.CambiarTipoMaterial($scope.tipoMaterial[k]);
+                        break;
+                    }
+                }
+                else if(materialDe == "Cubierta")
+                {
+                   if($scope.tipoMaterial[k].Activo && $scope.tipoMaterial[k].DisponibleCubierta)
+                    {
+                        $scope.CambiarTipoMaterial($scope.tipoMaterial[k]);
+                        break;
+                    } 
                 }
             }
         }
@@ -450,7 +595,7 @@ app.controller("ConfiguaracionMaterial", function($scope, $http, $q, CONFIG, $ro
         
         for(var k=0; k<$scope.material.length; k++)
         {
-            if($scope.material[k].Nombre == $scope.nuevoMaterial.Nombre && $scope.material[k].MaterialId != $scope.nuevoMaterial.MaterialId && $scope.material[k].TipoMaterial.TipoMaterialId == $scope.nuevoMaterial.TipoMaterial.TipoMaterialId)
+            if($scope.material[k].Nombre.toLowerCase() == $scope.nuevoMaterial.Nombre.toLowerCase() && $scope.material[k].MaterialId != $scope.nuevoMaterial.MaterialId && $scope.material[k].TipoMaterial.TipoMaterialId == $scope.nuevoMaterial.TipoMaterial.TipoMaterialId)
             {
                 $scope.claseMaterial.nombre = "entradaError";
                 $scope.mensajeError[$scope.mensajeError.length] = "*El material " + $scope.nuevoMaterial.TipoMaterial.Nombre + " - " + $scope.nuevoMaterial.Nombre + " ya existe.";
@@ -458,7 +603,7 @@ app.controller("ConfiguaracionMaterial", function($scope, $http, $q, CONFIG, $ro
             }
         }
         
-        if($scope.nuevoMaterial.grueso.length > 0)
+        if($scope.nuevoMaterial.grueso.length > 0 || $scope.materialDeSeleccionado == "Cubierta")
         {
             $scope.nuevoMaterial.CostoUnidad = 0;
         }
@@ -501,22 +646,23 @@ app.controller("ConfiguaracionMaterial", function($scope, $http, $q, CONFIG, $ro
         {
             if(data == "Exitoso")
             {
+                $('#MaterialForma').modal('toggle');
                 $scope.GetMaterial();
                 $scope.GetGruesoMaterial();
                 $scope.cerrarMaterialForma();
-                $('#MaterialForma').modal('toggle');
                 $scope.mensaje = "El material se ha agregado.";
             }
             else
             {
                 $scope.mensaje = "Ha ocurrido un error. Intente más tarde";
             }
+            $('#mensajeConfigurarMaterial').modal('toggle');
         }).catch(function(error)
         {
             $scope.mensaje = "Ha ocurrido un error. Intente más tarde. Error: " +error;
+            $('#mensajeConfigurarMaterial').modal('toggle');
         });
         
-        $('#mensajeConfigurarMaterial').modal('toggle');
     };
     
     $scope.EditarMaterial = function()
@@ -525,22 +671,24 @@ app.controller("ConfiguaracionMaterial", function($scope, $http, $q, CONFIG, $ro
         {
             if(data == "Exitoso")
             {
+                $('#MaterialForma').modal('toggle');
                 $scope.GetMaterial();
                 $scope.GetGruesoMaterial();
                 $scope.cerrarMaterialForma();
-                $('#MaterialForma').modal('toggle');
                 $scope.mensaje = "El material se ha editado.";
             }
             else
             {
                 $scope.mensaje = "Ha ocurrido un error. Intente más tarde";
             }
+            $('#mensajeConfigurarMaterial').modal('toggle');
         }).catch(function(error)
         {
             $scope.mensaje = "Ha ocurrido un error. Intente más tarde. Error: " +error;
+            $('#mensajeConfigurarMaterial').modal('toggle');
         });
         
-        $('#mensajeConfigurarMaterial').modal('toggle');
+        
     };
     
     $scope.cerrarMaterialForma = function()
@@ -588,30 +736,6 @@ app.controller("ConfiguaracionMaterial", function($scope, $http, $q, CONFIG, $ro
         else
         {
             datos[0] = 0;  
-        }
-        
-        if($scope.seccionCambiarActivo == "tipoMaterial")
-        {
-            datos[1] = $scope.objetoActivo.TipoMaterialId;
-            
-            ActivarDesactivarTipoMaterial($http, $q, CONFIG, datos).then(function(data)
-            {
-                if(data[0].Estatus == "Exito")
-                {
-                    $scope.mensaje = "El tipo de material se ha actualizado correctamente.";
-                }
-                else
-                {
-                    $scope.objetoActivo.Activo = !$scope.objetoActivo.Activo;
-                    $scope.mensaje = "Ha ocurrido un error. Intente más tarde.";
-                } 
-                $('#mensajeConfigurarMaterial').modal('toggle');
-            }).catch(function(error)
-            {
-                $scope.objetoActivo.Activo = !$scope.objetoActivo.Activo;
-                $scope.mensaje = "Ha ocurrido un error. Intente más tarde. Error: " + error;
-                $('#mensajeConfigurarMaterial').modal('toggle');
-            });
         }
         
         if($scope.seccionCambiarActivo == "tipoMaterial")
@@ -687,11 +811,89 @@ app.controller("ConfiguaracionMaterial", function($scope, $http, $q, CONFIG, $ro
         }
     };
     
-    /*--------- Inicializar -------------*/
-    $scope.GetTipoMaterial();
-    $scope.GetMaterialPara (); 
-    $scope.GetMaterial();
-    $scope.GetGruesoMaterial();
+    /*------------------Indentifica cuando los datos del usuario han cambiado-------------------*/
+    $scope.usuarioLogeado =  datosUsuario.getUsuario(); 
+    
+    if($scope.usuarioLogeado !== null)
+    {
+        if($scope.usuarioLogeado.SesionIniciada)
+        {
+            if($scope.usuarioLogeado.PerfilSeleccionado == "Administrador")
+            {
+                $scope.IdentificarPermisos();
+                if(!$scope.permisoUsuario.material.consultar && !$scope.permisoUsuario.tipoMaterial.consultar)
+                {
+                   $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
+                }
+                else
+                {
+                    $scope.GetTipoMaterial();
+                    if($scope.permisoUsuario.material.consultar)
+                    {   
+
+                        $scope.GetMaterial();
+                        $scope.GetGruesoMaterial();
+                        $scope.GetTipoCubierta ();
+                    }
+                }
+            }
+            else if($scope.usuarioLogeado.PerfilSeleccionado === "")
+            {
+                $window.location = "#Perfil";
+            }
+            else
+            {
+                $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
+            }
+        }
+        else
+        {
+            $location.path('/Login');
+        }
+    }
+    
+    //Se manda a llamar cada ves que los datos del usuario cambian
+    //verifica que el usuario este logeado y que tenga los permisos correspondientes
+    $scope.$on('cambioUsuario',function()
+    {
+        $scope.usuarioLogeado =  datosUsuario.getUsuario();
+    
+        if(!$scope.usuarioLogeado.SesionIniciada)
+        {
+            $location.path('/Login');
+            return;
+        }
+        else
+        {
+            if($scope.usuarioLogeado.PerfilSeleccionado == "Administrador")
+            {
+                $scope.IdentificarPermisos();
+                if(!$scope.permisoUsuario.material.consultar && !$scope.permisoUsuario.tipoMaterial.consultar)
+                {
+                   $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
+                }
+                else
+                {
+                    $scope.GetTipoMaterial();
+                    if($scope.permisoUsuario.material.consultar)
+                    {   
+
+                        $scope.GetMaterial();
+                        $scope.GetGruesoMaterial();
+                        $scope.GetTipoCubierta();
+                    }
+                }
+            }
+            else if($scope.usuarioLogeado.PerfilSeleccionado === "")
+            {
+                $window.location = "#Perfil";
+            }
+            else
+            {
+                $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
+            }
+        }
+    });
     
 });
 
@@ -699,7 +901,8 @@ app.controller("ConfiguaracionMaterial", function($scope, $http, $q, CONFIG, $ro
 var tabMaterial = 
     [
         {titulo:"Tipo Material", referencia: "#TipoMaterial", clase:"active", area:"tipoMaterial"},
-        {titulo:"Material", referencia: "#Material", clase:"", area:"material"}
+        {titulo:"Material Módulos", referencia: "#Material", clase:"", area:"material"},
+        {titulo:"Material Cubiertas", referencia: "#MaterialCubierta", clase:"", area:"materialCubierta"}
     ];
 
 function SetMaterialCompleto(material)
@@ -709,15 +912,21 @@ function SetMaterialCompleto(material)
     
     var tipoMaterial = new TipoMaterial();
     
-    nuevoMaterial.MaterialId = material.MaterialId;
+    nuevoMaterial.DisponibleCubierta = material.DisponibleCubierta;
+    nuevoMaterial.DisponibleModulo = material.DisponibleModulo;
     nuevoMaterial.Nombre = material.Nombre;
+    nuevoMaterial.MaterialId = material.MaterialId;
     nuevoMaterial.CostoUnidad = material.CostoUnidad;
     nuevoMaterial.TipoMaterial = SetTipoMaterial(material.TipoMaterial);
     nuevoMaterial.Activo = material.Activo;
+    nuevoMaterial.MaterialDe = material.MaterialDe;
     
-    for(var k=0; k<material.grueso.length; k++)
+    if(material.grueso != null)
     {
-        nuevoMaterial.grueso[k] = material.grueso[k];
+        for(var k=0; k<material.grueso.length; k++)
+        {
+            nuevoMaterial.grueso[k] = material.grueso[k];
+        }
     }
     
     return nuevoMaterial;

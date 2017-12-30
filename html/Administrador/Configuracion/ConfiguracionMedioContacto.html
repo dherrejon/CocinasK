@@ -1,0 +1,242 @@
+<div ng-controller="ConfiguaracionMedioContactoControlador as ConfigurarMedioContacto" class="container-fluid">
+    
+    <br><br>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="tituloModulo">
+                <span>Configurar General - {{titulo}}</span>
+            </div>
+        </div>
+    </div>
+    <br>
+    
+    <div class="row">
+        <div class="col-md-12">
+            <div class="tab" role="tabpanel">
+                <!-- Pestañas -->
+                
+                <ul ng-if="anchoPantalla > 420" class="nav nav-tabs" role="tablist">
+                    <li   ng-repeat="tab in tabs" class="{{tab.clase}}"><a  href="" aria-controls="{{tab.area}}" role="tab" data-toggle="tab" ng-click="SeleccionarTab(tab, $index)">{{tab.titulo}}</a></li>
+                </ul>
+                
+                <ul ng-if="anchoPantalla <= 420" class="nav nav">
+                    <li  class="tabSm dropdown">
+
+                        <button  class="dropdown-toggle  btn bt-block dropDownTab" data-toggle="dropdown" >
+                            <span>{{titulo}}</span>
+                            <span class="caret"></span>
+                        </button>
+                        
+                        <ul class="dropdown-menu elemetosDropdownListModal">
+                            <li ng-repeat="tab in tabs"  class="dropdownOpcionModal">
+                                <a  href="" class="dropdownOpcionModal" aria-controls="{{tab.area}}" ng-click="SeleccionarTab(tab, $index)">
+                                    <span>{{tab.titulo}}</span>
+                                </a>
+                            </li>
+                        </ul>
+                        
+                    </li>
+                </ul>
+                
+                <!-- Contenido -->
+                <div class="tab-content">
+                    <!-- Tipo Medio Contacto -->
+                    <div role="tabpanel" class="tab-pane in active" id="TipoMedioContacto" ng-if="permisoUsuario.tipoMedioContacto.consultar">
+                      <br>  
+                        <div class="row">
+                            <div class="col-md-11 col-xs-10">
+                                <div class="table-responsive TablaUnidadNegocio">
+                                    <table class="table table-hover table-striped table-condensed">
+                                        <thead class="TituloTabla">
+                                          <tr>
+                                            <th><button class="btn botonOrdenar" ng-click="CambiarOrdenarTipoMedioContacto('NombreMedioContacto')"><b>Medio Contacto </b><b ng-if="ordenarPorTipo === 'NombreMedioContacto'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPorTipo === '-NombreMedioContacto'" class="fa fa-arrow-down"></b></button></th>
+                                            <th><button class="btn botonOrdenar" ng-click="CambiarOrdenarTipoMedioContacto('Nombre')"><b>Tipo Medio Contacto</b><b ng-if="ordenarPorTipo === 'Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPorTipo === '-Nombre'" class="fa fa-arrow-down"></b></button></th>
+                                            <th><button class="btn botonFalso"><b>Editar</b></button></th>
+                                            <th><button class="btn botonFalso"><b>Activo</b></button></th>
+                                          </tr>
+                                        </thead>
+                                        <tbody >
+                                          <tr ng-repeat="tipo in tipoMedioContacto | orderBy:[ordenarPorTipo, 'Nombre']" ng-if="TipoMedioContactoValido(tipo)">
+                                            <td>{{tipo.NombreMedioContacto}}</td>
+                                            <td>{{tipo.Nombre}}</td>
+
+                                            <td class="text-center">
+                                                <a ng-if="permisoUsuario.tipoMedioContacto.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirTipoMedioContacto('Editar', tipo)">
+                                                    <span class="fa fa-pencil fa-2x"></span>
+                                                </a>
+                                                
+                                                <span ng-if="!permisoUsuario.tipoMedioContacto.editar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
+                                            </td>
+                                              
+                                            <td class="text-center">
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input ng-disabled="!permisoUsuario.tipoMedioContacto.activar" ng-model="tipo.Activo" type="checkbox" value="" ng-click="ActivarDesactivar('tipoMedioContacto', tipo)">
+                                                        <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+                                                    </label>
+                                                </div>
+                                            </td>
+                                              
+                                          </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-2 col-md-1">
+                                 <button ng-disabled="!permisoUsuario.tipoMedioContacto.agregar"  class="btn btn-block botonOperacion fa fa-plus text-center" data-toggle="tooltip" data-placement="bottom" title="Agregar Tipo Módulo" ng-click="AbrirTipoMedioContacto('Agregar', null)"></button>
+                            </div>
+                        </div>
+                    </div>
+                
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    
+    
+    <!----------------------------------------------------- Modales ------------------------------------------------>
+    
+    <!---- Agregar y editar tipo de contacto -->
+    <div class="modal fade" id="tipoMedioContactoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static" >
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <!-- encabezado del modal -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                           
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarTipoMedioContactoModal()"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center" ng-if="operacion === 'Agregar'">Agregar Tipo Medio Contacto</h3>
+                            <h3 class="text-center" ng-if="operacion === 'Editar'">Editar Tipo Medio Contacto</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+                <br>
+
+                <form class="modal-body" name="tipoMedioContactoModalForma">
+                <br>
+                <!-- Datos -->                    
+                    <div class="row">
+                        <!-- Medio Contacto -->
+                       <div class="col-sm-6 etiquetaDropdownList">
+                             <label>Medio de Contacto</label>
+                             <div class="dropdown">
+                                <button class="dropdown-toggle  {{clase.tipoMedioContacto.medioContacto}}" data-toggle="dropdown">
+                                    <span>{{nuevoTipoMedioContacto.NombreMedioContacto}}</span>
+                                    <span class="caret"></span>
+                                </button>
+
+                                <ul class="dropdown-menu elemetosDropdownListModal">
+                                     <li ng-repeat="medio in medioContacto | orderBy:'Nombre'">
+                                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarMedioContacto(medio)">
+                                            <span>{{medio.Nombre}}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <br class="hidden-sm hidden-md hidden-lg">
+                        <!-- Nombre -->
+                        <div class="col-sm-6">
+                             <div class="entrada2">
+                                <input ng-pattern="erNombreGeneral" type="text" required class="{{clase.tipoMedioContacto.nombre}} form-control" name="nombre" ng-model="nuevoTipoMedioContacto.Nombre"/>
+                                <label>Nombre</label>
+                            </div>
+                        </div>
+                    </div> 
+                    <br>
+                    <!-- Activo-->
+                    <div class="row">
+                        <div class="col-sm-6">
+                             <label class="btn checkBoxActivo">Activo <input type="checkbox" class="badgebox" ng-model="nuevoTipoMedioContacto.Activo"><span class="badge">&check;</span></label>
+                         </div>
+                    </div>
+                    <br>
+                    <!-------- mensaje de error ---->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div ng-repeat="error in mensajeError">
+                                <span class="textoError">{{error}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!---- botones de operacion --->
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <button class="btn botonCancelar btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarTipoMedioContactoModal()">CANCELAR</button>
+                        </div>
+                        
+                        <div class="col-xs-6">
+                            <button focus class="btn botonAvanzar btn-block" ng-click="TerminarTipoMedioContacto(tipoMedioContactoModalForma.nombre.$invalid)">TERMINAR</button>
+                        </div>
+                    </div>
+                    <br> 
+                </form>
+            </div>
+            <br><br><br>
+        </div>
+    </div>
+    
+    <!-- Desactivar Modal -->
+    <div class="modal fade" id="modalActivarDesactivarConfigurarGeneral" data-keyboard="false" data-backdrop="static">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                
+                <div class="modal-body">
+                    <br>
+                    <div class="panel panel-default modalMensaje">
+                        <br>
+                        <b>{{mensajeAdvertencia}}</b>
+                        <br><br>
+
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <button class="btn botonCancelar" data-dismiss="modal" aria-label="Close" ng-click="CancelarEstatusActivo()">No</button>
+                            </div>
+                            <div class="col-xs-6">
+                                <button class="btn botonAvanzar" data-dismiss="modal" aria-label="Close" ng-click="ConfirmarActualizarModulo()">Si</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div> 
+    
+    <!-- Modal para mensajes -->
+    <div class="modal fade" id="mensajeConfigurarGeneral">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                
+                <div class="modal-body">
+                    <div class="panel panel-default modalMensaje">
+                        <br>
+                        <b>{{mensaje}}</b>
+
+                        <br><br>
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <button class="btn  botonAvanzar" data-dismiss="modal" aria-label="Close">Aceptar</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>  
+</div>
+
+     

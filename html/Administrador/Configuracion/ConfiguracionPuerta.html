@@ -1,0 +1,862 @@
+<div ng-controller="ConfiguracionPuertaControlador as Material" class="container-fluid">
+    
+    <br><br>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="tituloModulo">
+                <span>Configurar Puerta - {{titulo}}</span>
+            </div>
+        </div>
+    </div>
+    <br>
+    
+    <div class="row">
+        <div class="col-md-12">
+            <div class="tab" role="tabpanel">
+                <!-- Pestañas -->
+                
+                <ul ng-if="anchoPantalla > 370" class="nav nav-tabs" role="tablist">
+                    <li ng-repeat="tab in tabs" class="{{tab.clase}}"><a  href="" aria-controls="{{tab.area}}" role="tab" data-toggle="tab" ng-click="SeleccionarTab(tab, $index)">{{tab.titulo}}</a></li>
+                </ul>
+                
+                <ul ng-if="anchoPantalla < 371" class="nav nav">
+                    <li  class="tabSm dropdown">
+
+                        <button  class="dropdown-toggle  btn bt-block dropDownTab" data-toggle="dropdown" >
+                            <span>{{titulo}}</span>
+                            <span class="caret"></span>
+                        </button>
+                        
+                        <ul class="dropdown-menu elemetosDropdownListModal">
+                            <li ng-repeat="tab in tabs"  class="dropdownOpcionModal">
+                                <a  href="" class="dropdownOpcionModal" aria-controls="{{tab.area}}" ng-click="SeleccionarTab(tab, $index)">
+                                    <span>{{tab.titulo}}</span>
+                                </a>
+                            </li>
+                        </ul>
+                        
+                    </li>
+                </ul>
+                
+                <!-- Contenido -->
+                <div class="tab-content">
+                    <!-- Puerta -->
+                    <div role="tabpanel" class="tab-pane in active" id="Puerta" ng-if="permisoUsuario.puerta.consultar">
+                      <br>  
+                        <div class="row">
+                            <div class="col-md-11 col-xs-10">
+                                <div class="table-responsive TablaUnidadNegocio">
+                                    <table class="table table-hover table-striped table-condensed">
+                                        <thead class="TituloTabla">
+                                          <tr>
+                                            <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('Nombre')"><b>Nombre </b><b ng-if="ordenar === 'Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenar === '-Nombre'" class="fa fa-arrow-down"></b></button></th>
+                                            <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('Muestrario.Nombre')"><b>Muestrario </b><b ng-if="ordenar === 'Muestrario.Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenar === '-Muestrario.Nombre'" class="fa fa-arrow-down"></b></button></th>
+                                            <th><button class="btn botonFalso"><b>Detalles</b></button></th>
+                                            <th><button class="btn botonFalso"><b>Editar</b></button></th>
+                                            <th><button class="btn botonFalso " ng-click="CambiarOrdenar('ActivoN')"><b>Activo </b><b ng-if="ordenar === 'ActivoN'" class="fa fa-arrow-up"></b>  <b ng-if="ordenar === '-ActivoN'" class="fa fa-arrow-down"></b></button></th>
+                                          </tr>
+                                        </thead>
+                                        <tbody >
+                                          <tr ng-repeat="puerta in puerta | orderBy: [ordenar, 'Nombre'] | filter:buscarPuerta | filter:FiltroPuerta">
+                                            <td>{{puerta.Nombre}}</td>
+                                            <td>{{puerta.Muestrario.Nombre}}</td>
+                                            
+                                            <td class="text-center">
+                                                <a class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirDetallesPuerta(puerta)">
+                                                    <span class="fa fa-eye fa-2x"></span>
+                                                </a>
+                                            </td>
+                                            
+                                            <td class="text-center"> 
+                                                <a ng-if="permisoUsuario.puerta.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirPuertaForma('Editar', puerta)">
+                                                    <span class="fa fa-pencil fa-2x"></span>
+                                                </a>
+                                                
+                                                <span ng-if="!permisoUsuario.puerta.editar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
+                                            </td>
+                                              
+                                            <td class="text-center">
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input ng-disabled="!permisoUsuario.puerta.activar" ng-model="puerta.Activo" type="checkbox" value="" ng-click="CambiarEstatusActivo('puerta', puerta)">
+                                                        <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+                                                    </label>
+                                                </div>
+                                            </td>
+                                              
+                                          </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-2 col-md-1">
+                                <button  ng-disabled="!permisoUsuario.puerta.agregar" class="btn btn-block botonOperacion fa fa-plus text-center" data-toggle="tooltip" data-placement="bottom" title="Agregar Puerta" ng-click="AbrirPuertaForma('Agregar', null)"></button>
+                                <br><br>
+                                 
+                                <!-- Boton filtrar -->
+                                <div class="dropdown">
+
+                                    <button class="btn btn btn-block botonOperacion fa fa-filter text-center" data-toggle="dropdown" ></button>
+
+                                    <ul class="dropdown-menu dropdown-menu-right operacionPanel">
+
+                                        <div  class="row ">
+                                            <div class="col-xs-9">
+                                                <li  class="dropdown-header tituloOpcionLateral">FILTRAR</li>
+                                            </div>
+                                            <div class="col-xs-3">
+                                                <li> <button class="btn botonOperacion fa fa-ban" data-toggle="tooltip" data-placement="bottom" title="Limpiar filtro" ng-click="LimpiarFiltro()"></button></li>
+                                            </div>
+                                        </div>
+                                        <li role="separator" class="divider"></li>
+
+                                        <li style="width: 275px;">
+
+                                            <form role="filtro">
+
+                                                <!------ Tipo de Material ------>
+                                                <button class="btn btn-block botonFiltro" ng-click="MostrarFiltros('muestrario')">Muestrario</button>
+
+                                                <div class="row" ng-show="mostrarFiltro.muestrario">
+                                                    <div class="col-xs-12" >
+                                                        <div class="opcionFiltro">
+                                                            <div  ng-repeat="muestrario in puerta | orderBy:'Muestrario.Nombre' | unique: 'Muestrario.Nombre'  track by $index">
+                                                                <label class="checkBoxActivoFiltro">
+                                                                    <input type="checkbox" class="badgebox" ng-model="filtroCheckbox[$index]"  ng-click="setFiltro( muestrario.Muestrario.Nombre )"><span class="badge">&check;</span>
+                                                                    {{muestrario.Muestrario.Nombre}}
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <br>
+                                                
+                                                <!------------- Activo ---------->
+                                                <button class="btn btn-block botonFiltro" ng-click="MostrarFiltros('activo')">Activo</button>
+
+                                                <div class="row" ng-show="mostrarFiltro.activo">
+                                                    <div class="col-xs-12" >
+                                                        <div class="opcionFiltro">
+                                                            <div>
+                                                                <label class="checkBoxActivoFiltro">
+                                                                    <input type="checkbox" class="badgebox" ng-model="filtro.activo.activo"><span class="badge">&check;</span>
+                                                                    Puertas Activas
+                                                                </label>
+
+                                                                <label class="checkBoxActivoFiltro">
+                                                                    <input type="checkbox" class="badgebox" ng-model="filtro.activo.inactivo"><span class="badge">&check;</span>
+                                                                    Puertas No Activas
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <br>
+                                                
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <br>
+                                 
+                                <!-- Boton buscar -->
+                                <div class="dropdown">
+
+                                    <button class="btn btn btn-block botonOperacion fa fa-search text-center" data-toggle="dropdown" ></button>
+
+                                    <ul class="dropdown-menu dropdown-menu-right operacionPanel">
+
+                                        <li style="width: 225px; height: 35px !important;">
+
+                                            <form role="buscar" style="max-width: 200px; height: 25px !important;">
+                                                <div class="input-group" >
+                                                  <input  type="text" class="form-control operacionPanelEntrada" placeholder="Buscar" style="margin-left: 5px; width: 175px;" ng-model="buscarPuerta">
+                                                  <span class="input-group-btn" style="width: 25px;">
+                                                    <button class="btn operacionPanelBoton" type="button">
+                                                        <i class="fa fa-search"></i>
+                                                    </button>
+                                                  </span>
+                                                </div>
+                                            </form>
+                                        </li>
+                                    </ul>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!--- Muestrario -->
+                    <div role="tabpanel" class="tab-pane" id="Muestrario" ng-if="permisoUsuario.muestrario.consultar">
+                        <br>
+                        <div class="row">
+                            <div class="col-md-11 col-xs-10">
+                                <div class="table-responsive TablaUnidadNegocio">
+                                    <table class="table table-hover table-striped table-condensed">
+                                        <thead class="TituloTabla">
+                                          <tr>
+                                            <th><button class="btn botonOrdenar"><b>Nombre</b></button></th>
+                                            <th><button class="btn botonFalso"><b>Detalles</b></button></th>
+                                            <th><button class="btn botonFalso"><b>Editar</b></button></th>
+                                            <th><button class="btn botonFalso"><b>Activo</b></button></th>
+                                          </tr>
+                                        </thead>
+                                        <tbody >
+                                          <tr ng-repeat="muestrario in muestrario | orderBy:'Nombre'">
+                                              <td>
+                                                  {{muestrario.Nombre}} 
+                                                  <span ng-if="muestrario.PorDefecto" class="fa fa-asterisk" data-toggle="tooltip" data-placement="bottom" title="Muestrario por defecto"></span>
+                                              </td>
+                                            
+                                            <td class="text-center">
+                                                <a class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirDetallesMuestrario(muestrario)">
+                                                    <span class="fa fa-eye fa-2x"></span>
+                                                </a>
+                                            </td>
+                                            
+                                            <td class="text-center">
+                                                <a ng-if="permisoUsuario.muestrario.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirMuestrarioModal('Editar', muestrario)">
+                                                    <span class="fa fa-pencil fa-2x" ></span>
+                                                </a>
+                                                
+                                                <span ng-if="!permisoUsuario.muestrario.editar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
+                                            </td>
+                                              
+                                            <td class="text-center">
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input  ng-disabled="muestrario.PorDefecto || !permisoUsuario.muestrario.activar" ng-model="muestrario.Activo" type="checkbox" value="" ng-click="CambiarEstatusActivo('muestrario', muestrario)">
+                                                        <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+                                                    </label>
+                                                </div>
+                                            </td>
+                                              
+                                          </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-2 col-md-1">
+                                
+                                <!-- Botón Agregar -->
+                                <button ng-disabled="!permisoUsuario.muestrario.agregar" class="btn btn-block botonOperacion fa fa-plus text-center" data-toggle="tooltip" data-placement="bottom" title="Agregar Muestrario" ng-click="AbrirMuestrarioModal('Agregar', null)"></button>
+                        
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    
+    
+    <!----------------------------------------------------- Modales ------------------------------------------------>
+    
+    <!--- Modal para Agregar-Editar puerta-->
+    <div class="modal fade" id="puertaModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static" >
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <!-- encabezado del modal -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarPuerta()"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center" ng-if="operacion === 'Agregar'">Agregar Puerta</h3>
+                            <h3 class="text-center" ng-if="operacion === 'Editar'">Editar Puerta</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+                <br>
+
+                <form class="modal-body" name="puertaForma">
+                    <!-- Datos -->
+                    <div ng-if="pasoPuerta == 1">
+                        <div class="row">
+
+                            <!-- Nombre -->
+                            <div class="col-sm-6">
+                                 <div class="entrada2">
+                                    <input ng-pattern="erNombreGeneral" type="text" required class="{{clasePuerta.nombre}} form-control" name="nombre" ng-model="nuevaPuerta.Nombre"/>
+                                    <label>Nombre</label>
+                                </div>
+                            </div>
+
+                            <span class="hidden-sm hidden-md hidden-lg">
+                            <br><br>
+                            </span>
+
+                            <!-- Muestrario -->
+                            <div class="col-sm-6 etiquetaDropdownList">
+                                 <label>Muestrario</label>
+                                 <div class="dropdown">
+
+                                    <button class="dropdown-toggle {{clasePuerta.muestrario}}" data-toggle="dropdown">
+                                        <span>{{nuevaPuerta.Muestrario.Nombre}}</span>
+                                        <span class="caret"></span>
+                                    </button>
+
+                                    <ul class="dropdown-menu elemetosDropdownListModal">
+                                        <li ng-repeat="muestrario in muestrario | orderBy:'Nombre'" ng-show="muestrario.Activo">
+                                            <a  href="" class="dropdownOpcionModal" ng-click="CambiarMuestrario(muestrario)">
+                                                <span>{{muestrario.Nombre}}</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                 <label class="btn checkBoxActivo">Puerta Activa<input type="checkbox" class="badgebox" ng-model="nuevaPuerta.Activo"><span class="badge">&check;</span></label>
+                             </div>
+                        </div> 
+
+                        <br><br>
+                        <div class="row">
+
+                           <div class="col-xs-12 subtituloModal">
+                               <b>Selecciona los componentes que tiene esta puerta.</b>
+                            </div>
+
+                            <div class="col-xs-12" style="margin-top:20px">
+                            </div>            
+                        </div>
+
+                        <div class="row">
+                            <div ng-repeat="(componenteIndex, componente) in componente">
+                                <div class="col-xs-12" >
+
+                                    <div class="input-group">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default" ng-class="GetClaseComponente(componente.seleccionado)" ng-click="CambiarComponenteSeleccionado(componente)">
+                                                <span ng-if="componente.seleccionado" class="fa fa-check animated  zoomIn "></span>
+                                                <span ng-if="!componente.seleccionado" class="fa fa-times animated zoomIn "></span>
+                                            </button>
+                                        </span>
+
+                                        <input ng-disabled="!componente.seleccionado" type="button" class="form-control btn {{componente.clase}}" ng-class="GetClaseComponenteSeleccionado(componente.ComponenteId)" value="{{componente.Nombre}}" ng-click="CambiarComponenteActual(componente.ComponenteId)">
+                                    </div>
+                                </div>
+
+                                <div ng-if="componenteActualId == componente.ComponenteId">
+                                    <div class="col-xs-12" style="margin-top:20px">
+                                    </div>
+
+                                    <div class="col-xs-12 subtituloModal2">
+                                        <b>¿Qué piezas conforman a este componente?</b>
+                                    </div>
+
+                                    <div class="col-xs-12" style="margin-top:20px">
+                                    </div>
+
+                                    <div class="col-xs-12">
+                                        <button class="btn btn-block botonOperacion" ng-click="CambiarMostrarPiezas()">Piezas {{mostrarPieza.texto}}</button>
+                                    </div>
+                                    <br><br><br>
+
+                                    <div ng-show="mostrarPieza.mostrar">
+                                        <div class="col-xs-12">
+                                           <div class="panelOculto">
+                                                <input type="text" class="buscar input-md form-control" placeholder="Buscar" ng-model="buscarPieza"/>
+                                                <br>
+                                                <div class="panel panel-default  tablaDropdowlist" >
+                                                    <table class="table table-hover table-responsive">
+                                                      <tbody  style="cursor: pointer">
+                                                        <tr ng-repeat="(piezaIndex, pieza) in pieza | filter: { Nombre:buscarPieza} | filter:FitrarPieza | orderBy:'Nombre'">
+                                                          <td ng-show="pieza.Activo">
+                                                              {{pieza.Nombre}}
+                                                              <span class="pull-right">
+                                                                   <a style="margin-left:10px" class="BotonOperacion" href=""  ng-click="AgregarPiezaComponente(pieza, componente)">
+                                                                        <span class="fa fa-plus fa-2x"></span>
+                                                                    </a>
+                                                              </span>
+                                                          </td>
+                                                        </tr>
+                                                      </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-12" style="margin-top:20px">
+                                    </div>
+
+                                    <div ng-if="componentePorPuerta.length > 0">
+
+                                        <div class="col-xs-12 subtituloModal2">
+                                            <b>Piezas Agregadas</b>
+                                        </div>
+                                        <br> <br>
+
+                                        <div class="col-xs-12">
+                                            <div class="piezaPorComponenteTabla">
+                                                <table class="table table-hover">
+                                                    <thead class="TituloTabla">
+                                                      <tr>
+                                                        <th><button class="btn botonOrdenar"><b>Pieza</b></button></th>
+                                                        <th><button class="btn botonOrdenar"><b>Cantidad</b></button></th>
+                                                        <th><button class="btn botonFalso"><b>Quitar</b></button></th>
+                                                      </tr>
+                                                    </thead>
+                                                    <tbody ng-repeat="pieza in componentePorPuerta | orderBy:'NombrePieza' | filter:{NombreComponente:componente.Nombre}:true">
+                                                      <tr>
+                                                        <td>{{pieza.NombrePieza}}</td>
+
+                                                        <td>
+                                                            <div class="cantidad">
+                                                                <button class="btn btn-sm cantidadMenos fa fa-minus" ng-click="RemoverCantidadPieza(pieza)"></button>
+                                                                <input  disabled type="text" class="cantidadPieza" ng-model="pieza.Cantidad"/>
+                                                                <button class="btn btn-sm cantidadMas fa fa-plus" ng-click="AgregarCantidadPieza(pieza)"></button>
+                                                            </div>
+                                                        </td>
+
+                                                        <td class="text-center">
+                                                            <a class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="QuitarPieza(pieza)">
+                                                                <span class="fa fa-times fa-2x"></span>
+                                                            </a>
+                                                        </td>
+
+                                                      </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-xs-12" style="margin-top:15px">
+                                </div>
+                            </div>
+                        </div>
+
+                        <br><br>
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div ng-repeat="error in mensajeError">
+                                    <span class="textoError">{{error}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <button class="btn botonCancelar btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarPuerta()">CANCELAR</button>
+                            </div>
+
+                            <div class="col-xs-6">
+                                <button class="btn botonAvanzar btn-block" ng-click="SiguientePuerta(puertaForma.nombre.$invalid) ">SIGUIENTE &gt;&gt;</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                    <!-- Paso 2 -->
+                    <!-- Combinaciones -->
+                    <div ng-if="pasoPuerta == 2">
+                     
+                        <div class="row">
+
+                            <div class="col-xs-12 subtituloModal">
+                                <b>Combinaciones de Materiales</b>
+                            </div>
+                            <br><br>
+
+                            <div class="col-xs-12 subtituloModal" ng-if="combinacion.length == 0">
+                                <span class="recuperarPassword">No hay combinaciones dadas de alta</span>
+                            </div>
+
+                            <div class="col-xs-12">
+                                <div ng-repeat="combinacion in combinacionPorPuerta | unique: 'CombinacionMaterial.Nombre' | orderBy:'CombinacionMaterial.Nombre'" ng-if="combinacion.CombinacionMaterial.Activo">
+                                    <button class="btn btn-block" ng-class="GetClaseDetallesCombinacion(combinacion.CombinacionMaterial.Nombre)" ng-click="MostraCominacionPorPuerta(combinacion.CombinacionMaterial.Nombre)">{{combinacion.CombinacionMaterial.Nombre}}</button>
+                                    <br>
+
+                                    <div class="table-responsive TablaModal" ng-if="mostrarCombinacionPuerta == combinacion.CombinacionMaterial.Nombre">
+                                        <table class="table table-hover">
+                                            <thead class="TituloTabla">
+                                              <tr>
+                                                <th><button class="btn botonOrdenar"><b>Componente</b></button></th>
+                                                <th><button class="btn botonOrdenar"><b>Tipo Material</b></button></th>
+                                                <th><button class="btn botonOrdenar"><b>Material</b></button></th>
+                                                <th><button class="btn botonOrdenar"><b>Grueso</b></button></th>
+                                              </tr>
+                                            </thead>
+                                            <tbody ng-repeat="componente in combinacionPorPuerta | filter:FiltrarCombinacionPorComponentePuerta | orderBy:'Componente.Nombre' track by $index">
+                                              <tr>
+                                                <td>{{componente.Componente.Nombre}}</td>
+                                                <!--- tipo material --->
+                                                <td class="dropdown">
+                                                    <button class="dropdown-toggle  {{componente.clase.tipoMaterial}}" data-toggle="dropdown">
+                                                        <span>{{componente.Material.TipoMaterial.Nombre}}</span>
+                                                        <span class="caret"></span>
+                                                    </button>
+
+                                                    <ul class="dropdown-menu elemetosDropdownListModal">
+                                                        <li>
+                                                            <a  href="" class="dropdownOpcionModal" ng-click="CambiarTipoMaterial('No Aplica', componente)">
+                                                                <span>NO APLICA</span>
+                                                            </a>
+                                                        </li>
+                                                        <li ng-repeat="tipo in tipoMaterial | orderBy:'Nombre'" ng-if="tipo.Activo">
+                                                            <a  href="" class="dropdownOpcionModal" ng-click="CambiarTipoMaterial(tipo, componente)">
+                                                                <span>{{tipo.Nombre}}</span>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </td>
+                                                <!--- material --->
+                                                <td class="dropdown">
+                                                    <button class="dropdown-toggle  {{componente.clase.material}}" data-toggle="dropdown" ng-disabled="componente.Material.TipoMaterial.Nombre.length == 0 || componente.Material.TipoMaterial.Nombre === 'No Aplica' ">
+                                                        <span>{{componente.Material.Nombre}}</span>
+                                                        <span class="caret"></span>
+                                                    </button>
+
+                                                    <ul class="dropdown-menu elemetosDropdownListModal">
+
+                                                        <li ng-repeat="material in material | orderBy:'Nombre' | filter:{TipoMaterial:{TipoMaterialId:componente.Material.TipoMaterial.TipoMaterialId}}:true" ng-if="material.Activo">
+                                                            <a  href="" class="dropdownOpcionModal" ng-click="CambiarMaterial(material, componente)">
+                                                                <span>{{material.Nombre}}</span>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </td>
+                                                <!--- grueso --->
+                                                <td class="dropdown">
+                                                    <button class="dropdown-toggle  {{componente.clase.grueso}}" data-toggle="dropdown" ng-disabled="componente.Material.Nombre.length == 0 || !(componente.Material.Grueso.length > 0)">
+                                                        <span>{{componente.Grueso}}</span>
+                                                        <span class="caret"></span>
+                                                    </button>
+
+                                                    <ul class="dropdown-menu elemetosDropdownListModal">
+                                                        <li ng-repeat="grueso in componente.Material.Grueso | orderBy:'grueso' " ng-if="grueso.Activo">
+                                                            <a  href="" class="dropdownOpcionModal" ng-click="CambiarGrueso(grueso.Grueso, componente)">
+                                                                <span>{{grueso.Grueso}}</span>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </td>
+                                              </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                      
+                       <br><br>
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div ng-repeat="error in mensajeError">
+                                    <span class="textoError">{{error}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <button class="btn botonCancelar btn-block" data-dismiss="modal" aria-label="Close" ng-click="AnteriorPuerta()">&lt;&lt; Anterior</button>
+                            </div>
+
+                            <div class="col-xs-6">
+                                <button class="btn botonAvanzar btn-block" ng-click="TerminarPuerta(puertaForma.nombre.$invalid) ">TERMINAR</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </form>
+            </div>
+            <br><br><br>
+        </div>
+    </div> 
+    
+    <!--- Modal para Detalles de lo componentes de las puertas --->
+    <div class="modal fade " id="DetallesComponentePuerta"  >
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <!-- encabezado del modal -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center">{{detallePuerta.Nombre}}</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <!-- cuerpo del modal -->
+                <div class="modal-body" >
+                   
+                    <div class="row">
+                      
+                       <div class="col-xs-12 subtituloModal">
+                            <b>Componentes de la puerta</b>
+                        </div>
+                        <br><br>  
+                        <div class="col-xs-12">
+                            <div ng-repeat="componente in componentePorPuerta | orderBy: 'NombreComponente' | unique: 'NombreComponente'">
+                                
+                                <button class="btn btn-block" ng-class="GetClaseDetallesComponente(componente.NombreComponente)" ng-click="MostraPiezaPorComponentePieza(componente.NombreComponente)">{{componente.NombreComponente}}</button>
+                                <br>
+                                
+                                <div class="table-responsive" ng-if="mostrarComponentePuerta == componente.NombreComponente">
+                                    <table class="table table-hover">
+                                        <thead class="TituloTabla">
+                                          <tr>
+                                            <th><button class="btn botonOrdenar"><b>Pieza</b></button></th>
+                                            <th><button class="btn botonFalso"><b>Cantidad</b></button></th>
+                                          </tr>
+                                        </thead>
+                                        <tbody ng-repeat="pieza in componentePorPuerta | filter:{ComponenteId:componente.ComponenteId}:true | orderBy:'NombrePieza'">
+                                          <tr>
+                                            <td>{{pieza.NombrePieza}}</td>
+                                            <td class="text-center">{{pieza.Cantidad}}</td>
+                                          </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                      
+                        <div class="col-xs-12 subtituloModal">
+                            <b>Combinaciones de Materiales</b>
+                        </div>
+                        <br><br>  
+                        <div class="col-xs-12">
+                            <div ng-repeat="combinacion in combinacionPorPuerta | unique: 'CombinacionMaterial.Nombre' | orderBy:'CombinacionMaterial.Nombre'" ng-if="combinacion.CombinacionMaterial.Activo">
+                                <button class="btn btn-block" ng-class="GetClaseDetallesComponente(combinacion.CombinacionMaterial.Nombre)" ng-click="MostraPiezaPorComponentePieza(combinacion.CombinacionMaterial.Nombre)">{{combinacion.CombinacionMaterial.Nombre}}</button>
+                                <br>
+                                
+                                <div class="table-responsive" ng-if="mostrarComponentePuerta == combinacion.CombinacionMaterial.Nombre">
+                                    <table class="table table-hover">
+                                        <thead class="TituloTabla">
+                                          <tr>
+                                            <th><button class="btn botonOrdenar"><b>Componente</b></button></th>
+                                            <th><button class="btn botonOrdenar"><b>Tipo Material</b></button></th>
+                                            <th><button class="btn botonOrdenar"><b>Material</b></button></th>
+                                            <th><button class="btn botonFalso"><b>Grueso</b></button></th>
+                                          </tr>
+                                        </thead>
+                                        <tbody ng-repeat="componente in combinacionPorPuerta | filter:{CombinacionMaterial: combinacion.CombinacionMaterial} | orderBy:'Componente.Nombre' track by $index">
+                                          <tr>
+                                            <td>{{componente.Componente.Nombre}}</td>
+                                            <td>{{componente.Material.TipoMaterial.Nombre}}</td>
+                                            <td>{{componente.Material.Nombre}}</td>
+                                            <td class="text-center">{{componente.Grueso}}</td>
+                                          </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    <!---- Agregar y editar muestrario -->
+    <div class="modal fade" id="muestrarioModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static" >
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <!-- encabezado del modal -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarMuestrarioForma()"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center" ng-if="operacion === 'Agregar'">Agregar Muestrario</h3>
+                            <h3 class="text-center" ng-if="operacion === 'Editar'">Editar Muestrario</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+                <br>
+
+                <form class="modal-body" name="muestrarioForma">
+                <!-- Datos -->
+                    
+                    <!-- Nombre -->
+                    <div class="row">
+                        <div class="col-sm-6">
+                             <div class="entrada2">
+                                <input ng-pattern="erNombreGeneral" type="text" required class="{{claseMuestrario.nombre}} form-control" name="nombre" ng-model="nuevoMuestrario.Nombre"/>
+                                <label>Nombre</label>
+                            </div>
+                        </div>
+                        
+                        <br class="hidden-sm hidden-md hidden-lg">
+                        
+                        <div class="col-sm-6">
+                             <label class="btn checkBoxActivo">Muestrario Activo <input type="checkbox" class="badgebox" ng-model="nuevoMuestrario.Activo"><span class="badge">&check;</span></label>
+                         </div>
+                        
+                    </div> 
+                    <br>
+                    <!--Por defecto -->
+                    <div class="row">
+                        <div class="col-sm-6">
+                             <label class="btn checkBoxActivo">Muestrario Por Defecto <input type="checkbox" class="badgebox" ng-model="nuevoMuestrario.PorDefecto"><span class="badge">&check;</span></label>
+                         </div>
+                        
+                    </div> 
+                    <br>
+                    <!-------- mensaje de error ---->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div ng-repeat="error in mensajeError">
+                                <span class="textoError">{{error}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!---- botones de operacion --->
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <button class="btn botonCancelar btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarMuestrarioForma()">CANCELAR</button>
+                        </div>
+                        
+                        <div class="col-xs-6">
+                            <button focus class="btn botonAvanzar btn-block" ng-click="TerminarMuestrario(muestrarioForma.nombre.$invalid)">TERMINAR</button>
+                        </div>
+                    </div>
+                    <br> 
+                </form>
+            </div>
+            <br><br><br>
+        </div>
+    </div>
+    
+    <!--- Modal para Detalles puertas del muestrario --->
+    <div class="modal fade " id="DetallesPuertaMuestrario"  >
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <!-- encabezado del modal -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center">Puertas de {{detalleMuestrario.Nombre}}</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <!-- cuerpo del modal -->
+                <div class="modal-body" >
+                   
+                    <div class="row" ng-if="puertaPorMuestrario.length > 0">
+                        <div class="col-xs-12">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="TituloTabla">
+                                      <tr>
+                                        <th><button class="btn botonOrdenar"><b>Puerta </b></button></th>
+                                        <th><button class="btn botonFalso"><b>Activo </b></button></th>
+                                      </tr>
+                                    </thead>
+                                    <tbody ng-repeat="puerta in puertaPorMuestrario | orderBy:'puerta.Nombre'">
+                                      <tr>
+                                        <td>{{puerta.Nombre}}</td>
+                                        
+                                        <td class="text-center">
+                                            <span class="fa fa-check-square-o fa-2x" ng-if="puerta.Activo"></span>
+                                            <span class="fa fa-square-o fa-2x" ng-if="!puerta.Activo"></span>
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row" ng-if="puertaPorMuestrario.length == 0">
+                        <div class="col-xs-12">
+                            <h4>Este muestrario no cuenta con puertas asignadas.</h4>
+                        </div>
+                    </div>
+                    
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Desactivar Modal -->
+    <div class="modal fade" id="modalActivarDesactivarConfigurarPuerta" data-keyboard="false" data-backdrop="static">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                
+                <div class="modal-body">
+                    <br>
+                    <div class="panel panel-default modalMensaje">
+                        <br>
+                        <b>{{mensajeAdvertencia}}</b>
+                        <br><br>
+
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <button class="btn botonCancelar" data-dismiss="modal" aria-label="Close" ng-click="CancelarCambiarActivo()">No</button>
+                            </div>
+                            <div class="col-xs-6">
+                                <button class="btn botonAvanzar" data-dismiss="modal" aria-label="Close" ng-click="ConfirmarActualizarActivo()">Si</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div> 
+    
+    <!-- Modal para mensajes -->
+    <div class="modal fade" id="mensajeConfigurarPuerta">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                
+                <div class="modal-body">
+                    <div class="panel panel-default modalMensaje">
+                        <br>
+                        <b>{{mensaje}}</b>
+
+                        <br><br>
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <button class="btn  botonAvanzar" data-dismiss="modal" aria-label="Close">Aceptar</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>  
+</div>
+
+     

@@ -1,0 +1,701 @@
+.tituloPaso
+{
+    color: #262626;
+    text-align: center;
+    font-size: 14pt;
+    font-style: bold;
+}
+
+.tituloOpcionPresupuesto
+{
+    color: white;
+    background: #262626;
+    width: 100%;
+    height: 40px;
+    text-align: center;
+    padding: 7px;
+    
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.tituloOpcionPresupuesto.active
+{
+    background: rgba(250, 97, 21, 1.0);
+}
+
+.panelItemPresupuesto
+{
+    width: 100%;
+    color: #262626;
+    border-width: 0px 3px 3px 3px;
+    border-style: solid;
+    border-color: #262626;
+    
+    padding: 10px;
+}
+
+.panelItemPresupuesto.disabled
+{
+    cursor: not-allowed !important;
+    opacity: 0.7;
+}
+
+.itemPresupuesto
+{
+    padding-top: 5px;
+    height: 35px;
+    border-bottom: 1px solid #7F7F7F;
+    border-top: none;
+}
+
+.itemPresupuesto:hover
+{
+    background: #F2F2F2;
+}
+
+.itemPresupuesto.itemList:hover
+{
+    background: rgba(250, 97, 21, 1.0);
+    color: white !important;
+}
+
+.itemPresupuestoPrimero
+{
+    border-top: 1px solid #7F7F7F !important;
+}
+
+.itemPresupuesto.itemList:hover .cr
+{
+    border-color: white;
+    color: white;
+}
+
+.checkbox.itemList:hover label input[type="checkbox"]:checked + .cr > .cr-icon
+{
+    transform: none !important;
+    transition: all .0s ease-in !important;
+    opacity: 1 !important;
+}
+
+.checkbox.itemList label input[type="checkbox"]:checked + .cr > .cr-icon
+{
+    transform: none !important;
+    transition: all .0s ease-in !important;
+    opacity: 1 !important;
+}
+
+/*------- modulo */
+.imagenModuloPresupuesto
+{
+    width: auto;
+    max-width: 100%;
+    max-height: 120px;
+}
+
+.marcoImagenPresupuesto
+{
+    border: 2px solid #262626;
+    border-radius: 0px;
+    padding: 5px;
+    min-height: 120px;
+}
+
+.imagenModuloVaciaPresupuesto
+{
+    height: 120px;
+    width: auto;
+    text-align: center;
+    vertical-align: center;
+    font-size: 30px;
+    padding-top: 45px;
+}
+
+.textoNumeroTipoModulo
+{
+    color: rgba(250, 97, 21, 1.0);
+    font-size: 14pt;
+    font-style: bold !important;
+}
+
+.textoTipoModulo
+{
+    color: #7F7F7F;
+    font-size: 12pt;
+}
+
+.botonSumarRestarCantidadModulo, .botonSumarRestarCantidadModulo:focus, .botonSumarRestarCantidadModulo:active
+{
+    border-radius: 0px;
+    background: #262626;
+    height: 25px;
+    color: white;
+    font-size: 10px;
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.botonSumarRestarCantidadModulo:hover
+{
+    opacity: 0.8;
+    color: white;
+}
+
+/*-------- check box Presupuesto ---------*/
+.dropdownPuertaNegro, .dropdownPuertaNegro:focus, .dropdownPuertaNegro:active, .dropdownPuertaNegro:hover
+{
+    background: #262626 !important;
+    color: white !important;
+    border-radius: 0px;
+    border: 1px solid #262626 !important;
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.dropdownPuertaNaranja, .dropdownPuertaNaranja:focus, .dropdownPuertaNaranja:active, .dropdownPuertaNaranja:hover
+{
+    background: rgba(250, 97, 21, 1.0) !important;
+    border: 1px solid rgba(250, 97, 21, 1.0) !important;
+    color: white !important;
+    border-radius: 0px;
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.checkBoxActivoPre
+{
+    color: white;
+    width: 100%;
+    display: block;
+    background: #262626;
+    border-radius: 0px;
+    text-align: left;
+    
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.checkBoxActivoPreNaranja
+{
+    background: rgba(250, 97, 21, 1.0) !important;
+}
+
+.checkBoxActivoPre:hover
+{
+    opacity: 1.0;
+    color: white;
+}
+
+.badgeboxPre
+{
+    opacity: 0;
+}
+
+
+.badgeboxPre
+{
+    opacity: 0.0;
+}
+
+.badgeboxPre + .badge
+{
+    text-indent: -999999px;
+	width: 27px;
+    background: white;
+    color: #262626;
+}
+
+.badgeboxPre:checked + .badge
+{
+    color: rgba(250, 97, 21, 1.0);
+}
+
+.badgeboxPre:focus + .badge
+{
+    box-shadow: inset 0px 0px 5px;
+}
+
+.badgeboxPre:checked + .badge
+{
+	text-indent: 0;
+}
+
+/*----------- puerta -------*/
+.itemPuerta
+{
+    height: 130px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.itemMaqueo
+{
+    height: 140px;
+    overflow-y: visible;
+}
+
+.imagenPresupuesto
+{
+    height: 120px;
+    min-height: 120px !important;
+    width: auto;
+}
+
+.iconoImagenPresupuesto
+{
+    width: 100%;
+    height: 120px;
+    padding-top: 40px;
+    font-size: 50px;
+    border: 2px solid #262626;
+}
+
+.cambiarImagenPresupuesto, .cambiarImagenPresupuesto:active, .cambiarImagenPresupuesto:focus
+{
+    color: rgba(250, 97, 21, 1.0) !important;
+    font-size: 14pt;
+}
+
+.cambiarImagenPresupuesto:hover
+{
+    opacity: 0.8;
+}
+
+/*---- imagenes ------*/
+
+.text-album
+{
+    border: Transparent;
+    color: #000;
+    text-decoration: none !important;
+    background-color: #fff!important;
+    cursor: pointer;
+}
+
+.carousel-control.left,
+.carousel-control.right
+{
+    background-image: none;
+}
+
+/*------  Ver Imagen ------*/
+.tituloVerImagen
+{
+    background: #262626;
+    color: white;
+    font-size: 16px;
+    text-align: left;
+}
+
+/*-------------------------------------- Accesorios ---------------------*/
+.sepradorGris
+{
+    background: #A6A6A6;
+    height: 3px;
+}
+
+.tituloAccesorioPre
+{
+    font-size: 16pt;
+    font-style: bold;
+}
+
+/*Texto instrucion*/
+.textoInstruccion
+{
+    color:  #7F7F7F;
+}
+
+.botonIconoFa, .botonIconoFa:focus, .botonIconoFa:active
+{
+    color: #262626;
+    background: transparent;
+    border-radius: 0px;
+    
+    height: 35px;
+    font-size: 16pt; 
+    margin-top:-5px;
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.botonIconoFa:hover
+{
+    color: rgba(250, 97, 21, 1.0);
+    background: transparent;
+    border-radius: 0px;
+    
+    font-size: 16pt; 
+    margin-top:-5px;
+    height: 35px;
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.etiquetaUbicacion
+{
+    color: #262626;
+    background: white;
+    border-radius: 0px;
+    border: 0px;
+    border-bottom: 3px solid #262626;
+   
+    text-align: left;
+    font-style: bold;
+}
+
+.etiquetaUbicacion.disabled
+{
+    background: rgb(237, 237, 237);
+}
+
+.cantidadUbicacion, .cantidadUbicacion:hover, .cantidadUbicacion:active, .cantidadUbicacion:focus
+{
+    color: #404040;
+
+    border-radius: 0px;
+    border: 0px;
+    border-bottom: 3px solid #262626;
+   
+    text-align: right;
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+
+.price
+{
+    height: auto;
+    font-size: 16pt;
+}
+
+.divisorNaranja1
+{
+    height: 1px;
+    background: rgba(250, 97, 21, 1.0);
+    border-bottom: 10px;
+}
+
+.divisorGis1
+{
+    height: 1px;
+    background: #424242;
+    border-bottom: 10px;
+}
+
+.tituloOptPresupuesto
+{
+    font-size: 16pt;
+    color: #6E6E6E;
+}
+
+.opcionSeleccionadaPresupuesto
+{
+    background: rgba(250, 97, 21, 0.5);
+    font-weight: bold;
+}
+
+.textoIzquierda
+{
+    text-align: left;
+}
+
+.textoOculto
+{
+    background: #F2F2F2;
+    color: transparent;
+}
+
+.itemPresupuestoEstatico
+{
+    min-height: 35px;
+    padding-top: 5px;
+    border-bottom: 1px solid #7F7F7F;
+    border-top: none;
+}
+
+.opcionSeleccionadaPresupuestoEst
+{
+    background: rgba(250, 97, 21, 0.5);
+}
+
+.vertical-center 
+{
+    height: 100%;
+    
+    top: 47% !important;
+    left: 47% !important;
+    position: absolute;
+}
+
+.miCocinaTitulo
+{
+    background: #262626;
+    color: white;
+    font-size: 16pt;
+    text-align: center;
+    padding: 5px 10px 5px 10px;
+}
+
+.panelMiCocina
+{
+    border-radius: 0px;
+    border: 2px solid #262626;
+    padding: 10px;
+}
+
+.tituloSeccion
+{
+    font-size: 15pt;
+}
+
+.separadorGris1
+{
+    height: 1px;
+    background: #7F7F7F;
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+.separadorGris1.dos
+{
+    height: 2px;
+}
+
+.listaMiCocina
+{
+    font-size: 14pt;
+}
+
+.textoNaraja
+{
+    color: rgba(250, 97, 21, 1.0);
+}
+
+.planPagoSel
+{
+    padding: 7px 15px 7px 15px;
+    background: rgba(250, 97, 21, 1.0);
+    color: white;
+}
+
+.planPagoSelNegro
+{
+    padding: 7px 15px 7px 15px;
+    background: #262626;
+    color: white;
+}
+
+.planPagoHeader
+{
+    border-top: 3px solid #262626;
+    border-bottom: 3px solid #262626;
+    background: white;
+    color: #262626;
+}
+
+.fuente16
+{
+    font-size: 16pt;
+}
+
+.fuente14
+{
+    font-size: 14pt;
+}
+
+.fuente12
+{
+    font-size: 12pt;
+}
+
+.buttonLabel, .buttonLabel:hover, .buttonLabel:focus, .buttonLabel:active, .buttonLabel:disabled
+{
+    background: transparent;
+    border-width: 0px;
+    cursor: default;
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.dropPromo, .dropPromo:focus, .dropPromo:active
+{
+    background: transparent;
+    border-width: 0px;
+    border-radius: 0px;
+    text-align: left;
+    cursor: pointer;
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.dropPromo:hover
+{
+    background: rgba(0,0,0,0.2);
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.marcoDetalleTop
+{
+    border-top: 2px solid #262626;
+}
+
+.marcoDetalleLeft
+{
+    border-left: 2px solid #262626;
+}
+
+.tituloDetallePlan
+{
+    background: rgb(237, 237, 237);
+    border-top: 2px solid #262626;
+    border-bottom: 2px solid #262626;
+}
+
+.radioOpt, .radioOpt:active, .radioOpt:focus
+{
+    border: 2px solid #262626;
+    color: #262626;
+    background: white;
+    border-radius: 0px;
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.radioOpt:hover
+{
+    border: 2px solid #262626;
+    color: #262626;
+    background: white;
+    border-radius: 0px;
+    
+    outline: none !important;
+    box-shadow: inset 0px 0px 5px;
+}
+
+.radioOpt.Active
+{
+    border: 2px solid #262626;
+    color: white;
+    background: #262626;
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.iconoBien
+{
+    color: #04B431;
+    font-size: 20pt;
+}
+
+/*------------- Acceosrio acordion */
+.entradaBtn
+{
+    background: transparent;
+    border: 2px solid lightgray;
+    border-radius: 0px;
+    height: 36px !important; 
+    padding: 4px; 
+    overflow:hidden;
+    margin-bottom: 5px;
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.entradaBtn:hover, .entradaBtn:active, .entradaBtn:focus
+{
+    outline: none !important;
+    box-shadow: none;
+}
+
+.entradaInput, .entradaInput:focus, .entradaInput:hover, .entradaInput:active
+{
+    border-width: 0px;
+    border-bottom: 1px solid #A6A6A6;
+    width: 100px; 
+    text-align:right; 
+    cursor: text;
+    
+    outline: none;
+    box-shadow: none;
+}
+
+.bordeNegro2
+{
+    border: 2px solid #262626;
+}
+
+.bordeNaranja2
+{
+    border: 2px solid  rgba(250, 97, 21, 1.0);
+}
+
+.textoGris
+{
+    color: #A6A6A6;
+}
+
+.textoBlanco
+{
+    color: white;
+}
+.checkBtn, .checkBtn:active, .checkBtn:focus
+{
+    border: 2px solid lightgray;
+    background: lightgray;
+    color: white;
+    border-radius: 0px;
+    margin-bottom: 5px;
+    
+    outline: none;
+    box-shadow: none;
+}
+
+.checkBtn:hover
+{
+     color: white;
+    opacity: 0.85;
+}
+
+.checkBtn.Presupuesto
+{
+    border: 2px solid #262626;
+    background: #262626;
+}
+
+.botonOperacionRecto, .botonOperacionRecto:active, .botonOperacionRecto:focus
+{
+    border: 2px solid #262626;
+    color: #262626;
+    background: white;
+    border-radius: 0px;
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.botonOperacionRecto:hover
+{
+    color: white !important;
+    background:  rgb(250, 97, 21);
+    border: 2px solid rgb(250, 97, 21);
+    outline: none !important;
+    box-shadow: none;
+}
+
+

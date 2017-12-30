@@ -1,4 +1,4 @@
-app.controller("TerritorioControlador", function($scope, $http, $q, CONFIG, $rootScope, datosUsuario, $window)
+app.controller("TerritorioControlador", function($scope, $http, $q, CONFIG, $rootScope, datosUsuario, $window, $location)
 {   
     $rootScope.clasePrincipal = "";
 
@@ -170,7 +170,7 @@ app.controller("TerritorioControlador", function($scope, $http, $q, CONFIG, $roo
         }
         else
         {
-            $scope.mensajeAdvertencia = "¿Estas seguro de DESACRIVAR - " + objeto.Nombre +"?";
+            $scope.mensajeAdvertencia = "¿Estas seguro de DESACTIVAR - " + objeto.Nombre +"?";
         }
         $('#modalActivoTerritorio').modal('toggle'); 
     };
@@ -255,7 +255,7 @@ app.controller("TerritorioControlador", function($scope, $http, $q, CONFIG, $roo
         
         for(var k=0; k<$scope.territorio.length; k++)
         {
-            if($scope.territorio[k].Nombre == $scope.nuevoTerritorio.Nombre  && $scope.territorio[k].TerritorioId !== $scope.nuevoTerritorio.TerritorioId)
+            if($scope.territorio[k].Nombre.toLowerCase() == $scope.nuevoTerritorio.Nombre.toLowerCase()  && $scope.territorio[k].TerritorioId !== $scope.nuevoTerritorio.TerritorioId)
             {
                 $scope.mensajeError[$scope.mensajeError.length] = "*El territorio " +  $scope.nuevoTerritorio.Nombre + " ya existe";
                 $scope.clase.nombre = "entradaError";
@@ -350,35 +350,39 @@ app.controller("TerritorioControlador", function($scope, $http, $q, CONFIG, $roo
     /*------------------Indentifica cuando los datos del usuario han cambiado-------------------*/
     $scope.usuarioLogeado =  datosUsuario.getUsuario();
     
-    
+    $scope.contador = 0;
     //Verifica que un usuario este logeado
     if($scope.usuarioLogeado !== null)
     {
         $scope.usuarioLogeado =  datosUsuario.getUsuario(); 
         if($scope.usuarioLogeado.SesionIniciada)
         {
-            $scope.IdentificarPermisos();
-            
-            if(!$scope.permisoUsuario.consultar)
+            if($scope.usuarioLogeado.PerfilSeleccionado == "Administrador")
             {
-               for(var k=0; k<$rootScope.Perfiles.length; k++)
+                $scope.IdentificarPermisos();
+
+                if(!$scope.permisoUsuario.consultar)
                 {
-                    if($scope.usuarioLogeado.PerfilSeleccionado == $rootScope.Perfiles[k].nombre)         //Se verifica con que perfil cuenta el usuario
-                    {
-                        $window.location = $rootScope.Perfiles[k].paginaPrincipal;
-                    }
-                } 
+                    $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
+                }
+
+                else
+                {
+                    $scope.GetTerritorio();
+                }
             }
-            
+            else if($scope.usuarioLogeado.PerfilSeleccionado === "")
+            {
+                $window.location = "#Perfil";
+            }
             else
             {
-                $scope.GetTerritorio();
+                $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
             }
-            
         }
         else
         {
-            $window.location = "#Login";
+            $location.path('/Login');
         }
     }
     
@@ -386,30 +390,34 @@ app.controller("TerritorioControlador", function($scope, $http, $q, CONFIG, $roo
     $scope.$on('cambioUsuario',function()
     {
         $scope.usuarioLogeado =  datosUsuario.getUsuario();
-    
         if(!$scope.usuarioLogeado.SesionIniciada)
         {
-            $window.location = "#Login";
+            $location.path('/Login');
             return;
         }
         else
         {
-            $scope.IdentificarPermisos();
-            
-            if(!$scope.permisoUsuario.consultar)
+            if($scope.usuarioLogeado.PerfilSeleccionado == "Administrador")
             {
-               for(var k=0; k<$rootScope.Perfiles.length; k++)
+                $scope.IdentificarPermisos();
+
+                if(!$scope.permisoUsuario.consultar)
                 {
-                    if($scope.usuarioLogeado.PerfilSeleccionado == $rootScope.Perfiles[k].nombre)         //Se verifica con que perfil cuenta el usuario
-                    {
-                        $window.location = $rootScope.Perfiles[k].paginaPrincipal;
-                    }
-                } 
+                   $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
+                }
+
+                else
+                {
+                    $scope.GetTerritorio();
+                }
             }
-            
+            else if($scope.usuarioLogeado.PerfilSeleccionado === "")
+            {
+                $window.location = "#Perfil";
+            }
             else
             {
-                $scope.GetTerritorio();
+                $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
             }
         }
     });

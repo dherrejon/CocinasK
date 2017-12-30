@@ -1,4 +1,4 @@
-app.controller("UnidadNegocioControlador", function($scope, $http, $q, CONFIG, datosUsarUnidad, $rootScope, datosUnidadNegocio, datosUsuario, $window)
+app.controller("UnidadNegocioControlador", function($scope, $http, $q, CONFIG, datosUsarUnidad, $rootScope, datosUnidadNegocio, datosUsuario, $window, $location)
 {    
     $rootScope.clasePrincipal = "";
 
@@ -27,7 +27,7 @@ app.controller("UnidadNegocioControlador", function($scope, $http, $q, CONFIG, d
         }
     };
     
-    $rootScope.UnidadNegocio = new UnidadNegocio();
+    $rootScope.UnidadNegocio = [];
     $rootScope.clasePrincipal = "";
     
     $scope.ordenarPor = "Nombre";
@@ -41,7 +41,7 @@ app.controller("UnidadNegocioControlador", function($scope, $http, $q, CONFIG, d
             $rootScope.UnidadNegocio = data;
         }).catch(function(error)
         {
-            $rootScope.UnidadNegocio = new UnidadNegocio();
+            $rootScope.UnidadNegocio = [];
             alert(error);
         });
     };
@@ -804,7 +804,7 @@ app.controller("UtilizarUidadNegocio", function($scope, $rootScope, $http, $q, C
         {
             if($scope.operacion == "Agregar" || $scope.NuevaUnidad.UnidadNegocioId !== $scope.UnidadNegocio[k].UnidadNegocioId)
             {
-                if($rootScope.UnidadNegocio[k].Nombre == $scope.NuevaUnidad.Nombre)
+                if($rootScope.UnidadNegocio[k].Nombre.toLowerCase() == $scope.NuevaUnidad.Nombre.toLowerCase())
                 {
                     if($rootScope.UnidadNegocio[k].TipoUnidadNegocio.Nombre == $scope.NuevaUnidad.TipoUnidadNegocio.Nombre)
                     {
@@ -942,25 +942,30 @@ app.controller("UtilizarUidadNegocio", function($scope, $rootScope, $http, $q, C
     {
         if($scope.usuarioLogeado.SesionIniciada)
         {
-            $scope.IdentificarPermisos();
-            if(!$scope.permisoUsuario.consultar)
+            if($scope.usuarioLogeado.PerfilSeleccionado == "Administrador")
             {
-               for(var k=0; k<$rootScope.Perfiles.length; k++)
+                $scope.IdentificarPermisos();
+                if(!$scope.permisoUsuario.consultar)
                 {
-                    if($scope.usuarioLogeado.PerfilSeleccionado == $rootScope.Perfiles[k].nombre)         //Se verifica con que perfil cuenta el usuario
-                    {
-                        $window.location = $rootScope.Perfiles[k].paginaPrincipal;
-                    }
-                } 
+                   $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
+                }
+                else
+                {
+                    $scope.GetCatalogosUnidadNegocio();           //Inicializar catálogos (CodigoPostal, responsables, tipo de unidad de negocio y empresa) 
+                }
+            }
+            else if($scope.usuarioLogeado.PerfilSeleccionado === "")
+            {
+                $window.location = "#Perfil";
             }
             else
             {
-                $scope.GetCatalogosUnidadNegocio();           //Inicializar catálogos (CodigoPostal, responsables, tipo de unidad de negocio y empresa) 
+                $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
             }
         }
         else
         {
-            $window.location = "#Login";
+            $location.path('/Login');
         }
     }
     
@@ -971,25 +976,30 @@ app.controller("UtilizarUidadNegocio", function($scope, $rootScope, $http, $q, C
     
         if(!$scope.usuarioLogeado.SesionIniciada)
         {
-            $window.location = "#Login";
+            $location.path('/Login');
             return;
         }
         else
         {
-            $scope.IdentificarPermisos();
-            if(!$scope.permisoUsuario.consultar)
+            if($scope.usuarioLogeado.PerfilSeleccionado == "Administrador")
             {
-               for(var k=0; k<$rootScope.Perfiles.length; k++)
+                $scope.IdentificarPermisos();
+                if(!$scope.permisoUsuario.consultar)
                 {
-                    if($scope.usuarioLogeado.PerfilSeleccionado == $rootScope.Perfiles[k].nombre)         //Se verifica con que perfil cuenta el usuario
-                    {
-                        $window.location = $rootScope.Perfiles[k].paginaPrincipal;
-                    }
-                } 
+                    $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
+                }
+                else
+                {
+                    $scope.GetCatalogosUnidadNegocio();           //Inicializar catálogos (CodigoPostal, responsables, tipo de unidad de negocio y empresa) 
+                }
+            }
+            else if($scope.usuarioLogeado.PerfilSeleccionado === "")
+            {
+                $window.location = "#Perfil";
             }
             else
             {
-                $scope.GetCatalogosUnidadNegocio();           //Inicializar catálogos (CodigoPostal, responsables, tipo de unidad de negocio y empresa) 
+                $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
             }
         }
     });   
@@ -1053,12 +1063,124 @@ function CopiarUnidad(unidad)
     return nuevaUnidad;
 }
 
-//Directiva para mostrar el teléfono con una mascara 
-app.directive('phoneInput', function($filter, $browser) {
+//Directiva para mostrar el precio con una mascara 
+app.directive('currencyInput', function($filter, $browser) 
+{
     return {
         require: 'ngModel',
-        link: function($scope, $element, $attrs, ngModelCtrl) {
-            var listener = function() {
+        link: function($scope, $element, $attrs, ngModelCtrl) 
+        {
+            var listener = function() 
+            {
+                var value = $element.val().replace(/[^0-9]/g, '');
+                $element.val($filter('moneda')(value, false));
+            };
+
+            // This runs when we update the text field
+            ngModelCtrl.$parsers.push(function(viewValue) 
+            {
+                return viewValue.replace(/[^0-9]/g, '').slice(0,10);
+            });
+
+            // This runs when the model gets updated on the scope directly and keeps our view in sync
+            ngModelCtrl.$render = function() 
+            {
+                $element.val($filter('moneda')(ngModelCtrl.$viewValue, false));
+            };
+
+            $element.bind('change', listener);
+            $element.bind('keydown', function(event) 
+            {
+                var key = event.keyCode;
+                // If the keys include the CTRL, SHIFT, ALT, or META keys, or the arrow keys, do nothing.
+                // This lets us support copy and paste too
+                if (key == 91 || (15 < key && key < 19) || (37 <= key && key <= 40)){
+                    return;
+                }
+                $browser.defer(listener); // Have to do this or changes don't get picked up properly
+            });
+
+            $element.bind('paste cut', function() 
+            {
+                $browser.defer(listener);
+            });
+        }
+
+    };
+});
+
+app.filter('moneda', function () 
+{
+    return function (moneda) 
+    {
+        //console.log(tel);
+        if (!moneda) { return ''; }
+
+        var value = moneda.toString().trim().replace(/^\+/, '');
+
+        if (value.match(/[^0-9]/)) 
+        {
+            return moneda;
+        }
+        
+        if(moneda.length == 1 && moneda == "0")
+        {
+            return "";
+        }
+        
+        var n = Math.ceil(moneda.length/3);
+        
+        if(n > 1)
+        {
+            var u = moneda.length%3 === 0 ? 3 : moneda.length%3;
+            
+            var v1 = moneda.slice(0, u);
+            var v = [];
+            
+            var iu = u;
+            
+            for(var k = 0; k<(n-1); k++)
+            {
+                var it = iu+3;
+                if(it > moneda.length)
+                {
+                    it = moneda.length;
+                }
+                
+                v[k] = moneda.slice(iu, it);
+                
+                iu = it;
+            }
+            
+            var m = v1 + ",";
+            
+            for(var k=0; k<(v.length-1); k++)
+            {
+                m +=  (v[k] + ",");
+            }
+            
+            m += ( v[v.length-1] );
+            
+            return "$ " + m;
+        }
+        else
+        {
+            return "$ " + moneda;
+        }
+    
+        
+    };
+});
+
+//Directiva para mostrar el teléfono con una mascara 
+app.directive('phoneInput', function($filter, $browser) 
+{
+    return {
+        require: 'ngModel',
+        link: function($scope, $element, $attrs, ngModelCtrl) 
+        {
+            var listener = function() 
+            {
                 var value = $element.val().replace(/[^0-9]/g, '');
                 $element.val($filter('tel')(value, false));
             };
@@ -1087,7 +1209,8 @@ app.directive('phoneInput', function($filter, $browser) {
                 $browser.defer(listener); // Have to do this or changes don't get picked up properly
             });
 
-            $element.bind('paste cut', function() {
+            $element.bind('paste cut', function() 
+            {
                 $browser.defer(listener);
             });
         }
@@ -1095,7 +1218,8 @@ app.directive('phoneInput', function($filter, $browser) {
     };
 });
 
-app.filter('tel', function () {
+app.filter('tel', function () 
+{
     return function (tel) {
         //console.log(tel);
         if (!tel) { return ''; }
@@ -1108,7 +1232,8 @@ app.filter('tel', function () {
 
         var country, city, number;
 
-        switch (value.length) {
+        switch (value.length) 
+        {
             case 1:
             case 2:
             case 3:
@@ -1120,17 +1245,21 @@ app.filter('tel', function () {
                 number = value.slice(3);
         }
 
-        if(number){
-            if(number.length>3){
+        if(number)
+        {
+            if(number.length>3)
+            {
                 number = number.slice(0, 3) + '-' + number.slice(3,7);
             }
-            else{
+            else
+            {
                 number = number;
             }
 
             return ("(" + city + ") " + number).trim();
         }
-        else{
+        else
+        {
             return "(" + city;
         }
     };

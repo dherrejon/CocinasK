@@ -122,9 +122,14 @@ function SetUsuario(data)
     
     usuario.UsuarioId = data[0].UsuarioId;
     usuario.Nombre = data[0].NombreUsuario;
+    usuario.UnidadNegocioId = data[0].UnidadNegocioId;
     usuario.Password = "";
     usuario.SesionIniciada = true;
     usuario.NombreColaborador = data[0].NombreColaborador;
+    usuario.NombreCompletoColaborador = data[0].NombreCompletoColaborador;
+    usuario.Estado = data[0].Estado;
+    usuario.Ciudad = data[0].Ciudad;
+    usuario.Municipio = data[0].NombreCompletoColaborador;
 
     var administrador = false;
     var ejecutivo = false;
@@ -173,4 +178,28 @@ function SetPerfilInSesion(perfil, $http, CONFIG)
 
 
      });
+}
+
+function CambiarDatoBool(dato)
+{
+    if(dato)
+    {
+        return "1";
+    }
+    else
+    {
+        return "0";
+    }
+}
+
+function CambiarDatoEnteroABool(dato)
+{
+    if(dato == "1")
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }

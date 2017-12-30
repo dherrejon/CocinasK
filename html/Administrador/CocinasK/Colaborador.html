@@ -13,7 +13,7 @@
     <div class="row" ng-if="permisoUsuario.consultar">
         <div class="col-md-11 col-xs-10">
             <div class="table-responsive TablaUnidadNegocio">
-                <table class="table table-hover">
+                <table class="table table-hover table-striped table-condensed">
                     <thead class="TituloTabla">
                       <tr>
                         <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('PrimerApellido')"><b>Primer Apellido </b><b ng-if="ordenarPor === 'PrimerApellido'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-PrimerApellido'" class="fa fa-arrow-down"></b></button></th>
@@ -21,17 +21,17 @@
                         <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('Nombre')"><b>Nombre(s) </b><b ng-if="ordenarPor === 'Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-Nombre'" class="fa fa-arrow-down"></b></button></th>
                         <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('NombreTipoUnidadNegocio')"><b>Unidad Negocio </b><b ng-if="ordenarPor === 'NombreTipoUnidadNegocio'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-NombreTipoUnidadNegocio'" class="fa fa-arrow-down"></b></button></th>
                         <th><button class="btn botonFalso"><b>Detalles</b></button></th>
-                          <th><button class="btn botonFalso"><b>Usuario</b></button></th>
+                        <th><button class="btn botonFalso"><b>Usuario</b></button></th>
                         <th><button class="btn botonFalso"><b>Editar</b></button></th>
                         <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('ActivoN')"><b>Activo </b> <b ng-if="ordenarPor === 'ActivoN'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-ActivoN'" class="fa fa-arrow-down"></b></button></th>
                       </tr>
                     </thead>
-                    <tbody ng-repeat="colaborador in colaborador | filter:FiltrarColaborador | filter:buscar | orderBy:[ordenarPor, 'PrimerApellido', 'SegundoApellido', 'Nombre']">
-                      <tr>
+                    <tbody >
+                      <tr ng-repeat="colaborador in colaborador | filter:FiltrarColaborador | filter:buscar | orderBy:[ordenarPor, 'PrimerApellido', 'SegundoApellido', 'Nombre']">
                         <td>{{colaborador.PrimerApellido}}</td>
                         <td>{{colaborador.SegundoApellido}}</td>
                         <td>{{colaborador.Nombre}}</td>
-                        <td>{{colaborador.NombreTipoUnidadNegocio}} - {{colaborador.NombreUnidadNegocio}}</td>
+                        <td>{{colaborador.NombreTipoUnidadNegocio}} - {{colaborador.NombreUnidadNegocio}} </td>
                         
                         <!--Detalles--->
                         <td class="text-center">
@@ -58,7 +58,7 @@
                             <span ng-if="!permisoUsuario.editar"  class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
                         </td>
                         <!-- activo -->
-                        <td>
+                        <td class="text-center">
                             <div class="checkbox">
                                 <label>
                                     <input ng-disabled="!permisoUsuario.activar" ng-model="colaborador.Activo" type="checkbox" value="" ng-click="ConfirmarCambiarActivo(colaborador)">
@@ -462,9 +462,8 @@
                                     <span>{{tipoTelefonoSeleccionado.tipo}}</span>
                                     <span class="caret"></span>
                                 </button>
-
                                 <ul class="dropdown-menu elemetosDropdownListModal">
-                                    <li ng-repeat="tipoTelefono in tipoMedioContacto | orderBy:'Nombre' | filter:{NombreMedioContacto: 'Teléfono', Activo:'1'}">
+                                    <li ng-repeat="tipoTelefono in tipoMedioContacto | orderBy:'Nombre' | filter:{NombreMedioContacto: 'Teléfono', Activo:true}">
                                         <a  href="" class="dropdownOpcionModal" ng-click="CambiarTelefono(tipoTelefono)">
                                             <span>{{tipoTelefono.Nombre}}</span>
                                         </a>
@@ -480,12 +479,13 @@
                                 <label>Telefono </label>
                             </div>
                         </div>
+                        
                         <div class="col-sm-2 col-md-2 col-xs-4" ng-if="!editarContacto.realizar || editarContacto.tipoContacto != 'telefono'">
-                             <a  class="btn btn-block botonOperacion fa fa-plus" data-toggle="tooltip" data-placement="bottom" title="Agregar Teléfono" ng-click="AgregarTelefono(colaboradorForma.telefono.$invalid)"></a>
+                             <a ng-disabled="editarContacto.realizar" class="btn btn-block botonOperacion fa fa-plus" data-toggle="tooltip" data-placement="bottom" title="Agregar Teléfono" ng-click="AgregarTelefono(colaboradorForma.telefono.$invalid)"></a>
                         </div>
                        
                         <div class="col-sm-2 col-md-2 col-xs-4" ng-if="editarContacto.realizar && editarContacto.tipoContacto == 'telefono'">
-                            <div class="btn-group">
+                            <div class="pull-right btn-group">
                               <button class="btn  botonOperacion fa fa-pencil" data-toggle="tooltip" data-placement="bottom" title="Editar Teléfono" ng-click="AgregarTelefono(colaboradorForma.telefono.$invalid)"></button>
                               <button class="btn  botonCancelar fa fa-ban" data-toggle="tooltip" data-placement="bottom" title="Cancelar" ng-click="CancelarEdicion()"></button>
                             </div> 
@@ -508,8 +508,8 @@
                                       <tr>
                                         <th><button class="btn botonOrdenar"><b>Tipo de Teléfono </b></button></th>
                                         <th><button class="btn botonOrdenar"><b>Teléfono </b></button></th>
-                                          <th><button class="btn botonOrdenar"><b>Editar </b></button></th>
-                                          <th><button class="btn botonOrdenar"><b>Eliminar </b></button></th>
+                                          <th><button class="btn botonFalso"><b>Editar </b></button></th>
+                                          <th><button class="btn botonFalso"><b>Eliminar </b></button></th>
                                       </tr>
                                     </thead>
                                     <tbody >
@@ -517,13 +517,15 @@
                                         <td>{{telefono.NombreTipoMedioContacto}}</td>
                                         <td>{{telefono.Contacto | tel}}</td>
                                           
-                                        <td>
-                                            <a  class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="EditarContactoAgregado(telefono,'registrado')">
+                                        <td class="text-center">
+                                            <a  ng-if="!editarContacto.realizar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="EditarContactoAgregado(telefono,'registrado')" >
                                                 <span class="fa fa-pencil fa-2x"></span>
                                             </a>
+                                            
+                                            <span ng-if="editarContacto.realizar"  class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
                                         </td>
                                           
-                                        <td>
+                                        <td class="text-center">
                                             <a  class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirModalEliminarContacto(telefono)">
                                                 <span class="fa fa-trash fa-2x"></span>
                                             </a>
@@ -535,13 +537,15 @@
                                         <td>{{telefono.NombreTipoMedioContacto}}</td>
                                         <td>{{telefono.Contacto | tel}}</td>
                                           
-                                        <td>
-                                            <a  class="BotonOperacion" href=""  ng-click="EditarContactoAgregado(telefono, 'nuevo')">
+                                        <td class="text-center">
+                                            <a  ng-if="!editarContacto.realizar" class="BotonOperacion" href=""  ng-click="EditarContactoAgregado(telefono, 'nuevo')">
                                                 <span class="fa fa-pencil fa-2x"></span>
                                             </a>
+                                            
+                                            <span ng-if="editarContacto.realizar"  class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
                                         </td>
                                           
-                                        <td>
+                                        <td class="text-center">
                                             <a  class="BotonOperacion" href=""  ng-click="BorrarContactoAgregado(telefono.Contacto)">
                                                 <span class="fa fa-trash fa-2x"></span>
                                             </a>
@@ -568,7 +572,7 @@
                                 </button>
 
                                 <ul class="dropdown-menu elemetosDropdownListModal">
-                                    <li ng-repeat="tipoCorreo in tipoMedioContacto | orderBy:'Nombre' | filter:{NombreMedioContacto:'Correo Electrónico',  Activo:'1'}">
+                                    <li ng-repeat="tipoCorreo in tipoMedioContacto | orderBy:'Nombre' | filter:{NombreMedioContacto:'Correo Electrónico',  Activo:'true'}">
                                         <a  href="" class="dropdownOpcionModal" ng-click="CambiarEmail(tipoCorreo)">
                                             <span>{{tipoCorreo.Nombre}}</span>
                                         </a>
@@ -584,11 +588,13 @@
                                 <label>Correo</label>
                             </div>
                         </div>
+                        
                         <div class="col-sm-2 col-xs-4" ng-if="!editarContacto.realizar || editarContacto.tipoContacto != 'correo'">
-                             <a class="btn btn-block botonOperacion fa fa-plus" data-toggle="tooltip" data-placement="bottom" title="Agregar Correo Electrónico" ng-click="AgregarCorreo(colaboradorForma.correo.$invalid)"></a>
+                             <a  ng-disabled="editarContacto.realizar" class="btn btn-block botonOperacion fa fa-plus" data-toggle="tooltip" data-placement="bottom" title="Agregar Correo Electrónico" ng-click="AgregarCorreo(colaboradorForma.correo.$invalid)"></a>
                         </div>
+                        
                         <div class="col-sm-2 col-xs-4" ng-if="editarContacto.realizar && editarContacto.tipoContacto == 'correo'">
-                            <div class="btn-group btn-block">
+                            <div class="pull-right btn-group">
                               <button class="btn  botonOperacion fa fa-pencil" data-toggle="tooltip" data-placement="bottom" title="Editar Correo" ng-click="AgregarCorreo(colaboradorForma.correo.$invalid)"></button>
                               <button class="btn  botonCancelar fa fa-ban" data-toggle="tooltip" data-placement="bottom" title="Cancelar" ng-click="CancelarEdicion()"></button>
                             </div> 
@@ -611,8 +617,8 @@
                                       <tr>
                                         <th><button class="btn botonOrdenar"><b>Tipo de Correo </b></button></th>
                                         <th><button class="btn botonOrdenar"><b>Correo </b></button></th>
-                                        <th><button class="btn botonOrdenar"><b>Editar </b></button></th>
-                                        <th><button class="btn botonOrdenar"><b>Eliminar </b></button></th>
+                                        <th><button class="btn botonFalso"><b>Editar </b></button></th>
+                                        <th><button class="btn botonFalso"><b>Eliminar </b></button></th>
                                       </tr>
                                     </thead>
                                     <tbody >
@@ -620,14 +626,16 @@
                                         <td>{{correo.NombreTipoMedioContacto}}</td>
                                         <td>{{correo.Contacto}}</td>
                                         
-                                        <td>
-                                            <a  class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="EditarContactoAgregado(correo,'registrado')">
+                                        <td class="text-center">
+                                            <a  ng-if="!editarContacto.realizar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="EditarContactoAgregado(correo,'registrado')">
                                                 <span class="fa fa-pencil fa-2x"></span>
                                             </a>
+                                            
+                                            <span ng-if="editarContacto.realizar"  class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
                                         </td>
                                           
-                                        <td>
-                                            <a  class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirModalEliminarContacto(correo)">
+                                        <td class="text-center">
+                                            <a class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirModalEliminarContacto(correo)">
                                                 <span class="fa fa-trash fa-2x"></span>
                                             </a>
                                         </td>
@@ -638,14 +646,16 @@
                                         <td>{{correo.NombreTipoMedioContacto}}</td>
                                         <td>{{correo.Contacto}}</td>
                                           
-                                        <td>
-                                            <a  class="BotonOperacion" href=""  ng-click="EditarContactoAgregado(correo, 'nuevo')">
+                                        <td class="text-center">
+                                            <a ng-if="!editarContacto.realizar"   class="BotonOperacion" href=""  ng-click="EditarContactoAgregado(correo, 'nuevo')">
                                                 <span class="fa fa-pencil fa-2x"></span>
                                             </a>
+                                            
+                                            <span ng-if="editarContacto.realizar"  class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
                                         </td>
                                           
-                                        <td>
-                                            <a  class="BotonOperacion" href=""  ng-click="BorrarContactoAgregado(correo.Contacto)">
+                                        <td class="text-center">
+                                            <a class="BotonOperacion" href=""  ng-click="BorrarContactoAgregado(correo.Contacto)">
                                                 <span class="fa fa-trash fa-2x"></span>
                                             </a>
                                         </td>
@@ -691,7 +701,7 @@
                         </div>
                     </div>
                     
-                    <br>
+                    <br><br>
                     <!-- Estado y Munucipio-->
                     <div class="row">
                         <!-- Estado -->
@@ -717,7 +727,7 @@
                         <br class="hidden-sm hidden-md hidden-lg">
                         <!-- Municipio -->
                         <div class="col-sm-6 etiquetaDropdownList">
-                             <label>Municpio</label>
+                             <label>Municipio</label>
                              <div class="dropdown">
 
                                 <button ng-disabled="!sinCP || nuevoColaborador.Estado.length == 0" class="dropdown-toggle {{clase.municipio}}" data-toggle="dropdown">
@@ -874,7 +884,7 @@
                         </div>
                         
                         <div class="col-xs-6">
-                            <button focus class="btn botonAvanzar btn-block" ng-click="TerminarColaborador(colaboradorForma.nombre.$invalid, colaboradorForma.primerApellido.$invalid, colaboradorForma.segundoApellido.$invalid, colaboradorForma.domicilio.$invalid, colaboradorForma.codigo.$invalid, colaboradorForma.otraColonia.$invalid)">TERMINAR</button>
+                            <a ng-disable="terminarConcluido" focus class="btn botonAvanzar btn-block" ng-click="TerminarColaborador(colaboradorForma.nombre.$invalid, colaboradorForma.primerApellido.$invalid, colaboradorForma.segundoApellido.$invalid, colaboradorForma.domicilio.$invalid, colaboradorForma.codigo.$invalid, colaboradorForma.otraColonia.$invalid)">TERMINAR</a>
                         </div>
                     </div>
                     <br> 
@@ -975,7 +985,7 @@
                              <!-- usuario -->
                             <div class="col-sm-6">
                                  <div class="entrada2">
-                                    <input ng-pattern="erNombreUsuario" type="text" required class="{{claseUsuario.usuario}} form-control" name="usuario" ng-model="nuevoColaborador.NombreUsuario"/>
+                                    <input ng-pattern="erNombreUsuario" type="text" required class="{{claseUsuario.usuario}} form-control minuscula" name="usuario" ng-model="nuevoColaborador.NombreUsuario"/>
                                     <label>Nombre de Usuario</label>
                                 </div>
                             </div>
@@ -1013,7 +1023,7 @@
                             </div>
 
                             <div class="col-xs-6">
-                                <button focus class="btn botonAvanzar btn-block" ng-click="TerminarUsuario(usuarioForma.usuario.$invalid)">Siguiente &gt;&gt;</button>
+                                <button focus class="btn botonAvanzar btn-block" ng-click="TerminarUsuario(usuarioForma.usuario.$invalid)">SIGUIENTE &gt;&gt;</button>
                             </div>
                         </div>
                         <br>
@@ -1116,11 +1126,11 @@
                         <!---- botones de operacion --->
                         <div class="row">
                             <div class="col-xs-6">
-                                <button class="btn botonCancelar btn-block"  ng-click="AnteriorPermisos()">&lt;&lt; Anterior</button>
+                                <button class="btn botonCancelar btn-block"  ng-click="AnteriorPermisos()">&lt;&lt; ANTERIOR</button>
                             </div>
 
                             <div class="col-xs-6">
-                                <button focus class="btn botonAvanzar btn-block" ng-click="TerminarPermisosUsuario()">Terminar</button>
+                                <button ng-disable="!terminarConcluido" focus class="btn botonAvanzar btn-block" ng-click="TerminarPermisosUsuario()">TERMINAR</button>
                             </div>
                         </div>
                         <br>

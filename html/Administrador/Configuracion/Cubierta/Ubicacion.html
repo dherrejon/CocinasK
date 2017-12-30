@@ -1,0 +1,269 @@
+<div ng-controller="UbicacionControlador as Color">
+
+    <div class="row">
+        <div class="col-md-12 col-xs-12">
+            <div class="table-responsive TablaUnidadNegocio">
+                <table class="table table-hover">
+                    <thead class="TituloTabla">
+                      <tr>
+                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenarUbicacion('Nombre')"><b>Nombre </b><b ng-if="ordenarPorUbicacion === 'Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPorUbicacion === '-Nombre'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonFalso"><b>Detalles</b></button></th>
+                        <th><button class="btn botonFalso"><b>Editar</b></button></th>
+                        <th><button class="btn botonFalso"><b>Activo</b></button></th>
+                      </tr>
+                    </thead>
+                    <tbody ng-repeat="ubicacion in ubicacion | orderBy:[ordenarPorUbicacion]">
+                      <tr>
+                        <td>{{ubicacion.Nombre}}</td>
+                        
+                        <td class="text-center">
+                            <a  class="BotonOperacion" href="" data-toggle="modal" data-target="#DetalleCubiertaUbicacion" ng-click="DetallesUbicacion(ubicacion)">
+                                <span class="fa fa-eye fa-2x"></span>
+                            </a>
+                        </td>
+
+                        <td class="text-center">
+                            <a ng-if="permisoUsuario.ubicacion.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirUbicacionCubierta('Editar', ubicacion)">
+                                <span class="fa fa-pencil fa-2x"></span>
+                            </a>
+
+                            <span ng-if="!permisoUsuario.ubicacion.editar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
+                        </td>
+
+                        <td class="text-center">
+                            <div class="checkbox">
+                                <label>
+                                    <input ng-disabled="!permisoUsuario.ubicacion.activar" ng-model="ubicacion.Activo" type="checkbox" value="" ng-click="ActivarDesactivarUbicacionCubierta(ubicacion)">
+                                    <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+                                </label>
+                            </div>
+                        </td>
+
+                      </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+                     
+     <!------------------------------------ Modales -------------------------------------------------------------------->
+                      
+    <!---- Modal para Agregar-editar ubicación de cubierta -->
+    <div class="modal fade" id="ubicacionCubiertaModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static" >
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <!-- encabezado del modal -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarUbicacionCubierta()"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center" ng-if="operacion === 'Agregar'">Agregar Ubicación de Cubierta</h3>
+                            <h3 class="text-center" ng-if="operacion === 'Editar'">Editar Ubicación de Cubierta</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+                <br>
+
+                <form class="modal-body" name="ubicacionCubierForma">
+                    <div class="row">
+                       
+                        <div class="col-xs-12 col-sm-6 etiquetaDropdownList">
+                            <!-- Nombre -->
+                            <label>Nombre</label>
+
+                            <input  disabled type="text" required class="{{claseUbicacion.nombre}} form-control" name="colaborador" ng-model="nuevaUbicacion.Nombre"/>
+                                    
+                        </div>
+                            
+                        <br class="hidden-sm hidden-md hidden-lg"><br class="hidden-sm hidden-md hidden-lg">
+                        <!-- Activo -->
+                        <div class="col-xs-12 col-sm-6" style="margin-top:8px">
+                             <label class="btn checkBoxActivo">Ubicacición Activa <input type="checkbox" class="badgebox" ng-model="nuevaUbicacion.Activo"><span class="badge">&check;</span></label>
+                        </div>
+                        <br>
+
+                    </div>
+                    <br>
+                    
+                    <div class="row">
+
+                        <div class="col-xs-12 subtituloModal">
+                            <b>¿Qué fabricación se usa en cada tipo de cubierta, en esta ubicación?</b>
+                        </div>
+                        <br><br>
+                        
+                        <div class="col-xs-12">
+                            <div class="table-responsive TablaModal" ng-if="mostrarCombinacionPuerta == combinacion.CombinacionMaterial.Nombre">
+                                <table class="table table-hover">
+                                    <thead class="TituloTabla">
+                                      <tr>
+                                        <th><button class="btn botonOrdenar"><b>Tipo de Cubierta</b></button></th>
+                                        <th><button class="btn botonOrdenar"><b>Fabricación</b></button></th>
+                                      </tr>
+                                    </thead>
+                                    <tbody ng-repeat="dato in nuevaUbicacion.Datos |  orderBy:'Nombre'">
+                                      <tr>
+                                       <!--- tipo cubierta --->
+                                        <td>{{dato.TipoCubierta.Nombre}}</td>
+
+                                        <!--- fabricacion --->
+                                        <td class="dropdown">
+                                            <button class="dropdown-toggle  {{nuevaUbicacion.Datos[$index].clase}}" data-toggle="dropdown">
+                                                <span>{{dato.FabricacionCubierta.Nombre}}</span>
+                                                <span class="caret"></span>
+                                            </button>
+
+                                            <ul class="dropdown-menu elemetosDropdownListModal">
+                                                <li ng-repeat="fabricacion in fabricacionUbicacion | orderBy:'Nombre' " ng-if="fabricacion.Activo">
+                                                    <a  href="" class="dropdownOpcionModal" ng-click="CambiarFabricacionCubierta(dato.TipoCubierta, fabricacion)">
+                                                        <span>{{fabricacion.Nombre}}</span>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                    <br>
+                    
+                    <!-------- mensaje de error ---->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div ng-repeat="error in mensajeError">
+                                <span class="textoError">{{error}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!---- botones de operacion --->
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <button class="btn botonCancelar btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarUbicacionCubierta()">CANCELAR</button>
+                        </div>
+                        
+                        <div class="col-xs-6">
+                            <button focus class="btn botonAvanzar btn-block" ng-click="TerminarUbicacionCubierta()">TERMINAR</button>
+                        </div>
+                    </div>
+                    <br>
+                </form>
+            </div>
+            <br><br><br>
+        </div>
+    </div>
+                       
+     <!-------------- Detalles-------------->
+    <div class="modal fade " id="DetalleCubiertaUbicacion">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <!-- encabezado del modal -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center">Detalles de {{ubicacionActualizar.Nombre}}</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- cuerpo del modal -->
+                <div class="modal-body">
+                    <!-- Opciones de unidad de negocio -->
+                        
+                    <h4>¿Qué fabricación se usa en cada tipo de cubierta, en esta ubicación?</h4><br>
+                    <!-- Consumibles -->
+                    <div class="row">
+                        <div class="col-sm-12">
+                            
+                            <table class="table table-hover">
+                                <thead class="TituloTabla">
+                                  <tr>
+                                    <th><button class="btn botonOrdenar"><b>Tipo de Cubierta</b></button></th>
+                                    <th><button class="btn botonOrdenar"><b>Fabricación</b></button></th>
+                                  </tr>
+                                </thead>
+                                <tbody ng-repeat="dato in ubicacionActualizar.Datos | orderBy:'Nombre'">
+                                  <tr>
+                                    
+                                    <td>{{dato.TipoCubierta.Nombre}}</td>
+                                    <td>{{dato.FabricacionCubierta.Nombre}}</td>
+
+                                  </tr>
+                                </tbody>
+                            </table>
+                            
+                        </div>
+                    </div>
+                    <br>
+                </div>
+            </div>
+        </div>
+    </div>
+                        
+    <!-- Desactivar Modal -->
+    <div class="modal fade" id="modalActivarDesactivarConfigurarCubiertaUbicacion" data-keyboard="false" data-backdrop="static">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                
+                <div class="modal-body">
+                    <br>
+                    <div class="panel panel-default modalMensaje">
+                        <br>
+                        <b>{{mensajeAdvertencia}}</b>
+                        <br><br>
+
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <button class="btn botonCancelar" data-dismiss="modal" aria-label="Close" ng-click="CancelarEstatusActivoUbicacionCubierta()">No</button>
+                            </div>
+                            <div class="col-xs-6">
+                                <button class="btn botonAvanzar" data-dismiss="modal" aria-label="Close" ng-click="ConfirmarActualizarUbicacionCubierta()">Si</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div> 
+    
+    <!-- Modal para mensajes -->
+    <div class="modal fade" id="mensajeConfigurarCubiertaUbicacion">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                
+                <div class="modal-body">
+                    <div class="panel panel-default modalMensaje">
+                        <br>
+                        <b>{{mensaje}}</b>
+
+                        <br><br>
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <button class="btn  botonAvanzar" data-dismiss="modal" aria-label="Close">Aceptar</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>  
+                        
+</div>
+
+     

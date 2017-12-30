@@ -1,0 +1,262 @@
+.botonAcordionPerfil, .botonAcordionPerfil:focus, .botonAcordionPerfil:active
+{
+    border-radius: 0px;
+    border: 2px solid lightgray;
+    background: white;
+    color: #262626;
+    margin-bottom: 5px;
+    text-align: left;
+    font-weight: bold;
+    cursor: pointer;
+    
+    overflow: hidden;
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.botonAcordionPerfil:hover
+{
+    background: lightgray;
+}
+
+.botonAcordionPerfil.active
+{
+    border-radius: 0px;
+    background: #262626;
+    color: white;
+    text-align: left;
+    font-weight: bold;
+    
+    border: 2px solid #262626;
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.contenedorAcordio
+{
+    margin-top: -5px;
+    border-width: 0px 2px 2px 2px; 
+    border-style: solid;
+    border-color: #262626;
+    margin-bottom: 10px;
+    padding: 15px;
+}
+
+.subrayadoOperativo
+{
+    border-bottom: 2px solid rgb(89,89, 89);
+    min-height: 45px;
+}
+
+.labelTitulo
+{
+    color: rgb(89,89, 89);
+    font-weight: bold;
+    letter-spacing:.5px;
+}
+
+.textoEtiqueta
+{
+    font-size: 16px;
+    color: black;
+}
+
+/*------------------   ------------------*/
+.tablePerfilCliente
+{
+    max-height: 70vh !important;
+    overflow: scroll;
+}
+
+.tablePerfilClienteDatos
+{
+    max-height: 320px !important;
+    overflow: scroll;
+}
+
+
+.margenSeparador
+{
+    border: 2px solid rgb(234, 234, 234) !important;
+}
+/*------------- Citas ---------------*/
+.textoRojo
+{
+    color: #970000;
+}
+
+.textoRojoClaro
+{
+    color: red;
+}
+
+.textoVerde
+{
+    color: green;
+}
+
+.textoAzul
+{
+    color: blue;
+}
+
+.textoNaranja
+{
+    color: rgb(250, 97, 21) !important;
+}
+
+.textoRojo
+{
+    color: #970000 !important;
+}
+
+/*----------------proyecto----------*/
+.btnStatusProyecto, .btnStatusProyecto:active, .btnStatusProyecto:focus
+{
+    border-radius: 0px;
+    background: white;
+    border: 2px solid lightgray;
+    text-align: left;
+    min-width: 115px;
+    cursor: pointer;
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.btnStatusProyecto:hover
+{
+    background: lightgray;
+}
+
+.btnStatusProyecto:disabled
+{
+    cursor: default;
+    opacity: 1;
+    background: transparent !important;
+}
+
+.btnStatusProyecto.Seleccionado
+{
+    border: 2px solid #262626;
+    background: #262626;
+    color: white;
+}
+
+
+.btnStatusProyecto.Activo, .btnStatusProyecto.Pagado
+{
+    border: 2px solid #08088A;
+    color: #08088A;
+}
+
+.btnStatusProyecto.Cancelado, .btnStatusProyecto.Detenido
+{
+    border: 2px solid #B40404;
+    color: #B40404;
+}
+
+.btnStatusProyecto.Contratado, .btnStatusProyecto.Contratado:hover:disabled, .btnStatusProyecto.Entregado, .btnStatusProyecto.Entregado:hover:disabled
+{
+    border: 2px solid #088A29;
+    color: #088A29;
+}
+
+.btnStatusProyecto.Pendiente, .btnStatusProyecto.Atrasado
+{
+    border: 2px solid #FF8000;
+    color: #FF8000;
+}
+
+.btnStatusProyecto.Activo:hover, .btnStatusProyecto.Pagado:hover
+{
+    background: #08088A;
+    color: white;
+}
+
+.btnStatusProyecto.Cancelado:hover, .btnStatusProyecto.Detenido:hover
+{
+    background: #B40404;
+    color: white;
+}
+
+.btnStatusProyecto.Contratado:hover, .btnStatusProyecto.Entregado:hover
+{
+    background: #088A29;
+    color: white;
+}
+
+.btnStatusProyecto.Pendiente:hover, .btnStatusProyecto.Atrasado:hover
+{
+    background: #FF8000;
+    color: white;
+}
+
+.btnStatusProyecto.EnProgreso
+{
+    color: #2E9AFE;
+    background: white;
+    border: 2px solid #2E9AFE;
+}
+
+.btnStatusProyecto.EnProgreso:hover
+{
+    background: #2E9AFE;
+    color: white;
+}
+
+.textoInfo
+{
+    color: #848484;
+    text-align: right;
+}
+
+/*--------------------------------- Botón opción -----------------------------*/
+.btnDetallePresupuesto, .btnDetallePresupuesto:active, .btnDetallePresupuesto:focus
+{
+    background: white;
+    border: none;
+    border-radius: 0px;
+    text-align: left;
+    color: #585858;
+    font-weight: bold;
+    padding-left: 0px;
+    
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.btnDetallePresupuesto:hover
+{
+    color: black;
+    font-style: bold;
+}
+
+.cubiertaNoDiponible
+{
+    background: black;
+    color: black;
+    height: 15px;
+    width: 60px;
+}
+
+.tablaResponsiva
+{
+    overflow: visible !important;
+}
+
+@media (max-width: 767px) 
+{ 
+    .tablaResponsiva
+    {
+        overflow: scroll !important;
+    }
+}
+
+

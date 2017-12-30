@@ -1,0 +1,260 @@
+<div ng-controller="CitaClienteControlador as citaCliente">
+    
+    <br>
+    <div class="row">
+        <div class="col-xs-12">
+           
+            <button class="btn botonAgregarAcordion pull-right" ng-click="AgregarCita()" >
+                <span>
+                    <span class="fa fa-plus"></span>
+                    <span> Nuevo</span> 
+                </span>
+            </button>
+        </div>
+    </div>
+                 
+    <div class="row" >
+        <div class="col-xs-12">
+           <div ng-repeat="estatus in citaEstatus | orderBy:'EstatusCitaId'" ng-if="estatus.EstatusCitaId != '1'" >
+               
+               <button class="btn btn-block botonAcordionPerfil {{estatus.clase}}" ng-click="MostrarEstatusCita(estatus.EstatusCitaId)">
+                   <span class="fa fa-chevron-right" style="width:20px;" ng-if="estatus.clase != 'active'"></span>
+                   <span class="fa fa-chevron-up" style="width:20px;" ng-if="estatus.clase == 'active'"></span>
+                   {{estatus.Nombre}} 
+               </button><br>
+               
+                <div style="max-height: 70% !important; max-width; 100%" ng-if="estatus.clase == 'active'">
+                   
+                    <div class="row">
+                       <div class=" col-sm-4 col-md-4 col-lg-3">
+                              
+                            <!-- Filtro Tarea -->
+                            <div class="dropdown">
+
+                                <button class="dropdown-toggle  btn btn-block dropdownFiltro ellText" data-toggle="dropdown" ng-class="{disabled: operacion=='Editar'}" >
+                                    <span><b>Tarea:</b> {{filtro}} </span>
+                                    <span class="fa fa-caret-down" style="text-align: right;"></span>
+                                </button>
+
+                                <ul class="dropdown-menu listaOpcionesDropdownList " >
+                                   <li style="overflow: scroll">
+                                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarTareaFiltro('Todas')">
+                                            <span>Todas</span>
+                                        </a>
+                                    </li>
+
+                                    <li ng-repeat="tarea in tareaCita | orderBy:'Nombre'" style="overflow: scroll">
+                                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarTareaFiltro(tarea.Nombre)">
+                                            <span>{{tarea.Nombre}}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                            </div>
+                        </div>
+                        
+                        <br class="hidden-sm hidden-md hidden-lg" style="height: 10px">
+                        
+                        <div class=" col-sm-4 col-md-4 col-lg-3" ng-if="estatusCita == '2'">
+                            <!-- Filtro Estatus -->
+                            <div class="dropdown" >
+
+                                <button class="dropdown-toggle  btn dropdownFiltro btn-block ellText " data-toggle="dropdown" ng-class="{disabled: operacion=='Editar'}" >
+                                    <span><b>Estatus:</b> {{filtroEstatus}} </span>
+                                    <span class="fa fa-caret-down"></span>
+                                </button>
+
+                                <ul class="dropdown-menu listaOpcionesDropdownList " >
+                                    <li>
+                                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarEstatusFiltro('Todos')">
+                                            <span>Todos</span>
+                                        </a>
+                                    </li>
+                                   <li>
+                                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarEstatusFiltro('Atrasada')">
+                                            <span>Atrasada</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarEstatusFiltro('Pendiente')">
+                                            <span>Pendiente</span>
+                                        </a>
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <br>
+                    
+                   <div ng-if="(cita | filter: FiltroCita | filter:{EstatusCita:{ EstatusCitaId: estatus.EstatusCitaId} }).length > 0" class="table-responsive TablaUnidadNegocio">
+                        <table class="table table-hover table-striped table-condensed" >
+                            <thead class="TituloTabla">
+                              <tr>
+                                <th><span><b> Tarea</b></span></th>
+                                <th><span class=""><b>Asunto</b></span></th>
+                                <th class="text-center"  ng-if="estatus.EstatusCitaId == '2'"><span ><b> Fecha</b></span></th>
+                                <th class="text-center" ng-if="estatus.EstatusCitaId == '2'"><span><b>Horario</b></span></th>
+                                <th class="text-center" ng-if="estatus.EstatusCitaId != '2'"><span ><b>Fecha Fin</b></span></th>
+                                <th><span ><b>Responsable</b></span></th>
+                                <th class="text-center"><span><b>Detalles</b></span></th>
+                                <th class="text-center" ng-if="estatus.EstatusCitaId == '2'"><span ><b>Editar</b></span></th>
+                                <th class="text-center"  ng-if="estatus.EstatusCitaId == '2'"><span ><b> Estatus</b></span></th>
+                              </tr>
+                            </thead>
+                            <tbody >
+                              <tr ng-repeat="(key, cita)  in cita | filter: FiltroCita | orderBy:[ ordenarPor, '-FechaFin2', 'EstatusCita.EstatusCitaId', 'EstatusCita.Nombre', 'Fecha3', 'HoraInicio']" ng-if="estatus.EstatusCitaId == cita.EstatusCita.EstatusCitaId">
+                                 <td>{{cita.Tarea.Nombre}}</td>
+                                 <td>{{cita.Asunto}}</td>
+                                 <td class="text-center" ng-if="estatus.EstatusCitaId == '2'">{{cita.Fecha}}</td>
+                                 <td class="text-center" ng-if="estatus.EstatusCitaId == '2'">{{cita.HoraInicio}} - {{cita.HoraFin}}</td>
+
+                                 <td class="text-center" ng-if="estatus.EstatusCitaId != '2'">{{cita.FechaFin}}</td>
+                                 <td>{{cita.Responsable.Nombre}}</td>
+
+                                 <td class="text-center">
+                                    <a   class="BotonOperacion" href=""  ng-click="DetalleCita(cita)">
+                                        <span class="fa fa-eye fa-2x"></span>
+                                    </a>
+                                    <!--<span  class="fa fa-eye fa-2x botonRegistroDeshabilitado"></span>-->
+                                </td>
+
+                                 <td class="text-center" ng-if="estatus.EstatusCitaId == '2'" >
+                                    <a   class="BotonOperacion" href=""  ng-click="EditarCita(cita)">
+                                        <span class="fa fa-pencil fa-2x"></span>
+                                    </a>
+                                    <!--<span  class="fa fa-eye fa-2x botonRegistroDeshabilitado"></span>-->
+                                </td>
+
+                                 <td ng-if="estatus.EstatusCitaId == '2'" style="min-width: 90px">
+                                   <div class="dropdown" >
+                                        <a class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown" style="font-size:14px;">
+                                            <span ng-if="cita.EstatusCita.EstatusCitaId != 2" ng-class="GetClaseEstatus(cita.EstatusCita)">{{cita.EstatusCita.Nombre}}</span>
+                                            <span ng-if="cita.EstatusCita.EstatusCitaId == 2" ng-class="GetClaseEstatus(cita.EstatusCita)">{{GetEstatusCita(cita)}}{{cita.EstatusCita.Nombre}}</span>
+                                            <span class="caret"></span>
+                                        </a>
+
+                                        <ul class="dropdown-menu dropdown-menu-right dropdownRight" style="display: float">
+                                            <li ng-repeat="estatus in citaEstatus | orderBy:'Nombre'" ng-show="estatus.EstatusCitaId != '1' && estatus.EstatusCitaId != '2'">
+                                                <a  href="" class="dropdownOpcionModal" ng-click="CambiarEstatusCita(cita, estatus)">
+                                                    <span>{{estatus.Nombre}}</span>
+                                                </a>
+                                            </li>
+
+                                        </ul>
+                                    </div>
+                                  </td>
+
+                              </tr>
+
+                            </tbody>
+                        </table>
+                   </div>
+                </div>
+                
+                <div style="margin-bottom:10px" class="textoPerfilHome" ng-if="estatus.clase == 'active' && (cita | filter: FiltroCita | filter:{EstatusCita:{ EstatusCitaId: estatus.EstatusCitaId} }).length == 0">
+                        Sin Citas {{estatus.Nombre}}s  
+                </div>
+               
+            </div>
+           
+        </div>
+    </div>
+    
+    
+    <!--------------------------- Modales -------------------------------------->
+    
+    <!-- Cambiar estatus cita -->
+    <div class="modal fade" id="cambiarEstatusCita">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm modalPrincipal text-center">
+           
+            <div class="row">
+                <div class="col-xs-12">
+                    <span style="font-size:14pt">{{mensajeAdvertencia}}</span>
+                </div>
+            </div>
+            <br><br>
+            <div class="row">
+                <div class="col-xs-6">
+                    <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close">No</button>
+                </div>
+                <div class="col-xs-6">
+                    <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="ConfirmarCambiarEstatusCita()">Si</button>
+                </div>
+            </div>
+                        
+        </div>
+    </div>
+    
+    
+    <div class="modal fade sombraDivModal" id="citaDetalle" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+        <br>    <br>   <br>
+        <div class="modal-dialog modalPrincipal">
+           
+            <div class="row">
+                <div class="col-xs-12">
+                    <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarDireccionModal()"><span aria-hidden="true">&times;</span></button>
+                    <span  class="tituloModal">Detalles Cita</span>
+                </div>
+            </div>
+        
+            <br><br>
+            
+            <div class="row">
+                
+                <div class="col-sm-12">
+                  
+                  <!-- Tarea -->
+                    <span style="font-size: 14pt !important" >
+                        <b>{{detalle.Tarea.Nombre}}: </b> <span>{{detalle.Asunto}}</span>
+                    </span><br><br>
+                   <!--Cliente-->
+                    <span>
+                        <b>Cliente: </b> <span>{{detalle.Persona.Nombre}}</span>
+                    </span><br>
+                    
+                    <!-- Dirección de la cita -->
+                    <span ng-if="detalle.Tarea.TareaCitaId == '1'">
+                        <b>Dirección: </b> <span>{{detalle.Domicilio.Domicilio}}. {{detalle.Domicilio.Ciudad}}, {{detalle.Domicilio.Estado}}. C.P. {{detalle.Domicilio.Codigo}}</span><br>
+                    </span>
+                    <!-- Responsable -->
+                    <span>
+                        <b>Responsable: </b> <span>{{detalle.Responsable.Nombre}}</span>
+                    </span><br>
+                    <!-- Fecha -->
+                    <span>
+                        <b>Fecha: </b> <span>{{detalle.Fecha}}</span>
+                    </span><br>
+                    <!-- Hora -->
+                    <span>
+                        <b>Horario: </b> <span>{{detalle.HoraInicio}} - {{detalle.HoraFin}}</span>
+                    </span><br>
+                    <!-- Fecha Fin -->
+                    <span ng-if="detalle.FechaFin.length > 0">
+                        <b>Fecha fin: </b> <span>{{detalle.FechaFin}}</span><br>
+                    </span>
+                    
+                    <br>
+        
+                    
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-xs-12">
+                    <b>Descripción</b>
+                    <div class="marcoNegro">
+                        <span>{{detalle.Descripcion}}</span>
+                    </div>
+                </div>
+            </div>     
+
+        </div>
+    </div>
+    
+    
+</div>
+
+     

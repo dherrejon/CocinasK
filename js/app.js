@@ -1,4 +1,4 @@
-var app = angular.module('CocinasK',['ngRoute', 'angular.filter','angular-md5']);
+var app = angular.module('CocinasK',['ngRoute', 'angular.filter','angular-md5', 'angular-loading-bar', 'ui.bootstrap']);
 
  //Configuracion del jason token, APIURL: indica la direccion del directorio de index.php
 app.constant('CONFIG',
@@ -68,7 +68,7 @@ app.factory('mhttpInterceptor', function($q,CONFIG,$rootScope,$window,$location)
 
 
 //indica las rutas de la aplicacion web
-app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpProvider) 
+app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpProvider, $ocLazyLoad) 
 {   
     $httpProvider.interceptors.push('mhttpInterceptor');
     
@@ -79,10 +79,20 @@ app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpPro
     when('/Perfil',{
         templateUrl: 'html/Perfil.html'
     }).
+    when('/Home',{
+        templateUrl: 'html/Home.html'
+    }).
+    when('/ReporteBug',{
+        templateUrl: 'html/Bug.html'
+    }).
+    when('/RecuperarPassword/:usuarioId/:codigo',{
+        templateUrl: 'html/RecuperarPassword.html'
+    }).
+    
     when('/UnidadNegocio',{
         templateUrl: 'html/Administrador/CocinasK/UnidadNegocio.html'
     }).
-     when('/Plaza',{
+    when('/Plaza',{
         templateUrl: 'html/Administrador/CocinasK/Plaza.html'
     }).
     when('/Territorio',{
@@ -94,6 +104,16 @@ app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpPro
     when('/UsuarioPerfil',{
         templateUrl: 'html/Administrador/CocinasK/UsuarioPerfil.html'
     }).
+     when('/Promocion',{
+        templateUrl: 'html/Administrador/CocinasK/Promocion.html'
+    }).
+    when('/PlanPago',{
+        templateUrl: 'html/Administrador/CocinasK/PlanPago.html'
+    }).
+    when('/VariableSistema',{
+        templateUrl: 'html/Administrador/CocinasK/Variables.html'
+    }).
+    //Configuración
     when('/ConfigurarUnidadNegocio',{
         templateUrl: 'html/Administrador/Configuracion/ConfiguracionUnidadNegocio.html'
     }).
@@ -103,17 +123,77 @@ app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpPro
     when('/ConfigurarMaterial',{
         templateUrl: 'html/Administrador/Configuracion/ConfiguracionMaterial.html'
     }).
-    
-     when('/Combinacion',{
+    when('/ConfigurarPuerta',{
+        templateUrl: 'html/Administrador/Configuracion/ConfiguracionPuerta.html'
+    }).
+    when('/ConfigurarMedioContacto',{
+        templateUrl: 'html/Administrador/Configuracion/ConfiguracionMedioContacto.html'
+    }).
+    when('/ConfigurarColor',{
+        templateUrl: 'html/Administrador/Configuracion/ConfiguracionColor.html'
+    }).
+    when('/ConfigurarCubierta',{
+        templateUrl: 'html/Administrador/Configuracion/ConfiguracionCubierta.html'
+    }).
+    when('/ConfigurarAccesorio',{
+        templateUrl: 'html/Administrador/Configuracion/ConfiguracionAccesorio.html'
+    }).
+    when('/Servicio',{
+        templateUrl: 'html/Administrador/Configuracion/ConfiguracionServicio.html'
+    }).
+    when('/Maqueo',{
+        templateUrl: 'html/Administrador/Configuracion/ConfiguracionMaqueo.html'
+    }).
+    when('/ConfigurarCombinacionMaterial',{
+        templateUrl: 'html/Administrador/Configuracion/ConfiguracionCombinacion.html'
+    }).
+     when('/ConfigurarCliente',{
+        templateUrl: 'html/Administrador/Configuracion/ConfiguracionCliente.html'
+    }).
+    when('/ConfigurarProyecto',{
+        templateUrl: 'html/Administrador/Configuracion/ConfiguracionProyecto.html'
+    }).
+    when('/ConfigurarContrato',{
+        templateUrl: 'html/Administrador/Configuracion/ConfiguracionContrato.html'
+    }).
+    //Catálogos
+    when('/Combinacion',{
         templateUrl: 'html/Administrador/Catalogo/Combinacion.html'
     }).
-    
-    when('/Ejecutivo',{
-        templateUrl: 'html/Ejecutivo/Ejecutivo.html'
+    when('/Modulo',{
+        templateUrl: 'html/Administrador/Catalogo/Modulo.html'
     }).
+    when('/Cubierta',{
+        templateUrl: 'html/Administrador/Catalogo/Cubierta.html'
+    }).
+    when('/Accesorio',{
+        templateUrl: 'html/Administrador/Catalogo/Accesorio.html'
+    }).
+        when('/CostoModulo',{
+            templateUrl: 'html/Administrador/Catalogo/Modulo/CostoModulo.html'
+        }).
+    //Ejecutivo
+    /*when('/Ejecutivo',{
+        templateUrl: 'html/Ejecutivo/Ejecutivo.html'
+    }).*/
+    
+    //Operativo
     when('/Operativo',{
         templateUrl: 'html/Operativo/Operativo.html'
     }).
+    when('/Cliente',{
+        templateUrl: 'html/Operativo/Cliente/Cliente.html'
+    }).
+    when('/PerfilCliente/:personaId/:seccion',{
+        templateUrl: 'html/Operativo/Cliente/PerfilCliente.html'
+    }).
+    when('/ReportePago',{
+        templateUrl: 'html/Operativo/Reporte/ReportePago.html'
+    }).
+    when('/ReporteContrato',{
+        templateUrl: 'html/Operativo/Reporte/ReporteContrato.html'
+    }).
+    
     otherwise({
         templateUrl: 'html/Login.html'
     });
@@ -180,37 +260,33 @@ app.run(function($rootScope, $location, $window, $http, CONFIG, $q, datosUsuario
     $rootScope.GetEstadoSesion();                     //Cada ves que se inicializa la aplicación verifica los datos del ususario
     
     /*-----------------Expresiones Regulares--------------------------*/
-    $rootScope.erNombreGeneral = /^(([a-z ñáéíóú]|[A-Z ÑÁÉÍÓÚ]|[0-9]|\.|\+|\-|\#) ?)+$/;   //expresión regular para nombres
+    $rootScope.erNombreGeneral = /^(([a-z ñáéíóú]|[A-Z ÑÁÉÍÓÚ]|[0-9]|\.|\+|\-|\#|\[|\]|\(|\)) ?)+$/;   //expresión regular para nombres
     $rootScope.erTelefono = /^(\d){10}$/;                                          //expresión regular para el teléfono   // \((\d){3}\) \d{3}-\d{4}
     $rootScope.erCP = /^(\d){5}$/;                                          //expresión regular para el código postal 
     $rootScope.erEmail = /^[_a-z0-9-]+(.[_a-z0-9-]+)*@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,4})$/;   //expresion regular para correo electronico                                       
-    $rootScope.erRFC = /^([A-Z,Ñ,&]{3,4}\-([0-9]{2})(0[1-9]|1[0-2])(0[1-9]|1[0-9]|2[0-9]|3[0-1])\-[A-Z|\d]{3})$/;   //expresion regular para RFC de una empresa
+    $rootScope.erRFC = /^(([A-Z,Ñ,&]|[a-z,ñ]){3,4}\-([0-9]{2})(0[1-9]|1[0-2])(0[1-9]|1[0-9]|2[0-9]|3[0-1])\-([A-Z]|\d|[a-z]){3})$/;   //expresion regular para RFC de una empresa
     $rootScope.erDecimal = /^[0-9]+(\.[0-9][0-9]?)?$/;   //expresion regular para RFC de una empresa
     $rootScope.erNombrePersonal = /^(([A-Z]|Ñ|[a-z]|[ñáéíóú]|[ÁÉÍÓÚ]){2,120}\s?)+$/;   //expresion regular para los apellido y el nombre de una persona
-    $rootScope.erNombreUsuario = /^([a-z]|ñ|[1-9]){4}([a-z]|ñ|[1-9])*$/;   //expresion regular para el nombre de usurio
-    $rootScope.erNumeroDecimal = /^[0-9]+(\.[0-9][0-9]?)?$/;   //expresion regular para un número decimal
-    $rootScope.erNumeroFraccion = /^((([1-9]\s)?([1-9]\/[1-9]{1,2}))|([1-9])){1}$/;   //expresion regular para un número fraccional
+    $rootScope.erNombreUsuario = /^(\w|ñ){4}(\w|ñ)*$/;   //expresion regular para el nombre de usurio
+    $rootScope.erNumeroDecimal = /^([1-9][0-9]*(\.[0-9][0-9]?)?)|(0(\.[0-9][0-9]?))$/;   //expresion regular para un número decimal
+    $rootScope.erNumeroFraccion = /^((([0-9]\s)*([1-9]\/[1-9]{1,2}))|([0-9]))+$/;   //expresion regular para un número fraccional
+    $rootScope.erNumeroEntero = /^[0-9]+$/;   //expresion regular para un número entero
+    $rootScope.erNumeroEnteroSinCero = /^[1-9][0-9]*$/;   //expresion regular para un número entero
+    $rootScope.erNumeroFraccionSinCero = /^((([1-9][0-9]*\s)?([1-9][0-9]*\/[1-9]{1,2}))|([1-9][0-9]*))$/;   //expresion regular para un número fraccional
+    $rootScope.erPassword = /^(\w){6}(\w)*$/;   //expresion regular para un número entero
+    $rootScope.erNumeroDecimalCero = /^([1-9][0-9]*(\.[0-9][0-9]?)?)|(0(\.[0-9][0-9]?)?)$/;   //expresion regular para un número decimal
     
     /*---------------------------------- Mantener la barra de navegacion visible-----------------------*/
     /*$window.onscroll = function ()
     {
-        var maxScrollY = 0;
-        if($window.innerWidth < 767)
-            maxScrollY = 78;
-        else
-            maxScrollY = 63;
-        
-        if ( $window.scrollY >  maxScrollY)
+        if($(this).scrollTop()>62)
         {
-            $rootScope.barraNavArriba = "navbar navbar-fixed-top";
-            $rootScope.$apply();
+            $('#barraNavegacion').addClass('encabezadoArriba');
         }
         else
         {
-            $rootScope.barraNavArriba = "navbar";
-            $rootScope.$apply();
-            
-        }        
+            $('#barraNavegacion').removeClass('encabezadoArriba');
+        }
     };*/
     
     /*-----tamaño de la pantalla -----------*/
@@ -220,6 +296,7 @@ app.run(function($rootScope, $location, $window, $http, CONFIG, $q, datosUsuario
         $rootScope.anchoPantalla = $( window ).width();
         $rootScope.$apply();       
     });
+
 });
 
 //identificas cuando los datos del usuario cambian
@@ -270,7 +347,7 @@ $(document).on('show.bs.modal', '.modal', function ()
     var zIndex = Math.max.apply(null, Array.prototype.map.call(document.querySelectorAll('*'), function(el) 
     {
         return +el.style.zIndex;
-    })) + 100;
+    })) + 1000000000000000;
     
     $(document).on('hidden.bs.modal', '.modal', function () 
     {

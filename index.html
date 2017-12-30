@@ -5,25 +5,56 @@
         <title>Cocinas K</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+       
         <!-- angular-->
         <script type="text/javascript" src="libs/angular/angular.min.js"></script>
         <script type="text/javascript" src="libs/angular/angular-route.min.js"></script>
         <script type="text/javascript" src="libs/angular/angular-md5.js"></script>
         <script src="libs/angular/angular-filter.min.js"></script>
+        <script type="text/javascript" src="libs/angular-loading-bar/loading-bar.js"></script>
+        
+        <script type="text/javascript" src="libs/alaSQL/alasql.js"></script>
+        <script type="text/javascript" src="libs/FileSaver.min.js"></script>
+        <link rel="stylesheet" href="libs/angular-loading-bar/loading-bar.css">
 
         <!-- jQuery-->
         <script src="libs/jQuery.js"></script>
         <script src="libs/jquery-base64.min.js"></script>
-
+        
         <!-- Bootstrap-->
-        <link rel="stylesheet" href="libs/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="libs/bootstrap/css/bootstrap.css">
+        
+        <link rel="stylesheet" href="libs/bootstrap/css/datepicker/bootstrap-material-datetimepicker.css">
+        
+        
         <script src="libs/bootstrap/js/bootstrap.min.js"></script>
+        <script src="libs/bootstrap/UI/ui-bootstrap-tpls-2.5.0.min.js"></script>
+        
+        <script src="libs/bootstrap/js/tether.min.js"></script>
+    
+        <!-- Date time -->
+        <script type="text/javascript" src="libs/bootstrap/js/datepicker/moment-with-locales.min.js"></script>
+        <script type="text/javascript" src="libs/bootstrap/js/datepicker/bootstrap-material-datetimepicker.js"></script>
+        
+        <link rel="stylesheet" href="libs/bootstrap/js/datetimepicker/bootstrap-datetimepicker.min.css">
+        <script type="text/javascript" src="libs/bootstrap/js/datetimepicker/bootstrap-datetimepicker.js"></script>
+        
+        <!-- PDF -->
+        <!--<script type="text/javascript" src="libs/pdfmaker/pdfmake.min.js"></script>
+        <script type="text/javascript" src="libs/pdfmaker/vfs_fonts.js"></script>
+        
+        <script type="text/javascript" src="libs/html2canvas.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.debug.js"></script>-->
+        
+        <script type="text/javascript" src="libs/jspdf/jspdf.debug.js"></script>
+        <script type="text/javascript" src="libs/jspdf/faker.min.js"></script>
+        <script type="text/javascript" src="libs/jspdf/jspdf.plugin.autotable.js"></script> 
         
         <!-- Datos -->
         <script src="js/Datos/General/Usuario.js"></script>
         <script src="js/Datos/General/Direccion.js"></script>
         <script src="js/Datos/General/MedioContacto.js"></script>
+        <script src="js/Datos/General/Bug.js"></script>
         
         <script src="js/Datos/Administrador/CocinasK/UnidadNegocio.js"></script>
         <script src="js/Datos/Administrador/CocinasK/Territorio.js"></script>
@@ -36,37 +67,134 @@
         <script src="js/Datos/Administrador/CocinasK/Material.js"></script>
         <script src="js/Datos/Administrador/CocinasK/Combinacion.js"></script>
         <script src="js/Datos/Administrador/CocinasK/Consumible.js"></script>
-
+        <script src="js/Datos/Administrador/CocinasK/Muestrario.js"></script>
+        <script src="js/Datos/Administrador/CocinasK/Puerta.js"></script>
+        <script src="js/Datos/Administrador/CocinasK/Cubierta.js"></script>
+        <script src="js/Datos/Administrador/CocinasK/Color.js"></script>
+        <script src="js/Datos/Administrador/CocinasK/Grupo.js"></script>
+        <script src="js/Datos/Administrador/CocinasK/FabricacionCubierta.js"></script>
+        <script src="js/Datos/Administrador/CocinasK/UbicacionCubierta.js"></script>
+        <script src="js/Datos/Administrador/CocinasK/Accesorio.js"></script>
+        <script src="js/Datos/Administrador/CocinasK/Servicio.js"></script>
+        <script src="js/Datos/Administrador/CocinasK/Maqueo.js"></script>
+        <script src="js/Datos/Administrador/CocinasK/Promocion.js"></script>
+        <script src="js/Datos/Administrador/CocinasK/PlanPago.js"></script>
+        <script src="js/Datos/Administrador/CocinasK/MedioCaptacion.js"></script>
+        <script src="js/Datos/Administrador/CocinasK/TipoProyecto.js"></script>
+        <script src="js/Datos/Administrador/CocinasK/Variable.js"></script>
+        <script src="js/Datos/Administrador/CocinasK/MedioPago.js"></script>
+        <script src="js/Datos/Administrador/CocinasK/ConceptoVenta.js"></script>
+        <script src="js/Datos/Administrador/CocinasK/DescripcionContrato.js"></script>
+        <script src="js/Datos/Administrador/CocinasK/AcabadoCubierta.js"></script>
+        
+        <!-------- Operativo ----------->
+        <script src="js/Datos/Operativo/Cita.js"></script>
+        <script src="js/Datos/Operativo/Persona.js"></script>
+        <script src="js/Datos/Operativo/Proyecto.js"></script>
+        <script src="js/Datos/Operativo/Contrato.js"></script>
+        <script src="js/Datos/Operativo/Pago.js"></script>
+        
+        
         <!-- Controladores -->
         <script src="js/app.js"></script>
         <script src="js/Controladores/LoginControlador.js"></script>
         <script src="js/Controladores/EncabezadoControlador.js"></script>
         <script src="js/Controladores/PerfilControlador.js"></script>
-        
+        <script src="js/Controladores/HomeControlador.js"></script>
+        <script src="js/Controladores/BugControlador.js"></script>
+        <script src="js/Controladores/RecuperarPasswordControlador.js"></script>
     
         <!-- Administrador -->
+            <!-- Cocinas k-->
         <script src="js/Controladores/Administrador/CocinasK/UnidadNegocioControlador.js"></script>
         <script src="js/Controladores/Administrador/CocinasK/TerritorioControlador.js"></script>
         <script src="js/Controladores/Administrador/CocinasK/PlazaControlador.js"></script>
         <script src="js/Controladores/Administrador/CocinasK/ColaboradorControlador.js"></script>
         <script src="js/Controladores/Administrador/CocinasK/UsuarioPerfilControlador.js"></script>
+        <script src="js/Controladores/Administrador/CocinasK/PromocionControlador.js"></script>
+        <script src="js/Controladores/Administrador/CocinasK/PlanPagoControlador.js"></script>
+        <script src="js/Controladores/Administrador/CocinasK/VariableControlador.js"></script>
         
+             <!-- Configuración -->
         <script src="js/Controladores/Administrador/Configuracion/ConfiguracionUnidadNegocioControlador.js"></script>
         <script src="js/Controladores/Administrador/Configuracion/Modulos/ConfiguracionModulo.js"></script>
         <script src="js/Controladores/Administrador/Configuracion/ConfiguracionMaterialControlador.js"></script>
-        
+        <script src="js/Controladores/Administrador/Configuracion/ConfiguracionPuertaControlador.js"></script>
+        <script src="js/Controladores/Administrador/Configuracion/ConfiguracionMedioContactoControlador.js"></script>
+        <script src="js/Controladores/Administrador/Configuracion/ConfiguracionColorControlador.js"></script>
+        <script src="js/Controladores/Administrador/Configuracion/ConfiguracionCubiertaControlador.js"></script>
+        <script src="js/Controladores/Administrador/Configuracion/ConfiguracionAccesorioControlador.js"></script>
+        <script src="js/Controladores/Administrador/Configuracion/ConfiguracionServicioControlador.js"></script>
+        <script src="js/Controladores/Administrador/Configuracion/ConfiguracionMaqueoControlador.js"></script>
+        <script src="js/Controladores/Administrador/Configuracion/ConfiguracionCombinacionControlador.js"></script>
+        <script src="js/Controladores/Administrador/Configuracion/ConfiguracionCliente.js"></script>
+        <script src="js/Controladores/Administrador/Configuracion/ConfiguracionProyectoControlador.js"></script>
+        <script src="js/Controladores/Administrador/Configuracion/ConfiguracionContratoControlador.js"></script>
+                
+        <script src="js/Controladores/Administrador/Configuracion/Color/ColorControlador.js"></script>
+        <script src="js/Controladores/Administrador/Configuracion/Cubierta/ColorCubiertaControlador.js"></script>
+        <script src="js/Controladores/Administrador/Configuracion/Cubierta/FabricacionCubiertaControlador.js"></script>
+        <script src="js/Controladores/Administrador/Configuracion/Cubierta/UbicacionCubiertaControlador.js"></script>
+        <script src="js/Controladores/Administrador/Configuracion/Cubierta/AcabadoControlador.js"></script>
+        <script src="js/Controladores/Administrador/Configuracion/Accesorio/TipoAccesorioControlador.js"></script>
+        <script src="js/Controladores/Administrador/Configuracion/Accesorio/MuestrarioControlador.js"></script>
+        <script src="js/Controladores/Administrador/Configuracion/Servicio/ServicioControlador.js"></script>
+        <script src="js/Controladores/Administrador/Configuracion/Maqueo/MaqueoControlador.js"></script>
+        <script src="js/Controladores/Administrador/Configuracion/Maqueo/ColorMaqueoControlador.js"></script>
+        <script src="js/Controladores/Administrador/Configuracion/Combinacion/TipoCombinacionControlador.js"></script>
+        <script src="js/Controladores/Administrador/Configuracion/Cliente/MedioCaptacionControlador.js"></script>
+        <script src="js/Controladores/Administrador/Configuracion/Proyecto/TipoProyectoControlador.js"></script>
+           <script src="js/Controladores/Administrador/Configuracion/Contrato/ConceptoVentaControlador.js"></script>
+           <script src="js/Controladores/Administrador/Configuracion/Contrato/MedioPagoControlador.js"></script>
+           <script src="js/Controladores/Administrador/Configuracion/Contrato/DescripcionContratoControlador.js"></script>
+            
+            <!-- Catálogos -->
         <script src="js/Controladores/Administrador/Catalogo/CombinacionControlador.js"></script>
-        
+        <script src="js/Controladores/Administrador/Catalogo/ModuloControlador.js"></script>
+        <script src="js/Controladores/Administrador/Catalogo/CubiertaControlador.js"></script>
+        <script src="js/Controladores/Administrador/Catalogo/AccesorioControlador.js"></script>
+              <script src="js/Controladores/Administrador/Catalogo/Modulo/CostoModuloControlador.js"></script>
+           
             <!-- Ejecutivo -->
         <script src="js/Controladores/Ejecutivo/EjecutivoControlador.js"></script>
         
-            <!-- Operativo -->
+        <!-- Operativo -->
         <script src="js/Controladores/Operativo/OperativoControlador.js"></script>
+        <script src="js/Controladores/Operativo/CitaControlador.js"></script>
+        <script src="js/Controladores/Operativo/MedioContactoControlador.js"></script>
+        <script src="js/Controladores/Operativo/DomicilioControlador.js"></script>
+        <script src="js/Controladores/Operativo/DatosFiscales.js"></script>
+        <script src="js/Controladores/Operativo/ProyectoControlador.js"></script>
+        <script src="js/Controladores/Operativo/ContratoControlador.js"></script>
+        
+        <script src="js/Controladores/Operativo/Cliente/ClienteControlador.js"></script>
+        <script src="js/Controladores/Operativo/Cliente/PerfilClienteControlador.js"></script>
+            <script src="js/Controladores/Operativo/Cliente/Perfil/CitasControlador.js"></script>
+            <script src="js/Controladores/Operativo/Cliente/Perfil/ProyectosControlador.js"></script>
+            <script src="js/Controladores/Operativo/Cliente/Perfil/NotasControlador.js"></script>
+            <script src="js/Controladores/Operativo/Cliente/Perfil/DatosGeneralesControlador.js"></script>
+            <script src="js/Controladores/Operativo/Cliente/Perfil/ContratoControlador.js"></script>
+            
+        <script src="js/Controladores/Operativo/CalcularCostoModulo.js"></script>
+        <script src="js/Controladores/Operativo/CalcularCostoPuerta.js"></script>
+        
+        
+        <script src="js/Controladores/Operativo/Presupuesto/OperacionesPresupuestoControlador.js"></script>
+        
+            <!-- Reportes -->
+            <script src="js/Controladores/Operativo/Reporte/ReporteContratoControlador.js"></script>
+            <script src="js/Controladores/Operativo/Reporte/ReportePagoControlador.js"></script>
         
         <!--css-->
+        <link rel="stylesheet" href="css/animaciones.css">
+        
         <link rel="stylesheet" href="css/Login.css">
         <link rel="stylesheet" href="css/EncabezadoEstilos.css">
         <link rel="stylesheet" href="css/PerfilEstilos.css">
+        <link rel="stylesheet" href="css/HomeEstilos.css">
+        <link rel="stylesheet" href="css/Calendario.css">
+        <link rel="stylesheet" href="css/bootstrap-material-datetimepicker.css">
+        
         <link rel="stylesheet" href="css/Administrador/CocinasK/UnidadNegocioEstilos.css">
         <link rel="stylesheet" href="css/Administrador/CocinasK/UsuarioEstilos.css">
         <link rel="stylesheet" href="css/Administrador/CocinasK/TerritorioEstilo.css">
@@ -74,6 +202,18 @@
         <link rel="stylesheet" href="css/Administrador/CocinasK/ColaboradorEstilo.css">
         <link rel="stylesheet" href="css/Administrador/Configuracion/ConfiguracionUnidadNegocio.css">
         <link rel="stylesheet" href="css/Administrador/Configuracion/ConfiguracionModulo.css">
+        <link rel="stylesheet" href="css/Administrador/Catalogos/ModuloEstilo.css">
+        <link rel="stylesheet" href="css/Administrador/Configuracion/PuertaEstilo.css">
+        <link rel="stylesheet" href="css/Administrador/Configuracion/Imagen.css">
+        <link rel="stylesheet" href="css/Administrador/Configuracion/CargarArchivoEstilos.css">
+        
+        <link rel="stylesheet" href="css/Operativo/Modales.css">
+        <link rel="stylesheet" href="css/Operativo/Controles.css">
+        <link rel="stylesheet" href="css/Operativo/Clientes.css">
+        <link rel="stylesheet" href="css/Operativo/PerfilCliente.css">
+        <link rel="stylesheet" href="css/Operativo/PasosEstilos.css">
+        <link rel="stylesheet" href="css/Operativo/PresupuestoModal.css">
+        <link rel="stylesheet" href="css/Operativo/Contratos.css">
         
         <!--awesome font-->
         <link rel="stylesheet" href="css/font-awesome.min.css">
@@ -81,6 +221,7 @@
 
     </head>
     <body class="{{clasePrincipal}}">
+       
         <div>
            <div id="header">
                <header ng-include=" 'html/Encabezado.html' "></header>
@@ -93,5 +234,8 @@
                 <footer ng-include=" 'html/Footer.html' "></footer>
             </div>-->
         </div>
+    
     </body>
+    
+   
 </html>

@@ -2,12 +2,13 @@
 
     <div class="encabezado container-fluid">
          
-        <div class="row perfilEncabezado" ng-show="usuario.SesionIniciada">            
+        <div class="row perfilEncabezado" ng-show="usuario.SesionIniciada" id="tiutloPagina">            
             <!-- Título -->
             <div class="col-md-7 col-sm-6 col-xs-6 encabezadoTitulo">
                 <h2 class =" hidden-xs hidden-sm">Sistema Integral de Cocinas K</h2>
                 <h3 class ="hidden-md hidden-lg">Sistema Integral de Cocinas K</h3>
             </div>
+            
             <div class=" col-md-5 col-sm-6 col-xs-6" style="margin-top: 20px;">
                 
                 <span class="textoPerfil">Bienvenido {{usuario.NombreColaborador}}</span> 
@@ -18,74 +19,110 @@
             </div>
         </div>
         
-        <div class="row barraNavegacion" ng-show="usuario.SesionIniciada">
+        <div class="row barraNavegacion" ng-show="usuario.SesionIniciada" id="barraNavegacion">
             
             <div class="col-xs-12">
                 
                 <!-- logo -->
                 <div class="col-sm-3 col-xs-8">
-                    <img ng-src="img/Encabezado/logo.png" class=" claseLogoSM hidden-xs">
-                    <img ng-src="img/Encabezado/logo.png" class=" claseLogoXS hidden-sm hidden-md hidden-lg">
+                    <a href="#Home"> <img ng-src="img/Encabezado/logo.png" class=" claseLogoSM hidden-xs" /></a>
+                    <a href="#Home"><img ng-src="img/Encabezado/logo.png" class=" claseLogoXS hidden-sm hidden-md hidden-lg"></a>
                 </div>
                 
                 <nav ng-class="barraNavArriba">
                     <!-- Barra de navegación móvil -->
                     <div class="navbar-header" ng-show="usuario.SesionIniciada">
 
-                        <button id="buttonCollapse" type="button" class="barraNavegacionBoton navbar-toggle" data-toggle="collapse" data-target="#navbarCollapse">
+                        <button id="buttonCollapse" type="button" class="barraNavegacionBoton navbar-toggle" data-toggle="collapse" data-target="#navbarCollapse" >
                           <span class="barraNavegacionHamburguesa icon-bar"></span>
                           <span class="barraNavegacionHamburguesa icon-bar"></span>
                           <span class="barraNavegacionHamburguesa icon-bar"></span>
                         </button>
                     </div>
-
+                    
+    
                     <!-- Barra de navegación sm md lg -->
                     <div class="collapse navbar-collapse" id="navbarCollapse">
 
                         <ul class="nav navbar-nav navbar-right  hidden-xs">
-                            <li ng-repeat="opcion in barraNavegacionOpciones"  class="dropdown " ng-click="MouseClickElemento($index);"  ng-mouseenter="MouseEnterarElemento($index);" ng-mouseleave="MouseSalirElemento($index);" id="{{opcion.Opcion.id}}">
+                            <li ng-repeat="opcion in barraNavegacionOpciones"  data-toggle="dropdown" class="dropdown-toggle"  ng-mouseenter="MouseEnterarElemento($index);" ng-mouseleave="MouseSalirElemento($index);" id="{{opcion.Opcion.id}}">
+                                
                                 <!-- menú principal -->
-                                <a class="claseSeccion">
+                                <a class="claseSeccion" ng-click="MouseClickElemento($index);" ng-show="opcion.Opcion.show">
                                     <span>{{opcion.Opcion.texto}}</span>
-                                 
                                 </a>
 
                                 <!-- módulos desplegados en dropdown list -->
-                                <ul class="dropdown-menu barraNavegacionDropdown">
+                                <ul class="dropdown-menu barraNavegacionDropdown" >
+                                    <li ng-repeat="elemento in opcion.elemento | orderBy:['menu', 'texto']" ng-if="elemento.show || elemento.divider" ng-class="elemento.clase">
+                                    
+                                        <div class="separadorDropdown"  ng-if="elemento.divider"></div>
+                                        
+                                        <!-- enlace -->
+                                        <a ng-if="elemento.tipo == 'enlace' && elemento.show" href="{{elemento.referencia}}" class="dropdownOpcion" ng-click="LlamarFuncion(null, opcion)">
+                                            <span class="fa fa-caret-left" style="color:transparent"></span ><span> {{elemento.texto}}</span>
+                                        </a>
+                                        
+                                        <!-- funciones -->
+                                        <a ng-if="elemento.tipo == 'funcion' && elemento.show" href="" ng-click="LlamarFuncion(elemento.funcion, opcion)" class="dropdownOpcion">
+                                            <span class="fa fa-caret-left" style="color:transparent"></span ><span>{{elemento.texto}}</span>
+                                        </a>
+                                        
+                                        <!-- dropdownlist -->
+                                        <a href="" class="dropdownOpcion" ng-if="elemento.tipo == 'dropdownlist' && elemento.show">
+                                            <span class="fa fa-caret-left"></span > {{elemento.texto}}
+                                        </a>
+                                        <ul class="dropdown-menu dropdown-menu-right">
+                                            <li ng-repeat="enlace in elemento.opcion" ng-show="enlace.show || enlace.divider">
+                                               <div class="separadorDropdown" ng-if="enlace.divider"></div>
+                                                <a ng-if="enlace.show" href="{{enlace.referencia}}" class="dropdownOpcion" ng-click="LlamarFuncion(null, opcion)"> 
+                                                    <span>{{enlace.texto}}</span>
+                                                </a>
+                                            </li>
+                                        </ul>
 
-                                    <li ng-repeat="elemento in opcion.elemento" ng-if="elemento.show">
-                                        <a ng-if="elemento.nuevaPagina" href="{{elemento.referencia}}" class="dropdownOpcion">
-                                            <span>{{elemento.texto}}</span>
-                                        </a>
-                                        <!-- boton de cerrar sesion -->
-                                        <a ng-if="!elemento.nuevaPagina" href="" ng-click="CerrarSesion()" class="dropdownOpcion">
-                                            <span>{{elemento.texto}}</span>
-                                        </a>
                                     </li>
-
                                 </ul>
-
                             </li>
                         </ul>
 
                         <!-- barra de navegación en móviles (xs)-->
                         <ul class="nav navbar-nav hidden-sm hidden-lg hidden-md">
-                            <li ng-repeat="opcion in barraNavegacionOpciones" class="dropdown">
+                            <li ng-repeat="opcion in barraNavegacionOpciones" class="dropdown" >
 
-                                <a class="dropdown-toggle  text-center" data-toggle="dropdown">
+                                <a class="dropdown-toggle" data-toggle="dropdown" id="{{opcion.id}}">
                                     <span>{{opcion.Opcion.texto}}</span>
-                                    <span class="caret"></span>
+                                    
+                                    <span class="pull-right">
+                                        <span class="caret"></span>
+                                    </span>
                                 </a>
 
-                                <ul class="dropdown-menu barraNavegacionDropdown">
-                                    <li ng-repeat="elemento in opcion.elemento">
-                                        <a ng-if="elemento.nuevaPagina" href="{{elemento.referencia}}" class="dropdownOpcion text-center" ng-click="CerrarBarraNavegacion();">
+                                <ul class="dropdown-menu barraNavegacionDropdown" aria-labelledby="{{opcion.id}}">
+                                    <li ng-repeat="elemento in opcion.elemento | orderBy:['menu', 'texto']" ng-if="elemento.show" ng-class="elemento.clase">
+                                        <div class="separadorDropdown" ng-if="elemento.divider"></div>
+                                        
+                                       <!--enlace-->
+                                        <a ng-if="elemento.tipo == 'enlace'" href="{{elemento.referencia}}" class="dropdownOpcion" ng-click="CerrarBarraNavegacion()">
                                             <span>{{elemento.texto}}</span>
                                         </a>
-                                        <!-- boton de cerrar sesion -->
-                                        <a ng-if="!elemento.nuevaPagina" href="" class="dropdownOpcion text-center" ng-click="CerrarSesion()">
+                                        <!-- funcion -->
+                                        <a ng-if="elemento.tipo == 'funcion'" href="" class="dropdownOpcion" ng-click="LlamarFuncion(elemento.funcion, opcion)">
                                             <span>{{elemento.texto}}</span>
                                         </a>
+                                        <!-- dropdownlist -->
+                                        <a href="" data-toggle="dropdown" class="dropdown-toggle dropdownOpcion" ng-if="elemento.tipo == 'dropdownlist'" id="{{elemento.texto}}">
+                                           {{elemento.texto}} <span class="fa fa-caret-right"></span >
+                                        </a>   
+                                    
+                                        <ul class="dropdown-menu dropdown-menu-right" role="{{elemento.texto}}" aria-labelledby="{{elemento.texto}}">
+                                            <li ng-repeat="enlace in elemento.opcion" ng-show="enlace.show">
+                                                <div class="separadorDropdown" ng-if="enlace.divider"></div>
+                                                <a href="{{enlace.referencia}}" class="dropdownOpcion2level" ng-click="LlamarFuncion(null, opcion)"> 
+                                                    <span>{{enlace.texto}}</span>
+                                                </a>
+                                            </li>
+                                        </ul>
                                     </li>
                                 </ul>
 
@@ -98,6 +135,252 @@
         </div>        
     </div>
     
+    <!-- Reportar bug -->
+    <!--<a data-toggle="modal" data-target="#reportarBug"  ng-show="usuario.SesionIniciada">
+        <div class="btn-group BugButton" style="margin-right:4px !important;">
+            
+            <i class="AddonBugButton btn" ><span class="fa fa-bug"></span></i>
+            <button type="button" class="BtnBugButton btn" >Reportar Error</button>
+            
+        </div>
+    </a>-->
+    
+    <!--------------------------- Modales ------------------------------------------------>
+    <!---- Cambiar contraseña -->
+    <div class="modal fade" id="CambiarPasswordModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static" >
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-ms">
+            <div class="modal-content modalPrincipal">
+                <!-- encabezado del modal -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarCambiarPasswordForma()"><span aria-hidden="true">&times;</span></button>
+                        <span  class="tituloModal">Cambiar Contraseña</span>
+                    </div>
+                </div>
+                <br>
+
+                <form class="" name="cambiarPasswordForma">
+                <!-- Datos -->
+                    <!-- Nueva contraseña -->
+                    <br>
+                    <div class="row">
+                        <div class="col-sm-6">
+                             <div class="entrada2">
+                                <input required ng-pattern="erPassword" type="password" class="{{clasePassword.nuevo}} form-control" name="nuevoPassword" ng-model="nuevoPassword.nuevo"/>
+                                <label>Nueva Contraseña</label>
+                            </div>
+                        </div>
+                        <br class="hidden-sm hidden-md hidden-lg">
+                        <br class="hidden-sm hidden-md hidden-lg">
+                        <div class="col-sm-6">
+                             <div class="entrada2">
+                                <input required type="password" class="{{clasePassword.repetir}} form-control" name="repetirPassword" ng-model="nuevoPassword.repetir"/>
+                                <label>Repetir Contraseña</label>
+                            </div>
+                        </div>
+                    </div> 
+                    <br><br>
+                    <!-- contraseña actual-->
+                    <div class="row">
+                        <div class="col-sm-6">
+                             <div class="entrada2">
+                                <input required type="password" class="{{clasePassword.actual}} form-control" name="actualPassword" ng-model="nuevoPassword.actual"/>
+                                <label>Contraseña Actual</label>
+                            </div>
+                        </div>
+                    </div>
+                    <br><br>
+        
+                    <!-------- mensaje de error ---->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div ng-repeat="error in mensajeError">
+                                <span class="textoError">{{error}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!---- botones de operacion --->
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarCambiarPasswordForma()">CANCELAR</button>
+                        </div>
+                        
+                        <div class="col-xs-6">
+                            <button focus class="btn botonOperacionModal btn-block" ng-click="GuardarPassword(cambiarPasswordForma.nuevoPassword.$invalid)">TERMINAR</button>
+                        </div>
+                    </div>
+                    <br> 
+                </form>
+            </div>
+            <br><br><br>
+        </div>
+    </div>
+          
+    <!---- Reportar Bug -->
+    <div class="modal fade" id="reportarBug" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static" >
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-ms">
+            <div class="modal-content">
+                <!-- encabezado del modal -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarReportarError()"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center">Reportar Error</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+                <br>
+
+                <form class="modal-body" name="reportarBugForma">
+                <!-- Datos -->
+                    <!-- Nueva contraseña -->
+                    <br>
+                    
+                    <div class="row">
+                        <!-- Modulo -->
+                        <div class="col-sm-6 etiquetaDropdownList">
+                             <label>Módulo</label>
+                             <div class="dropdown">
+
+                                <button class="dropdown-toggle  dropdownListModal" data-toggle="dropdown">
+                                    <span>{{bug.Modulo}}</span>
+                                    <span class="caret"></span>
+                                </button>
+
+                                <ul class="dropdown-menu elemetosDropdownListModal">
+                                    <li ng-repeat="modulo in modulos | orderBy:'titulo'">
+                                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarModulo(modulo.modulo)">
+                                            <span>{{modulo.modulo.titulo}}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                            </div>
+                        </div>
+                        <br class="hidden-sm hidden-md hidden-lg">
+                        
+                        <!-- Sección -->
+                        <div class="col-sm-6 etiquetaDropdownList">
+                             <label>Seccion</label>
+                             <div class="dropdown">
+
+                                <button ng-disabled="bug.modulo.length == 0" class="dropdown-toggle dropdownListModal" data-toggle="dropdown">
+                                    <span>{{bug.Seccion}}</span>
+                                    <span class="caret"></span>
+                                </button>
+
+                                <ul class="dropdown-menu elemetosDropdownListModal">
+                                    <li ng-repeat="seccion in moduloSeleccionado.seccion  | orderBy:'titulo'">
+                                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarSeccion(seccion.titulo)">
+                                            <span>{{seccion.titulo}}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!-- Operacion -->
+                    <div class="row">
+                        <div class="col-sm-6">
+                             <div class="entrada2">
+                                <input required type="text" class="entrada form-control" name="operacion" ng-model="bug.Operacion" maxlength="120"/>
+                                <label>Operación</label>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!-- Descripcion -->
+                    <div class="row">
+                        <div class="col-sm-12">
+                             <div class="">
+                                <label>Descripción</label>
+                                <textarea required type="text" style="border:solid 2px #262626; max-width:100%" class="form-control" name="descripcion" ng-model="bug.Descripcion" maxlength="1000"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <br><br>
+        
+                    <!-------- mensaje de error ---->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div ng-repeat="error in mensajeError">
+                                <span class="textoError">{{error}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!---- botones de operacion --->
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <button class="btn botonCancelar btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarReportarError()">CANCELAR</button>
+                        </div>
+                        
+                        <div class="col-xs-6">
+                            <button focus class="btn botonAvanzar btn-block" ng-click="TerminarReportarBug(reportarBugForma.operacion.$invalid, reportarBugForma.descripcion.$invalid)">TERMINAR</button>
+                        </div>
+                    </div>
+                    <br> 
+                </form>
+            </div>
+            <br><br><br>
+        </div>
+    </div>
+           
+    <!-- Modal para mensajes -->     
+    <div class="modal fade sombraDivModal" id="mensajeEncabezado" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <br>    <br>   <br>
+        <div class="modal-dialog modalPrincipal modal-sm">
+           <br>
+            <div class="row">
+                <div class="col-xs-12 text-center" style="font-size:12pt">
+                   {{mensaje}}
+                </div>
+            </div>
+            <br>
+            <div class="row">
+            
+                <div class="col-xs-12">
+                    <button focus class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close">Aceptar</button>
+                </div>
+            </div>
+        </div> 
+    </div> 
+           
+            
+             
+    <div ng-if="PerfilSeleccinado == 'Operativo'">
+        <header ng-include=" 'html/Operativo/Cita.html' "></header>
+    </div>
+    
+    <div ng-if="PerfilSeleccinado == 'Operativo'">
+        <header ng-include=" 'html/Operativo/Proyecto.html' "></header>
+    </div>
+    
+    <div ng-if="PerfilSeleccinado == 'Operativo'">
+        <header ng-include=" 'html/Operativo/DatosFiscales.html' "></header>
+    </div> 
+
+    <div ng-if="PerfilSeleccinado == 'Operativo'">
+        <header ng-include=" 'html/Operativo/MedioContacto.html' "></header>
+    </div>
+
+    <div ng-if="PerfilSeleccinado == 'Operativo'">
+        <header ng-include=" 'html/Operativo/Domicilio.html' "></header>
+    </div>
+          
+    <div ng-if="PerfilSeleccinado == 'Operativo'">
+        <header ng-include=" 'html/Operativo/Presupuesto/OperacionesPresupuesto.html' "></header>
+    </div> 
+           
+    
+            
 </div>
 
      

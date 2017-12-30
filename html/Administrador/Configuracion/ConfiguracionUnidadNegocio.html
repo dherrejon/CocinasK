@@ -4,7 +4,7 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="tituloModulo">
-                <span>Configurar - {{titulo}}</span>
+                <span>Configurar Unidad de Negocio - {{titulo}}</span>
             </div>
         </div>
     </div>
@@ -50,8 +50,8 @@
                                         <thead class="TituloTabla">
                                           <tr>
                                             <!--<th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('Colaborador')"><b>Responsable</b> <b ng-if="ordenarPor === 'Colaborador'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-Colaborador'" class="fa fa-arrow-down"></b></button></th>-->
-                                            <th><button class="btn botonFalso"><b>Nombre</b></button></th>
-                                            <th><button class="btn botonFalso"><b>RFC</b></button></th>
+                                            <th><button class="btn botonOrdenar"><b>Nombre</b></button></th>
+                                            <th><button class="btn botonOrdenar"><b>RFC</b></button></th>
                                             <th><button class="btn botonFalso"><b>Editar</b></button></th>
                                             <th><button class="btn botonFalso"><b>Activo</b></button></th>
                                           </tr>
@@ -61,7 +61,7 @@
                                             <td>{{empresa.Nombre}}</td>
                                             <td>{{empresa.RFC}}</td>
 
-                                            <td>
+                                            <td class="text-center">
                                                 <a  ng-if="permisoUsuario.editarEmpresa" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirEmpresaForma(empresa, 'Editar')">
                                                     <span class="fa fa-pencil fa-2x"></span>
                                                 </a>
@@ -69,7 +69,7 @@
                                                 <span ng-if="!permisoUsuario.editarEmpresa" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
                                             </td>
                                               
-                                            <td>
+                                            <td class="text-center">
                                                 <div class="checkbox">
                                                     <label>
                                                         <input ng-disabled="!permisoUsuario.activarEmpresa" ng-model="empresa.Activo" type="checkbox" value="" ng-click="ActivarDesactivar('Empresa', empresa)">
@@ -100,7 +100,7 @@
                                         <thead class="TituloTabla">
                                           <tr>
                                             <!--<th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('Colaborador')"><b>Responsable</b> <b ng-if="ordenarPor === 'Colaborador'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-Colaborador'" class="fa fa-arrow-down"></b></button></th>-->
-                                            <th><button class="btn botonFalso"><b>Tipo</b></button></th>
+                                            <th><button class="btn botonOrdenar"><b>Tipo</b></button></th>
                                             <th><button class="btn botonFalso"><b>Editar</b></button></th>
                                             <th><button class="btn botonFalso"><b>Activo</b></button></th>
                                           </tr>
@@ -109,7 +109,7 @@
                                           <tr>
                                             <td>{{tipo.Nombre}}</td>
 
-                                            <td>
+                                            <td class="text-center">
                                                 <a  ng-if="permisoUsuario.editarTipoUnidad" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirTipoUnidadForma(tipo, 'Editar')">
                                                     <span class="fa fa-pencil fa-2x"></span>
                                                 </a>
@@ -117,7 +117,7 @@
                                                 <span ng-if="!permisoUsuario.editarTipoUnidad" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
                                             </td>
                                               
-                                            <td>
+                                            <td class="text-center">
                                                 <div class="checkbox">
                                                     <label>
                                                         <input ng-disabled="!permisoUsuario.activarTipoUnidad" ng-model="tipo.Activo" type="checkbox" value="" ng-click="ActivarDesactivar('TipoUnidad', tipo)">
@@ -169,22 +169,20 @@
                     
                     <!-- Nombre -->
                     <div class="row">
-                        <div class="col-sm-12">
+                        <div class="col-sm-6">
                              <div class="entrada2">
                                 <input ng-pattern="erNombreGeneral" type="text" required class="{{clase[1].nombre}} form-control" name="nombre" ng-model="moduloActualizar.Nombre"/>
                                 <label>Nombre</label>
                             </div>
                         </div>
-                    </div> 
-                    <br>
-                    
-                    
-                    <div class="row"> 
+                        
+                        <br class="hidden-sm hidden-md hidden-lg">
+                        
                         <!-- Activo -->
                         <div class="col-sm-6">
                              <label class="btn checkBoxActivo">Tipo de Unidad Activo <input type="checkbox" class="badgebox" ng-model="moduloActualizar.Activo"><span class="badge">&check;</span></label>
                          </div>
-                    </div>
+                    </div> 
                     <br>
                     <!-------- mensaje de error ---->
                     <div class="row">
@@ -250,8 +248,8 @@
                         <!-- RFC -->
                         <div class="col-sm-6">
                              <div class="entrada2">
-                                <input ng-pattern="erRFC" type="text" required class="{{clase[0].rfc}} form-control" name="rfc" ng-model="moduloActualizar.RFC"/>
-                                <label>RFC {{moduloActualizar.RFC}}</label>
+                                <input ng-pattern="erRFC" type="text" required class="{{clase[0].rfc}} form-control mayuscula" name="rfc" ng-model="moduloActualizar.RFC"/>
+                                <label>RFC</label>
                             </div>
                         </div>
                         <br class="hidden-sm hidden-md hidden-lg"><br class="hidden-sm hidden-md hidden-lg">
@@ -309,7 +307,7 @@
                         </div>
                     </div>
                     
-                    <br>
+                    <br><br>
                     <!-- Estado y Munucipio-->
                     <div class="row">
                         <!-- Estado -->
@@ -335,7 +333,7 @@
                         <br class="hidden-sm hidden-md hidden-lg">
                         <!-- Municipio -->
                         <div class="col-sm-6 etiquetaDropdownList">
-                             <label>Municpio</label>
+                             <label>Municipio</label>
                              <div class="dropdown">
 
                                 <button ng-disabled="!sinCP || moduloActualizar.Estado.length == 0" class="dropdown-toggle {{clase[0].Municipio}}" data-toggle="dropdown">

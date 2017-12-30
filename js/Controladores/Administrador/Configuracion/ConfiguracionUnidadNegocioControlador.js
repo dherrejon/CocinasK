@@ -1,4 +1,4 @@
-app.controller("ConfiguaracionUnidadNegocioControlador", function($scope, $http, $q, CONFIG, $rootScope, datosUsuario, $window, $filter)
+app.controller("ConfiguaracionUnidadNegocioControlador", function($scope, $http, $q, CONFIG, $rootScope, datosUsuario, $window, $filter, $location)
 {   
     $rootScope.clasePrincipal = "";
 
@@ -8,35 +8,35 @@ app.controller("ConfiguaracionUnidadNegocioControlador", function($scope, $http,
     {
         for(var k=0; k < $scope.usuarioLogeado.Permiso.length; k++)
         {
-            if($scope.usuarioLogeado.Permiso[k] == "ConEmpConsultar")
+            if($scope.usuarioLogeado.Permiso[k] == "AdmEmpConsultar")
             {
                 $scope.permisoUsuario.consultarEmpresa = true;
             }
-            else if($scope.usuarioLogeado.Permiso[k] == "ConEmpAgregar")
+            else if($scope.usuarioLogeado.Permiso[k] == "AdmEmpAgregar")
             {
                 $scope.permisoUsuario.agregarEmpresa = true;
             }
-            else if($scope.usuarioLogeado.Permiso[k] == "ConEmpEditar")
+            else if($scope.usuarioLogeado.Permiso[k] == "AdmEmpEditar")
             {
                 $scope.permisoUsuario.editarEmpresa = true;
             }
-            else if($scope.usuarioLogeado.Permiso[k] == "ConEmpActivar")
+            else if($scope.usuarioLogeado.Permiso[k] == "AdmEmpActivar")
             {
                 $scope.permisoUsuario.activarEmpresa = true;
             }
-            else if($scope.usuarioLogeado.Permiso[k] == "ConTUNConsultar")
+            else if($scope.usuarioLogeado.Permiso[k] == "AdmTUNConsultar")
             {
                 $scope.permisoUsuario.consultarTipoUnidad = true;
             }
-            else if($scope.usuarioLogeado.Permiso[k] == "ConTUNAgregar")
+            else if($scope.usuarioLogeado.Permiso[k] == "AdmTUNAgregar")
             {
                 $scope.permisoUsuario.agregarTipoUnidad = true;
             }
-            else if($scope.usuarioLogeado.Permiso[k] == "ConTUNEditar")
+            else if($scope.usuarioLogeado.Permiso[k] == "AdmTUNEditar")
             {
                 $scope.permisoUsuario.editarTipoUnidad = true;
             }
-            else if($scope.usuarioLogeado.Permiso[k] == "ConTUNActivar")
+            else if($scope.usuarioLogeado.Permiso[k] == "AdmTUNActivar")
             {
                 $scope.permisoUsuario.activarTipoUnidad = true;
             }
@@ -115,7 +115,7 @@ app.controller("ConfiguaracionUnidadNegocioControlador", function($scope, $http,
         }
         else
         {
-            $scope.mensajeAdvertencia = "¿Estas seguro de DESACRIVAR - " + objeto.Nombre + "?";
+            $scope.mensajeAdvertencia = "¿Estas seguro de DESACTIVAR - " + objeto.Nombre + "?";
         }
         $('#modalActivarDesactivarModulo').modal('toggle'); 
     };
@@ -205,7 +205,7 @@ app.controller("ConfiguaracionUnidadNegocioControlador", function($scope, $http,
             {
                 if($scope.operacion == "Agregar" || $scope.moduloActualizar.TipoUnidadNegocioId !== $scope.tipoUnidad[k].TipoUnidadNegocioId)
                 {
-                    if($scope.moduloActualizar.Nombre == $scope.tipoUnidad[k].Nombre)
+                    if($scope.moduloActualizar.Nombre.toLowerCase() == $scope.tipoUnidad[k].Nombre.toLowerCase())
                     {
                         $scope.mensajeError[$scope.mensajeError.length] = "*" + $scope.moduloActualizar.Nombre + " ya existe.";
                         $scope.clase[1].nombre = "entradaError";
@@ -313,7 +313,7 @@ app.controller("ConfiguaracionUnidadNegocioControlador", function($scope, $http,
     //Verfica que los datos sean validos
     //Si los datos son validos llama al método para realizar la operación
     $scope.TerminarEmpresa = function(nombreInvalido, rfcInvalido, emailInvalido, domicilioInvalido, codigoInvalido, coloniaInvalida)
-    {
+    {   
         $scope.mensajeError = [];
         
         if(nombreInvalido)
@@ -328,7 +328,7 @@ app.controller("ConfiguaracionUnidadNegocioControlador", function($scope, $http,
         
         if(rfcInvalido)
         {
-            $scope.mensajeError[$scope.mensajeError.length] = "*Escribe un RFC valido. Ejemplo: ABC-AAMMDD-A1B";
+            $scope.mensajeError[$scope.mensajeError.length] = "*Escribe un RFC válido. Ejemplo: ABC-AAMMDD-A1B.";
             $scope.clase[0].rfc = "entradaError";
         }
         else
@@ -337,7 +337,7 @@ app.controller("ConfiguaracionUnidadNegocioControlador", function($scope, $http,
         }
         if(emailInvalido)
         {
-            $scope.mensajeError[$scope.mensajeError.length] = "*Escribe un correo electrónico valido.";
+            $scope.mensajeError[$scope.mensajeError.length] = "*Escribe un correo electrónico válido.";
             $scope.clase[0].email = "entradaError";
         }
         else
@@ -411,6 +411,17 @@ app.controller("ConfiguaracionUnidadNegocioControlador", function($scope, $http,
         {
             return;
         }
+        
+        for(var k=0; k<$scope.empresa.length; k++)
+        {
+            if($scope.moduloActualizar.Nombre.toLowerCase() == $scope.empresa[k].Nombre.toLowerCase() && $scope.moduloActualizar.EmpresaId != $scope.empresa[k].EmpresaId)
+            {
+                $scope.mensajeError[$scope.mensajeError.length] = "*La empresa " + $scope.moduloActualizar.Nombre + " ya existe.";
+                return;
+            }
+        }
+        
+        $scope.moduloActualizar.RFC = $scope.moduloActualizar.RFC.toUpperCase();
         
         if($scope.operacion == "Agregar")
         {
@@ -687,28 +698,37 @@ app.controller("ConfiguaracionUnidadNegocioControlador", function($scope, $http,
     {
         if($scope.usuarioLogeado.SesionIniciada)
         {
-            $scope.IdentificarPermisos();
-            if(!$scope.permisoUsuario.consultarEmpresa && !$scope.permisoUsuario.consultarTipoUnidad)
+            if($scope.usuarioLogeado.PerfilSeleccionado == "Administrador")
             {
-               for(var k=0; k<$rootScope.Perfiles.length; k++)
+                $scope.IdentificarPermisos();
+                if(!$scope.permisoUsuario.consultarEmpresa && !$scope.permisoUsuario.consultarTipoUnidad)
                 {
-                    if($scope.usuarioLogeado.PerfilSeleccionado == $rootScope.Perfiles[k].nombre)         //Se verifica con que perfil cuenta el usuario
+                   $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado); 
+                }
+                else
+                {
+                    if($scope.permisoUsuario.consultarEmpresa)
                     {
-                        $window.location = $rootScope.Perfiles[k].paginaPrincipal;
+                        $scope.GetEmpresa();
                     }
-                } 
+                    if($scope.permisoUsuario.consultarTipoUnidad)
+                    {
+                        $scope.GetTipoUnidadNegocio();
+                    }
+                }
+            }
+            else if($scope.usuarioLogeado.PerfilSeleccionado === "")
+            {
+                $window.location = "#Perfil";
             }
             else
             {
-                if($scope.permisoUsuario.consultarEmpresa)
-                    $scope.GetEmpresa();
-                if($scope.permisoUsuario.consultarTipoUnidad)
-                    $scope.GetTipoUnidadNegocio();
+                $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
             }
         }
         else
         {
-            $window.location = "#Login";
+            $location.path('/Login');
         }
     }
     
@@ -720,28 +740,38 @@ app.controller("ConfiguaracionUnidadNegocioControlador", function($scope, $http,
     
         if(!$scope.usuarioLogeado.SesionIniciada)
         {
-            $window.location = "#Login";
+            $location.path('/Login');
             return;
         }
         else
         {
-            $scope.IdentificarPermisos();
-            if(!$scope.permisoUsuario.consultarEmpresa && !$scope.permisoUsuario.consultarTipoUnidad)
+            if($scope.usuarioLogeado.PerfilSeleccionado == "Administrador")
             {
-               for(var k=0; k<$rootScope.Perfiles.length; k++)
+                $scope.IdentificarPermisos();
+                if(!$scope.permisoUsuario.consultarEmpresa && !$scope.permisoUsuario.consultarTipoUnidad)
                 {
-                    if($scope.usuarioLogeado.PerfilSeleccionado == $rootScope.Perfiles[k].nombre)         //Se verifica con que perfil cuenta el usuario
+                    $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
+                }
+                else
+                {
+                    if($scope.permisoUsuario.consultarEmpresa)
                     {
-                        $window.location = $rootScope.Perfiles[k].paginaPrincipal;
+                        $scope.GetEmpresa();
                     }
-                } 
+                    if($scope.permisoUsuario.consultarTipoUnidad)
+                    {
+                        $scope.GetTipoUnidadNegocio();
+                    }
+
+                }
+            }
+            else if($scope.usuarioLogeado.PerfilSeleccionado === "")
+            {
+                $window.location = "#Perfil";
             }
             else
             {
-                if($scope.permisoUsuario.consultarEmpresa)
-                    $scope.GetEmpresa();
-                if($scope.permisoUsuario.consultarTipoUnidad)
-                    $scope.GetTipoUnidadNegocio();
+                $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
             }
         }
     });

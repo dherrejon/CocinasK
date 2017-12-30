@@ -1,4 +1,4 @@
-app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, datosUsuarioPerfil, md5, $rootScope, datosUsuario, $window)
+app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, datosUsuarioPerfil, md5, $rootScope, datosUsuario, $window, $location)
 {   
     $rootScope.clasePrincipal = "";  //si esta en el login muestra una cocina de fondo
     
@@ -51,6 +51,8 @@ app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, dat
     
     $scope.perfil = GetPerfil();   //guarda los perfiles que puede tener un usuario
     
+    $scope.terminarConcluido = true;
+    
     //Obtine los colaboradores dados de alta
     $scope.GetColaboradores = function()              
     {
@@ -86,6 +88,7 @@ app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, dat
     $scope.AbrirAgregarUsuarioTabla = function(colaborador)
     {
         $scope.nuevoColaborador = colaborador;
+        $scope.GetContactoColaborador(colaborador.ColaboradorId);
         $scope.AbrirAgregarUsuario();
     };
     
@@ -614,7 +617,7 @@ app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, dat
             }
         }
         
-        if( $scope.editarContacto.origen != "registrado")
+        if( $scope.editarContacto.origen != "registrado" || $scope.editarContacto.tipoContacto != "telefono")
         {
             var datosContactoColaborador = {NombreMedioContacto:"", TipoMedioContactoId:"", NombreTipoMedioContacto:"", Contacto:""};
             datosContactoColaborador.NombreMedioContacto = "Teléfono";
@@ -851,7 +854,7 @@ app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, dat
             }
         }
         
-        if($scope.editarContacto.origen  != "registrado")
+        if($scope.editarContacto.origen  != "registrado" || $scope.editarContacto.tipoContacto != "correo")
         {
             var datosContactoColaborador = {NombreMedioContacto:"", TipoMedioContactoId:"", NombreTipoMedioContacto:"", Contacto:""};
             datosContactoColaborador.NombreMedioContacto = "Correo Electrónico";
@@ -1034,6 +1037,8 @@ app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, dat
     //Si los datos son valido se procede a agregar o editar el colaborador
     $scope.TerminarColaborador = function(nombreInvalido, apellido1Invalido, apellido2Invalido, domicilioInvalido, codigoInvalido, coloniaInvalida)
     {
+        $scope.terminarConcluido = false;
+        
         $scope.mensajeError = [];
         
         if(nombreInvalido)
@@ -1204,6 +1209,7 @@ app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, dat
         
         if($scope.mensajeError.length > 0)
         {
+            $scope.terminarConcluido = true;
             return;
         }
         
@@ -1211,12 +1217,13 @@ app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, dat
         {
             if($scope.operacion == "Agregar" || $scope.nuevoColaborador.ColaboradorId !== $scope.colaborador[k].ColaboradorId)
             {
-                if($scope.colaborador[k].Nombre == $scope.nuevoColaborador.Nombre && $scope.colaborador[k].PrimerApellido == $scope.nuevoColaborador.PrimerApellido  && $scope.colaborador[k].SegundoApellido == $scope.nuevoColaborador.SegundoApellido)
+                if($scope.colaborador[k].Nombre.toLowerCase() == $scope.nuevoColaborador.Nombre.toLowerCase() && $scope.colaborador[k].PrimerApellido.toLowerCase() == $scope.nuevoColaborador.PrimerApellido.toLowerCase()  && $scope.colaborador[k].SegundoApellido.toLowerCase() == $scope.nuevoColaborador.SegundoApellido.toLowerCase())
                 {
-                    $scope.mensajeError[$scope.mensajeError.length] = "*El colaborador " + $scope.nuevoColaborador.EsNombretado + " " + $scope.nuevoColaborador.PrimerApellido + " "+ $scope.nuevoColaborador.SegundoApellido + " ya existe.";
+                    $scope.mensajeError[$scope.mensajeError.length] = "*El colaborador " + $scope.nuevoColaborador.Nombre + " " + $scope.nuevoColaborador.PrimerApellido + " "+ $scope.nuevoColaborador.SegundoApellido + " ya existe.";
                     $scope.clase.nombre = "entradaError";
                     $scope.clase.primerApellido = "entradaError";
                     $scope.clase.segundoApellido = "entradaError";
+                    $scope.terminarConcluido = true;
                     return;
                 }
             }
@@ -1270,6 +1277,7 @@ app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, dat
             $scope.mensaje = "Ha ocurrido un error. Intente más tarde. Error: " +error;
             $('#mensajeColaborador').modal('toggle');
         });
+        $scope.terminarConcluido = true;
     };
     
     //Edita al colaborador
@@ -1296,6 +1304,8 @@ app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, dat
             $scope.mensaje = "Ha ocurrido un error. Intente más tarde. Error: " +error;
             $('#mensajeColaborador').modal('toggle');
         });
+        
+        $scope.terminarConcluido = true;
     };
     
     /*Unidad de negocio*/
@@ -1334,10 +1344,7 @@ app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, dat
     {
         GetUnidadNegocioSencilla($http, $q, CONFIG).then(function(data)
         {
-            if(data.length > 0)
-            {
-                $scope.unidadNegocio = data;
-            }
+            $scope.unidadNegocio = data;
         }).catch(function(error)
         {
             alert(error);
@@ -1351,13 +1358,13 @@ app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, dat
         {
             $scope.opcionUsuario.claseSi = "botonRelleno";
             $scope.opcionUsuario.claseNo = "botonOperacion";
-            $scope.opcion = "si";
+            $scope.opcionUsuario.opcion = "si";
         }
         else if(opcion == "no")
         {
             $scope.opcionUsuario.claseSi = "botonOperacion";
             $scope.opcionUsuario.claseNo = "botonRelleno";
-            $scope.opcion = "no";
+            $scope.opcionUsuario.opcion = "no";
         }
     };
     
@@ -1378,18 +1385,18 @@ app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, dat
         $scope.perfil[1].Activo = false;
         $scope.perfil[2].Activo = true;
         
-        $scope.usuarioTab = "datosUsuario";
+        $scope.usuarioTab = "datosUsuario"; 
         
         $('#usuarioModal').modal('toggle');
     };
     
     //Se dio siguiente para agregar un usurio
     //Verifica que el nombre de usuario sea valido y que al menos se haya seleccionado un perfil, si esto es asi se pasará al siguiente paso
-    $scope.TerminarUsuario = function(usuarioInvallido)
+    $scope.TerminarUsuario = function(usuarioInvalido)
     {   
         $scope.mensajeError = [];
         
-        if(usuarioInvallido)
+        if(usuarioInvalido)
         {
             $scope.mensajeError[$scope.mensajeError.length] = "*El nombre del usuario puede tener letras en minúscula y números sin espacios. Mínimo debe tener 4 caracteres.";
             $scope.claseUsuario.usuario = "entradaError";
@@ -1424,13 +1431,18 @@ app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, dat
         
         for(var k=0; k<$scope.colaborador.length; k++)
         {
-            if($scope.colaborador[k].NombreUsuario == $scope.nuevoColaborador.NombreUsuario && $scope.colaborador[k].ColaboradorId !== $scope.nuevoColaborador.ColaboradorId)
+            if($scope.colaborador[k].UsuarioId !== null)
             {
-                $scope.mensajeError[$scope.mensajeError.length] = "*El nombre del usuario " + $scope.nuevoColaborador.NombreUsuario + " ya existe.";
-                $scope.claseUsuario.usuario = "entradaError";
-                return;
+                if($scope.colaborador[k].NombreUsuario.toLowerCase() == $scope.nuevoColaborador.NombreUsuario.toLowerCase() && $scope.colaborador[k].ColaboradorId !== $scope.nuevoColaborador.ColaboradorId)
+                {
+                    $scope.mensajeError[$scope.mensajeError.length] = "*El nombre del usuario " + $scope.nuevoColaborador.NombreUsuario + " ya existe.";
+                    $scope.claseUsuario.usuario = "entradaError";
+                    return;
+                }
             }
         }
+        
+        $scope.nuevoColaborador.NombreUsuario = $scope.nuevoColaborador.NombreUsuario.toLowerCase();
         
         /*validación correcta*/
         
@@ -1472,7 +1484,9 @@ app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, dat
     //Verifica que como minimo se haya agregado un permiso de cada perfil del usuario
     $scope.TerminarPermisosUsuario = function()
     {
-         $scope.mensajeError = [];
+        $scope.terminarConcluido = false;
+        
+        $scope.mensajeError = [];
         var permisoPerfilSeleccionado = {adminatrador: false, operativo: false, ejecutivo: false};
         
         for(var k=0; k<$scope.perfil.length; k++)
@@ -1522,6 +1536,7 @@ app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, dat
         if(!(permisoPerfilSeleccionado.adminatrador && permisoPerfilSeleccionado.ejecutivo && permisoPerfilSeleccionado.operativo))
         {
             $scope.mensajeError[0] = "Debes de seleccionar al menos un permiso por perfil.";
+            $scope.terminarConcluido = true;
             return;
         }
         
@@ -1551,8 +1566,10 @@ app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, dat
                 $scope.mensaje = "Ha ocurrido un error. Intente más tarde";
                 $('#mensajeColaborador').modal('toggle');
             }
+            $scope.terminarConcluido = true;
         }).catch(function(error)
         {
+            $scope.terminarConcluido = true;
             $scope.mensaje = "Ha ocurrido un error. Intente más tarde. Error: " +error;
             $('#mensajeColaborador').modal('toggle');
         });
@@ -1680,7 +1697,7 @@ app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, dat
             }
             else
             {
-                alert(data);
+                alert("Primeramente de de alta un tipo de medio de contacto");
             }
         }).catch(function(error)
         {
@@ -1714,26 +1731,30 @@ app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, dat
     {
         if($scope.usuarioLogeado.SesionIniciada)
         {
-            $scope.IdentificarPermisos();
-            if(!$scope.permisoUsuario.consultar)
+            if($scope.usuarioLogeado.PerfilSeleccionado == "Administrador")
             {
-               for(var k=0; k<$rootScope.Perfiles.length; k++)
+                $scope.IdentificarPermisos();
+                if(!$scope.permisoUsuario.consultar)
                 {
-                    if($scope.usuarioLogeado.PerfilSeleccionado == $rootScope.Perfiles[k].nombre)         //Se verifica con que perfil cuenta el usuario
-                    {
-                        $window.location = $rootScope.Perfiles[k].paginaPrincipal;
-                    }
-                } 
+                   $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
+                }
+                else
+                {
+                    $scope.GetColaboradores();
+                }
             }
-            
+            else if($scope.usuarioLogeado.PerfilSeleccionado === "")
+            {
+                $window.location = "#Perfil";
+            }
             else
             {
-                $scope.GetColaboradores();
-            }
+                $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
+            }   
         }
         else
         {
-            $window.location = "#Login";
+            $location.path('/Login');
         }
     }
     
@@ -1744,28 +1765,31 @@ app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, dat
     
         if(!$scope.usuarioLogeado.SesionIniciada)
         {
-            $window.location = "#Login";
+           $location.path('/Login');
             return;
         }
         else
         {
-            $scope.IdentificarPermisos();
-            
-            $scope.usuarioLogeado =  datosUsuario.getUsuario(); 
-            
-            if(!$scope.permisoUsuario.consultar)
+            if($scope.usuarioLogeado.PerfilSeleccionado == "Administrador")
             {
-               for(var k=0; k<$rootScope.Perfiles.length; k++)
+                $scope.IdentificarPermisos(); 
+
+                if(!$scope.permisoUsuario.consultar)
                 {
-                    if($scope.usuarioLogeado.PerfilSeleccionado == $rootScope.Perfiles[k].nombre)         //Se verifica con que perfil cuenta el usuario
-                    {
-                        $window.location = $rootScope.Perfiles[k].paginaPrincipal;
-                    }
-                } 
+                    $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
+                }
+                else
+                {
+                    $scope.GetColaboradores();
+                }
+            }
+            else if($scope.usuarioLogeado.PerfilSeleccionado === "")
+            {
+                $window.location = "#Perfil";
             }
             else
             {
-                $scope.GetColaboradores();
+                $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
             }
         }
     });

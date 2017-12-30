@@ -35,7 +35,35 @@ function GetTodosComponente()
 
     $request = \Slim\Slim::getInstance()->request();
 
-    $sql = "SELECT * FROM Componente WHERE ComponenteId >0";
+    $sql = "SELECT * FROM Componente WHERE ComponenteId > 0 AND TipoComponenteId != 2";
+
+    try 
+    {
+
+        $db = getConnection();
+        $stmt = $db->query($sql);
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $db = null;
+
+        
+        echo json_encode($response);  
+    } 
+    catch(PDOException $e) 
+    {
+        echo($e);
+        $app->status(409);
+        $app->stop();
+    }
+}
+
+function GetComponentePuerta()  //obtiene los componentes exclusivos para puertas
+{
+    global $app;
+    global $session_expiration_time;
+
+    $request = \Slim\Slim::getInstance()->request();
+
+    $sql = "SELECT * FROM Componente WHERE TipoComponenteId = 2 AND ComponenteId > 0";
 
     try 
     {
@@ -196,8 +224,8 @@ function EditarComponente()
     } 
     catch(PDOException $e) 
     {
-        //echo '[ { "Estatus": "Fallo" } ]';
-        echo $e;
+        echo '[ { "Estatus": "Fallo" } ]';
+        //echo $e;
         $db->rollBack();
         $app->status(409);
         $app->stop();
@@ -317,7 +345,6 @@ function ActivarDesactivarComponente()
     }
 }
 
-
 function GetPiezaPorComponente()
 {
     global $app;
@@ -326,8 +353,15 @@ function GetPiezaPorComponente()
     $request = \Slim\Slim::getInstance()->request();
     $componenteId = json_decode($request->getBody());
     
+    if($componenteId[0] != "-1")
+    {
+        $sql = "SELECT * FROM ComponenteVista WHERE ComponenteId='".$componenteId[0]."'";
+    }
+    else
+    {
+        $sql = "SELECT ComponenteId, PiezaId, FormulaAncho, FormulaLargo, NombrePieza, Cantidad FROM ComponenteVista";
+    }
     
-    $sql = "SELECT * FROM ComponenteVista WHERE ComponenteId='".$componenteId[0]."'";
     
     try 
     {
@@ -343,6 +377,34 @@ function GetPiezaPorComponente()
         //echo $e;
         echo '[ { "Estatus": "Fallo" } ]';
         //$app->status(409);
+        $app->stop();
+    }
+}
+
+function GetComponenteEspecial()
+{    
+    global $app;
+    global $session_expiration_time;
+
+    $request = \Slim\Slim::getInstance()->request();
+    
+    
+    $sql = "SELECT ComponenteId, Nombre FROM Componente WHERE TipoComponenteId = '3' AND Activo = '1'";
+    
+    try 
+    {
+        $db = getConnection();
+        $stmt = $db->query($sql);
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $db = null;
+        
+        echo '[ { "Estatus": "Exitoso" }, {"Componente":' .json_encode($response). '} ]';  
+    } 
+    catch(PDOException $e) 
+    {
+        //echo $e;
+        echo '[ { "Estatus": "Fallo" } ]';
+        $app->status(409);
         $app->stop();
     }
 }

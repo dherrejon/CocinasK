@@ -1,0 +1,431 @@
+<div ng-controller="PlanPagoControlador as planPago" class="container-fluid">
+
+<br><br>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="tituloModulo">
+                <span>Plan de Pagos</span>
+            </div>
+        </div>
+    </div>
+    <br>
+   
+    <div class="row" ng-if="permisoUsuario.consultar">
+        <div class="col-md-11 col-xs-10">
+            <div class="table-responsive TablaUnidadNegocio">
+                <table class="table table-hover table-striped table-condensed">
+                    <thead class="TituloTabla">
+                      <tr>
+                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('Nombre')"><b>Nombre </b><b ng-if="ordenarPor === 'Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-Nombre'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('Pagos')"><b>Pagos</b><b ng-if="ordenarPor === 'Pagos'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-Pagos'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonFalso"><b>Detalles</b></button></th>
+                        <th><button class="btn botonFalso"><b>Editar</b></button></th>
+                        <th><button class="btn botonFalso"><b>Activo</b></button></th>
+                        <!--<th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('ActivoN')"><b>Activo</b> <b ng-if="ordenarPor === 'ActivoN'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-ActivoN'" class="fa fa-arrow-down"></b></button></th>-->
+                      </tr>
+                    </thead>
+                    <tbody >
+                      <tr ng-repeat="plan in planPago  | filter:buscar | filter:FiltrarPlanPago | orderBy:[ordenarPor, 'TipoPromocion.Venta']">
+                        <td>{{plan.Nombre}}</td>
+                        <td >{{plan.Pagos}}</td>
+                          
+                        <td class="text-center">
+                            <a  class="BotonOperacion" href="" data-toggle="modal" data-target="#DetallePlanPago" ng-click="DetallePlanPago(plan)">
+                                <span class="fa fa-eye fa-2x"></span>
+                            </a>
+                        </td>
+
+                        <td class="text-center">
+                            <a ng-if="permisoUsuario.editar"  class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirModuloPlanPago('Editar', plan)">
+                                <span class="fa fa-pencil fa-2x"></span>
+                            </a>
+                            <span ng-if="!permisoUsuario.editar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
+                        </td>
+
+                        <td class="text-center">
+                            <div class="checkbox">
+                                <label>
+                                    <input ng-disabled="!permisoUsuario.activar"  ng-model="plan.Activo" type="checkbox" value="" ng-click="CambiarEstadoActivo(plan)">
+                                    <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+                                </label>
+                            </div>
+                        </td>
+
+                      </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-xs-2 col-md-1">
+            <button ng-disabled="!permisoUsuario.agregar" class="btn btn-block botonOperacion fa fa-plus text-center" data-toggle="tooltip" data-placement="bottom" title="Agregar Promocion" ng-click="AbrirModuloPlanPago('Agregar', null)"></button>
+            
+            <br><br>
+            
+            <!-- Boton filtrar -->
+            <div class="dropdown">
+                
+                <button class="btn btn btn-block botonOperacion fa fa-filter text-center" data-toggle="dropdown" ></button>
+                    
+                <ul class="dropdown-menu dropdown-menu-right operacionPanel">
+                    
+                    <div  class="row ">
+                        <div class="col-xs-9"> 
+                            <li  class="dropdown-header tituloOpcionLateral">FILTRAR</li>
+                        </div>
+                        <div class="col-xs-3">
+                            <li> <button class="btn botonOperacion fa fa-ban" data-toggle="tooltip" data-placement="bottom" title="Limpiar filtro" ng-click="LimpiarFiltro()"></button></li>
+                        </div>
+                    </div>
+                    <li role="separator" class="divider"></li>
+
+                    <li style="width: 275px;">
+
+                        <form role="filtro">
+                            <!------ Activo ------>
+                            <button class="btn btn-block botonFiltro" ng-click="MostrarFiltros('activo')">Activo</button>
+                            
+                            <div class="row" ng-show="mostrarFiltro.activo">
+                                <div class="col-xs-12" >
+                                    <div class="opcionFiltro">
+                                        <div>
+                                            <label class="checkBoxActivoFiltro">
+                                                <input type="checkbox" class="badgebox" ng-model="filtro.activo.activo"><span class="badge">&check;</span>
+                                                Plan de Pagos Activos
+                                            </label>
+                                            
+                                            <label class="checkBoxActivoFiltro">
+                                                <input type="checkbox" class="badgebox" ng-model="filtro.activo.inactivo"><span class="badge">&check;</span>
+                                                Plan de Pagos No Activos
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            
+                        </form>
+                    </li>
+                </ul>
+                
+            </div>
+            
+            <br>
+            <!-- Boton buscar -->
+            <div class="dropdown">
+                
+                <button class="btn btn btn-block botonOperacion fa fa-search text-center" data-toggle="dropdown" ></button>
+                    
+                <ul class="dropdown-menu dropdown-menu-right operacionPanel">
+
+                    <li style="width: 225px; height: 35px !important;">
+
+                        <form role="buscar" style="max-width: 200px; height: 25px !important;">
+                            <div class="input-group" >
+                              <input  type="text" class="form-control operacionPanelEntrada" placeholder="Buscar" style="margin-left: 5px; width: 175px;" ng-model="buscar">
+                              <span class="input-group-btn" style="width: 25px;">
+                                <button class="btn operacionPanelBoton" type="button">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                              </span>
+                            </div>
+                        </form>
+                    </li>
+                </ul>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+    <!-- ----------------------Modales ----------------------------------- -->
+
+    <!--- Modal para Detalles de la cubierta --->
+    <div class="modal fade " id="DetallePlanPago">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <!-- encabezado del modal -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center">Detalles del Plan de Pagos</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- cuerpo del modal -->
+                <div class="modal-body">
+                    <!-- Opciones de unidad de negocio -->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="pull-right">
+                                <button ng-disabled="!permisoUsuario.editar" class="btn botonOperacion" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" data-placement="bottom" title="Editar Cubierta"  ng-click="AbrirModuloPlanPago('Editar', planPagoActualizar)"><span class="fa fa-pencil fa-2x"></span></button>
+                                <button ng-disabled="!permisoUsuario.activar" ng-if="planPagoActualizar.Activo" class="btn botonOperacion activo"  data-toggle="tooltip" data-placement="bottom" title="Desactivar" ng-click="CambiarActivoModal()"><span class="fa fa-power-off fa-2x"></span></button>
+                                <button ng-disabled="!permisoUsuario.activar" ng-if="!planPagoActualizar.Activo" class="btn botonOperacion desactivo" data-toggle="tooltip" data-placement="bottom" title="Activar" ng-click="CambiarActivoModal()"><span class="fa fa-power-off fa-2x"></span></button>
+                            </div>
+                        </div>
+                    </div>
+                        
+                    <h4>Datos del plan de pagos</h4><br>
+                    <!-- Tipo de cubierta -->
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="subrayado">
+                            <label>Nombre</label><br>
+                            <span class="textoModal">{{planPagoActualizar.Nombre}}</span>
+                            </div>
+                        </div>
+                        <br class="hidden-sm hidden-md hidden-lg">
+                        <div class="col-sm-6">
+                            <div class="subrayado">
+                            <label>Pagos</label><br>
+                            <span class="textoModal">{{planPagoActualizar.Pagos}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="subrayado">
+                            <label>Fecha de entreaga</label><br>
+                            <span class="textoModal">{{planPagoActualizar.FechaEntrega}}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <br>
+                    <!-- Colores -->
+                    <div class="row" ng-if="planPagoActualizar.Abono.length > 0">
+                        <div class="col-xs-12">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <button class="btn btn-block"  ng-class="GetClaseDetallesSeccion('abono')" ng-click="MostrarDetalle('abono')">Abonos</button>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="table-responsive TablaModal" ng-show="detalle == 'abono'">
+                                <table class="table table-hover">
+                                    <thead class="TituloTabla">
+                                      <tr>
+                                        <th><button class="btn botonOrdenar"><b># Abono</b></button></th>
+                                        <th><button class="btn botonFalso"><b>Abono</b></button></th>
+                                        <th><button class="btn botonFalso"><b>Días</b></button></th>
+                                      </tr>
+                                    </thead>
+                                    <tbody ng-repeat="abono in planPagoActualizar.Abono | orderBy:['NumeroAbono']">
+                                      <tr>
+                                        <td>
+                                            <span ng-if="abono.NumeroAbono == 0">Anticipo</span>
+                                            <span ng-if="abono.NumeroAbono != 0">Abono </span>
+                                            <span ng-if="abono.NumeroAbono != 0">{{abono.NumeroAbono}}</span>
+                                        </td>
+                                        
+                                        <td class="text-center">
+                                            {{abono.Abono}}%
+                                        </td>
+                                        
+                                        <td class="text-center">
+                                            {{abono.Dias}}
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!---- Agregar y editar muestrario -->
+    <div class="modal fade" id="planPagoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static" >
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <!-- encabezado del modal -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarPlanPagoForma()"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center" ng-if="operacion === 'Agregar'">Agregar Plan de Pagos</h3>
+                            <h3 class="text-center" ng-if="operacion === 'Editar'">Editar Plan de Pagos</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+                <br>
+
+                <form class="modal-body" name="planPagoForma">
+                <!-- Datos -->
+                    <div class="row">
+                        <!-- Nombre -->
+                        <div class="col-sm-6">
+                             <div class="entrada2">
+                                <input ng-pattern="erNombreGeneral" type="text" required class="{{clase.nombre}} form-control" name="nombre" ng-model="nuevoPlanPago.Nombre"/>
+                                <label>Nombre</label>
+                            </div>
+                        </div>
+                        
+                        <br class="hidden-sm hidden-md hidden-lg"><br class="hidden-sm hidden-md hidden-lg">
+                         <!-- Número de pagos -->
+                        <div class="col-sm-6 etiquetaDropdownList">
+                           
+                           <label>Número de Pagos</label>
+                            <div class="input-group">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-sm botonOperacion" ng-click="ReducirPagos()"><span class="fa fa-minus"></span></button>
+                                </span>
+                                <input  disabled type="text" class="form-control cantidadPieza" style="height:32px !important" ng-model="nuevoPlanPago.Pagos"/>
+                                <span class="input-group-btn">
+                                    <button class="btn btn-sm botonOperacion" ng-click="AumentarPagos()"><span class="fa fa-plus"></span></button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>                     
+                   <br>
+                    <div class="row">
+                     <div class="col-sm-6">
+                             <div class="entrada2">
+                                <input ng-pattern="erNumeroEntero" type="text" required class="{{clase.fecha}} form-control" name="fechaEntrega" ng-model="nuevoPlanPago.FechaEntrega"/>
+                                <label>Fecha de Entrega</label>
+                            </div>
+                        </div>
+                        
+                        <br class="hidden-sm hidden-md hidden-lg">
+                      <!-- activo -->
+                       <div class="col-sm-6">
+                             <label class="btn checkBoxActivo">Plan de Pagos Activo <input type="checkbox" class="badgebox" ng-model="nuevoPlanPago.Activo"><span class="badge">&check;</span></label>
+                         </div>
+                         
+                         <br class="hidden-sm hidden-md hidden-lg">
+                        
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="table-responsive TablaModal">
+                                <table class="table table-hover">
+                                    <thead class="TituloTabla">
+                                      <tr>
+                                        <th><button class="btn botonOrdenar"><b>#Abono</b></button></th>
+                                        <th><button class="btn botonOrdenar"><b>Abono </b></button></th>
+                                        <th><button class="btn botonOrdenar"><b>Días </b></button></th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                        <td>Anticipo</td>
+                                         <td>
+                                             <input required ng-pattern="erNumeroDecimal" type="text" ng-model="nuevoPlanPago.Anticipo.Abono" class="text-right {{nuevoPlanPago.claseAnticipo.abono}}"/>%
+                                        </td>
+                                        <td>
+                                             <input required disabled ng-pattern="erNumeroEntero" type="text" ng-model="nuevoPlanPago.Anticipo.Dias" class="text-right {{nuevoPlanPago.claseAnticipo.dias}}"/>
+                                        </td>
+                                    </tbody>
+                                    <tbody ng-repeat="abono in nuevoPlanPago.Abono track by $index">
+                                      <tr>
+                                        <td>Abono {{abono.NumeroAbono}}</td>
+                                        
+                                        <td>
+                                            <input required ng-pattern="erNumeroDecimal" type="text" ng-model="abono.Abono" class="text-right {{abono.clase.abono}}"/>%
+                                        </td>
+                                        <td>
+                                            <input required ng-pattern="erNumeroEntero" type="text" ng-model="abono.Dias" class="text-right {{abono.clase.dias}}"/>
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!-------- mensaje de error ---->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div ng-repeat="error in mensajeError">
+                                <span class="textoError">{{error}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!---- botones de operacion --->
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <button class="btn botonCancelar btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarPlanPagoForma()">CANCELAR</button>
+                        </div>
+                        
+                        <div class="col-xs-6">
+                            <button ng-disabled="terminar" focus class="btn botonAvanzar btn-block" ng-click="TerminarPlanPago(planPagoForma.nombre.$invalid, planPagoForma.fechaEntrega.$invalid)">TERMINAR</button>
+                        </div>
+                    </div>
+                    <br> 
+                </form>
+            </div>
+            <br><br><br>
+        </div>
+    </div>
+    
+    <!-- Desactivar Modal -->
+    <div class="modal fade" id="modalActivoPlanPago" data-keyboard="false" data-backdrop="static">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                
+                <div class="modal-body">
+                    <br>
+                    <div class="panel panel-default modalMensaje">
+                        <br>
+                        <b>{{mensajeAdvertencia}}</b>
+                        <br><br>
+
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <button class="btn botonCancelar" data-dismiss="modal" aria-label="Close" ng-click="CancelarCambioActivo()">No</button>
+                            </div>
+                            <div class="col-xs-6">
+                                <button class="btn botonAvanzar" data-dismiss="modal" aria-label="Close" ng-click="ConfirmarActualizarPlanPago()">Si</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div> 
+    
+    
+    <!-- Modal para mensajes -->
+    <div class="modal fade" id="mensajePlanPago">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                
+                <div class="modal-body">
+                    <div class="panel panel-default modalMensaje">
+                        <br>
+                        <b>{{mensaje}}</b>
+
+                        <br><br>
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <button class="btn  botonAvanzar" data-dismiss="modal" aria-label="Close">Aceptar</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div> 
+
+</div>
+
+     

@@ -1,0 +1,315 @@
+<div ng-controller="DomicilioOperativoControlador as domicilioOpe">
+
+     <!-- Modal para mensajes -->
+    <div class="modal fade sombraDivModal" id="domicilioModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="true" data-backdrop="static">
+        <br>    <br>   <br>
+        <div class="modal-dialog modalPrincipal">
+           
+            <div class="row">
+                <div class="col-xs-12">
+                    <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarDireccionModal()"><span aria-hidden="true">&times;</span></button>
+                    <span ng-if="operacion == 'Agregar'" class="tituloModal">Agregar Dirección</span>
+                    <span ng-if="operacion == 'Editar'" class="tituloModal">Editar Dirección</span>
+                </div>
+            </div>
+            <br><br><br>
+        
+            <form name="domicilioForma">
+               <div class="row" ng-show="fuente != 'Fiscal'">    
+                    <div class="col-sm-6 etiquetaDropdownList">
+                         <label>Tipo de Domicilio</label>
+                         <div class="dropdown">
+
+                            <button class="dropdown-toggle  {{claseDomicilio.tipoMedio}}" data-toggle="dropdown">
+                                <span>{{nuevoDomicilio.TipoMedioContacto.Nombre}}</span>
+                                <span class="caret"></span>
+                            </button>
+                            
+                            <ul class="dropdown-menu listaOpcionesDropdownList " >
+                                <li ng-repeat="tipo in tipoMedioContacto | orderBy:'Nombre' | filter:{MedioContactoId:'3'}" ng-show="tipo.Activo" ng-if="MostrarDomicilioDomicilios(tipo.TipoMedioContactoId)">
+                                    <a  href="" class="dropdownOpcionModal" ng-click="CambiarTipoMedioContacto(tipo)">
+                                        <span>{{tipo.Nombre}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div> 
+                             
+                </div>
+                <br  ng-show="fuente != 'Fiscal'">
+                <!-- Dirección -->
+                <!-- Domicilio y código postal -->
+                <div class="row">
+                    <!-- Domicilio -->
+                    <div class="col-sm-6">
+                         <div class="entrada2">
+                            <input ng-pattern="erNombreGeneral" type="text" required class="{{claseDomicilio.domicilio}} form-control" name="domicilio" ng-model="nuevoDomicilio.Domicilio"/>
+                            <label>Domicilio</label>
+                        </div>
+                    </div>
+                    <br class="hidden-sm hidden-md hidden-lg"><br class="hidden-sm hidden-md hidden-lg">
+                    <!-- Codigo -->                        
+                    <div  class="col-sm-3 col-xs-6">
+                         <div class="entrada2">
+                            <input  required ng-disabled="sinCP " ng-pattern="erCP" type="text" class="{{claseDomicilio.codigo}} form-control" name="codigo" ng-model="nuevoDomicilio.Codigo" ng-change="CambiarCodigo()" maxlength="5"/>
+                            <label class="hidden-xs">Código Postal</label>
+                            <label class="hidden-sm hidden-md hidden-lg">C.P.</label>
+                        </div>
+                    </div>
+
+
+                    <!--- Botón para cambiar el método de ingresar la dirección -->
+                    <div class="col-sm-3 col-xs-6">                            
+                        <button ng-disabled="fuente == 'Fiscal'" ng-show="!sinCP" class="btn btn-block botonBordeNegro" data-toggle="tooltip" data-placement="bottom" title="No se conoce el C.P." ng-click="ConocerCP()">Sin C.P.</button>
+                        <button ng-show="sinCP" class="btn btn-block botonBordeNegro" data-toggle="tooltip" data-placement="bottom" title="Se conoce el C.P."  ng-click="ConocerCP()" style="margin-top:-1px">Con C.P.</button>
+                    </div>
+                </div>
+
+                <br><br>
+                <!-- Estado y Munucipio-->
+                <div class="row">
+                    <!-- Estado -->
+                    <div class="col-sm-6 etiquetaDropdownList">
+                         <label>Estado</label>
+                         <div class="dropdown">
+
+                            <button ng-disabled="!sinCP" class="dropdown-toggle  {{claseDomicilio.estado}}" data-toggle="dropdown">
+                                <span>{{nuevoDomicilio.Estado}}</span>
+                                <span class="caret"></span>
+                            </button>
+
+                            <ul class="dropdown-menu listaOpcionesDropdownList">
+                                <li ng-repeat="estado in estadoMexico | orderBy:'Estado'">
+                                    <a  href="" class="dropdownOpcionModal" ng-click="CambiarEstado(estado.Estado)">
+                                        <span>{{estado.Estado}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div>
+                    <br class="hidden-sm hidden-md hidden-lg">
+                    <!-- Municipio -->
+                    <div class="col-sm-6 etiquetaDropdownList">
+                         <label>Municipio</label>
+                         <div class="dropdown">
+
+                            <button ng-disabled="!sinCP || nuevoDomicilio.Estado.length == 0" class="dropdown-toggle {{claseDomicilio.municipio}}" data-toggle="dropdown">
+                                <span>{{nuevoDomicilio.Municipio}}</span>
+                                <span class="caret"></span>
+                            </button>
+
+                            <ul class="dropdown-menu listaOpcionesDropdownList">
+                                <li ng-repeat="municipo in codigoPostal  | orderBy:'Municipio' | unique: 'Municipio'">
+                                    <a  href="" class="dropdownOpcionModal" ng-click="CambiarMunicipio(municipo.Municipio)">
+                                        <span>{{municipo.Municipio}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div>
+                </div>
+
+                <br>
+                <!-- Ciudad y colonia -->
+                <div class="row">
+                    <!-- Ciudad -->
+                    <div class="col-sm-6 etiquetaDropdownList">
+                         <label>Ciudad</label>
+                         <div class="dropdown">
+
+                            <button ng-disabled="!sinCP || nuevoDomicilio.Municipio.length == 0" class="dropdown-toggle  {{claseDomicilio.ciudad}}" data-toggle="dropdown">
+                                <span>{{nuevoDomicilio.Ciudad}}</span>
+                                <span class="caret"></span>
+                            </button>
+
+                            <ul class="dropdown-menu listaOpcionesDropdownList"><!-- -->
+                                <li ng-repeat="ciudad in codigoPostal   | filter:{Municipio:nuevoDomicilio.Municipio}:true | orderBy:'Ciudad' | unique: 'Ciudad'">
+                                    <a  href="" class="dropdownOpcionModal" ng-click="CambiarCiudad(ciudad.Ciudad)">
+                                        <span>{{ciudad.Ciudad}} </span>
+                                    </a>
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div>
+                    <br class="hidden-sm hidden-md hidden-lg">
+                    <!-- Colonia -->
+                    <div class="col-sm-6 etiquetaDropdownList">
+                         <label>Colonia</label>
+                         <div class="dropdown">
+
+                            <button ng-disabled="(!sinCP && nuevoDomicilio.Codigo.length != 5) || nuevoDomicilio.Ciudad.length == 0" class="dropdown-toggle {{claseDomicilio.colonia}}" data-toggle="dropdown">
+                                <span>{{nuevoDomicilio.Colonia}}</span>
+                                <span class="caret"></span>
+                            </button>
+
+                            <ul class="dropdown-menu listaOpcionesDropdownList">
+                                <li> <a href="" class="dropdownOpcionModal text-center" ng-click="CambiarColonia('OtraColonia')"> 
+                                    <span>OTRA COLONIA</span>
+                                </a></li>
+                                <div role="separator" class="dropdown-divider"></div>
+                                <li ng-repeat="colonia in codigoPostal | filter:{Municipio:nuevoDomicilio.Municipio, Ciudad:nuevoDomicilio.Ciudad}:true | orderBy:'Colonia' | unique: 'Colonia' ">
+                                    <a  href="" class="dropdownOpcionModal" ng-click="CambiarColonia(colonia.Colonia)">
+                                        <span>{{colonia.Colonia}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div>
+                
+                </div>
+                <br>
+                <!-- Otra colonia -->
+                <div ng-show="otraColonia">
+                    <div class="row" >
+                        <div class="col-sm-offset-6 col-sm-6">
+                             <div class="entrada2">
+                                <input ng-pattern="erNombreGeneral" type="text" required class="{{claseDomicilio.otra}} form-control" name="otraColonia" ng-model="nuevoDomicilio.Colonia" maxlength="120"/>
+                                <label>Otra Colonia</label>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                </div>
+                
+                <!-------- mensaje de error ---->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div ng-repeat="error in mensajeError">
+                            <span class="textoError">{{error}}</span>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <!---- botones de operacion -->
+                <div class="row">
+                    <div class="col-xs-6">
+                        <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarDireccionModal()">CANCELAR</button>
+                    </div>
+
+                    <div class="col-xs-6">
+                        <button focus class="btn botonOperacionModal btn-block" ng-click="TerminarDomicilio(domicilioForma.domicilio.$invalid, domicilioForma.codigo.$invalid, domicilioForma.otraColonia.$invalid)">TERMINAR</button>
+                    </div>
+                </div>
+                <br>
+            </form>
+             
+            
+        </div>
+    </div> 
+    
+    <!-- Detalles domicilio -->
+    <div class="modal fade sombraDivModal" id="domicilioDetalleModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+        <br>    <br>   <br>
+        <div class="modal-dialog modalPrincipal">
+           
+            <div class="row">
+                <div class="col-xs-12">
+                    <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarDireccionModal()"><span aria-hidden="true">&times;</span></button>
+                    <span  class="tituloModal">Domicilio</span>
+                </div>
+            </div>
+        
+            <br><br><br>
+            
+            <div class="row">
+                <!--tipo domicilio-->
+                <div class="col-sm-6">
+                    <div class="subrayado">
+                    <label>Tipo de Domicilio</label><br>
+                    <span class="textoModal">{{domicilioDetalle.TipoMedioContacto.Nombre}}</span>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <!-- domicilio y cp -->
+            <div class="row">
+                <!--domicilio-->
+                <div class="col-sm-6">
+                    <div class="subrayado">
+                    <label>Domicilio</label><br>
+                    <span class="textoModal">{{domicilioDetalle.Domicilio}}</span>
+                    </div>
+                </div>
+                <br class="hidden-sm hidden-md hidden-lg">
+                <!-- cp -->
+                <div class="col-sm-6">
+                    <div class="subrayado">
+                    <label>Código Postal</label><br>
+                    <span class="textoModal">{{domicilioDetalle.Codigo}}</span>
+                    </div>
+                </div>
+            </div>
+            <br>
+
+            <div class="row">
+                <!--Estado-->
+                <div class="col-sm-6">
+                    <div class="subrayado">
+                    <label>Estado</label><br>
+                    <span class="textoModal">{{domicilioDetalle.Estado}}</span>
+                    </div>
+                </div>
+                <br class="hidden-sm hidden-md hidden-lg">
+                <!-- Municipio -->
+                <div class="col-sm-6">
+                    <div class="subrayado">
+                    <label>Municipio</label><br>
+                    <span class="textoModal">{{domicilioDetalle.Municipio}}</span>
+                    </div>
+                </div>
+            </div>
+            <br>
+
+            <div class="row">
+                <!--Ciudad-->
+                <div class="col-sm-6">
+                    <div class="subrayado">
+                    <label>Ciudad</label><br>
+                    <span class="textoModal">{{domicilioDetalle.Ciudad}}</span>
+                    </div>
+                </div>
+                <br class="hidden-sm hidden-md hidden-lg">
+                <!-- Colonia -->
+                <div class="col-sm-6">
+                    <div class="subrayado">
+                    <label>Colonia</label><br>
+                    <span class="textoModal">{{domicilioDetalle.Colonia}}</span>
+                    </div>
+                </div>
+            </div>
+            <br>
+        
+        </div>
+    </div> 
+    
+    
+    
+    <!-- Modal para mensajes -->
+    <div class="modal fade sombraDivModal" id="mensajeDomicilio" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <br>    <br>   <br>
+        <div class="modal-dialog modalPrincipal modal-sm">
+           <br>
+            <div class="row">
+                <div class="col-xs-12 text-center" style="font-size:12pt">
+                   {{mensaje}}
+                </div>
+            </div>
+            <br>
+            <div class="row">
+            
+                <div class="col-xs-12">
+                    <button focus class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close">Aceptar</button>
+                </div>
+            </div>
+        </div> 
+    </div> 
+    
+    
+</div>
+
+     

@@ -8,9 +8,9 @@ function Login()
 
     $request = \Slim\Slim::getInstance()->request();
     $datosUsuario = json_decode($request->getBody());
-
+    
     $sql = "SELECT * FROM UsuarioCompleto WHERE NombreUsuario = '".$datosUsuario[0]."' AND Password = '".$datosUsuario[1]."' AND Activo = 1";
-
+    
     try 
     {
 

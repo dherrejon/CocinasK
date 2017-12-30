@@ -13,7 +13,7 @@
     <div class="row" ng-if="permisoUsuario.consultar">
         <div class="col-md-11 col-xs-10">
             <div class="table-responsive TablaUnidadNegocio">
-                <table class="table table-hover">
+                <table class="table table-hover table-striped table-condensed">
                     <thead class="TituloTabla">
                       <tr>
                         <!--<th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('Colaborador')"><b>Responsable</b> <b ng-if="ordenarPor === 'Colaborador'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-Colaborador'" class="fa fa-arrow-down"></b></button></th>-->
@@ -23,30 +23,31 @@
                         <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('NombreTerritorio')"><b>Territorio </b><b ng-if="ordenarPor === 'NombreTerritorio'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-NombreTerritorio'" class="fa fa-arrow-down"></b></button></th>
                         <th><button class="btn botonFalso"><b>Detalles</b></button></th>
                         <th><button class="btn botonFalso"><b>Editar</b></button></th>
-                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('ActivoN')"><b>Activo</b> <b ng-if="ordenarPor === 'ActivoN'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-ActivoN'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonFalso"><b>Activo</b></button></th>
+                        <!--<th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('ActivoN')"><b>Activo</b> <b ng-if="ordenarPor === 'ActivoN'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-ActivoN'" class="fa fa-arrow-down"></b></button></th>-->
                       </tr>
                     </thead>
-                    <tbody ng-repeat="plaza in plaza | filter:FiltrarPlaza | filter:buscar | orderBy:[ordenarPor, 'Estado', 'Municipio', 'Ciudad']">
-                      <tr>
+                    <tbody >
+                      <tr ng-repeat="plaza in plaza | filter:FiltrarPlaza | filter:buscar | orderBy:[ordenarPor, 'Estado', 'Municipio', 'Ciudad']">
                         <td>{{plaza.Estado}}</td>
                         <td>{{plaza.Municipio}}</td>
                         <td>{{plaza.Ciudad}}</td>
                         <td>{{plaza.NombreTerritorio}}</td>
                           
-                        <td>
+                        <td class="text-center">
                             <a  class="BotonOperacion" href="" data-toggle="modal" data-target="#DetallePlaza" ng-click="MostarDetalles(plaza)">
                                 <span class="fa fa-eye fa-2x"></span>
                             </a>
                         </td>
 
-                        <td>
+                        <td class="text-center">
                             <a ng-if="permisoUsuario.editar"  class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirPlazaModal(plaza,'Editar')">
                                 <span class="fa fa-pencil fa-2x"></span>
                             </a>
                             <span ng-if="!permisoUsuario.editar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
                         </td>
 
-                        <td>
+                        <td class="text-center">
                             <div class="checkbox">
                                 <label>
                                     <input ng-disabled="!permisoUsuario.activar"  ng-model="plaza.Activo" type="checkbox" value="" ng-click="ConfirmarCambiarActivo(plaza)">
@@ -196,7 +197,7 @@
     <!-------- Modals ---------------->
     
     <!--- Modal para Detalles de la plaza --->
-    <div class="modal fade " id="DetallePlaza"  >
+    <div class="modal fade " id="DetallePlaza">
         <br>    <br>   <br>
         <div class="modal-dialog modal-md">
             <div class="modal-content">
@@ -342,7 +343,7 @@
                         <br class="hidden-sm hidden-md hidden-lg">
                         <!-- Municipo -->
                         <div class="col-sm-6 etiquetaDropdownList">
-                             <label>Municpio</label>
+                             <label>Municipio</label>
                              <div class="dropdown">
 
                                 <button ng-disabled="nuevaPlaza.Estado.length == 0" class="dropdown-toggle {{clase.municipio}}" data-toggle="dropdown">

@@ -1,0 +1,763 @@
+<div ng-controller="CubiertaControlador as cubierta" class="container-fluid" >
+
+    <br><br>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="tituloModulo">
+                <span>{{titulo}}</span>
+            </div>
+        </div>
+    </div>
+    <br>
+    
+    <div class="row" ng-if="permisoUsuario.consultar">
+        <div class="col-md-11 col-xs-10">
+            <div class="table-responsive TablaUnidadNegocio">
+                <table class="table table-hover table-striped table-condensed">
+                    <thead class="TituloTabla">
+                      <tr>
+                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('Material.Nombre')"><b>Material </b><b ng-if="ordenarPor === 'Material.Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-Material.Nombre'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('TipoCubierta.Nombre')"><b>Tipo Cubierta </b><b ng-if="ordenarPor === 'TipoCubierta.Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-TipoCubierta.Nombre'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('Material.TipoMaterial.Nombre')"><b>Tipo Material </b><b ng-if="ordenarPor === 'Material.TipoMaterial.Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-Material.TipoMaterial.Nombre'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonFalso"><b>Detalles</b></button></th>
+                        <th><button class="btn botonFalso"><b>Editar</b></button></th>
+                        <th><button class="btn botonFalso"><b>Activo</b></button></th>
+                        <!--<th><button class="btn botonOrdenar" ng-click="CambiarOrdenar('ActivoN')"><b>Activo</b> <b ng-if="ordenarPor === 'ActivoN'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPor === '-ActivoN'" class="fa fa-arrow-down"></b></button></th>-->
+                      </tr>
+                    </thead>
+                    <tbody >
+                      <tr ng-repeat="cubierta in cubierta | filter:buscar |filter:FiltrarCubierta | orderBy:[ordenarPor, 'Material.Nombre']">
+                        <td> {{cubierta.Material.Nombre}} </td>
+                        <td> {{cubierta.TipoCubierta.Nombre}} </td>
+                        <td> {{cubierta.Material.TipoMaterial.Nombre}} </td>
+                        
+                        <td class="text-center">
+                            <a  class="BotonOperacion" href="" data-toggle="modal" data-target="#DetalleCubierta" ng-click="MostarDetalles(cubierta)">
+                                <span class="fa fa-eye fa-2x"></span>
+                            </a>
+                        </td>
+
+                        <td class="text-center">
+                            <a  ng-if="permisoUsuario.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="ObtenerDatosCubiertaEditar(cubierta)">
+                                <span class="fa fa-pencil fa-2x"></span>
+                            </a>
+                            
+                            <span ng-if="!permisoUsuario.editar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
+                        </td>
+
+                        <td class="text-center">
+                            <div class="checkbox">
+                                <label>
+                                    <input ng-disabled="!permisoUsuario.activar"  ng-model="cubierta.Material.Activo" type="checkbox" value="" ng-click="CambiarEstatusActivo(cubierta)">
+                                    <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+                                </label>
+                            </div>
+                        </td>
+
+                      </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-xs-2 col-md-1">
+            <button ng-disabled="!permisoUsuario.agregar" class="btn btn-block botonOperacion fa fa-plus text-center" data-toggle="tooltip" data-placement="bottom" title="Agregar Combinación de Materiales" ng-click="AbrirModuloCubierta('Agregar', null)"></button>
+            
+            <br><br>
+            
+            <!-- Boton filtrar -->
+            <div class="dropdown">
+
+                <button class="btn btn btn-block botonOperacion fa fa-filter text-center" data-toggle="dropdown" ></button>
+
+                <ul class="dropdown-menu dropdown-menu-right operacionPanel">
+
+                    <div  class="row ">
+                        <div class="col-xs-9">
+                            <li  class="dropdown-header tituloOpcionLateral">FILTRAR</li>
+                        </div>
+                        <div class="col-xs-3">
+                            <li> <button class="btn botonOperacion fa fa-ban" data-toggle="tooltip" data-placement="bottom" title="Limpiar filtro" ng-click="LimpiarFiltro()"></button></li>
+                        </div>
+                    </div>
+                    <li role="separator" class="divider"></li>
+
+                    <li style="width: 275px;">
+
+                        <form role="filtro">
+
+                            <!------ Tipo de Cubierta ------>
+                            <button class="btn btn-block botonFiltro" ng-click="MostrarFiltros('tipoCubierta')">Tipo Cubierta</button>
+
+                            <div class="row" ng-show="mostrarFiltro.tipoCubierta">
+                                <div class="col-xs-12" >
+                                    <div class="opcionFiltro">
+                                        <div  ng-repeat="tipo in tipoCubierta | orderBy:'Nombre' track by $index">
+                                            <label class="checkBoxActivoFiltro">
+                                                <input type="checkbox" class="badgebox" ng-model="filtroCheckboxTipoCubierta[$index]"  ng-click="setFiltro('tipoCubierta', tipo.TipoCubiertaId )"><span class="badge">&check;</span>
+                                                {{tipo.Nombre}}
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            
+                            <!------ Tipo de Material ------>
+                            <button class="btn btn-block botonFiltro" ng-click="MostrarFiltros('tipoMaterial')">Tipo Material</button>
+
+                            <div class="row" ng-show="mostrarFiltro.tipoMaterial">
+                                <div class="col-xs-12" >
+                                    <div class="opcionFiltro">
+                                        <div  ng-repeat="tipoMaterial in cubierta | unique: 'Material.TipoMaterial.Nombre' | orderBy:'Material.TipoMaterial.Nombre'">
+                                            <label class="checkBoxActivoFiltro">
+                                                <input type="checkbox" class="badgebox" ng-model="filtroCheckboxTipoMaterial[$index]"  ng-click="setFiltro('tipoMaterial', tipoMaterial.Material.TipoMaterial.TipoMaterialId )"><span class="badge">&check;</span>
+                                                {{tipoMaterial.Material.TipoMaterial.Nombre}}
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            
+                            <!------------- Activo ---------->
+                            <button class="btn btn-block botonFiltro" ng-click="MostrarFiltros('activo')">Activo</button>
+                            
+                            <div class="row" ng-show="mostrarFiltro.activo">
+                                <div class="col-xs-12" >
+                                    <div class="opcionFiltro">
+                                        <div>
+                                            <label class="checkBoxActivoFiltro">
+                                                <input type="checkbox" class="badgebox" ng-model="filtro.activo.activo"><span class="badge">&check;</span>
+                                                Cubiertas Activas
+                                            </label>
+                                            
+                                            <label class="checkBoxActivoFiltro">
+                                                <input type="checkbox" class="badgebox" ng-model="filtro.activo.inactivo"><span class="badge">&check;</span>
+                                                Cubiertas No Activas
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                
+                        </form>
+                    </li>
+                </ul>
+            </div>
+
+            <br>
+            
+            <!-- Boton buscar -->
+            <div class="dropdown">
+                
+                <button class="btn btn btn-block botonOperacion fa fa-search text-center" data-toggle="dropdown" ></button>
+                    
+                <ul class="dropdown-menu dropdown-menu-right operacionPanel">
+
+                    <li style="width: 225px; height: 35px !important;">
+
+                        <form role="buscar" style="max-width: 200px; height: 25px !important;">
+                            <div class="input-group" >
+                              <input  type="text" class="form-control operacionPanelEntrada" placeholder="Buscar" style="margin-left: 5px; width: 175px;" ng-model="buscar">
+                              <span class="input-group-btn" style="width: 25px;">
+                                <button class="btn operacionPanelBoton" type="button">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                              </span>
+                            </div>
+                        </form>
+                    </li>
+                </ul>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+    <!----------------------------------- Modales --------------------------->
+    <!---- Modal para Agregar-editar Cubierta-->
+    <div class="modal fade" id="CubiertaModuloModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static" >
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <!-- encabezado del modal -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarCubiertaForma()"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center" ng-if="operacion === 'Agregar'">Agregar Cubierta</h3>
+                            <h3 class="text-center" ng-if="operacion === 'Editar'">Editar Cubierta</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+                <br>
+
+                <form class="modal-body" name="CubiertaModuloForma">
+                   
+                   <div class="row">
+                        <!-- Tipo Cubierta -->
+                        <div class="col-sm-6 etiquetaDropdownList">
+                             <label>Tipo Cubierta</label>
+                             <div class="dropdown">
+
+                                <button ng-disabled="operacion=='Editar'" class="dropdown-toggle  {{claseCubierta.tipoCubierta}}" data-toggle="dropdown">
+                                    <span>{{nuevaCubierta.TipoCubierta.Nombre}}</span>
+                                    <span class="caret"></span>
+                                </button>
+
+                                <ul class="dropdown-menu elemetosDropdownListModal">
+                                    <li ng-repeat="tipo in tipoCubierta | orderBy:'Estado'">
+                                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarTipoCubierta(tipo)">
+                                            <span>{{tipo.Nombre}}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <br>
+                    
+                   <div class="row">
+                        <!-- Tipo Material -->
+                        <div class="col-sm-6 etiquetaDropdownList">
+                             <label>Tipo Material</label>
+                             <div class="dropdown">
+
+                                <button ng-disabled="nuevaCubierta.TipoCubierta.Nombre.length == 0 || operacion=='Editar'" class="dropdown-toggle  {{claseCubierta.tipoMaterial}}" data-toggle="dropdown">
+                                    <span>{{nuevaCubierta.Material.TipoMaterial.Nombre}}</span>
+                                    <span class="caret"></span>
+                                </button>
+
+                                <ul class="dropdown-menu elemetosDropdownListModal">
+                                    <li ng-repeat="tipo in tipoMaterial | orderBy:'Nombre' | filter:{TipoCubierta:{TipoCubiertaId:nuevaCubierta.TipoCubierta.TipoCubiertaId}}">
+                                        <a  href="" class="dropdownOpcionModal" ng-show="tipo.Activo" ng-click="CambiarTipoMaterial(tipo)">
+                                            <span>{{tipo.Nombre}}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                            </div>
+                        </div>
+                        <br class="hidden-sm hidden-md hidden-lg">
+                        
+                        <!-- Material -->
+                        <div class="col-sm-6" ng-if="nuevoMaterial">
+                            <div class="input-group">
+                              
+                                <div class="entrada2" >
+                                    <input ng-pattern="erNombreGeneral" type="text" required class="{{claseCubierta.nuevoMaterial}} form-control" name="material" ng-model="nuevaCubierta.Material.Nombre"/>
+                                    <label>Nuevo Material...</label>
+                                </div> 
+                             
+                                <div class="input-group-btn">
+                                    <div class="dropdown">
+                                       <button ng-disabled="nuevaCubierta.Material.TipoMaterial.Nombre.length == 0 || operacion=='Editar'" type="button" class="btn botonPanelOculto" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <span class="caret"></span>
+                                        </button>
+
+                                        <ul class="dropdown-menu dropdown-menu-right elemetosDropdownListModal">
+
+                                           <li> <a href="" class="dropdownOpcionModal text-center" ng-click="CambiarMaterial('NuevoMaterial')"> 
+                                                <span>Material Nuevo</span>
+                                            </a></li>
+                                            <div role="separator" class="dropdown-divider"></div>
+
+                                            <li ng-repeat="material in material  | orderBy:'Nombre' | filter:{TipoMaterial:{TipoMaterialId:nuevaCubierta.Material.TipoMaterial.TipoMaterialId}}">
+                                                <a  href="" class="dropdownOpcionModal" ng-show="material.Activo" ng-click="CambiarMaterial(material)">
+                                                    <span>{{material.Nombre}}</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                                
+                        </div>
+                        
+                        <div class="col-sm-6 etiquetaDropdownList" ng-if="!nuevoMaterial">
+                             <label>Material</label>
+                             <div class="dropdown">
+
+                                <button ng-disabled="nuevaCubierta.Material.TipoMaterial.Nombre.length == 0 || operacion=='Editar'" class="dropdown-toggle {{claseCubierta.material}}" data-toggle="dropdown">
+                                    <span ng-if="!nuevoMaterial">{{nuevaCubierta.Material.Nombre}}</span>
+                                    <span class="caret"></span>
+                                </button>
+                                
+                                <ul class="dropdown-menu elemetosDropdownListModal">
+                                  
+                                   <li> <a href="" class="dropdownOpcionModal text-center" ng-click="CambiarMaterial('NuevoMaterial')"> 
+                                        <span>Material Nuevo</span>
+                                    </a></li>
+                                    <div role="separator" class="dropdown-divider"></div>
+                                    
+                                    <li ng-repeat="material in material  | orderBy:'Nombre' | filter:{TipoMaterial:{TipoMaterialId:nuevaCubierta.Material.TipoMaterial.TipoMaterialId}}">
+                                        <a  href="" class="dropdownOpcionModal" ng-show="material.Activo" ng-click="CambiarMaterial(material)">
+                                            <span>{{material.Nombre}}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <!-- Margen -->
+                             <div class="entrada2">
+                                <input ng-pattern="erNumeroDecimal" type="text" required class="{{claseCubierta.margen}} form-control" name="margen" ng-model="nuevaCubierta.Margen"/>
+                                <label>Margen</label>
+                            </div>
+                        </div>
+                            
+                        <br class="hidden-sm hidden-md hidden-lg"><br class="hidden-sm hidden-md hidden-lg">
+                        <!-- Desperdicio -->
+                       <div class=" col-sm-6">
+                            <!-- Margen -->
+                             <div class="entrada2">
+                                <input ng-pattern="erNumeroDecimal" type="text" required class="{{claseCubierta.desperdicio}} form-control" name="desperdicio" ng-model="nuevaCubierta.Desperdicio"/>
+                                <label>Desperdicio</label>
+                            </div>
+                        </div>
+                        <br>
+
+                    </div>
+                    <br>
+                    <div class="row" ng-show="false"> <!-- ng-if="nuevaCubierta.TipoCubierta.TipoCubiertaId == '1'" -->
+                        <!-- Ubicaciones disponibles -->
+                        <div class="col-xs-12">
+                            <label>Ubicaciones disponibles de la cubierta</label>
+                        </div>
+                        <div class="col-sm-4 col-xs-6" ng-repeat="ubicacion in nuevaCubierta.Ubicacion" style="margin-top:10px">
+                             <label class="btn checkBoxActivo">{{ubicacion.Nombre}} <input type="checkbox" class="badgebox" ng-model="ubicacion.Activo"><span class="badge">&check;</span></label>
+            
+                        </div>
+                    </div>
+                    <br><br>
+                    <div class="row">
+                        <div class="col-xs-12 subtituloModal">
+                            <b>Selecciona los muestrarios de colores de esta cubierta</b>
+                        </div>
+
+                        <br><br>
+                        <div class="col-xs-12">
+                            <button class="btn btn-block {{claseCubierta.color}}" ng-click="CambiarMostrarColor()">Muestrario de Colores {{mostrarMuestrarioColor.texto}}</button>
+                        </div>
+                        <br><br><br>
+
+                        <div ng-show="mostrarMuestrarioColor.mostrar">
+                            <div class="col-xs-12">
+                               <div class="panelOculto">
+                                    <input type="text" class="buscar input-md form-control" placeholder="Buscar" ng-model="buscarGrupo"/>
+                                    <br>
+                                    <div class="panel panel-default  tablaDropdowlist" >
+                                        <table class="table table-hover table-responsive">
+                                          <tbody  style="cursor: pointer">
+                                            <tr ng-repeat="grupo in grupo | filter: { Nombre:buscarGrupo} | orderBy:'Nombre'" ng-show="grupo.Activo && grupo.show">
+                                        
+                                              <td >
+                                                  {{grupo.Nombre}}
+                                              </td>
+                                              
+                                              <td>
+                                                <a  class="BotonOperacion" href="" data-toggle="modal" data-target="#DetalleModuloCubiertaColor" ng-click="VerGrupoColor(grupo)">
+                                                    <span class="fa fa-eye fa-2x"></span>
+                                                </a>
+                                              </td>
+                                              
+                                              <td>
+                                                <span class="pull-right">
+                                                   <a style="margin-left:10px" class="BotonOperacion" href=""  ng-click="AgregarGrupoColor(grupo)">
+                                                        <span class="fa fa-plus fa-2x"></span>
+                                                    </a>
+                                                  </span>
+                                               </td>
+                                            </tr>
+                                          </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <br>
+
+                    <div class="row" ng-if="nuevaCubierta.Color.length > 0">
+                        <div class="col-xs-12 subtituloModal">
+                            <b>Muestrario agregados</b>
+                        </div>
+                        <br> <br>
+                        <div class="col-xs-12">
+                            <div class="piezaPorComponenteTabla">
+                                <table class="table table-hover">
+                                    <thead class="TituloTabla">
+                                      <tr>
+                                        <th><button class="btn botonFalso"><b>Muestrario</b></button></th>
+                                        <th><button class="btn botonFalso"><b>Colores</b></button></th>
+                                        <th><button class="btn botonFalso"><b>Costo</b></button></th>
+                                        <th><button class="btn botonFalso" data-toggle="tooltip" data-placement="bottom" title="Presupuestar por defecto"><b>Por Defecto</b></button></th>
+                                        <th><button class="btn botonFalso"><b>Quitar</b></button></th>
+                                      </tr>
+                                    </thead>
+                                    <tbody ng-repeat="grupo in nuevaCubierta.Color | orderBy:'Grupo.Nombre'">
+                                      <tr>
+                                        
+                                         <td>{{grupo.Grupo.Nombre}}</td>
+                                         
+                                         <td class="text-center">
+                                            <a  class="BotonOperacion" href="" data-toggle="modal" data-target="#DetalleModuloCubiertaColor" ng-click="VerGrupoColor(grupo)">
+                                                <span class="fa fa-eye fa-2x"></span>
+                                            </a>
+                                          </td>
+                                          
+                                          <td class="text-center">
+                                            <input required ng-pattern="erNumeroDecimal" type="text" ng-model="grupo.CostoUnidad" class="text-right {{grupo.claseCosto}}"/>
+                                          </td>  
+                                
+                                         <td class="text-center">
+                                            <div class="checkbox">
+                                                <label>
+                                                    <input  ng-model="grupo.PorDefecto" type="checkbox" value="">
+                                                    <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+                                                </label>
+                                            </div>
+                                        </td>
+                                         
+                                          <td class="text-center">
+                                            <a class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="QuitarGrupoColor(grupo)">
+                                                <span class="fa fa-times fa-2x"></span>
+                                            </a>
+                                          </td>
+
+                                      </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                  
+                    <br>
+                    <!-------- mensaje de error ---->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div ng-repeat="error in mensajeError">
+                                <span class="textoError">{{error}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!---- botones de operacion --->
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <button class="btn botonCancelar btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarCubiertaForma()">CANCELAR</button>
+                        </div>
+                        
+                        <div class="col-xs-6">
+                            <button focus class="btn botonAvanzar btn-block" ng-click="TerminarCubierta(CubiertaModuloForma.margen.$invalid, CubiertaModuloForma.desperdicio.$invalid)">TERMINAR</button>
+                        </div>
+                    </div>
+                    <br>
+                </form>
+            </div>
+            <br><br><br>
+        </div>
+    </div>
+    
+    <!--- Modal para Detalles de la cubierta --->
+    <div class="modal fade " id="DetalleCubierta">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <!-- encabezado del modal -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center">Detalles de la cubierta</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- cuerpo del modal -->
+                <div class="modal-body">
+                    <!-- Opciones de unidad de negocio -->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="pull-right">
+                                <button ng-disabled="!permisoUsuario.editar" class="btn botonOperacion" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" data-placement="bottom" title="Editar Cubierta"  ng-click="AbrirModuloCubierta('Editar', cubiertaActualizar)"><span class="fa fa-pencil fa-2x"></span></button>
+                                <button ng-disabled="!permisoUsuario.activar" ng-if="cubiertaActualizar.Material.Activo" class="btn botonOperacion activo"  data-toggle="tooltip" data-placement="bottom" title="Desactivar" ng-click="CambiarActivoModal()"><span class="fa fa-power-off fa-2x"></span></button>
+                                <button ng-disabled="!permisoUsuario.activar" ng-if="!cubiertaActualizar.Material.Activo" class="btn botonOperacion desactivo" data-toggle="tooltip" data-placement="bottom" title="Activar" ng-click="CambiarActivoModal()"><span class="fa fa-power-off fa-2x"></span></button>
+                            </div>
+                        </div>
+                    </div>
+                        
+                    <h4>Datos de la cubierta</h4><br>
+                    <!-- Tipo de cubierta -->
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="subrayado">
+                            <label>Tipo Cubierta</label><br>
+                            <span class="textoModal">{{cubiertaActualizar.TipoCubierta.Nombre}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!-- Tipo Material  -->
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="subrayado">
+                            <label>Tipo Material</label><br>
+                            <span class="textoModal">{{cubiertaActualizar.Material.TipoMaterial.Nombre}}</span>
+                            </div>
+                        </div>
+                        <br class="hidden-sm hidden-md hidden-lg">
+                        <!-- Material -->
+                        <div class="col-sm-6">
+                            <div class="subrayado">
+                            <label>Material</label><br>
+                            <span class="textoModal">{{cubiertaActualizar.Material.Nombre}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!--  Margen -->
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="subrayado">
+                            <label>Margen</label><br>
+                            <span class="textoModal">{{cubiertaActualizar.Margen}}%</span>
+                            </div>
+                        </div>
+                        <!--  Desperdicio -->
+                        <br class="hidden-sm hidden-md hidden-lg">
+                        <div class="col-sm-6">
+                            <div class="subrayado">
+                            <label>Desperdicio</label><br>
+                            <span class="textoModal">{{cubiertaActualizar.Desperdicio}}%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row" ng-if="cubiertaActualizar.TipoCubierta.TipoCubiertaId == '1'"> 
+                        <!-- Ubicaciones disponibles -->
+                        <div class="col-xs-12">
+                            <label>Ubicaciones disponibles de la cubierta</label>
+                        </div>
+                        <div class="col-sm-4 col-xs-6" ng-repeat="ubicacion in cubiertaActualizar.Ubicacion">
+                             <button class="btn checkBoxActivo" style="margin-top:10px">{{ubicacion.Nombre}}<input ng-disabled="true" type="checkbox" class="badgebox" ng-model="ubicacion.Activo"><span class="badge">&check;</span></button>
+                        </div>
+                    </div>
+                    <br>
+                    <!-- Colores -->
+                    <div class="row" ng-if="cubiertaActualizar.Color.length > 0">
+                        <div class="col-xs-12">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <button class="btn btn-block"  ng-class="GetClaseDetallesSeccion('color')" ng-click="MostrarDetalleEspecifico('color')">Muestrarios de color</button>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="table-responsive TablaModal" ng-show="mostrarDatoDetalle == 'color'">
+                                <table class="table table-hover">
+                                    <thead class="TituloTabla">
+                                      <tr>
+                                        <th><button class="btn botonOrdenar"><b>Nombre</b></button></th>
+                                        <th><button class="btn botonFalso"><b>Colores</b></button></th>
+                                        <th><button class="btn botonFalso"><b>Costo Unidad</b></button></th>
+                                        <th><button class="btn botonFalso"><b>Activo</b></button></th>
+                                      </tr>
+                                    </thead>
+                                    <tbody ng-repeat="grupo in cubiertaActualizar.Color | orderBy:['Grupo.Nombre']">
+                                      <tr>
+                                        <td>
+                                            {{grupo.Grupo.Nombre}}
+                                            <span ng-if="grupo.PorDefecto" class="fa fa-asterisk" data-toggle="tooltip" data-placement="bottom" title="Grupo de color por defecto"></span>
+                                        </td>
+                        
+                                        <td class="text-center">
+                                            <a  class="BotonOperacion" href="" data-toggle="modal" data-target="#DetalleModuloCubiertaColor" ng-click="VerGrupoColor(grupo)">
+                                                <span class="fa fa-eye fa-2x"></span>
+                                            </a>
+                                        </td>
+
+                                        <td class="text-center">{{grupo.CostoUnidad | currency}}</td>
+
+                                        <td class="text-center">
+                                            <span class="fa fa-check-square-o fa-2x" ng-if="grupo.Grupo.Activo"></span>
+                                            <span class="fa fa-square-o fa-2x" ng-if="!grupo.Grupo.Activo"></span>
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-------------- Detalles del grupo ----------->
+    <div class="modal fade " id="DetalleModuloCubiertaColor">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <!-- encabezado del modal -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center">Detalles del Muestrario {{verGrupo.Nombre}}</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- cuerpo del modal -->
+                <div class="modal-body">
+                    <!-- Opciones de unidad de negocio -->
+                        
+                    <h4>Colores</h4><br>
+                    <!-- Colores -->
+                    <div class="row">
+                        <div class="col-sm-12">
+                            
+                            <table class="table table-hover">
+                                <thead class="TituloTabla">
+                                  <tr>
+                                    <th><button class="btn botonOrdenar"><b>Color</b></button></th>
+                                    <th><button class="btn botonOrdenar"><b>Nombre</b></button></th>
+                                    <th><button class="btn botonFalso"><b>Activo</b></button></th>
+                                  </tr>
+                                </thead>
+                                <tbody ng-repeat="color in verGrupo.Color | orderBy:'Nombre'">
+                                  <tr>
+                                    <td>
+                                        
+                                        <a ng-if="color.Imagen.length > 0" class="BotonOperacion" href="" data-toggle="modal" data-target="#ImagenColorModuloCubierta" ng-click="VerImagenColor(color)">
+                                            
+                                            <img class="imagenTabla" ng-src="data:image/PNG;base64,{{color.Imagen}}"/>
+                                            
+                                        </a>
+
+                                        <span ng-if="color.Imagen.length == 0" class="fa fa-picture-o fa-2x botonRegistroDeshabilitado"></span>
+                                        
+                                    </td>
+                                    
+                                    <td>{{color.Nombre}}</td>
+
+                                    <td class="text-center">
+                                        <span class="fa fa-check-square-o fa-2x" ng-if="color.Activo"></span>
+                                        <span class="fa fa-square-o fa-2x" ng-if="!color.Activo"></span>
+                                    </td>
+
+                                  </tr>
+                                </tbody>
+                            </table>
+                            
+                        </div>
+                    </div>
+                    <br>
+                </div>
+            </div>
+        </div>
+    </div>
+           
+    <!-------------- Imagen expandida-------------->
+    <div class="modal fade" id="ImagenColorModuloCubierta" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <br>    <br>   <br>
+        <div class="modal-dialog">
+            <div class="modal-content">
+              
+               <div class="row">
+                  
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center">Color - {{verColor.Nombre}}</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-body">
+                   
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <img  class="img-responsive center-block" ng-src="data:image/PNG;base64,{{verColor.Imagen}}"/>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+        
+    <!-- Desactivar Modal -->
+    <div class="modal fade" id="modalActivarDesactivarCubierta" data-keyboard="false" data-backdrop="static">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                
+                <div class="modal-body">
+                    <br>
+                    <div class="panel panel-default modalMensaje">
+                        <br>
+                        <b>{{mensajeAdvertencia}}</b>
+                        <br><br>
+
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <button class="btn botonCancelar" data-dismiss="modal" aria-label="Close" ng-click="CancelarEstatusActivoCubierta()">No</button>
+                            </div>
+                            <div class="col-xs-6">
+                                <button class="btn botonAvanzar" data-dismiss="modal" aria-label="Close" ng-click="ConfirmarActualizarActivoCubierta()">Si</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div> 
+    
+    <!-- Modal para mensajes -->
+    <div class="modal fade" id="mensajeCubierta">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                
+                <div class="modal-body">
+                    <div class="panel panel-default modalMensaje">
+                        <br>
+                        <b>{{mensaje}}</b>
+
+                        <br><br>
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <button class="btn  botonAvanzar" data-dismiss="modal" aria-label="Close">Aceptar</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>  
+            
+    
+</div>
+
+     

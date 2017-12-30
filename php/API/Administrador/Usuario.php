@@ -10,7 +10,7 @@ function GetPerfilPorUsuario()
     $usuarioId = json_decode($request->getBody());
     
     
-    $sql = "SELECT p.* FROM Perfil p, Usuario u, PerfilPorusuario pp WHERE u.UsuarioId = pp.UsuarioId AND pp.PerfilId = p.PerfilId AND u.UsuarioId='".$usuarioId[0]."'";
+    $sql = "SELECT p.* FROM Perfil p, Usuario u, PerfilPorUsuario pp WHERE u.UsuarioId = pp.UsuarioId AND pp.PerfilId = p.PerfilId AND u.UsuarioId='".$usuarioId[0]."'";
     
     try 
     {
@@ -178,12 +178,12 @@ function AgregarUsuario()
         {
             $to= $usuario->contacto[$k]->Contacto;
             $subject_message = "Bienvenido al Sistema Integral de Cocinas K";
-            $body_message = "Ya puedes acceder al Sistema Integral de Cocinas K tu usuario y " .utf8_decode("contraseña"). " son los siguientes:";
+            $body_message = "Ya puedes acceder al Sistema Integral de Cocinas K (http://sistemack.com). Tu usuario y " .utf8_decode("contraseña"). " son los siguientes:";
             $body_message .= "\n\n";
             $body_message .="Usario: ". $usuario->colaborador->NombreUsuario;
             $body_message .= "\n  ".utf8_decode("contraseña").": ". base64_decode($usuario->colaborador->Correo);
             $body_message .= "\n\n";
-            $body_message .= "Te recomendamos entrar al sistema y cambiar tu".utf8_decode("contraseña"). " inmediatamente." ;
+            $body_message .= "Te recomendamos entrar al sistema y cambiar tu ".utf8_decode("contraseña"). " inmediatamente." ;
 
 
             $header = "De: Cocinas K\r\n";
@@ -275,10 +275,10 @@ function EditarUsuario()
 
         } catch(PDOException $e) 
         {
+            echo $e;
             $db->rollBack();
             $app->status(409);
             $app->stop();
-            echo $e;
         }
     }
 
@@ -317,17 +317,19 @@ function EditarUsuario()
             echo '[{"Estatus":"Exitoso"}]';
         } catch(PDOException $e) 
         {
+            //echo '[{"Estatus": "Fallido"}]';
+            echo $sql;
+            echo $e;
             $db->rollBack();
             $app->status(409);
             $app->stop();
-            echo '[{"Estatus": "Fallido"}]';
+            
         }
     }
     else
     {
         $db->commit();
         $db = null; 
-        echo $e;
     }
 }
 
@@ -377,7 +379,7 @@ function CambiarPassword()
         $stmt->execute();
         $db = null;
         //if($stmt->rowCount() == 1)
-        echo '[{"Estatus":"Exitoso"}]';
+        //echo '[{"Estatus":"Exitoso"}]';
     }
     catch(PDOException $e) {
         echo ($e);
@@ -393,8 +395,8 @@ function CambiarPassword()
         if($nuevoUsuario->contacto[$k]->NombreMedioContacto == "Correo Electrónico")
         {
             $to= $nuevoUsuario->contacto[$k]->Contacto;
-            $subject_message = "Cocinas K: ". utf8_decode("contraseña"). " Reestablecida";
-            $body_message = "Tu ". utf8_decode("contraseña"). " fue cambiada. Accede al Sistema Integral de Cococians K y cambia tu ". utf8_decode("contraseña")." inmediatamente.";
+            $subject_message = "Cocinas K: ". utf8_decode("Contraseña"). " Reestablecida";
+            $body_message = "Tu ". utf8_decode("contraseña"). " fue cambiada. Accede al Sistema Integral de Cococians K (http://sistemack.com) y cambia tu ". utf8_decode("contraseña")." inmediatamente.";
             $body_message .= "\n\n";
             $body_message .="Nueva ". utf8_decode("contraseña"). ":";
             $body_message .= base64_decode($nuevoUsuario->usuario->Correo);
@@ -403,6 +405,282 @@ function CambiarPassword()
 
             $bool = mail($to,$subject_message,$body_message,$header);
         }
+    }
+}
+
+function CambiarPasswordPorUsuario()
+{
+    global $app;
+    $request = \Slim\Slim::getInstance()->request();
+    $usuario = json_decode($request->getBody());
+    
+    $db;
+    $stmt;
+    $response;
+    $sql = "SELECT COUNT(*) as count FROM Usuario WHERE UsuarioId='".$usuario[0]."' AND Password = '".$usuario[1]."'";
+    
+    try 
+    {
+        $db = getConnection();
+        $stmt = $db->query($sql);
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+    } 
+    catch(PDOException $e) 
+    {
+        //echo $e;
+        echo '[ { "Estatus": "Fallo" } ]';
+        //$app->status(409);
+        $app->stop();
+    }
+    
+    if($response[0]->count != "1")
+    {
+        echo '[ { "Estatus": "ErrorPassword" } ]';
+        $db = null;
+        $app->stop();
+    }
+    else
+    {   
+        $sql = "UPDATE Usuario SET Password='".$usuario[2]."' WHERE UsuarioId=".$usuario[0]."";
+
+        try 
+        {
+            $stmt = $db->prepare($sql);
+            $stmt->execute();
+            $db = null;
+            //if($stmt->rowCount() == 1)
+            echo '[{"Estatus":"Exitoso"}]';
+        }
+        catch(PDOException $e) 
+        {
+            echo ($e);
+            echo '[{"Estatus":"Fallo"}]';
+            $app->status(409);
+            $app->stop();
+        }
+    }
+}
+
+function RecuperarPassword()
+{
+    global $app;
+    $request = \Slim\Slim::getInstance()->request();
+    $usuario = json_decode($request->getBody());
+   
+    $db;
+    $stmt;
+    $response;
+    $contacto;
+    $solicitud;
+    $codigo;
+    $sql = "SELECT UsuarioId, ColaboradorId FROM Usuario WHERE Nombre= '".$usuario->Nombre."' AND Activo = 1";
+    
+    try 
+    {
+        $db = getConnection();
+        $stmt = $db->query($sql);
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);  
+    } 
+    catch(PDOException $e) 
+    {
+        echo '[ { "Estatus": "Fallo" } ]';
+        //$app->status(409);
+        $app->stop();
+    }
+    
+    $count = count($response);
+    if($count != 1)
+    {
+        echo '[ { "Estatus": "ErrorUsuario" } ]';
+        $db = null;
+        $app->stop();
+    }
+    else
+    {   
+        $sql = "SELECT c.Contacto FROM ContactoColaborador c, TipoMedioContacto t WHERE c.ColaboradorId= '".$response[0]->ColaboradorId."' AND t.MedioContactoId = 1 AND t.TipoMedioContactoId = c.TipoMedioContactoId";
+    
+        try 
+        {
+            $db = getConnection();
+            $stmt = $db->query($sql);
+            $contacto = $stmt->fetchAll(PDO::FETCH_OBJ);
+            
+        } 
+        catch(PDOException $e) 
+        {
+            echo '[ { "Estatus": "Fallo" } ]';
+            //$app->status(409);
+            $app->stop();
+        }
+        
+        $countContacto = count($contacto);
+        
+        if($countContacto == 0)
+        {
+            echo '[ { "Estatus": "ErrorContacto" } ]';
+            $db = null;
+            $app->stop();
+        }
+        else
+        {   
+            $sql = "SELECT SolicitudRecuperarPasswordId FROM SolicitudRecuperarPassword  WHERE FechaCaducidad > NOW() AND UsuarioId = ".$response[0]->UsuarioId;
+
+            try 
+            {
+                $db = getConnection();
+                $stmt = $db->query($sql);
+                $solicitud = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+            } 
+            catch(PDOException $e) 
+            {
+                echo '[ { "Estatus": "Fallo" } ]';
+                //$app->status(409);
+                $app->stop();
+            }
+            
+            $caracter = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            $numero = strlen($caracter) - 1;
+            $codigo = substr($caracter, rand(0, $numero), 1).substr($caracter, rand(0, $numero), 1).substr($caracter, rand(0, $numero), 1).substr($caracter, rand(0, $numero), 1).substr($caracter, rand(0, $numero), 1).substr($caracter, rand(0, $numero), 1).substr($caracter, rand(0, $numero), 1).substr($caracter, rand(0, $numero), 1).substr($caracter, rand(0, $numero), 1);
+            $sql = "INSERT INTO SolicitudRecuperarPassword(UsuarioId, Codigo, Fecha, FechaCaducidad) VALUES(".$response[0]->UsuarioId.",'".$codigo."', NOW(), adddate(NOW(), INTERVAL 2 HOUR))";
+            
+            try 
+            {
+                $db->beginTransaction();
+                $stmt = $db->prepare($sql);
+                $stmt->execute();
+                
+            } catch(PDOException $e) 
+            {
+                echo $e;
+                echo '[{"Estatus": "Fallido"}]';
+                $db->rollBack();
+                $app->status(409);
+                $app->stop();   
+            }
+            
+            $countSolicitud = count($solicitud);
+            if($countSolicitud > 0)
+            {
+                for($k=0; $k<$countSolicitud; $k++)
+                {
+                    $sql = "UPDATE SolicitudRecuperarPassword SET ESTATUS= 'Usado' WHERE SolicitudRecuperarPasswordId=".$solicitud[$k]->SolicitudRecuperarPasswordId;
+
+                    try 
+                    {
+                        $stmt = $db->prepare($sql);
+                        $stmt->execute();
+
+                    }
+                    catch(PDOException $e) 
+                    {
+                        $db->rollBack();
+                        echo '[{"Estatus":"Fallo"}]';
+                        $app->status(409);
+                        $app->stop();
+                    }
+                }
+                $db->commit();
+                $db = null;
+                echo '[ { "Estatus": "Exitoso" } ]';
+            }
+            else
+            {
+                $db->commit();
+                $db = null;
+                echo '[ { "Estatus": "Exitoso" } ]';
+            }
+        } 
+    }
+    
+    $numeroContacto = count($contacto);
+
+    for($k=0; $k<$numeroContacto; $k++)
+    {
+       
+        $to= $contacto[$k]->Contacto;
+        $subject_message = "Recuperar contraseña";
+        $body_message = "Accede al enlace especificado para que puedas reiniciar tu " .utf8_decode("contraseña");
+        $body_message .= "\n\n";
+        $body_message .="Enlace: http://sistemack.com/#/RecuperarPassword/".$response[0]->UsuarioId."/".$codigo;
+
+        $header = "De: Cocinas K\r\n";
+
+        $bool = mail($to,$subject_message,$body_message,$header);
+    }
+}
+
+function ValidarRecuperarPassword()
+{
+    global $app;
+    global $session_expiration_time;
+
+    $request = \Slim\Slim::getInstance()->request();
+    $solicitud = json_decode($request->getBody());
+    
+    
+    $sql = "SELECT SolicitudRecuperarPasswordId FROM SolicitudRecuperarPassword WHERE FechaCaducidad > NOW() AND Estatus IS NULL AND UsuarioId = ".$solicitud->UsuarioId." AND Codigo = '".$solicitud->Codigo."'";
+    
+    try 
+    {
+        $db = getConnection();
+        $stmt = $db->query($sql);
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $db = null;
+        
+        echo '[ { "Estatus": "Exitoso"}, {"Solicitud":'.json_encode($response).'} ]';  
+    } 
+    catch(PDOException $e) 
+    {
+        //echo $e;
+        echo '[ { "Estatus": "Fallo" } ]';
+        //$app->status(409);
+        $app->stop();
+    }
+}
+
+function ReiniciarPassword()
+{
+    global $app;
+    $request = \Slim\Slim::getInstance()->request();
+    $usuario = json_decode($request->getBody());
+   
+    $sql = "UPDATE Usuario SET Password='".$usuario->Password."' WHERE UsuarioId=".$usuario->UsuarioId."";
+    $db;
+    $stmt;
+    
+    try 
+    {
+        $db = getConnection();
+        $db->beginTransaction();
+        $stmt = $db->prepare($sql);
+        $stmt->execute();
+    }
+    catch(PDOException $e) 
+    {
+        echo ($e);
+        $db->rollBack();
+        echo '[{"Estatus":"Fallo"}]';
+        $app->status(409);
+        $app->stop();
+    }
+    
+    $sql = "UPDATE SolicitudRecuperarPassword SET Estatus='Usado' WHERE SolicitudRecuperarPasswordId=".$usuario->SolicitudRecuperarPasswordId."";
+    try 
+    {
+        $stmt = $db->prepare($sql);
+        $stmt->execute();
+        $db->commit();
+        $db = null;
+        echo '[{"Estatus":"Exitoso"}]';
+    }
+    catch(PDOException $e) 
+    {
+        echo ($e);
+        $db->rollBack();
+        echo '[{"Estatus":"Fallo"}]';
+        $app->status(409);
+        $app->stop();
     }
 }
 
