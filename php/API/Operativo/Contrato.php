@@ -419,7 +419,7 @@ function AgregarContrato()
 
             $stmt->bindParam("DescuentoMinimo", $contrato->PromocionCubierta->DescuentoMinimo);
             $stmt->bindParam("DescuentoMaximo", $contrato->PromocionCubierta->DescuentoMaximo);
-            $stmt->bindParam("FechaLimite", $contrato->PromocionCubierta->FechaLimite);
+            $stmt->bindParam("FechaLimite", $contrato->PromocionCubierta->FechaLimite2);
 
             $stmt->execute();
         } 

@@ -1515,7 +1515,7 @@
                                         <div class=" itemPresupuesto" style="margin-left: 0px" ng-class="{itemPresupuestoPrimero: $first}">
                                           
                                             <span class="checkbox checkboxOperativo">
-                                                <label style="width:100%;">
+                                                <label style="min-width:100%;">
                                                     <input  ng-model="grupo.PorDefecto" type="checkbox" >
                                                     <span class="cr"> <i class="cr-icon fa fa-check"></i> </span>
                                                     <span>{{grupo.Grupo.Nombre}}</span>
@@ -1898,26 +1898,26 @@
                     <div class="tituloOptPresupuesto"> Puertas </div><br>
                     <div class="row">
                         <div ng-repeat="muestrario in muestrario | orderBy:'PrecioVenta'" ng-show="muestrario.Activo && muestrario.PorDefecto">
-                            <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4" style="margin-bottom:10px">
+                            <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4" style="margin-bottom:10px;">
 
                                 <!--<div class="input-group">-->
 
-                                   <label class="btn checkBoxActivoPre" ng-class="{checkBoxActivoPreNaranja: muestrario.Presupuesto}">
-                                       <input  type="checkbox" class="badgeboxPre" ng-model="muestrario.Presupuesto" ng-change="CambiarMuestrarioPresupuesto(muestrario);">
-                                       <span class="badge">&check;</span>
-                                       <span> {{muestrario.Nombre}}</span> 
-                                   </label>
+                               <label class="btn checkBoxActivoPre" ng-class="{checkBoxActivoPreNaranja: muestrario.Presupuesto}">
+                                   <input  type="checkbox" class="badgeboxPre" ng-model="muestrario.Presupuesto" ng-change="CambiarMuestrarioPresupuesto(muestrario);">
+                                   <span class="badge">&check;</span>
+                                   <span> {{muestrario.Nombre}}</span> 
+                               </label>
 
-                                    <div class="panelItemPresupuesto itemPuerta" style="height: auto">
+                                <div class="panelItemPresupuesto itemPuerta" >
 
-                                        <div ng-repeat="combinacion in muestrario.Combinacion | orderBy:'PrecioVenta'" > <!-- ng-class="{opcionSeleccionadaPresupuestoEst: (combinacion.CombinacionMaterialId == combinacionSeleccionada)}" -->
-                                            <div class="itemPresupuestoEstatico" style="margin-left: 0px; " ng-class="{itemPresupuestoPrimero: $first}">
-                                                <span style="margin-left: 8px;" >{{combinacion.Nombre}}</span>
-                                                <span class="pull-right" style="margin-right: 8px; ">{{combinacion.PrecioVenta | currency}}</span>
-                                            </div>
+                                    <div ng-repeat="combinacion in muestrario.Combinacion | orderBy:'PrecioVenta'" > <!-- ng-class="{opcionSeleccionadaPresupuestoEst: (combinacion.CombinacionMaterialId == combinacionSeleccionada)}" -->
+                                        <div class="itemPresupuestoEstatico" style="margin-left: 0px; " ng-class="{itemPresupuestoPrimero: $first}">
+                                            <span style="margin-left: 8px;" >{{combinacion.Nombre}}</span>
+                                            <span class="pull-right" style="margin-right: 8px; ">{{combinacion.PrecioVenta | currency}}</span>
                                         </div>
-
                                     </div>
+
+                                </div>
 
                             </div>
 
@@ -2754,19 +2754,33 @@
                         <div class="row text-left">
                             <div class="col-xs-12 text-left marcoDetallePlan">
                                 <span><b>Promoción muebles: </b></span>
+                                
+                                <div class="pull-right " ng-class="{'btn-group' : presupuesto.PromocionMueble != 'Ninguno'}">
+                                    <button  class="btn dropPromo " data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <span ng-if="presupuesto.PromocionMueble == 'Ninguno'"> {{presupuesto.PromocionMueble}} </span>
+                                        <span ng-if="presupuesto.PromocionMueble != 'Ninguno'"> {{presupuesto.PromocionMueble.Descuento}}% de decuento </span>
+                                        <span class="fa fa-caret-down"></span>
+                                    </button>
+                                    
+                                    <ul class="dropdown-menu dropdown-menu-right">
+                                       <li > <a style="cursor:pointer" ng-click="CambiarPromocionMueble('Ninguno')">Ninguno</a> </li>
 
-                                <button  class="btn dropPromo pull-right" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <span ng-if="presupuesto.PromocionMueble == 'Ninguno'"> {{presupuesto.PromocionMueble}} </span>
-                                    <span ng-if="presupuesto.PromocionMueble != 'Ninguno'"> {{presupuesto.PromocionMueble.DescuentoMinimo}}% de decuento </span>
-                                    <span class="fa fa-caret-down"></span>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-right">
-                                   <li > <a style="cursor:pointer" ng-click="CambiarPromocionMueble('Ninguno')">Ninguno</a> </li>
-
-                                    <li  ng-repeat="promo in promocion | orderBy:'DescuentoMinimo'" ng-if="promo.TipoVenta.TipoVentaId == '1' && promo.Presupuesto && promo.Show && promo.Activo && promo.TipoPromocion.TipoPromocionId != '2'">
-                                        <a style="cursor:pointer" ng-click="CambiarPromocionMueble(promo)">{{promo.DescuentoMinimo}}% de descuento</a>
-                                    </li>
-                                </ul>
+                                        <li  ng-repeat="promo in promocion | orderBy:'DescuentoMinimo'" ng-if="promo.TipoVenta.TipoVentaId == '1' && promo.Presupuesto && promo.Show && promo.Activo && promo.TipoPromocion.TipoPromocionId != '2'">
+                                            <a style="cursor:pointer" ng-click="CambiarPromocionMueble(promo)">{{promo.DescuentoMinimo}}% de descuento</a>
+                                        </li>
+                                    </ul>
+                                    
+                                    <button class="btn dropPromo " ng-if="presupuesto.PromocionMueble != 'Ninguno'" ng-click="CambiarDescuento(presupuesto.PromocionMueble , -1)">
+                                        <span class="fa fa-minus" ></span>
+                                    </button>
+                                    
+                                    <button class="btn dropPromo " ng-if="presupuesto.PromocionMueble != 'Ninguno'" ng-click="CambiarDescuento(presupuesto.PromocionMueble , 1)">
+                                        <span class="fa fa-plus"></span>
+                                    </button>
+                                </div>
+                                
+                                
+                                
 
                             </div>
                         </div>
@@ -2780,19 +2794,28 @@
 
                             <div class="col-xs-12 text-left marcoDetallePlan">
                                 <span><b>Promoción cubierta: </b></span>
+                                    <div class="pull-right " ng-class="{'btn-group' : presupuesto.PromocionCubierta != 'Ninguno'}">
+                                        <button class="btn dropPromo" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <span ng-if="presupuesto.PromocionCubierta == 'Ninguno'"> {{presupuesto.PromocionCubierta}} </span>
+                                            <span ng-if="presupuesto.PromocionCubierta != 'Ninguno'"> {{presupuesto.PromocionCubierta.Descuento}}% de decuento </span>
+                                            <span class="fa fa-caret-down"></span>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-right">
+                                           <li > <a style="cursor:pointer" ng-click="CambiarPromocionCubierta('Ninguno')">Ninguno</a> </li>
 
-                                <button class="btn dropPromo pull-right" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <span ng-if="presupuesto.PromocionCubierta == 'Ninguno'"> {{presupuesto.PromocionCubierta}} </span>
-                                    <span ng-if="presupuesto.PromocionCubierta != 'Ninguno'"> {{presupuesto.PromocionCubierta.DescuentoMinimo}}% de decuento </span>
-                                    <span class="fa fa-caret-down"></span>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-right">
-                                   <li > <a style="cursor:pointer" ng-click="CambiarPromocionCubierta('Ninguno')">Ninguno</a> </li>
+                                            <li  ng-repeat="promo in promocion | orderBy:'DescuentoMinimo'" ng-if="promo.TipoVenta.TipoVentaId == '2' && promo.Presupuesto && promo.Show && promo.Activo && promo.TipoPromocion.TipoPromocionId != '2'">
+                                                <a style="cursor:pointer" ng-click="CambiarPromocionCubierta(promo)">{{promo.DescuentoMinimo}}% de descuento</a>
+                                            </li>
+                                        </ul>
 
-                                    <li  ng-repeat="promo in promocion | orderBy:'DescuentoMinimo'" ng-if="promo.TipoVenta.TipoVentaId == '2' && promo.Presupuesto && promo.Show && promo.Activo && promo.TipoPromocion.TipoPromocionId != '2'">
-                                        <a style="cursor:pointer" ng-click="CambiarPromocionCubierta(promo)">{{promo.DescuentoMinimo}}% de descuento</a>
-                                    </li>
-                                </ul>
+                                        <button class="btn dropPromo " ng-if="presupuesto.PromocionCubierta != 'Ninguno'" ng-click="CambiarDescuento(presupuesto.PromocionCubierta , -1)">
+                                            <span class="fa fa-minus" ></span>
+                                        </button>
+
+                                        <button class="btn dropPromo " ng-if="presupuesto.PromocionCubierta != 'Ninguno'" ng-click="CambiarDescuento(presupuesto.PromocionCubierta , 1)">
+                                            <span class="fa fa-plus"></span>
+                                        </button>
+                                </div>
 
                             </div>
                         </div>

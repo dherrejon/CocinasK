@@ -1,0 +1,198 @@
+<div ng-controller="ReportePersonaRegistradaController as rPersonaRegistrada" class="container-fluid">
+    
+   <!-- Título -->
+   <div class="row">
+       <div class="col-xs-12">
+           <h3>Reporte de Personas Registradas</h3>
+       </div>
+   </div>
+   <br>
+   
+   <div class="row">
+      <!-- Fecha -->
+       <div class="col-sm-6" >
+          
+          <label>Fecha</label>
+          <div class="input-group input-daterange">
+                <input type="text" class="form-control entrada" id="fechaInicio" onblur="angular.element(this).scope().CambiarFechaInicio(this)" style="height: 33px">
+                <div class="input-group-addon" style="background: white; color: black; border-color: white"> a </div>
+                <input type="text" class="form-control entrada" id="fechaFin" onblur="angular.element(this).scope().CambiarFechaFin(this)" style="height: 33px">
+            </div>
+           
+        </div>
+        <br class="hidden-sm hidden-md hidden-lg"> 
+        <!-- Unidad de Negocio -->
+        <div class="col-sm-6" ng-show="permiso.verTodo">
+          
+          <label>Unidad Negocio</label>
+          <div class="dropdown">
+
+                <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown" style="height: 33px">
+                   {{filtro.unidad.NombreTipoUnidadNegocio}} <span ng-show="filtro.unidad.NombreTipoUnidadNegocio.length > 0">-</span> {{filtro.unidad.Nombre}}
+                    <span class="pull-right">
+                        <span class="caret "></span>
+                    </span>
+                </button>
+
+                <ul class="dropdown-menu listaOpcionesDropdownList" style="min-width: 100%">
+                   <li>
+                       
+                       <a  href="" class="dropdownOpcionModal" ng-click="CambiarUnidadNegocio('ninguna')">
+                            <span>NINGUNA</span>
+                        </a>
+                    </li>
+                    
+                    <li ng-repeat="unidad in unidad | orderBy:['NombreTipoUnidadNegocio', 'Nombre']">
+                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarUnidadNegocio(unidad)">
+                            <span>{{unidad.NombreTipoUnidadNegocio}} - {{unidad.Nombre}}</span>
+                        </a>
+                    </li>
+                </ul>
+
+            </div>
+           
+        </div>
+        
+    </div>
+    <br>
+    
+    <div class="row">
+        <div class="col-xs-12">
+            <div ng-repeat="error in mensajeError track by $index">
+                <span class="textoError">{{error}}</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-xs-12">
+            
+            <div class="pull-right">
+                
+                <button class="btn btnContornoNegro" ng-click="LimpiarFiltro()">Limpiar</button>
+                
+                <button class="btn btnContornoNegro" style="margin-left: 10px" ng-click="GetPersonaRegistradaFiltro()">Buscar</button>
+            </div>
+            
+        </div>
+    </div>
+    <br><br>
+    
+    <!-- resultado -->
+    <div ng-show="buscar">
+      
+      <div class="row" ng-show="persona.length > 0">
+            <div class="col-xs-12">
+               <div class="input-group">
+                    <input type="text" ng-model="busqueda" placeholder="Buscar" class="entrada form-control" style="height: 33px">
+                    
+                    <div class="input-group-btn">
+                        <button class="btn btnTimes" ng-click="busqueda = ''" style="height: 33px">
+                            <span class="fa fa-times"></span>
+                        </button>
+                        
+                        <span class="dropdown">
+                           
+                           <button class="btn btnTimes" style="height: 33px; border-width: 2px; width: 150px; text-align: left !important" data-toggle="dropdown" >
+                                <span >{{numPresupuesto}} </span>
+                                <span class="pull-right"> <span class="fa fa-caret-down"></span> </span>
+                            </button>
+                            
+                            <ul class="dropdown-menu dropdown-menu-right listaOpcionesDropdownList" style="min-width: 100%">
+                                <li ng-repeat="filtropre in filtroPresupuesto">
+                                    <a  href="" class="dropdownOpcionModal" ng-click="CambiarFiltroPresupuesto(filtropre)">
+                                        <span>{{filtropre}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                            
+                        </span>
+                        
+                    </div>
+              </div>
+            </div>
+        </div>
+        <br>
+          <div class="row" ng-show="persona.length > 0" >
+                <div class="col-xs-6 col-sm-4 col-md-3" ng-repeat="unidad in unidadPersona | orderBy:'Nombre'" style="margin-bottom:10px">
+                    <span class="textoNumeroTipoModulo">{{unidad.Numero}}</span>
+                    <spna class="textoTipoModulo"> {{unidad.Nombre}}</spna> 
+                </div>
+            </div>
+                
+        <br>
+       
+        <div class="row" ng-show="persona.length > 0">
+           <div class="col-xs-12" >
+               <div class="table-responsive " style="overflow: scroll; max-height: 650px;">
+                <table class="table table-hover table-striped">
+                    <thead class="TituloTabla" >
+                      <tr>
+                        <th>
+                            <button class="btn botonOrdenar" ng-click="CambiarOrdenar('Nombre')" style="padding:  0px">
+                                <b>Nombre</b> <span ng-class="{'fa fa-arrow-up': ordenar == 'Nombre', 'fa fa-arrow-down': ordenar == '-Nombre'}"></span>
+                            </button>
+                        </th>
+                        <th>
+                            <button class="btn botonOrdenar" ng-click="CambiarOrdenar('NombreUnidadNegocio')" style="padding:  0px">
+                                <b>Unidad de Negocio</b> <span ng-class="{'fa fa-arrow-up': ordenar == 'NombreUnidadNegocio', 'fa fa-arrow-down': ordenar == '-NombreUnidadNegocio'}"></span>
+                            </button>
+                        </th>
+                        
+                        <th>
+                            <button class="btn botonOrdenar" ng-click="CambiarOrdenar('Registro')" style="padding:  0px">
+                                <b>Fecha de Registro</b> <span ng-class="{'fa fa-arrow-up': ordenar == 'Registro', 'fa fa-arrow-down': ordenar == '-Registro'}"></span>
+                            </button>
+                        </th> 
+                        
+                        <th class="text-center">
+                            <button class="btn botonOrdenar" ng-click="CambiarOrdenar('NumeroPresupuesto')" style="padding:  0px; text-align: center !important">
+                                <b>Presupuesto</b> <span ng-class="{'fa fa-arrow-up': ordenar == 'NumeroPresupuesto', 'fa fa-arrow-down': ordenar == '-NumeroPresupuesto'}"></span>
+                            </button>
+                        </th> 
+                        
+                        <th class="text-center"><span class=""><b>Perfil</b></span></th>
+                        
+                      </tr>
+                    </thead>
+                    <tbody >
+                        <tr ng-repeat="persona in persona | filter:busqueda | filter:FiltroPersona | orderBy:[ordenar, 'Nombre']">
+                            <td>{{persona.Nombre}}</td>
+                            
+                            <td>{{persona.NombreTipoUnidadNegocio}} - {{persona.NombreUnidadNegocio}}</td>
+                            
+                            <td>{{persona.RegistroFormato}}</td>
+                            
+                            <td class="text-center">
+                                <span ng-show="persona.NumeroPresupuesto > 0" class="fa fa-check-square-o fa-2x"></span>
+                                <span ng-show="persona.NumeroPresupuesto == 0" class="fa fa-square-o fa-2x"></span>
+                            </td>
+                            
+                           <td class="text-center">
+                                <a class="BotonOperacion" href="#PerfilCliente/{{persona.PersonaId}}/DatosGenerales" ng-click="MostrarUsuarioPefil(colaborador)">
+                                    <span class="fa fa-user fa-2x" ng-show="colaborador.UsuarioId !== null"></span>
+                                </a>
+
+                            </td>
+                            
+                            
+                        </tr>
+
+                    </tbody>
+               </table>
+               </div>
+            </div>
+       </div>
+  
+       <div class="row" ng-if="persona.length == 0">
+           <div class="col-xs-12">
+               <div  class="textoPerfilHome">
+                    <span>Sin datos encontrados.</span>
+               </div>
+           </div>
+       </div>
+    </div>
+   
+</div>
+
+     

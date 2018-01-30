@@ -741,5 +741,170 @@ function GetPromocionPersona($id)
     
 }
 
+function GuardarPersona()
+{
+    $request = \Slim\Slim::getInstance()->request();
+    $persona = json_decode($request->getBody());
+    global $app;
+    
+
+    try 
+    {
+        $db = getConnection();
+        $db->beginTransaction();
+
+    } catch(PDOException $e) 
+    {
+        echo $e;
+        $app->status(409);
+        $app->stop();
+        echo '[{"Estatus": "Fallido"}]';
+    }
+    
+    //editar
+    if($persona->PersonaId !=  "0")
+    {
+        $sql = "DELETE FROM UnidadNegocioPorPersona WHERE PersonaId=".$persona->PersonaId;
+        try 
+        {
+            $stmt = $db->prepare($sql); 
+            $stmt->execute(); 
+
+        } 
+        catch(PDOException $e) 
+        {
+            echo '[ { "Estatus": "Fallo" } ]';
+            echo $sql;
+            $db->rollBack();
+            $app->status(409);
+            $app->stop();
+        }
+    }
+    else
+    {
+        $sql = "INSERT Persona (MedioCaptacionId, TipoPersonaId, Nombre, PrimerApellido, SegundoApellido, NombreMedioCaptacion, Registro) VALUES
+        ('".$persona->MedioCaptacion->MedioCaptacionId."', 2, '".$persona->Nombre."', '".$persona->PrimerApellido."', '".$persona->SegundoApellido."',
+        '".$persona->NombreMedioCaptacion."', NOW() - INTERVAL 9 HOUR)";
+        
+        try 
+        {
+            $stmt = $db->prepare($sql);
+            $stmt->execute();
+            
+            $persona->PersonaId = $db->lastInsertId();
+        }
+        catch(PDOException $e) 
+        {    
+            echo $sql;
+            echo '[{"Estatus": "Fallido"}]';
+            $db->rollBack();
+            $app->status(409);
+            $app->stop();
+        }
+    }
+    
+    $counUnidad = count($persona->UnidadNegocio);
+    if($counUnidad > 0)
+    {
+        $sql = "INSERT UnidadNegocioPorPersona (PersonaId, UnidadNegocioId) VALUES ";
+
+        for($k=0; $k<$counUnidad; $k++)
+        {
+            $sql .= " (".$persona->PersonaId.", ".$persona->UnidadNegocio[$k]->UnidadNegocioId."),";
+        }
+
+        $sql = rtrim($sql,",");
+
+        try 
+        {
+            $stmt = $db->prepare($sql);
+            $stmt->execute();
+        }
+        catch(PDOException $e) 
+        {    
+            //echo $sql;
+            //echo $e;
+            echo '[{"Estatus": "Fallido"}]';
+            $db->rollBack();
+            $app->status(409);
+            $app->stop();
+        }
+    }
+
+    $counContacto = count($persona->NuevoContacto);
+    if($counContacto > 0)
+    {
+        $sql = "INSERT INTO ContactoPersona (TipoMedioContactoId, PersonaId, Contacto, Activo) VALUES";
+
+        for($k=0; $k<$counContacto; $k++)
+        {
+            $sql .= " (".$persona->NuevoContacto[$k]->TipoMedioContacto->TipoMedioContactoId.", ".$persona->PersonaId.",
+            '".$persona->NuevoContacto[$k]->Contacto."', 1),";
+        }
+
+        $sql = rtrim($sql,",");
+
+        try 
+        {
+            $stmt = $db->prepare($sql);
+            $stmt->execute();
+            
+            
+            
+        } 
+        catch(PDOException $e) 
+        {
+            echo $e;
+            echo '[{"ContactoPersona": "Fallido"}]';
+            $db->rollBack();
+            $app->status(409);
+            $app->stop();
+        }
+    }
+    
+    echo '[{"Estatus": "Exitoso"}, {"Id": "'.$persona->PersonaId.'"}]';
+    $app->status(200);
+    $db->commit();
+    $db = null;
+}
+
+function GetReportePersonaRegistrada()
+{
+    global $app;
+    global $session_expiration_time;
+
+    $request = \Slim\Slim::getInstance()->request();
+    $filtro = json_decode($request->getBody());
+    
+    
+    if($filtro->unidadId == -1)
+    {
+        $sql = "SELECT * FROM ReportePersonaRegistroVista WHERE  Registro >= '".$filtro->fecha1."' AND Registro <= '".$filtro->fecha2."'";
+    }
+    else
+    {
+         $sql = "SELECT * FROM ReportePersonaRegistroVista WHERE UnidadNegocioId = ".$filtro->unidadId." AND Registro >= '".$filtro->fecha1."' AND Registro <= '".$filtro->fecha2."'";
+    }
+
+    try 
+    {
+        $db = getConnection();
+
+        $stmt = $db->query($sql);
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+        $db = null;
+        echo json_encode($response);  
+    } 
+    catch(PDOException $e) 
+    {
+        $db = null;
+        echo $e;
+        echo '[ { "Estatus": "Fallo" } ]';
+        //$app->status(409);
+        $app->stop();
+    }
+}
+
     
 ?>

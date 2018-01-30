@@ -530,6 +530,7 @@
 
     /*------------------ Persona ----------------------------------------------*/
     $app->get('/GetCliente/:id', $seguridad, $ChecarSesion, 'GetCliente');
+    $app->post('/GuardarPersona', $seguridad, $ChecarSesion, 'GuardarPersona');
     $app->put('/EditarDatosPersona', $seguridad, $ChecarSesion, 'EditarDatosPersona');
 
     $app->post('/GetBuscarPersona', $seguridad, $ChecarSesion, 'GetBuscarPersona');
@@ -557,6 +558,8 @@
 
     $app->post('/GetMargenDireccion', $seguridad, $ChecarSesion, 'GetMargenDireccion');
     $app->get('/GetPromocionPersona/:id', $seguridad, $ChecarSesion, 'GetPromocionPersona');
+
+    $app->post('/GetReportePersonaRegistrada', $seguridad, $ChecarSesion, 'GetReportePersonaRegistrada');
 
     /*------------------ Variable del sistema ----------------------------------------------*/
     $app->get('/GetIVA', $seguridad, $ChecarSesion, 'GetIVA');

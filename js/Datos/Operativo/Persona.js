@@ -7,6 +7,7 @@ class Persona
         this.MedioCaptacion = new MedioCaptacion(); 
         this.TipoPersona = new TipoPersona();
         this.UnidadNegocio =  [];
+        this.NuevoContacto =  [];
         
         this.Nombre = "";
         this.PrimerApellido = "";
@@ -36,6 +37,27 @@ function GetCliente($http, $q, CONFIG, id)
             q.resolve(cliente);  
         }).error(function(data, status){
             q.resolve(status);
+     }); 
+    return q.promise;
+}
+
+function GuardarPersona($http, CONFIG, $q, cliente)
+{
+    var q = $q.defer();
+    
+
+    $http({      
+          method: 'POST',
+          url: CONFIG.APIURL + '/GuardarPersona',
+          data: cliente
+
+      }).success(function(data)
+        {
+            q.resolve(data);
+        
+        }).error(function(data, status){
+            q.resolve(status);
+
      }); 
     return q.promise;
 }
@@ -807,5 +829,25 @@ function GetPromocionPersona($http, $q, CONFIG, id)
             q.resolve([{Estatus: "Fallo"}]);
      }); 
     
+    return q.promise;
+}
+
+
+
+function GetReportePersonaRegistrada($http, $q, CONFIG, datos)     
+{
+    var q = $q.defer();
+
+    $http({      
+          method: 'POST',
+          url: CONFIG.APIURL + '/GetReportePersonaRegistrada',
+          data: datos
+
+      }).success(function(data)
+        {
+              q.resolve(data);
+        }).error(function(data, status){
+            q.resolve([]);
+     }); 
     return q.promise;
 }

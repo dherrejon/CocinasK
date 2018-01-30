@@ -251,59 +251,65 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
             //cubierta
         contrato.TipoCubierta = {Nombre: 'No Incluye', TipoCubiertaId: null};
             
-            //tipo cubierta
-        for(var k=0; k<$scope.presupuesto.TipoCubierta.length; k++)
+        //tipo cubierta
+        if(data.Cubierta)
         {
-            if($scope.presupuesto.TipoCubierta[k].TipoCubiertaId == data.Cubierta.TipoCubiertaId)
+            for(var k=0; k<$scope.presupuesto.TipoCubierta.length; k++)
             {
-                $scope.CambiarTipoCubierta($scope.presupuesto.TipoCubierta[k]);
-                
-                
-                for(var j=0; j<$scope.presupuesto.TipoCubierta[k].Material.length; j++)
+                if($scope.presupuesto.TipoCubierta[k].TipoCubiertaId == data.Cubierta.TipoCubiertaId)
                 {
-                    if($scope.presupuesto.TipoCubierta[k].Material[j].MaterialId == data.Cubierta.MaterialId && $scope.presupuesto.TipoCubierta[k].Material[j].GrupoId == data.Cubierta.GrupoId )
+                    $scope.CambiarTipoCubierta($scope.presupuesto.TipoCubierta[k]);
+
+
+                    for(var j=0; j<$scope.presupuesto.TipoCubierta[k].Material.length; j++)
                     {
-                        $scope.contrato.TipoCubierta.GrupoUbicacion[0].MaterialAux = $scope.presupuesto.TipoCubierta[k].Material[j].NombreMaterial;
-                        $scope.contrato.TipoCubierta.GrupoUbicacion[0].MaterialSel = $scope.presupuesto.TipoCubierta[k].Material[j];
-                        break;
+                        if($scope.presupuesto.TipoCubierta[k].Material[j].MaterialId == data.Cubierta.MaterialId && $scope.presupuesto.TipoCubierta[k].Material[j].GrupoId == data.Cubierta.GrupoId )
+                        {
+                            $scope.contrato.TipoCubierta.GrupoUbicacion[0].MaterialAux = $scope.presupuesto.TipoCubierta[k].Material[j].NombreMaterial;
+                            $scope.contrato.TipoCubierta.GrupoUbicacion[0].MaterialSel = $scope.presupuesto.TipoCubierta[k].Material[j];
+                            break;
+                        }
                     }
+
+                    if(data.Cubierta.AcabadoCubiertaId)
+                    {
+                        contrato.TipoCubierta.Acabado = {Nombre:data.Cubierta.NombreAcabadoCubierta, AcabadoCubiertaId:data.Cubierta.AcabadoCubiertaId};
+                    }
+                    else
+                    {
+                        contrato.TipoCubierta.Acabado = {Nombre:'Pendiente', AcabadoCubiertaId:null};
+                    }
+
+                    if(data.Cubierta.ColorId)
+                    {
+                        $scope.contrato.TipoCubierta.GrupoUbicacion[0].MaterialSel.ColorSel = {Nombre:data.Cubierta.NombreColor, ColorId:data.Cubierta.ColorId}
+                    }
+                    else
+                    {
+                        $scope.contrato.TipoCubierta.GrupoUbicacion[0].MaterialSel.ColorSel = {Nombre:'Pendiente', ColorId:null};
+                    }
+
+
+                    break;
                 }
-                
-                if(data.Cubierta.AcabadoCubiertaId)
-                {
-                    contrato.TipoCubierta.Acabado = {Nombre:data.Cubierta.NombreAcabadoCubierta, AcabadoCubiertaId:data.Cubierta.AcabadoCubiertaId};
-                }
-                else
-                {
-                    contrato.TipoCubierta.Acabado = {Nombre:'Pendiente', AcabadoCubiertaId:null};
-                }
-                
-                if(data.Cubierta.ColorId)
-                {
-                    $scope.contrato.TipoCubierta.GrupoUbicacion[0].MaterialSel.ColorSel = {Nombre:data.Cubierta.NombreColor, ColorId:data.Cubierta.ColorId}
-                }
-                else
-                {
-                    $scope.contrato.TipoCubierta.GrupoUbicacion[0].MaterialSel.ColorSel = {Nombre:'Pendiente', ColorId:null};
-                }
-                
-                
-                break;
             }
-        }
         
             //ubicacion
-        for(var k=0; k<$scope.contrato.TipoCubierta.Ubicacion.length; k++)
-        {
-            $scope.contrato.TipoCubierta.Ubicacion[k].Contrato = false;
-            
-            for(var i=0; i<data.UbicacionCubierta.length; i++)
+            if($scope.contrato.TipoCubierta.TipoCubiertaId)
             {
-                if(data.UbicacionCubierta[i].UbicacionCubiertaId == $scope.contrato.TipoCubierta.Ubicacion[k].UbicacionCubiertaId)
+                for(var k=0; k<$scope.contrato.TipoCubierta.Ubicacion.length; k++)
                 {
-                    $scope.contrato.TipoCubierta.Ubicacion[k].Contrato = true;
-                    $scope.GetPrecioVentaCubierta($scope.contrato.TipoCubierta.Ubicacion[k]);
-                    break;
+                    $scope.contrato.TipoCubierta.Ubicacion[k].Contrato = false;
+
+                    for(var i=0; i<data.UbicacionCubierta.length; i++)
+                    {
+                        if(data.UbicacionCubierta[i].UbicacionCubiertaId == $scope.contrato.TipoCubierta.Ubicacion[k].UbicacionCubiertaId)
+                        {
+                            $scope.contrato.TipoCubierta.Ubicacion[k].Contrato = true;
+                            $scope.GetPrecioVentaCubierta($scope.contrato.TipoCubierta.Ubicacion[k]);
+                            break;
+                        }
+                    }
                 }
             }
         }

@@ -590,6 +590,7 @@ app.controller("ContratoClienteControlador", function($scope, $rootScope, CITA, 
             
             var plan = 0;
             var fechacompromiso = false;
+          
             for(var k=0; k<planPagos.length; k++)
             {
                 planPagos[k].FechaCompromiso2 = GetFechaEng(planPagos[k].FechaCompromiso);
@@ -618,6 +619,7 @@ app.controller("ContratoClienteControlador", function($scope, $rootScope, CITA, 
                         cuenta.PagoVencido.push(ven);
                     }
                 }
+                
                 if((planPagos[k].FechaCompromiso2 >= $scope.hoy && plan > pagado) || k==(planPagos.length-1))
                 {
                     cuenta.ProximoPago = plan - pagado;
@@ -1207,6 +1209,11 @@ function GetHoyEng()
     if(mes < 10)
     {
         mes = "0"+mes;
+    }
+    
+    if(dia < 10)
+    {
+        dia = "0"+dia;
     }
 
     return year + "-" + mes + "-" + dia;

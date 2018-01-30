@@ -1,0 +1,344 @@
+<div ng-controller="AgregarClienteControlador">
+    
+    <div class="modal fade" id="agregarPersonaModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="true" data-backdrop="static">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-lg modalPrincipal" >
+           
+            <div class="row">
+                <div class="col-xs-12">
+                    <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarPresupuestoModal()"><span aria-hidden="true">&times;</span></button>
+                    <span  class="tituloModal">Agregar Cliente</span>
+                </div>
+            </div>
+            <br><br>
+            
+            <form name="pf" id="personaForma">
+                <!-- nombre -->
+                <div class="row"> 
+                    <div class="col-sm-12">
+                       <div class="entrada2">
+                            <input autocomplete="off" ng-disabled=" personaSeleccionada" ng-pattern="erNombrePersonal" ng-blur="GoToPeople()" type="text" required class="entrada form-control" name="nombre" ng-model="nuevaPersona.Nombre" ng-maxlength="255"/>
+                            <label>Nombre*</label>
+                        </div>
+                   </div>             
+                </div>
+                <br><br>
+                <!-- Apellidos -->
+                <div class="row"> 
+                    <div class="col-sm-6">
+                       <div class="entrada2">
+                            <input autocomplete="off" ng-disabled=" personaSeleccionada" ng-pattern="erNombrePersonal" ng-blur="GoToPeople()" type="text" required class="entrada form-control" name="apellido1" ng-model="nuevaPersona.PrimerApellido" ng-maxlength="120"/>
+                            <label>Primer Apellido*</label>
+                        </div>
+                   </div>
+                   
+                   <div class="hidden-sm hidden-md hidden-lg"> <br><br> </div>   
+                   
+                   <div class="col-sm-6">
+                       <div class="entrada2">
+                            <input autocomplete="off" ng-disabled=" personaSeleccionada" type="text" class="entrada form-control" name="apellido2" ng-model="nuevaPersona.SegundoApellido" ng-maxlength="120"/>
+                            <label>Segundo Apellido</label>
+                        </div>
+                   </div>       
+                </div>
+                <br><br>
+                <!-- Medio de captación -->
+                <div class="row">
+                  
+                    <div class="col-sm-6 etiquetaDropdownList">
+                         <label>Medio de captación*</label>
+                         <div class="dropdown">
+
+                            <button ng-disabled=" personaSeleccionada" class="dropdown-toggle dropdownlistModal" data-toggle="dropdown">
+                                <span>{{nuevaPersona.MedioCaptacion.Nombre}}</span>
+                                <span class="caret"></span>
+                            </button>
+                            
+                            <ul class="dropdown-menu listaOpcionesDropdownList " >
+                               <li>
+                                    <a  href="" class="dropdownOpcionModal" ng-click="CambiarMedioCaptacion('otro')">
+                                        <span class="text-center"> OTRO </span>
+                                    </a>
+                                </li>
+                                
+                                <li ng-repeat="medio in medioCaptacion | orderBy:'Nombre'">
+                                    <a  href="" class="dropdownOpcionModal" ng-click="CambiarMedioCaptacion(medio)" ng-show="medio.Activo && medio.MedioCaptacionId != '0'">
+                                        <span>{{medio.Nombre}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div>
+                        
+                    <div ng-if="nuevaPersona.MedioCaptacionId == '0'" class="hidden-sm hidden-md hidden-lg"> <br> </div>
+                   
+                    <div class="col-sm-6" ng-if="nuevaPersona.MedioCaptacion.MedioCaptacionId == '0'">
+                       <div class="entrada2">
+                            <input ng-disabled=" personaSeleccionada"  ng-pattern="erNombreGeneral" type="text" required class="entrada form-control" name="nombreMedioCaptacion" ng-model="nuevaPersona.NombreMedioCaptacion" ng-maxlength="120"/>
+                            <label>Nombre Medio de Captación*</label>
+                        </div>
+                   </div>             
+                </div>
+
+                <!-- UnidadNegocio -->
+                <!--  -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <a class="btn btn-block botonAcordion textoIzquierda {{GetClaseDropdown(mostrarContenido.unidad)}}" ng-class="{disabled: (!nuevaPersona.Nombre || !nuevaPersona.PrimerApellido)}" ng-click="MostrarContenido('unidad')" ng-show="permisoOperativo.verTodosCliente"><!--  -->
+                            
+                            <span  class="">
+                                <span ng-show="!mostrarContenido.unidad" style="width:20px;" class="fa fa-chevron-right"></span>
+                                <span ng-show="mostrarContenido.unidad" style="width:20px;" class="fa fa-chevron-up"></span>
+                               
+                                <span> Unidades de Negocio</span> 
+                            </span>
+                            
+                        </a>
+                    </div>
+                    
+                </div>
+                
+                <div class="row" ng-if="mostrarContenido.unidad &&  (nuevaPersona.Nombre && nuevaPersona.PrimerApellido)" >
+                    <div class="col-xs-12">
+                        <div class="margenDropdownlistContenido">
+                            <div class="row" >
+                               <br>
+                                <div class="col-xs-12" >
+                                    Selecciona una unidad de negocio
+                                    <div class="panel panelOpciones tablaResponsable" >
+                                        <table class="table table-hover table-responsive table-striped table-condensed">
+                                          <tbody  style="cursor: pointer">
+                                            <tr ng-repeat="unidad in unidadNegocio | orderBy:'Nombre'" ng-show="unidad.show && unidad.Activo == '1'">
+                                              <td>
+                                                  {{unidad.NombreTipoUnidadNegocio}} - {{unidad.Nombre}}
+
+                                                   <a class="pull-right BotonOperacion text-center" href="" style="font-size:16pt" ng-click="AgregarUnidadNegocio(unidad)">
+                                                        <span class="fa fa-plus "></span>
+                                                    </a>
+
+                                              </td>
+                                            </tr>
+                                          </tbody>
+                                        </table>
+                                    </div>
+
+                                </div> 
+                            </div>
+
+                            <!-- unidades de negocio agregadas -->
+                            <div class="row" ng-if="nuevaPersona.UnidadNegocio.length > 0">
+                                <div class="col-xs-12">
+                                    <div class="table-responsive TablaModal">
+                                        <table class="table table-hover table-striped table-condensed">
+                                            <thead class="TituloTabla">
+                                              <tr>
+                                                <th>Unidad Negocio</th>
+                                                <th class="text-center">Quitar </th>
+                                              </tr>
+                                            </thead>
+                                            <tbody >
+                                              <tr ng-repeat="unidad in nuevaPersona.UnidadNegocio | orderBy:['NombreTipoUnidadNegocio','Nombre'] " >
+                                                <td>{{unidad.NombreTipoUnidadNegocio}} - {{unidad.Nombre}}</td>
+
+                                                <td class="text-center">
+                                                    <a  class="BotonOperacion" href=""  ng-click="QuitarUnidadNegocio(unidad)">
+                                                        <span class="fa fa-times fa-2x"></span>
+                                                    </a>
+                                                </td>
+
+                                              </tr>   
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>   
+                    </div>
+                </div>
+                <br><br ng-if="mostrarResponsable">
+            
+                
+                <!-- Medios de contacto -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <a class="btn btn-block botonAcordion textoIzquierda {{GetClaseDropdown(mostrarContenido.contacto)}}" ng-click="MostrarContenido('contacto')" ng-class="{disabled: (!nuevaPersona.Nombre || !nuevaPersona.PrimerApellido)}"><!--  -->
+                            <span class="">
+                                <span ng-show="!mostrarContenido.contacto" style="width:20px" class="fa fa-chevron-right"></span>
+                                <span ng-show="mostrarContenido.contacto" style="width:20px" class="fa fa-chevron-up"></span>
+                                <span> Medio de contacto</span>     
+                            </span>
+                            
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="row" ng-if="mostrarContenido.contacto && (nuevaPersona.Nombre && nuevaPersona.PrimerApellido)">
+                    <div class="col-xs-12">
+                        <div class="margenDropdownlistContenido">
+                        
+                           <div class="row">
+                               <div class="col-xs-12">
+                                    <a class="btn botonAgregarAcordion pull-right" ng-click="AgregarMedioContacto()" >
+                                        <span>
+                                            <span class="fa fa-plus"></span>
+                                            <span> Nuevo</span> 
+                                        </span>
+                                    </a>
+                               </div>
+                            </div>
+
+                            <!-- Medios de contacto agregados -->
+                            <div class="row" ng-if="nuevaPersona.Contacto.length +  nuevaPersona.NuevoContacto.length > 0">
+                                <div class="col-xs-12">
+                                    <div class="table-responsive TablaModal">
+                                        <table class="table table-hover table-striped table-condensed">
+                                            <thead class="TituloTabla">
+                                              <tr>
+                                                <th>Medio de Contacto</th>
+                                                <th>Tipo </th>
+                                                <th>Contacto </th>
+                                                <th class="text-center">Editar</th>
+                                                <th class="text-center">Quitar </th>
+                                              </tr>
+                                            </thead>
+                                            <tbody >
+                                              <tr ng-repeat="contacto in nuevaPersona.Contacto | orderBy:['MedioContacto.Nombre','TipoMedioContacto.Nombre'] " ng-show="contacto.Activo && MostrarMedioContacto(contacto.TipoMedioContacto.TipoMedioContactoId)">
+                                                <td>{{contacto.MedioContacto.Nombre}}</td>
+                                                <td>{{contacto.TipoMedioContacto.Nombre}}</td>
+
+
+                                                <td ng-if="contacto.MedioContacto.MedioContactoId == '2'">{{contacto.Contacto | tel}}</td>
+                                                <td ng-if="contacto.MedioContacto.MedioContactoId == '1'">{{contacto.Contacto}}</td>
+
+                                                <td class="text-center">
+                                                    <a  class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="EditarContactoAgregado(contacto,'Registrado')" >
+                                                        <span class="fa fa-pencil fa-2x"></span>
+                                                    </a>
+                                                </td>
+
+                                                <td class="text-center">
+                                                    <!--<a  disabled class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirModalEliminarContacto(telefono)">
+                                                        <span class="fa fa-times fa-2x"></span>
+                                                    </a>-->
+                                                </td>
+                                              </tr>
+
+                                              <!-- medios agregados sin registro en la base de datos -->
+                                              <tr ng-repeat="contacto in nuevaPersona.NuevoContacto | orderBy:['MedioContacto.Nombre', 'TipoMedioContacto.Nombre'] ">
+                                                <td>{{contacto.MedioContacto.Nombre}}</td>
+                                                <td>{{contacto.TipoMedioContacto.Nombre}}</td>
+
+                                                  <td ng-if="contacto.MedioContacto.MedioContactoId == '2'">{{contacto.Contacto | tel}}</td>
+                                                  <td ng-if="contacto.MedioContacto.MedioContactoId == '1'">{{contacto.Contacto}}</td>
+
+                                                <td class="text-center">
+                                                    <a  class="BotonOperacion" href=""  ng-click="EditarContactoAgregado(contacto, 'Nuevo')">
+                                                        <span class="fa fa-pencil fa-2x"></span>
+                                                    </a>
+                                                </td>
+
+                                                <td class="text-center">
+                                                    <a  class="BotonOperacion" href=""  ng-click="BorrarContactoAgregado(contacto)">
+                                                        <span class="fa fa-times fa-2x"></span>
+                                                    </a>
+                                                </td>
+                                              </tr>    
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <br>
+                
+                <!-- Personas relacionadas -->
+                <div class="row" ng-if="persona.length > 0">
+                    <div class="col-xs-12">
+                        <span>*Verifica si es uno de los siguientes clientes.</span><br>
+                        <span>*Si es uno de estos clientes selecciónalo y verifica sus datos.</span><br>
+                    </div>
+                    <br>
+                   <div class="col-xs-12">
+                        <div class="piezaPorComponenteTabla">
+                            <table class="table table-hover table-striped table-condensed">
+                                <thead class="TituloTabla">
+                                  <tr>
+                                    <th><span class=""><b>Nombre</b></span></th>
+                                    <th class="text-center"><span><b>Seleccionar</b></span></th>
+                                  </tr>
+                                </thead>
+                                <tbody >
+                                  <tr ng-repeat="persona in persona | orderBy:'PrimerApellido'">
+
+                                     <td>{{persona.PrimerApellido}} {{persona.SegundoApellido}} {{persona.Nombre}}</td>
+                                    
+
+                                    <td class="text-center">
+                                        <div class="checkboxOperativo">
+                                            <label>
+                                                <input  ng-model="persona.Seleccionado" type="checkbox" value="" ng-click="SeleccionarPersona(persona)">
+                                                <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+                                            </label>
+                                        </div>
+                                    </td>
+
+                                  </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-------- mensaje de error ---->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div ng-repeat="error in mensajeError | unique:error track by $index">
+                            <span class="textoError">{{error}}</span>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <!---- botones de operacion -->
+                <div class="row">
+                    <div class="col-xs-6">
+                        <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarPresupuestoModal()">CANCELAR</button>
+                    </div>
+
+                    <div class="col-xs-6">
+                        <button focus class="btn botonOperacionModal btn-block" ng-click="TerminarCliente()">TERMINAR</button>
+                    </div>
+                </div>
+            <br>
+            </form>
+        </div>
+    </div>  
+    
+    <!-- Modal para mensajes -->
+    <div class="modal fade sombraDivModal" id="mensajeCliente" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <br>    <br>   <br>
+        <div class="modal-dialog modalPrincipal modal-sm">
+           <br>
+            <div class="row">
+                <div class="col-xs-12 text-center" style="font-size:12pt">
+                   {{mensaje}}
+                </div>
+            </div>
+            <br>
+            <div class="row">
+            
+                <div class="col-xs-12">
+                    <button focus class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close">Aceptar</button>
+                </div>
+            </div>
+        </div> 
+    </div> 
+</div>
+
+     

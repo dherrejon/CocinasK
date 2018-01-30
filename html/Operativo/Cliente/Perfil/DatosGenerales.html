@@ -109,9 +109,10 @@
 
                      <td>{{contacto.MedioContacto.Nombre}}</td>
                      <td>{{contacto.TipoMedioContacto.Nombre}}</td>
-                     <td>{{contacto.Contacto}}</td>
-
-                    <td class="text-center">
+                     <td ng-if="contacto.MedioContacto.MedioContactoId == '2'">{{contacto.Contacto | tel}}</td>
+                    <td ng-if="contacto.MedioContacto.MedioContactoId == '1'">{{contacto.Contacto}}</td>
+                    
+                       <td class="text-center">
                         <a  class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="EditarContactoAgregado(contacto, 'Ninguno')" >
                             <span class="fa fa-pencil fa-2x"></span>
                         </a>
@@ -319,7 +320,7 @@
     <form name="datos" class="contenedorAcordio" ng-if="tabSeleccionada == 'UnidadNegocio'">
         <div class="row">
            <div class="col-xs-12">
-                <button class="btn botonAgregarAcordion pull-right" ng-click="AbrirUnidadNegocioPersona(persona.UnidadNegocio)" >
+                <button class="btn botonAgregarAcordion pull-right" ng-click="AbrirUnidadNegocioPersona(persona.UnidadNegocio)" ng-show="permisoOperativo.verTodosCliente">
                     <span>
                         <span class="fa fa-pencil"></span>
                         <span> Editar</span> 
@@ -333,7 +334,7 @@
                   <tr>
                     <th><span class=""><b>Tipo Unidad</b></span></th>
                     <th><span><b>Unidad Negocio</b></span></th>
-                    <th class="text-center"><span><b>Quitar</b></span></th>
+                    <th class="text-center" ng-show="permisoOperativo.verTodosCliente"><span><b>Quitar</b></span></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -343,7 +344,7 @@
                     <td>{{unidad.Nombre}}</td>
 
 
-                    <td class="text-center">
+                    <td class="text-center" ng-show="permisoOperativo.verTodosCliente">
                         <a  class="BotonOperacion" href=""  ng-click="QuitarUnidadNegocio(unidad)">
                             <span class="fa fa-times fa-2x"></span>
                         </a>

@@ -13,65 +13,84 @@
     
     <div class="row">
         
-       <div class="col-sm-6 col-xs-9">
-            <input type="text" placeholder="Buscar cliente" class="entrada form-control" ng-model="buscarCliente"/>
-        </div>
+       <div class="col-sm-12">
+            <div class="input-group">
+               
+                <div class="input-group-btn">
+                    <span class="dropdown">
 
-        <div class="col-xs-3">
-            <div class="dropdown">
-            
-                <button class="btn  botonAgregarAcordion text-center"  data-toggle="dropdown" ng-show="permisoOperativo.verTodosCliente">
-                   <span style="font-size:20pt" class="fa fa-filter"></span>
-               </button>
+                        <button class="btn  botonAgregarAcordion text-center"  data-toggle="dropdown" ng-show="permisoOperativo.verTodosCliente" style="height: 44px;">
+                           <span style="font-size:20pt" class="fa fa-filter"></span>
+                       </button>
 
-                <ul class="dropdown-menu dropdown-menu-right filtroPanelPrincipal">
+                        <ul class="dropdown-menu  filtroPanelPrincipal" style="margin-top: 10px">
 
-                    <div  class="row ">
-                        <div class="col-xs-9"> 
-                            <li  class="dropdown-header tituloFitro">FILTRAR</li>
-                        </div>
-                        <div class="col-xs-3">
-                            <li> <button class="btn botonLimpiarFiltro fa fa-ban" data-toggle="tooltip" data-placement="bottom" title="Limpiar filtro" ng-click="LimpiarFiltro()"></button></li>
-                        </div>
-                    </div>
-                    <!--<li role="separator" class="divider"></li>-->
-
-                    <li style="width: 300px;">
-
-                        <form role="filtro">
-                            <!------ Unidades de negocio ------>
-                            <button class="btn btn-block botonMostrarFiltro">Unidad de Negocio</button>
-
-                            <div>
-                               <div class="col-xs-12" style="margin-top: 10px"></div>
-                                <div class="col-xs-12">
-                                    <input type="text"  placeholder="Buscar Unidad Negocio" class="entrada form-control" name="buscarUnidad" ng-model="buscarUnidad">
+                            <div  class="row ">
+                                <div class="col-xs-9"> 
+                                    <li  class="dropdown-header tituloFitro">FILTRAR</li>
                                 </div>
-                                <div class="col-xs-12" style="margin-top: 10px"></div>
-                                <div class="panel  panelFiltro" style="border-radius: 0px;">
-                                    <div class="row " >
-                                        <div class="col-xs-12">
-
-                                           <div ng-repeat="unidad in unidadNegocio | filter:buscarUnidad | orderBy:'Nombre'" >
-                                                <div class="checkbox checkboxOperativo" style="margin-top:5px !important;">
-                                                    <label style="width:100%">
-                                                        <input  ng-model="unidad.Filtro" type="checkbox"  ng-click="FitroCliente()">
-                                                        <span class="cr"> <i class="cr-icon fa fa-check"></i> </span>{{unidad.NombreTipoUnidadNegocio}} - {{unidad.Nombre}} 
-                                                    </label>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    </div>
+                                <div class="col-xs-3">
+                                    <li> <button class="btn botonLimpiarFiltro fa fa-ban" data-toggle="tooltip" data-placement="bottom" title="Limpiar filtro" ng-click="LimpiarFiltro()"></button></li>
                                 </div>
                             </div>
-                        
-                        </form>
-                    </li>
-                </ul>
+                            <!--<li role="separator" class="divider"></li>-->
 
+                            <li style="width: 300px;">
+
+                                <form role="filtro">
+                                    <!------ Unidades de negocio ------>
+                                    <button class="btn btn-block botonMostrarFiltro">Unidad de Negocio</button>
+
+                                    <div>
+                                       <div class="col-xs-12" style="margin-top: 10px"></div>
+                                        <div class="col-xs-12">
+                                            <input type="text"  placeholder="Buscar Unidad Negocio" class="entrada form-control" name="buscarUnidad" ng-model="buscarUnidad">
+                                        </div>
+                                        <div class="col-xs-12" style="margin-top: 10px"></div>
+                                        <div class="panel  panelFiltro" style="border-radius: 0px;">
+                                            <div class="row " >
+                                                <div class="col-xs-12">
+
+                                                   <div ng-repeat="unidad in unidadNegocio | filter:buscarUnidad | orderBy:'Nombre'" >
+                                                        <div class="checkbox checkboxOperativo" style="margin-top:5px !important;">
+                                                            <label style="width:100%">
+                                                                <input  ng-model="unidad.Filtro" type="checkbox"  ng-click="FitroCliente()">
+                                                                <span class="cr"> <i class="cr-icon fa fa-check"></i> </span>{{unidad.NombreTipoUnidadNegocio}} - {{unidad.Nombre}} 
+                                                            </label>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </li>
+                        </ul>
+
+                    </span>
+                </div> 
+                
+                <div class="input-group-addon" style="border-width: 0px; color: gray; background: white; border-bottom: 3px solid #424242; height: 44px">
+                    <span class="fa fa-search" ></span>
+                </div>
+            
+                <input type="text" placeholder="Buscar cliente" class="entrada form-control" ng-model="buscarCliente" style="height: 44px"/>
+            
+            
+                <div class="input-group-btn">
+                    
+                    
+                    <button class="btn botonAgregarAcordion" style="height: 44px" ng-click="AgregarPersona()">
+                        <span class="fa fa-plus"></span><span class="hidden-xs"> Agregar</span>
+                    </button>
+                </div>
             </div>
+    
         </div>
+
+        
 
     </div>
     <br>
@@ -111,6 +130,8 @@
        
         </div>
     </div>
+
+    <div ng-include=" 'html/Operativo/Cliente/AgregarCliente.html' "></div>
     
 </div>
 

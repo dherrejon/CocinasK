@@ -5806,7 +5806,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         {
             if($scope.presupuesto.PromocionMueble != "Ninguno")
             {
-                subtotal = combinacionTotal - ((combinacionTotal*parseFloat($scope.presupuesto.PromocionMueble.DescuentoMinimo))/100);
+                subtotal = combinacionTotal - ((combinacionTotal*parseFloat($scope.presupuesto.PromocionMueble.Descuento))/100);
             }
             else
             {
@@ -5822,7 +5822,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
             
             if($scope.presupuesto.PromocionCubierta != "Ninguno")
             {
-                subtotal = subtotal - ((subtotal*parseFloat($scope.presupuesto.PromocionCubierta.DescuentoMinimo))/100);
+                subtotal = subtotal - ((subtotal*parseFloat($scope.presupuesto.PromocionCubierta.Descuento))/100);
             }
             
             total += Math.round(subtotal);
@@ -5928,6 +5928,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         if(promo != $scope.presupuesto.PromocionCubierta)
         {
             $scope.presupuesto.PromocionCubierta = promo;
+            $scope.presupuesto.PromocionCubierta.Descuento = promo.DescuentoMinimo;
             $scope.CalcularAbono($scope.presupuesto.PlanPago);
             //$scope.GetPrecioVentaPresupuesto();
         }
@@ -5938,22 +5939,32 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         if(promo != $scope.presupuesto.PromocionMueble)
         {
             $scope.presupuesto.PromocionMueble = promo;
+            $scope.presupuesto.PromocionMueble.Descuento = promo.DescuentoMinimo;
             $scope.CalcularAbono($scope.presupuesto.PlanPago);
             //$scope.GetPrecioVentaPresupuesto();
         }
     }
     
-    $scope.AnteriorPresupuestoPaso12 = function()
+    $scope.CambiarDescuento = function(promo, val)
     {
-        if($scope.presupuesto.Proyecto.TipoProyecto.Mueble)
+        if(val == -1)
         {
-            $scope.pasoPresupuesto--;
+            if((parseFloat(promo.Descuento) - 1) >= 0)
+            {
+                promo.Descuento = parseFloat(promo.Descuento) - 1;
+            }
         }
-        else
+        if(val == 1)
         {
-            $scope.pasoPresupuesto = 9;
+            if(promo.DescuentoMaximo >= (parseFloat(promo.Descuento) + 1))
+            {
+                promo.Descuento = parseFloat(promo.Descuento) + 1;
+            }
         }
-    }
+        
+         $scope.CalcularAbono($scope.presupuesto.PlanPago);
+    };
+
     
     $scope.AnteriorPaso13 = function()
     {
@@ -5966,14 +5977,17 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                     if($scope.tipoCubierta[k].PorDefecto)
                     {
                         $scope.pasoPresupuesto--;
+                        return;
                     }
                     else
                     {
                         $scope.pasoPresupuesto = 11;
+                        return;
                     }
                 }
                 
             }
+            $scope.pasoPresupuesto = 11;
         }
         else
         {
@@ -6388,7 +6402,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
             {
                 if($scope.presupuesto.PromocionMueble != undefined )
                 {
-                     return $scope.presupuesto.PromocionMueble.DescuentoMinimo + "% de decuento.";
+                     return $scope.presupuesto.PromocionMueble.Descuento + "% de decuento.";
                 }
                
             }
@@ -6403,7 +6417,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
             {
                 if($scope.presupuesto.PromocionCubierta != undefined )
                 {
-                    return $scope.presupuesto.PromocionCubierta.DescuentoMinimo + "% de decuento.";
+                    return $scope.presupuesto.PromocionCubierta.Descuento + "% de decuento.";
                 }
             }
         }
@@ -6889,7 +6903,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                         startY: first.finalY + 10,
                         addPageContent: pageContent,
                         showHeader: 'firstPage',
-                        margin: {right: 107, top:55},
+                        margin: {right: 107, top:22},
                         headerStyles: {fillColor: [0, 0, 0], fontSize:14, textColor: [255,255, 255], halign:'center',},
                         styles: {fillColor: [250, 97, 21], textColor: [255,255,255], overflow: 'linebreak', halign:'center', fontSize:16},
                          theme: 'grid',
@@ -6911,7 +6925,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                     doc.autoTable(precio.columns, precio.data, {
                         startY: first.finalY + 10,
                         addPageContent: pageContent,
-                        margin: {left: 107},
+                        margin: {left: 107, top:22},
                         headerStyles: {fillColor: [0, 0, 0], fontSize:14, textColor: [255,255, 255], halign:'center',},
                         styles: {fillColor: [250, 97, 21], textColor: [255,255,255], overflow: 'linebreak', halign:'center', fontSize:16},
                          theme: 'grid',
@@ -6933,6 +6947,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         }
         
         doc.autoTable(descr.columns, descr.data,  {
+            margin: {top: 22},
             startY: doc.autoTable.previous.finalY + 8,
             showHeader: 'never',
             addPageContent: pageContent,

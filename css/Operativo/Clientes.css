@@ -48,8 +48,8 @@
 .botonMostrarFiltro, .botonMostrarFiltro:active, .botonMostrarFiltro:focus
 {
     border-radius: 0px;
-    background: #262626; 
-    color: white;
+    background: lightgray; 
+    color: black;
     outline: none;
     box-shadow: none;
     

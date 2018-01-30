@@ -158,6 +158,8 @@ app.controller("ClienteControlador", function($scope, $rootScope, CITA, $window,
         //---------------------- Inicializar Cliente -------------------------------
         $scope.GetCliente();
         $scope.GetUnidadNegocio();
+        
+        $rootScope.usuario = $scope.usuarioLogeado;
     };
     
     /*------------------Indentifica cuando los datos del usuario han cambiado-------------------*/
@@ -215,5 +217,15 @@ app.controller("ClienteControlador", function($scope, $rootScope, CITA, $window,
         }
     });
     
-   
+    //-------------------- Agregar Perosna ---------------------
+    $scope.AgregarPersona = function()
+    {
+        $rootScope.$broadcast('AgregarPersona');
+    };
+    
+    $scope.$on('PersonaGuarda', function()
+    {
+        $scope.GetCliente();
+    });
+    
 });

@@ -535,6 +535,8 @@ var OpcionOperativo =
         elemento: [ 
                     { menu: 1, referencia: "#ReporteContrato", texto:"Contratos",  show:false, tipo:"enlace", permiso:[{clave:"OpeVRCConsultar"}]},
                     { menu: 1, referencia: "#ReportePago", texto:"Pagos",  show:false, tipo:"enlace", permiso:[{clave:"OpeVRPConsultar"}]},
+                    { menu: 1, referencia: "#ReportePersonasRegistradas", texto:"Personas Registradas",  show:false, tipo:"enlace", permiso:[{clave:"OpePRConsultar"}]},
+                    { menu: 1, referencia: "#ReportePagoPendiente", texto:"Pagos Pendientes",  show:false, tipo:"enlace", permiso:[{clave:"OpeRPAConsultar"}]}
                   ]                      
     },
     
