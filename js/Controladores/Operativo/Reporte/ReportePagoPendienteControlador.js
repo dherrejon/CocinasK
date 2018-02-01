@@ -5,10 +5,12 @@ app.controller("ReportePagoPendienteController", function($scope, $rootScope, $h
     $rootScope.permisoOperativo = {verTodosCliente: false};
 
     $scope.unidad = [];
-    $scope.filtro = {fecha1: "", fecha2: "", unidad: new Object()};
-    $scope.buscar = false;
-    $scope.ordenar = "-Fecha";
+    $scope.filtro = {unidad: new Object(), estatus: new Object()};
+    $scope.ordenar = "Cliente";
     $scope.busqueda = "";
+    $scope.pago = [];
+    
+    $scope.estatusContrato = GetEstatusContrato();
     
     $scope.IdentificarPermisos = function()
     {
@@ -56,50 +58,50 @@ app.controller("ReportePagoPendienteController", function($scope, $rootScope, $h
         {
             $scope.ordenar = campoOrdenar;
         }
-        
-        $scope.Ordenar();
-    };
-    
-    $scope.Ordenar = function()
-    {
-        switch($scope.ordenar)
-        {
-            case "-Venta":
-                $scope.pago = alasql("SELECT * FROM ? ORDER BY  ProyectoNombre DESC", [$scope.pago]);
-                break;  
-            case "Venta":
-                $scope.pago = alasql("SELECT * FROM ? ORDER BY  ProyectoNombre ASC", [$scope.pago]);
-                break; 
-            case "-Total":
-                $scope.pago = alasql("SELECT * FROM ? ORDER BY  Total DESC", [$scope.pago]);
-                break;  
-            case "Total":
-                $scope.pago = alasql("SELECT * FROM ? ORDER BY  Total ASC", [$scope.pago]);
-                break; 
-            case "-Cliente":
-                $scope.pago = alasql("SELECT * FROM ? ORDER BY  Cliente DESC", [$scope.pago]);
-                break;  
-            case "Cliente":
-                $scope.pago = alasql("SELECT * FROM ? ORDER BY  Cliente ASC", [$scope.pago]);
-                break; 
-            case "-Fecha":
-                $scope.pago = alasql("SELECT * FROM ? ORDER BY  Fecha DESC, Hora DESC", [$scope.pago]);
-                break;  
-            case "Fecha":
-                $scope.pago = alasql("SELECT * FROM ? ORDER BY  Fecha ASC, Hora ASC", [$scope.pago]);
-                break;
-            case "-Unidad":
-                $scope.pago = alasql("SELECT * FROM ? ORDER BY  NombreTipoUnidadNegocio DESC, NombreUnidadNegocio DESC", [$scope.pago]);
-                break;  
-            case "Unidad":
-                $scope.pago = alasql("SELECT * FROM ? ORDER BY  NombreTipoUnidadNegocio ASC, NombreUnidadNegocio ASC", [$scope.pago]);
-                break;
-            default: 
-                break;
-        }
     };
     
     //---------------- Filtro -----------------
+    $scope.FiltroPago = function(pago)
+    {
+        if(!$scope.filtro.unidad.UnidadNegocioId && !$scope.filtro.estatus.EstatusContratoId)
+        {
+            return true;
+        }
+        else if($scope.filtro.unidad.UnidadNegocioId && $scope.filtro.estatus.EstatusContratoId)
+        {
+            if(pago.UnidadNegocioId == $scope.filtro.unidad.UnidadNegocioId && pago.EstatusContratoId == $scope.filtro.estatus.EstatusContratoId)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else if($scope.filtro.unidad.UnidadNegocioId)
+        {
+            if(pago.UnidadNegocioId == $scope.filtro.unidad.UnidadNegocioId)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else if($scope.filtro.estatus.EstatusContratoId)
+        {
+            if(pago.EstatusContratoId == $scope.filtro.estatus.EstatusContratoId)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+    };
+    
     $scope.CambiarUnidadNegocio = function(unidad)
     {
         if(unidad == 'ninguna')
@@ -112,101 +114,151 @@ app.controller("ReportePagoPendienteController", function($scope, $rootScope, $h
         }
     };
     
-    $scope.CambiarFechaInicio = function(element) 
+    $scope.CambiarEstatusFiltro = function(estatus)
     {
-        $scope.$apply(function($scope) 
+        if(estatus == 'ninguno')
         {
-            $scope.filtro.fecha1 = element.value;
-        });
-        
-        if(element.value.length > 0)
-        {
-            $('#fechaFin').datetimepicker("minDate", element.value);
+            $scope.filtro.estatus = new Object();
         }
         else
         {
-            $('#fechaFin').datetimepicker("minDate", false);
+            $scope.filtro.estatus = estatus;
         }
     };
     
-    $scope.CambiarFechaFin = function(element) 
+    
+    //-------------------- vista -------------------------
+    $scope.MostrarEstatus = function(actualId, cambiarId)
     {
-        $scope.$apply(function($scope) 
+        if(actualId == cambiarId || cambiarId=="2" || actualId=="3")
         {
-            $scope.filtro.fecha2 = element.value;
+            return false;
+        }
+        
+        if(actualId == "0" || actualId == "2")
+        {
+            if(cambiarId == "3")
+            {
+                return true;
+            }
+            else
+            {
+                 return false;
+            }
+            
+        }
+        else if(actualId == "1" )
+        {
+            if(cambiarId == "4")
+            {
+                return true;
+            }
+            else
+            {
+                 return false;
+            }
+            
+        }
+        else if(actualId == "4" )
+        {
+            if(cambiarId == "1")
+            {
+                return true;
+            }
+            else
+            {
+                 return false;
+            }
+        }
+      
+    };
+    
+    $scope.GetEstatusContrato = function(id)
+    {
+        switch(id)
+        {
+            case "1":
+                return "EnProgreso";
+            case "2":
+                return "Pagado";
+            case "3":
+                return "Entregado";
+            case "4":
+                return "Detenido";
+            case "0":
+                return "Atrasado";
+                
+            default: 
+                return "";
+        }
+    };
+    
+    //-------------------------- Cambiar de Estatus contrato ----------------------
+    $scope.CambiarEstatus = function(pago, estatus)
+    {
+        $scope.cambiarPago = pago;
+        $scope.estatusActualizar = estatus;
+        
+        $scope.mensajeAdvertencia = "¿Estas seguro de cambiar el estatus del contrato a " + estatus.Nombre + "?";
+        
+        $("#modalEstatusContratoPagoPendiente").modal('toggle');
+    };
+    
+    $scope.CancelarEstatusContrato = function()
+    {
+        $scope.cambiarPago = null;
+        $scope.estatusActualizar = null;
+    };
+    
+    $scope.ConfirmarActualizarContrato = function()
+    {        
+        var datos = new Object();
+        datos.ContratoId = $scope.cambiarPago.ContratoId;
+        datos.EstatusContratoId = $scope.estatusActualizar.EstatusContratoId;
+        
+        
+        CambiarEstatusContrato($http, $q, CONFIG, datos).then(function(data)
+        {
+            if(data == "Exitoso")
+            {
+                $rootScope.mensaje = "El estatus del contrato se ha actualizado correctamente.";
+                 
+                $scope.cambiarPago.NombreEstatusContrato = $scope.estatusActualizar.Nombre;
+                $scope.cambiarPago.EstatusContratoId = $scope.estatusActualizar.EstatusContratoId;
+                $scope.cambiarPago = null;
+                $scope.estatusActualizar = null;
+            }
+            else
+            {
+                $rootScope.mensaje = "Ha ocurrido un error. Intente más tarde.";
+                $('#mensajePagoPendiente').modal('toggle');
+            }
+            
+        }).catch(function(error)
+        {
+            $rootScope.mensaje = "Ha ocurrido un error. Intente más tarde." + error;
+            $('#mensajePagoPendiente').modal('toggle');
         });
         
-        if(element.value.length > 0)
-        {
-            $('#fechaInicio').datetimepicker("maxDate", element.value);
-        }
-        else
-        {
-            $('#fechaInicio').datetimepicker("maxDate", new Date());
-        }
     };
     
-    $('#fechaInicio').datetimepicker(
-    {
-        locale: 'es',
-        format: 'DD/MMM/YYYY',
-        maxDate: new Date(),
-        date: null
-    });
-    
-    $('#fechaFin').datetimepicker(
-    {
-        locale: 'es',
-        format: 'DD/MMM/YYYY',
-        maxDate: new Date(),
-        date: null
-    }); 
-    
-    $scope.LimpiarFiltro = function()
-    {
-        $scope.filtro = {fecha1: "", fecha2: "", unidad: new Object()};
-        $('#fechaInicio').data("DateTimePicker").clear();
-        $('#fechaFin').data("DateTimePicker").clear();
-        
-        $scope.buscar = false;
-        $scope.busqueda = "";
-        $scope.pago = [];
-        $scope.totalPago = 0;
-    };
     
     //---- Enviar Filtro
-    $scope.GetReportePago = function()
+    $scope.GetReportePagoPendiente = function(id)
     {   
-        GetReportePago($http, $q, CONFIG, $scope.datos).then(function(data)
+        GetReportePagoPendiente($http, $q, CONFIG, id).then(function(data)
         {
             for(var k=0; k<data.length; k++)
             {
-                data[k].Pago  = parseFloat(data[k].Pago);
-            }
-            
-            $scope.pago = alasql( "SELECT *, SUM(Pago) as Total FROM ? GROUP BY NoNotaCargo, Concepto, ContratoId", [data]);
-            
-            $scope.totalPago = 0;
-            
-            if($scope.pago[0].Total > 0)
-            {
-                for(var k=0; k<$scope.pago.length; k++)
+                if(!$scope.GetPagoPendiente(data[k], data[k].PlanPago))
                 {
-                    $scope.pago[k].Desgloce = alasql("SELECT * FROM ? WHERE ContratoId = '" + $scope.pago[k].ContratoId + "' AND NoNotaCargo = '" + $scope.pago[k].NoNotaCargo + "' AND Concepto = '" + $scope.pago[k].Concepto + "'", [data]);
-                }
-
-                for(var k=0; k<$scope.pago.length; k++)
-                {
-                    $scope.pago[k].FechaFormato = TransformarFecha($scope.pago[k].Fecha);
-                    $scope.pago[k].Pago  = parseFloat($scope.pago[k].Pago);
-
-                    $scope.pago[k].Total  = parseFloat($scope.pago[k].Total);
-
-                    $scope.totalPago += $scope.pago[k].Total;
+                    data.splice(k,1);
+                    k--;
                 }
             }
             
-            $scope.Ordenar();
+            $scope.pago = data;
+            
         }).catch(function(error)
         {
             $scope.pago = [];
@@ -214,80 +266,45 @@ app.controller("ReportePagoPendienteController", function($scope, $rootScope, $h
         });
     };
     
-    $scope.GetPagoFiltro = function()
+    $scope.GetPagoPendiente = function(data, plan)
     {
-        if(!$scope.ValidarFiltro())
-        {
-            return;
-        }
-        else
-        {
-            $scope.buscar = true;
-            $scope.GetReportePago();
-        }
-    };
-    
-    $scope.ValidarFiltro = function()
-    {
-        $scope.datos = {fecha1:"", fecha2:"", unidadId:""};
-        $scope.mensajeError = [];
+        var hoy = GetHoyEng();
+        var saldo = 0;
+        var fechaAtraso = false;
+        var pendiente = 0;
         
-        if($scope.filtro.fecha1 == undefined || $scope.filtro.fecha1 == null)
-        {
-            $scope.mensajeError[$scope.mensajeError.length] = "*Selecciona la primera fecha.";
-        }
-        else
-        {
-            if($scope.filtro.fecha1.length == 0 )
-            {
-                $scope.mensajeError[$scope.mensajeError.length] = "*Selecciona la primera fecha.";
-            }
-        }
-        
-        if($scope.filtro.fecha1 == undefined || $scope.filtro.fecha1 == null)
-        {
-            $scope.mensajeError[$scope.mensajeError.length] = "*Selecciona la segunda fecha.";
-        }
-        else
-        {
-            if($scope.filtro.fecha2.length == 0 )
-            {
-                $scope.mensajeError[$scope.mensajeError.length] = "*Selecciona la segunda fecha.";
-            }
-        }
+        data.Pago = parseFloat(data.Pago);
+        data.ContratoId = parseInt(data.ContratoId);
         
         
-        if($scope.mensajeError.length == 0)
+        for(var k=0; k<plan.length; k++)
         {
-            $scope.datos.fecha1 = GetFechaAbrEng($scope.filtro.fecha1);
-            $scope.datos.fecha2 = GetFechaAbrEng($scope.filtro.fecha2);
+            plan[k].Pago = parseFloat(plan[k].Pago);
+            plan[k].FechaCompromiso2 = GetFechaEng(plan[k].FechaCompromiso);
             
-            if($scope.datos.fecha1 > $scope.datos.fecha2)
+            if(plan[k].FechaCompromiso2 < hoy)
             {
-                $scope.mensajeError[$scope.mensajeError.length] = "*La primera fecha debe ser menor a la segunda.";
+                saldo += plan[k].Pago;
+                
+                if(saldo > data.Pago && !fechaAtraso)
+                {
+                    data.FechaPendiente = plan[k].FechaCompromiso;
+                    data.FechaPendiente2 = plan[k].FechaCompromiso2;
+                    fechaAtraso = true;
+                }
             }
         }
         
-        if(!$scope.permiso.verTodo)
+        pendiente = saldo - data.Pago;
+        
+        if(pendiente > 0)
         {
-            $scope.datos.unidadId = $scope.usuario.UnidadNegocioId;
-        }
-        else if($scope.filtro.unidad.UnidadNegocioId != undefined && $scope.filtro.unidad.UnidadNegocioId != null )
-        {
-            $scope.datos.unidadId = $scope.filtro.unidad.UnidadNegocioId;
-        }
-        else
-        {
-            $scope.datos.unidadId = -1;
-        }
-       
-        if($scope.mensajeError.length > 0)
-        {
-            return false;   
-        }
-        else
-        {
+            data.Pendiente = pendiente;
             return true;
+        }
+        else
+        {
+            return false;
         }
     };
     
@@ -301,8 +318,11 @@ app.controller("ReportePagoPendienteController", function($scope, $rootScope, $h
         }
         else
         {
-            $scope.GetUnidadNegocio();
+            $scope.GetUnidadNegocio();            
             $scope.usuario = datosUsuario.getUsuario(); 
+            
+            var unidadId = $scope.permiso.verTodo ? -1 :$scope.usuario.UnidadNegocioId;
+            $scope.GetReportePagoPendiente(unidadId);
         }
     };
     

@@ -619,6 +619,7 @@
 
     /*------------------------- Pagos ------------------------------*/
     $app->post('/GetReportePago', $seguridad, $ChecarSesion, 'GetReportePago');
+    $app->get('/GetReportePagoPendiente/:id', $seguridad, $ChecarSesion, 'GetReportePagoPendiente');
     
     $app->run(); 
 

@@ -132,8 +132,8 @@ app.controller("ReportePersonaRegistradaController", function($scope, $rootScope
         
         $scope.buscar = false;
         $scope.busqueda = "";
-        $scope.pago = [];
-        $scope.totalPago = 0;
+        $scope.persona = [];
+        $scope.numPresupuesto = [];
     };
     
     //_------ Fitro numero de presupuestos

@@ -9,18 +9,40 @@
    <br>
    
    <div class="row">
-      <!-- Fecha -->
-       <div class="col-sm-6" >
+       
+        <div class="col-sm-6">
           
-          <label>Fecha</label>
-          <div class="input-group input-daterange">
-                <input type="text" class="form-control entrada" id="fechaInicio" onblur="angular.element(this).scope().CambiarFechaInicio(this)" style="height: 33px">
-                <div class="input-group-addon" style="background: white; color: black; border-color: white"> a </div>
-                <input type="text" class="form-control entrada" id="fechaFin" onblur="angular.element(this).scope().CambiarFechaFin(this)" style="height: 33px">
+          <label>Estatus</label>
+          <div class="dropdown">
+
+                <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown" style="height: 33px">
+                   {{filtro.estatus.Nombre}}
+                    <span class="pull-right">
+                        <span class="caret "></span>
+                    </span>
+                </button>
+
+                <ul class="dropdown-menu listaOpcionesDropdownList" style="min-width: 100%">
+                   <li>
+                       
+                       <a  href="" class="dropdownOpcionModal" ng-click="CambiarEstatusFiltro('ninguno')">
+                            <span>NINGUNO</span>
+                        </a>
+                    </li>
+                    
+                    <li ng-repeat="estatus in estatusContrato" ng-show="estatus.EstatusContratoId == '1' || estatus.EstatusContratoId == '4' ">
+                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarEstatusFiltro(estatus)">
+                            <span>{{estatus.Nombre}} </span>
+                        </a>
+                    </li>
+                </ul>
+
             </div>
            
         </div>
+        
         <br class="hidden-sm hidden-md hidden-lg"> 
+        
         <!-- Unidad de Negocio -->
         <div class="col-sm-6" ng-show="permiso.verTodo">
           
@@ -56,33 +78,11 @@
     </div>
     <br>
     
-    <div class="row">
-        <div class="col-xs-12">
-            <div ng-repeat="error in mensajeError track by $index">
-                <span class="textoError">{{error}}</span>
-            </div>
-        </div>
-    </div>
-    
-    <div class="row">
-        <div class="col-xs-12">
-            
-            <div class="pull-right">
-                
-                <button class="btn btnContornoNegro" ng-click="LimpiarFiltro()">Limpiar</button>
-                
-                <button class="btn btnContornoNegro" style="margin-left: 10px" ng-click="GetPagoFiltro()">Buscar</button>
-            </div>
-            
-        </div>
-    </div>
-    <br><br>
-    
     <!-- resultado -->
-    <div ng-show="buscar">
+    <div>
       
-      <div class="row" ng-show="totalPago > 0">
-            <div class="col-sm-6">
+      <div class="row" ng-show="pago.length > 0">
+            <div class="col-sm-12">
                <div class="input-group">
                     <input type="text" ng-model="busqueda" placeholder="Buscar" class="entrada form-control" style="height: 33px">
                     
@@ -93,108 +93,94 @@
                     </div>
               </div>
             </div>
-            
-            <br class="hidden-sm hidden-md hidden-lg">
-            
-            <div class="col-sm-6">
-                <span class="pull-right">
-                   <spna class="textoTipoModulo"> Total: </spna>
-                    <span class="textoNumeroTipoModulo"><b>{{totalPago | currency}}</b></span>
-                </span>
-            </div>
         </div>
         <br>
-       
-        <div class="row" ng-show="totalPago > 0">
+        <div class="row" ng-show="pago.length > 0">
            <div class="col-xs-12" >
                <div class="table-responsive " style="overflow: scroll; max-height: 650px;">
                 <table class="table table-hover table-striped">
                     <thead class="TituloTabla" >
                       <tr>
+                       
                         <th>
                             <button class="btn botonOrdenar" ng-click="CambiarOrdenar('Cliente')" style="padding:  0px">
                                 <b>Cliente</b> <span ng-class="{'fa fa-arrow-up': ordenar == 'Cliente', 'fa fa-arrow-down': ordenar == '-Cliente'}"></span>
                             </button>
                         </th>
+                        
                         <th>
-                            <button class="btn botonOrdenar" ng-click="CambiarOrdenar('Venta')" style="padding:  0px">
-                                <b>Venta</b> <span ng-class="{'fa fa-arrow-up': ordenar == 'Venta', 'fa fa-arrow-down': ordenar == '-Venta'}"></span>
+                            <button class="btn botonOrdenar" ng-click="CambiarOrdenar('ContratoId')" style="padding:  0px">
+                                <b># Contrato</b> <span ng-class="{'fa fa-arrow-up': ordenar == 'ContratoId', 'fa fa-arrow-down': ordenar == '-ContratoId'}"></span>
                             </button>
                         </th>
-                        <th><span class=""><b># Factura</b></span></th>
-                        <th><span class=""><b># Nota Cargo</b></span></th>
+                        
                         <th>
-                            <button class="btn botonOrdenar" ng-click="CambiarOrdenar('Unidad')" style="padding:  0px">
-                                <b>Unidad Negocio</b> <span ng-class="{'fa fa-arrow-up': ordenar == 'Unidad', 'fa fa-arrow-down': ordenar == '-Unidad'}"></span>
+                            <button class="btn botonOrdenar" ng-click="CambiarOrdenar('NombreUnidadNegocio')" style="padding:  0px">
+                                <b>Unidad Negocio</b> <span ng-class="{'fa fa-arrow-up': ordenar == 'NombreUnidadNegocio', 'fa fa-arrow-down': ordenar == '-NombreUnidadNegocio'}"></span>
                             </button>
                         </th>
-                        <th><span class=""><b># Contrato</b></span></th>
+                        
                         <th>
-                            <button class="btn botonOrdenar" ng-click="CambiarOrdenar('Fecha')" style="padding:  0px">
-                                <b>Fecha</b> <span ng-class="{'fa fa-arrow-up': ordenar == 'Fecha', 'fa fa-arrow-down': ordenar == '-Fecha'}"></span>
+                            <button class="btn botonOrdenar" ng-click="CambiarOrdenar('Pendiente')" style="padding:  0px">
+                                <b>Total Vencido</b> <span ng-class="{'fa fa-arrow-up': ordenar == 'Pendiente', 'fa fa-arrow-down': ordenar == '-Pendiente'}"></span>
                             </button>
                         </th>
-                        <th>
-                            <button class="btn botonOrdenar" ng-click="CambiarOrdenar('Total')" style="padding:  0px">
-                                <b>Total</b> <span ng-class="{'fa fa-arrow-up': ordenar == 'Total', 'fa fa-arrow-down': ordenar == '-Total'}"></span>
+                        
+                         <th>
+                            <button class="btn botonOrdenar" ng-click="CambiarOrdenar('FechaPendiente2')" style="padding:  0px">
+                                <b>Fecha</b> <span ng-class="{'fa fa-arrow-up': ordenar == 'FechaPendiente2', 'fa fa-arrow-down': ordenar == '-FechaPendiente2'}"></span>
                             </button>
                         </th>
+                        
+                        <th>
+                            <button class="btn botonOrdenar" ng-click="CambiarOrdenar('EstatusContratoId')" style="padding:  0px">
+                                <b>Estatus</b> <span ng-class="{'fa fa-arrow-up': ordenar == 'EstatusContratoId', 'fa fa-arrow-down': ordenar == '-EstatusContratoId'}"></span>
+                            </button>
+                        </th>
+                        
+                        <th><span class=""><b>Perfil</b></span></th>
+                        
+                        
                       </tr>
                     </thead>
                     <tbody >
-                        <tr ng-repeat="pago in pago | filter:busqueda">
+                        <tr ng-repeat="pago in pago | filter:FiltroPago | filter:busqueda | orderBy:[ordenar,'Nombre', 'ContratoId']">
+                           
                             <td>{{pago.Cliente}}</td>
-                            
-                            <td>{{pago.ProyectoNombre}}</td>
-                            
-                            <td>{{pago.NoFactura}}</td>
-                            
-                            <td>{{pago.NoNotaCargo}}</td>
-                            
-                            <td>{{pago.NombreTipoUnidadNegocio}} - {{pago.NombreUnidadNegocio}}</td>
                             
                             <td>{{pago.ContratoId}}</td>
                             
-                            <td>{{pago.FechaFormato}} {{pago.Hora}}</td>
+                            <td>{{pago.NombreTipoUnidadNegocio}} - {{pago.NombreUnidadNegocio}}</td>
                             
-                            <td class="">
-                               <div class="dropdown">
-                                   <button class="botonAgregarAcordion dropdown-toggle " style="font-size: 11pt; padding: 0px; background: transparent" data-toggle="dropdown" >
-                                       <b >{{pago.Total | currency}}</b>
+                            <td>{{pago.Pendiente | currency}}</td>
+                            
+                            <td>{{pago.FechaPendiente}}</td>
+                            
+                            <td>
+                               <span class="dropdown">
+                                    <button class="btn  btnStatusProyecto {{GetEstatusContrato(pago.EstatusContratoId)}}" data-toggle="dropdown" style=" height: 34px" ng-disabled="pago.EstatusContratoId == '3'">
+                                        <span>{{pago.NombreEstatusContrato}} </span>
+                                        <span class="fa fa-caret-down pull-right" ng-show="pago.EstatusContratoId != '3'"> </span>
                                     </button>
-
-                                    <ul class="dropdown-menu dropdown-menu-right dropdownRight" style="margin-top: 5px; width: auto">
-                                        <form style="padding: 10px">
-
-                                           <div ng-if="pago.Total > 0">
-                                               <div style="margin-top: 5px" class="pull-left">
-                                                    <b >{{pago.Concepto}} - {{pago.NombreTipoPago}}</b>   
-                                               </div>
-
-
-                                                <br><br>
-                                                <div class="">
-                                                    <table class="table table-hover table-striped table-condensed">
-                                                        <thead class="TituloTabla" >
-                                                            <tr>
-                                                                <th style="min-width: 120px">Pago</th>
-                                                                <th style="min-width: 120px">Medio de Pago</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr ng-repeat="desg in pago.Desgloce track by $index">
-                                                                <td>{{desg.Pago | currency}} </td>
-                                                                <td>{{desg.NombreMedioPago}} </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </form>
+                                    <ul class="dropdown-menu dropdown-menu-right dropdownRight" style="margin-top: 13px">
+                                        <li ng-repeat="estatus in estatusContrato" ng-show="MostrarEstatus(pago.EstatusContratoId, estatus.EstatusContratoId)">
+                                            <a class="dropdownOpcionModal" ng-click="CambiarEstatus(pago, estatus)"> {{estatus.Nombre}} </a> 
+                                        </li>
                                     </ul>
-                                 </div>
+                                </span>
+                                
+                            </td>
+                            
+                            
+                             <td class="text-center">
+                                <a class="BotonOperacion" href="#PerfilCliente/{{pago.PersonaId}}/Contratos" >
+                                    <span class="fa fa-user fa-2x"></span>
+                                </a>
 
                             </td>
+                            
+                            
+                        
                         </tr>
 
                     </tbody>
@@ -203,13 +189,56 @@
             </div>
        </div>
   
-       <div class="row" ng-if="totalPago == 0">
+       <div class="row" ng-if="pago.length == 0">
            <div class="col-xs-12">
                <div  class="textoPerfilHome">
-                    <span>Sin datos encontrados.</span>
+                    <span>Sin pagos pendientes.</span>
                </div>
            </div>
        </div>
+    </div>
+    
+    <!-- Camabiar Estatus contrato -->
+    <div class="modal fade" id="modalEstatusContratoPagoPendiente">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm modalPrincipal text-center">
+           
+            <div class="row">
+                <div class="col-xs-12">
+                    <span style="font-size:14pt">{{mensajeAdvertencia}}</span>
+                </div>
+            </div>
+            <br><br>
+            <div class="row">
+                <div class="col-xs-6">
+                    <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="CancelarEstatusContrato()">No</button>
+                </div>
+                <div class="col-xs-6">
+                    <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="ConfirmarActualizarContrato()">Si</button>
+                </div>
+            </div>
+                        
+        </div>
+    </div>
+    
+    <!-- Modal para mensajes -->
+    <div class="modal fade sombraDivModal" id="mensajePagoPendiente" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <br>    <br>   <br>
+        <div class="modal-dialog modalPrincipal modal-sm">
+           <br>
+            <div class="row">
+                <div class="col-xs-12 text-center" style="font-size:12pt">
+                   {{mensaje}}
+                </div>
+            </div>
+            <br>
+            <div class="row">
+            
+                <div class="col-xs-12">
+                    <button focus class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close">Aceptar</button>
+                </div>
+            </div>
+        </div>   
     </div>
    
 </div>

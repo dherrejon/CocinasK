@@ -29,4 +29,20 @@ function GetReportePago($http, $q, CONFIG, datos)
     return q.promise;
 }
 
+function GetReportePagoPendiente($http, $q, CONFIG, id)     
+{
+    var q = $q.defer();
+
+    $http({      
+          method: 'GET',
+          url: CONFIG.APIURL + '/GetReportePagoPendiente/' + id,
+
+      }).success(function(data)
+        {
+              q.resolve(data);
+        }).error(function(data, status){
+            q.resolve([]);
+     }); 
+    return q.promise;
+}
 
