@@ -119,6 +119,13 @@
                                 <b>Cliente</b> <span ng-class="{'fa fa-arrow-up': ordenar == 'Cliente', 'fa fa-arrow-down': ordenar == '-Cliente'}"></span>
                             </button>
                         </th>
+                        
+                        <th>
+                            <button class="btn botonOrdenar" ng-click="CambiarOrdenar('Unidad')" style="padding:  0px">
+                                <b>Unidad de Negocio</b> <span ng-class="{'fa fa-arrow-up': ordenar == 'Unidad', 'fa fa-arrow-down': ordenar == '-Unidad'}"></span>
+                            </button>
+                        </th>
+                        
                         <th>
                             <button class="btn botonOrdenar" ng-click="CambiarOrdenar('FechaVenta')" style="padding:  0px">
                                 <b>Fecha Venta</b> <span ng-class="{'fa fa-arrow-up': ordenar == 'FechaVenta', 'fa fa-arrow-down': ordenar == '-FechaVenta'}"></span>
@@ -159,6 +166,8 @@
                             <td>{{contrato.NombreEstatusContrato}}</td>
                             
                             <td>{{contrato.Cliente}}</td>
+                            
+                            <td>{{contrato.NombreTipoUnidadNegocio}} - {{contrato.NombreUnidadNegocio}}</td>
                             
                             <td>{{contrato.FechaVentaFormato}}</td>
                             

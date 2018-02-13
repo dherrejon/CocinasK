@@ -1,12 +1,12 @@
-<div ng-controller="ReportePagoPendienteController as rPagoPendiente" class="container-fluid">
+<div ng-controller="ReportePagoPendienteController as rPagoPendiente" ng-init="Inicializar()">
     
    <!-- Título -->
-   <div class="row">
+   <!--<div class="row">
        <div class="col-xs-12">
            <h3>Reporte de Pagos Pendientes</h3>
        </div>
    </div>
-   <br>
+   <br>-->
    
    <div class="row">
        
@@ -44,7 +44,7 @@
         <br class="hidden-sm hidden-md hidden-lg"> 
         
         <!-- Unidad de Negocio -->
-        <div class="col-sm-6" ng-show="permiso.verTodo">
+        <div class="col-sm-6" ng-show="permisoOperativo.verTodosCliente">
           
           <label>Unidad Negocio</label>
           <div class="dropdown">

@@ -698,13 +698,33 @@ function GetPromocionPersona($id)
 
     $request = \Slim\Slim::getInstance()->request();
     
+     $sql = "SELECT COUNT(*) as NumeroPresupuesto
+            FROM Presupuesto
+            WHERE PersonaId = " .$id;
+    
+    try 
+    {   
+        $db = getConnection();
+        $stmt = $db->query($sql);
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $numPresupuesto = $response[0]->NumeroPresupuesto;
+        
+    } 
+    catch(PDOException $e) 
+    {
+        $db = null;
+        echo $e;
+        echo '[ { "Estatus": "Fallo" } ]';
+        //$app->status(409);
+        $app->stop();
+    }
+    
     $sql = "SELECT *
             FROM PromocionPersonaVista 
             WHERE PersonaId = ".$id. " ORDER BY DescuentoMinimo";
     
     try 
     {   
-        $db = getConnection();
         $stmt = $db->query($sql);
         $response = $stmt->fetchAll(PDO::FETCH_OBJ);
         $db = null;
@@ -728,7 +748,7 @@ function GetPromocionPersona($id)
             }
         }
         
-        echo '[{"Estatus": "Exitoso"}, {"Promocion":'.json_encode($promo).'} ]';
+        echo '[{"Estatus": "Exitoso"}, {"Promocion":'.json_encode($promo).'}, {"NumeroPresupuesto":'.$numPresupuesto.'} ]';
     } 
     catch(PDOException $e) 
     {

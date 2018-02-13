@@ -5,6 +5,8 @@ app.controller("OperativoControlador", function($scope, $rootScope, datosUsuario
 
     /*----------------verificar los permisos---------------------*/
     $rootScope.permisoOperativo = {verTodosCliente: false};
+    $scope.permisoTab = {citas:false, pagos: false};
+    
     $scope.IdentificarPermisos = function()
     {
         for(var k=0; k < $scope.usuarioLogeado.Permiso.length; k++)
@@ -13,7 +15,30 @@ app.controller("OperativoControlador", function($scope, $rootScope, datosUsuario
             {
                 $rootScope.permisoOperativo.verTodosCliente = true;
             }
+            
+            if($scope.usuarioLogeado.Permiso[k] == "OpeCITConsultar")
+            {
+                $scope.permisoTab.citas = true;
+            }
+            
+            if($scope.usuarioLogeado.Permiso[k] == "OpeRPAConsultar")
+            {
+                $scope.permisoTab.pagos = true;
+                $scope.tabsel = "pagoPendiente";
+            }
         }
+        
+        if(!$scope.permisoTab.pagos && $scope.permisoTab.citas)
+        {
+            $scope.tabsel = "cita";
+        }
+    };
+    
+    //------------ Pestañas ----------------------------
+    //Cambia el contenido de la pestaña
+    $scope.SeleccionarTab = function(tab)    
+    {
+        $scope.tabsel = tab;
     };
     
     /*------------------Indentifica cuando los datos del usuario han cambiado-------------------*/

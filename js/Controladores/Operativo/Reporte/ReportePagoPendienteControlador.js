@@ -1,17 +1,18 @@
 app.controller("ReportePagoPendienteController", function($scope, $rootScope, $http, $q, CONFIG, $window,  $routeParams, $location, datosUsuario)
 {   
-    /*----------------verificar los permisos---------------------*/
-    $scope.permiso = {verTodo: false, ver: false};
-    $rootScope.permisoOperativo = {verTodosCliente: false};
-
+    $rootScope.clasePrincipal = "";
+    
     $scope.unidad = [];
     $scope.filtro = {unidad: new Object(), estatus: new Object()};
     $scope.ordenar = "Cliente";
     $scope.busqueda = "";
     $scope.pago = [];
-    
     $scope.estatusContrato = GetEstatusContrato();
     
+    /*----------------verificar los permisos---------------------*/
+    /*$scope.permiso = {verTodo: false, ver: false};
+    $rootScope.permisoOperativo = {verTodosCliente: false};
+
     $scope.IdentificarPermisos = function()
     {
         for(var k=0; k < $scope.usuarioLogeado.Permiso.length; k++)
@@ -26,7 +27,7 @@ app.controller("ReportePagoPendienteController", function($scope, $rootScope, $h
                 $scope.permiso.ver = true;
             }
         }
-    };
+    };*/
     
     $scope.GetUnidadNegocio = function()
     {
@@ -308,12 +309,21 @@ app.controller("ReportePagoPendienteController", function($scope, $rootScope, $h
         }
     };
     
-    /*------------------Indentifica cuando los datos del usuario han cambiado-------------------*/
     $scope.Inicializar = function()
+    {
+        $scope.GetUnidadNegocio();            
+        $scope.usuario = datosUsuario.getUsuario(); 
+        var unidadId = $rootScope.permisoOperativo.verTodosCliente ? -1 :$scope.usuario.UnidadNegocioId;
+        $scope.GetReportePagoPendiente(unidadId);
+    };
+    
+    /*------------------Indentifica cuando los datos del usuario han cambiado-------------------*/
+   /* $scope.Inicializar = function()
     {
         $scope.IdentificarPermisos();
         if(!$scope.permiso.ver)
-        {
+        { 
+            console.log($scope.permiso.ver);
             $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
         }
         else
@@ -376,6 +386,6 @@ app.controller("ReportePagoPendienteController", function($scope, $rootScope, $h
                 $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
             }
         }
-    });
+    });*/
     
 });

@@ -1,4 +1,4 @@
-app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, $http, $q, CONFIG, $filter, MEDIOCONTACTO, DOMICILIO, datosUsuario)
+app.controller("ProyectoControlador", function($scope, $rootScope, $location, PRESUPUESTO, $http, $q, CONFIG, $filter, MEDIOCONTACTO, DOMICILIO, datosUsuario)
 {   
     $scope.medioCaptacion = [];
     $scope.persona = [];
@@ -472,6 +472,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         $scope.verPromo = false;
         $scope.verPlanPago = true;
         $scope.verPromoCubierta = false;
+        $scope.nuevasPromociones = false;
         
          $scope.idPromocion = -1;
         $scope.promoActualizar = false;
@@ -576,7 +577,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
             $scope.GetPlanPago();
         }
         
-        if(!$scope.personaSeleccionada || $scope.promoActualizar)
+        if((!$scope.personaSeleccionada || $scope.nuevasPromociones) || $scope.promoActualizar)
         {
             if(!$rootScope.permisoOperativo.verTodosCliente)
             {
@@ -919,8 +920,16 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
         {
             if(data[0].Estatus == "Exitoso")
             {
-                $scope.PromocionCubierta = data[1].Promocion.PromocionCubierta;
-                $scope.PromocionMueble = data[1].Promocion.PromocionMueble;
+                if(data[2].NumeroPresupuesto != "0")
+                {
+                    $scope.PromocionCubierta = data[1].Promocion.PromocionCubierta;
+                    $scope.PromocionMueble = data[1].Promocion.PromocionMueble;
+                }
+                else
+                {
+                    $scope.promoActualizar = true;
+                    $scope.nuevasPromociones = true;
+                }
             }
             else
             {
@@ -1200,7 +1209,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                         if($scope.servicio[k].ServicioId == $scope.presupuestoBase.Servicio[i].ServicioId)
                         {
                             $scope.servicio[k].Obligatorio = true;
-                            $scope.servicio[k].Cantidad = $scope.presupuestoBase.Servicio[i].Cantidad;
+                            $scope.servicio[k].Cantidad = "";
                             break;
                         }
                     }
@@ -6402,7 +6411,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
             {
                 if($scope.presupuesto.PromocionMueble != undefined )
                 {
-                     return $scope.presupuesto.PromocionMueble.Descuento + "% de decuento.";
+                     return $scope.presupuesto.PromocionMueble.Descuento + "% de descuento.";
                 }
                
             }
@@ -6417,7 +6426,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
             {
                 if($scope.presupuesto.PromocionCubierta != undefined )
                 {
-                    return $scope.presupuesto.PromocionCubierta.Descuento + "% de decuento.";
+                    return $scope.presupuesto.PromocionCubierta.Descuento + "% de descuento.";
                 }
             }
         }
@@ -6512,6 +6521,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
     $scope.AgregarProyectoPresupuesto = function()
     {  
         $scope.SetUnidadNegocio();
+        var nuevo = ($scope.presupuesto.Persona.PersonaId == "0");
 
         AgregarProyectoPresupuesto($http, CONFIG, $q, $scope.presupuesto).then(function(data)
         {
@@ -6530,6 +6540,12 @@ app.controller("ProyectoControlador", function($scope, $rootScope, PRESUPUESTO, 
                 else
                 {
                     $scope.PDFPresupuestoCubierta();
+                }
+            
+                if(nuevo)
+                {
+                    $location.path('/PerfilCliente/' + $scope.presupuesto.Persona.PersonaId + '/Proyectos'); 
+                    return;
                 }
                 
                 if($scope.opt == "AgregarProyecto")

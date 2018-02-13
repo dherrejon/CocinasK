@@ -1,9 +1,11 @@
-<div ng-controller="OperativoControlador as operativo" class="container">
+<div ng-controller="OperativoControlador as operativo" class="container-fluid">
 
     <br><br>
     
-    <div class="container">
-        <div class="row">
+    <div class="">
+       
+        <!-- Página de home -->
+        <div class="row" ng-show="!permisoTab.citas && !permisoTab.pagos ">
             <div class="col-sm-12 col-sm-8 col-sm-offset-2 panelHome">
                 <div class="panelHome2 text-center">
                     <br>
@@ -16,6 +18,56 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Pestañas para reportes -->
+        <div ng-show="permisoTab.citas || permisoTab.pagos ">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="tab2" role="tabpanel">
+
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li  ng-class="{active: tabsel == 'pagoPendiente'}">
+                                <a  href="" aria-controls="pagoPendiente" role="tab" data-toggle="tab" ng-click="SeleccionarTab('pagoPendiente')" ng-if="permisoTab.pagos">
+                                    <span class="fa fa-dollar"> </span>
+                                    <span class="hidden-xs"> Pagos Pendientes</span>
+                                </a>
+                            </li>
+                            
+                            <li ng-class="{active: tabsel == 'cita'}">
+                                <a  href="" aria-controls="cita" role="tab" data-toggle="tab" ng-click="SeleccionarTab('cita')" ng-if="permisoTab.citas">
+                                    <span class="fa fa-calendar"> </span>
+                                    <span class="hidden-xs"> Citas</span>
+                                </a>
+                            </li>
+                        </ul>
+                        
+                        <div style="height: 1px; background: #bbb; margin-top: -1px"></div>
+
+
+                        <!-- Contenido -->
+                        <div class="tab-content">
+
+                            <!-- Pago pendiente -->
+                            <div role="pafoPendiente" class="tab-pane " id="pagoPendiente" ng-class="{'in active': tabsel == 'pagoPendiente'}" ng-if="tabsel == 'pagoPendiente'">
+                              <br>  
+                                <div ng-include=" 'html/Operativo/Reporte/ReportePagoPendiente.html' "></div>
+                            </div>
+
+                            <!-- citas -->
+                            <div role="cita " class="tab-pane " id="cita"  ng-class="{'in active': tabsel == 'cita'}" ng-if="tabsel == 'cita'">
+                              <br>  
+                                <div ng-include=" 'html/Operativo/Reporte/ReportePagoPendiente.html' "></div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+        
     </div>
 
   

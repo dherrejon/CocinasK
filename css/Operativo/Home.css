@@ -1,0 +1,48 @@
+/*----------- Pestañas ---------- */
+
+.tab2 .nav-tabs
+{
+    border-bottom: 0px solid #bbb;
+}
+.tab2 .nav-tabs li
+{
+    margin: 0 3px 0 0;
+    position: relative;
+}
+
+.tab2 .nav-tabs li a
+{
+    border: none;
+    padding: 13px 35px;
+    font-size: 16px;
+    color: #bbb;
+    background: transparent;
+    border-radius: 0;
+    
+}
+
+.tab2 .nav-tabs li a:hover
+{
+    color: #777;
+}
+
+.tab2 .nav-tabs li a i
+{
+    display: block;
+    text-align: center;
+    margin-bottom: 5px;
+}
+.tab2 .nav-tabs li.active a,
+.tab2 .nav-tabs li.active a:focus,
+.tab2 .nav-tabs li.active a:hover
+{
+    border: none;
+    background: white;
+    color: #777;
+    transition: background 0.20s linear 0s;
+    border-radius: 0px;
+    border-bottom: 1px solid white;
+    border-left: 1px solid #bbb;
+    border-right: 1px solid #bbb;
+    border-top: 2px solid rgb(250, 97, 21);
+}

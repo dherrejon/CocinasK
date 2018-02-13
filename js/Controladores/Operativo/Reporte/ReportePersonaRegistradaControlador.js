@@ -1,5 +1,6 @@
 app.controller("ReportePersonaRegistradaController", function($scope, $rootScope, $http, $q, CONFIG, $window,  $routeParams, $location, datosUsuario)
 {   
+    $rootScope.clasePrincipal = "";
     /*----------------verificar los permisos---------------------*/
     $scope.permiso = {verTodo: false, ver: false};
     $rootScope.permisoOperativo = {verTodosCliente: false};
@@ -133,7 +134,7 @@ app.controller("ReportePersonaRegistradaController", function($scope, $rootScope
         $scope.buscar = false;
         $scope.busqueda = "";
         $scope.persona = [];
-        $scope.numPresupuesto = [];
+        $scope.numPresupuesto = "Todo";
     };
     
     //_------ Fitro numero de presupuestos

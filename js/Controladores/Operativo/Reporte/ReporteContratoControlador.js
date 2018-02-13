@@ -1,5 +1,6 @@
 app.controller("ReporteContratoControlador", function($scope, $rootScope, $http, $q, CONFIG, $window,  $routeParams, $location, datosUsuario)
 {   
+    $rootScope.clasePrincipal = "";
     /*----------------verificar los permisos---------------------*/
     $scope.permiso = {verTodo: false, ver: false};
     $rootScope.permisoOperativo = {verTodosCliente: false};
@@ -101,6 +102,13 @@ app.controller("ReporteContratoControlador", function($scope, $rootScope, $http,
                 break;  
             case "Cliente":
                 $scope.contrato = alasql("SELECT * FROM ? ORDER BY  Cliente ASC", [$scope.contrato]);
+                break; 
+            case "-Unidad":
+                $scope.contrato = alasql("SELECT * FROM ? ORDER BY  NombreUnidadNegocio DESC", [$scope.contrato]);
+                break;  
+            case "Unidad":
+                $scope.contrato = alasql("SELECT * FROM ? ORDER BY  NombreUnidadNegocio ASC", [$scope.contrato]);
+                break; 
                 break; 
             default: 
                 break;
@@ -450,7 +458,7 @@ app.controller("ReporteContratoControlador", function($scope, $rootScope, $http,
                 }
                 else
                 {
-                    promo = parseInt(promocion[k].Descuento) + "% de decuento";
+                    promo = parseInt(promocion[k].Descuento) + "% de descuento";
                 }
                 
                 

@@ -1,5 +1,6 @@
 app.controller("ReportePagoController", function($scope, $rootScope, $http, $q, CONFIG, $window,  $routeParams, $location, datosUsuario)
 {   
+    $rootScope.clasePrincipal = "";
     /*----------------verificar los permisos---------------------*/
     $scope.permiso = {verTodo: false, ver: false};
     $rootScope.permisoOperativo = {verTodosCliente: false};

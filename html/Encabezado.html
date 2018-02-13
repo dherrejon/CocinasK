@@ -48,7 +48,11 @@
                             <li ng-repeat="opcion in barraNavegacionOpciones"  data-toggle="dropdown" class="dropdown-toggle"  ng-mouseenter="MouseEnterarElemento($index);" ng-mouseleave="MouseSalirElemento($index);" id="{{opcion.Opcion.id}}">
                                 
                                 <!-- menú principal -->
-                                <a class="claseSeccion" ng-click="MouseClickElemento($index);" ng-show="opcion.Opcion.show">
+                                <a class="claseSeccion" ng-click="MouseClickElemento($index);" ng-show="opcion.Opcion.show" ng-if="!opcion.Opcion.tipo">
+                                    <span>{{opcion.Opcion.texto}}</span>
+                                </a>
+                                
+                                <a class="claseSeccion"  ng-if="opcion.Opcion.tipo == 'Enlace'" href="{{opcion.Opcion.enlace}}">
                                     <span>{{opcion.Opcion.texto}}</span>
                                 </a>
 
@@ -90,12 +94,16 @@
                         <ul class="nav navbar-nav hidden-sm hidden-lg hidden-md">
                             <li ng-repeat="opcion in barraNavegacionOpciones" class="dropdown" >
 
-                                <a class="dropdown-toggle" data-toggle="dropdown" id="{{opcion.id}}">
+                                <a class="dropdown-toggle" data-toggle="dropdown" id="{{opcion.id}}" ng-if="!opcion.Opcion.tipo">
                                     <span>{{opcion.Opcion.texto}}</span>
-                                    
-                                    <span class="pull-right">
+                                     <span class="pull-right">
                                         <span class="caret"></span>
                                     </span>
+                                
+                                </a>
+                                
+                                <a   ng-if="opcion.Opcion.tipo == 'Enlace'" href="{{opcion.Opcion.enlace}}"  ng-click="CerrarBarraNavegacion()">
+                                    <span>{{opcion.Opcion.texto}}</span>                       
                                 </a>
 
                                 <ul class="dropdown-menu barraNavegacionDropdown" aria-labelledby="{{opcion.id}}">

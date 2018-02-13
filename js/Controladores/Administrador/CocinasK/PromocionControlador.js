@@ -579,7 +579,7 @@ app.controller("PromocionControlador", function($scope, $http, $q, CONFIG, $root
         {
             if($scope.nuevaPromocion.DescuentoMinimo === undefined || $scope.nuevaPromocion.DescuentoMinimo.length === 0)
             {
-                $scope.mensajeError[$scope.mensajeError.length] = "*El decuento mínimo debe ser un número entero.";
+                $scope.mensajeError[$scope.mensajeError.length] = "*El descuento mínimo debe ser un número entero.";
                 $scope.clase.minimo = "entradaError";
             }
             else
@@ -589,7 +589,7 @@ app.controller("PromocionControlador", function($scope, $http, $q, CONFIG, $root
             
             if($scope.nuevaPromocion.DescuentoMaximo === undefined || $scope.nuevaPromocion.DescuentoMaximo.length === 0)
             {
-                $scope.mensajeError[$scope.mensajeError.length] = "*El decuento máximo debe ser un número entero.";
+                $scope.mensajeError[$scope.mensajeError.length] = "*El descuento máximo debe ser un número entero.";
                 $scope.clase.maximo = "entradaError";
             }
             else
@@ -597,7 +597,7 @@ app.controller("PromocionControlador", function($scope, $http, $q, CONFIG, $root
                 $scope.clase.maximo = "entrada";
                 if(parseInt($scope.nuevaPromocion.DescuentoMaximo) < parseInt($scope.nuevaPromocion.DescuentoMinimo))
                 {
-                    $scope.mensajeError[$scope.mensajeError.length] = "*El decuento máximo debe ser mayor o igual al descuento mínimo.";
+                    $scope.mensajeError[$scope.mensajeError.length] = "*El descuento máximo debe ser mayor o igual al descuento mínimo.";
                     $scope.clase.maximo = "entradaError";
                     $scope.clase.minimo = "entradaError";
                 }

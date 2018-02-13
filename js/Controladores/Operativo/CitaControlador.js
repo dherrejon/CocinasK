@@ -1,4 +1,4 @@
-app.controller("CitaControlador", function($scope, $rootScope, CITA, $http, $q, CONFIG, MEDIOCONTACTO, DOMICILIO, datosUsuario)
+app.controller("CitaControlador", function($scope, $rootScope, $location, CITA, $http, $q, CONFIG, MEDIOCONTACTO, DOMICILIO, datosUsuario)
 {   
     $scope.tareaCita = [];
     $scope.medioCaptacion = [];
@@ -904,6 +904,7 @@ app.controller("CitaControlador", function($scope, $rootScope, CITA, $http, $q, 
     
     $scope.AgregarCita = function()    
     {
+        var nuevo = ($scope.nuevaCita.Persona.PersonaId == "0");
         AgregarCita($http, CONFIG, $q, $scope.nuevaCita).then(function(data)
         {
             if(data[0].Estatus == "Exitoso")
@@ -912,7 +913,16 @@ app.controller("CitaControlador", function($scope, $rootScope, CITA, $http, $q, 
                 $scope.mensaje = "La cita se ha agregado.";
                 $scope.CerrarCitaModal();
                 
-                CITA.CitaAgregada(data[1].Cita);
+                
+                if(nuevo)
+                {
+                    $location.path('/PerfilCliente/' + data[1].Cita.Persona.PersonaId + '/Citas');
+                    return;
+                }
+                else
+                {
+                    CITA.CitaAgregada(data[1].Cita);
+                }
             }
             else
             {

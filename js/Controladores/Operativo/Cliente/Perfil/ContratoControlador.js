@@ -1160,7 +1160,7 @@ app.controller("ContratoClienteControlador", function($scope, $rootScope, CITA, 
                 }
                 else
                 {
-                    promo = parseInt(promocion[k].Descuento) + "% de decuento";
+                    promo = parseInt(promocion[k].Descuento) + "% de descuento";
                 }
                 
                 

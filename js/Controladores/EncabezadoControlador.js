@@ -1,4 +1,4 @@
-app.controller("EncabezadoControlador", function($scope, $rootScope, $http, CONFIG, $q, $window, datosUsuario, datosPerfil, md5, CITA, PRESUPUESTO, OPEPRESUPUESTO)
+app.controller("EncabezadoControlador", function($scope, $rootScope, $http, $location, CONFIG, $q, $window, datosUsuario, datosPerfil, md5, CITA, PRESUPUESTO, OPEPRESUPUESTO)
 {   
     $rootScope.barraNavegacionOpciones = "";      //opciones de la barra de navegación
     $scope.usuario = datosUsuario.getUsuario();
@@ -38,8 +38,11 @@ app.controller("EncabezadoControlador", function($scope, $rootScope, $http, CONF
     //despliega las secciones del módulo donde esta el mouse
     $scope.MouseEnterarElemento = function(index)
     {
-        $('.header-horizontal-menu .navbar-nav > li.dropdown').removeClass('open');
-        $('#'+$scope.barraNavegacionOpciones[index].Opcion.id).addClass('open');
+        if(!$scope.barraNavegacionOpciones[index].Opcion.tipo)
+        {
+            $('.header-horizontal-menu .navbar-nav > li.dropdown').removeClass('open');
+            $('#'+$scope.barraNavegacionOpciones[index].Opcion.id).addClass('open');
+        }
     };
 
     //oculta las secciones
@@ -225,7 +228,7 @@ app.controller("EncabezadoControlador", function($scope, $rootScope, $http, CONF
         {
             if(perfil == $rootScope.Perfiles[k].nombre)         //Se verifica con que perfil cuenta el usuario
             {
-                $window.location = $rootScope.Perfiles[k].paginaPrincipal;
+                $location = $rootScope.Perfiles[k].paginaPrincipal;
             }
         } 
     };
@@ -346,7 +349,8 @@ function HabilitarOpcionesMenu(usuario, $rootScope)
         for(var i=0; i<$rootScope.barraNavegacionOpciones.length; i++)
         {
             var permisoPrincipal = false;
-
+            
+            
             for(var j=0; j<$rootScope.barraNavegacionOpciones[i].elemento.length; j++)
             {
                 if($rootScope.barraNavegacionOpciones[i].elemento[j].tipo == "enlace")
@@ -389,7 +393,7 @@ function HabilitarOpcionesMenu(usuario, $rootScope)
                 }
             }
             
-            if(permisoPrincipal)
+            if(permisoPrincipal || $rootScope.barraNavegacionOpciones[i].elemento.length == 0)
             {
                 $rootScope.barraNavegacionOpciones[i].Opcion.show = true;
             }
@@ -520,6 +524,13 @@ var OpcionAdministrador =
 var OpcionOperativo =
 [
     { 
+        Opcion: {texto:"Inicio", enlace:"#Operativo", tipo:"Enlace", id:"", show:true},
+        elemento: [ 
+                    
+                  ]                      
+    },
+    
+    { 
         Opcion: {texto:"Clientes", id:"clientes"},
         elemento: [ 
                     { menu: 1, referencia: "#Cliente", texto:"Perfil Clientes",  show:false, tipo:"enlace", permiso:[{clave:"OpeVPfConsultar"}]},
@@ -536,7 +547,7 @@ var OpcionOperativo =
                     { menu: 1, referencia: "#ReporteContrato", texto:"Contratos",  show:false, tipo:"enlace", permiso:[{clave:"OpeVRCConsultar"}]},
                     { menu: 1, referencia: "#ReportePago", texto:"Pagos",  show:false, tipo:"enlace", permiso:[{clave:"OpeVRPConsultar"}]},
                     { menu: 1, referencia: "#ReportePersonasRegistradas", texto:"Personas Registradas",  show:false, tipo:"enlace", permiso:[{clave:"OpePRConsultar"}]},
-                    { menu: 1, referencia: "#ReportePagoPendiente", texto:"Pagos Pendientes",  show:false, tipo:"enlace", permiso:[{clave:"OpeRPAConsultar"}]}
+                    //{ menu: 1, referencia: "#ReportePagoPendiente", texto:"Pagos Pendientes",  show:false, tipo:"enlace", permiso:[{clave:"OpeRPAConsultar"}]}
                   ]                      
     },
     
