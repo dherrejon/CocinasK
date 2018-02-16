@@ -97,6 +97,16 @@
     box-shadow: none;
 }
 
+.botonAgregarAcordion.btnActivo, .botonAgregarAcordion.btnActivo:active, .botonAgregarAcordion.btnActivo:focus
+{
+    border: 2px solid #262626;
+}
+
+.botonAgregarAcordion.btnActivo:hover
+{
+    border: 2px solid rgba(250, 97, 21, 1.0);
+}
+
 .botonAcordion:disabled, .botonAcordion:disabled:hover, botonAcordion.disabled
 {
     background: rgb(234, 234, 234);

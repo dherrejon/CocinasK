@@ -271,6 +271,7 @@ app.controller("CitaClienteControlador", function($scope, $rootScope, CITA, $htt
     $scope.EditarCita = function(cita)
     {
         cita.Persona = $rootScope.persona;
+        console.log(cita.Persona);
         CITA.EditarCita(cita);
     };
     

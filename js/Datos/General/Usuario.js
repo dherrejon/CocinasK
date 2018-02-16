@@ -10,6 +10,7 @@ class Usuario   //clase usuario
         this.PerfilSeleccionado = "";
         this.Permiso = [];
         this.NombreColaborador = "";
+        this.ColaboradorId = "";
     }
     
     //iniciar sesion
@@ -129,7 +130,8 @@ function SetUsuario(data)
     usuario.NombreCompletoColaborador = data[0].NombreCompletoColaborador;
     usuario.Estado = data[0].Estado;
     usuario.Ciudad = data[0].Ciudad;
-    usuario.Municipio = data[0].NombreCompletoColaborador;
+    usuario.Municipio = data[0].Municipio;
+    usuario.ColaboradorId = data[0].ColaboradorId;
 
     var administrador = false;
     var ejecutivo = false;

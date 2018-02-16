@@ -32,6 +32,7 @@ app.controller("OperativoControlador", function($scope, $rootScope, datosUsuario
         {
             $scope.tabsel = "cita";
         }
+
     };
     
     //------------ Pestañas ----------------------------

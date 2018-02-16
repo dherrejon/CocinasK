@@ -367,5 +367,107 @@ function EditarCita()
     }
 }
 
+function GetCitaPendiente($unidad, $colaborador)
+{
+    global $app;
+    global $session_expiration_time;
+
+    $request = \Slim\Slim::getInstance()->request();
+    $filtro = json_decode($request->getBody());
+    
+    
+    if($unidad == -1)
+    {
+        $sql = "SELECT * FROM CitaPendienteVista";
+    }
+    else
+    {
+         $sql = "SELECT * FROM CitaPendienteVista WHERE ResponsableId = ".$unidad." OR ResponsableId = ".$colaborador;
+    }
+
+    try 
+    {
+        $db = getConnection();
+
+        $stmt = $db->query($sql);
+        $contrato = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $db = null;
+    } 
+    catch(PDOException $e) 
+    {
+        $db = null;
+        //echo $e;
+        echo '[ { "Estatus": "Fallo" } ]';
+        //$app->status(409);
+        $app->stop();
+    }
+
+    $db = null;
+    echo json_encode($contrato);  
+    
+}
+
+function GetCitaPendientePorId($id)
+{
+    global $app;
+    global $session_expiration_time;
+
+    $request = \Slim\Slim::getInstance()->request();
+    $filtro = json_decode($request->getBody());
+    
+    
+
+    $sql = "SELECT * FROM CitaPendienteVista WHERE CitaId = ".$id;
+
+    try 
+    {
+        $db = getConnection();
+
+        $stmt = $db->query($sql);
+        $cita = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $db = null;
+        echo json_encode($cita[0]);  
+    } 
+    catch(PDOException $e) 
+    {
+        $db = null;
+        //echo $e;
+        echo 'Error';
+        //$app->status(409);
+        $app->stop();
+    }
+
+   
+    
+}
+
+function GetCitaPorId($id)
+{
+    global $app;
+    global $session_expiration_time;
+
+    $request = \Slim\Slim::getInstance()->request();
+    
+    
+    $sql = "SELECT * FROM CitaVista WHERE CitaId = ".$id;
+    
+    try 
+    {
+        $db = getConnection();
+        $stmt = $db->query($sql);
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $db = null;
+        
+        echo '[ { "Estatus": "Exito"}, {"Cita":'.json_encode($response).'} ]'; 
+    } 
+    catch(PDOException $e) 
+    {
+        echo $e;
+        echo '[ { "Estatus": "Fallo" } ]';
+        //$app->status(409);
+        $app->stop();
+    }
+}
+
     
 ?>

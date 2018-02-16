@@ -337,3 +337,71 @@ function GetFechaAhora()
     return year + "/" + mes + "/" + dia + " " + hr + ":" + min;
 }
 
+function GetCitaPendiente($http, $q, CONFIG, unidad, colaborador)     
+{
+    var q = $q.defer();
+
+    $http({      
+          method: 'GET',
+          url: CONFIG.APIURL + '/GetCitaPendiente/' + unidad + "/" + colaborador,
+
+      }).success(function(data)
+        {
+              q.resolve(data);
+        }).error(function(data, status){
+            q.resolve([]);
+     }); 
+    return q.promise;
+}
+
+function GetCitaPendientePorId($http, $q, CONFIG, id)     
+{
+    var q = $q.defer();
+
+    $http({      
+          method: 'GET',
+          url: CONFIG.APIURL + '/GetCitaPendientePorId/' + id,
+
+      }).success(function(data)
+        {
+              q.resolve(data);
+        }).error(function(data, status){
+            q.resolve([]);
+     }); 
+    return q.promise;
+}
+
+function GetCitaPorId($http, $q, CONFIG, id)    
+{
+    var q = $q.defer();
+
+    $http({      
+          method: 'GET',
+          url: CONFIG.APIURL + '/GetCitaPorId/' + id
+
+      }).success(function(data)
+        {
+            if(data[0].Estatus == "Exito")
+            {
+                var cita = [];
+                
+                for(var k=0; k<data[1].Cita.length; k++)
+                {
+                    cita[k] = SetCita(data[1].Cita[k]);
+                }
+                
+                q.resolve(cita);
+            }
+            else
+            {
+               q.resolve([]);  
+            }
+            
+        }).error(function(data){
+            q.resolve(data);
+     }); 
+    
+    return q.promise;
+}
+
+

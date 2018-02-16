@@ -527,6 +527,9 @@
     $app->post('/AgregarCita', $seguridad, $ChecarSesion, 'AgregarCita');
     $app->put('/EditarCita', $seguridad, $ChecarSesion, 'EditarCita');
     $app->post('/CambiarEstatusCita', $seguridad, $ChecarSesion, 'CambiarEstatusCita');
+    $app->get('/GetCitaPendiente/:UnidadNegocioId/:colaboradorId', $seguridad, $ChecarSesion, 'GetCitaPendiente');
+    $app->get('/GetCitaPorId/:id', $seguridad, $ChecarSesion, 'GetCitaPorId');
+    $app->get('/GetCitaPendientePorId/:id', $seguridad, $ChecarSesion, 'GetCitaPendientePorId');
 
     /*------------------ Persona ----------------------------------------------*/
     $app->get('/GetCliente/:id', $seguridad, $ChecarSesion, 'GetCliente');

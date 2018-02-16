@@ -944,7 +944,7 @@ app.controller("CitaControlador", function($scope, $rootScope, $location, CITA, 
             if(data == "Exitoso")
             {
                 $('#agregarCitaModal').modal('toggle');
-                $scope.mensaje = "La cita se ha agregado.";
+                $scope.mensaje = "La cita se ha editado.";
                 $scope.CerrarCitaModal();
                 
                 CITA.CitaEditada($scope.nuevaCita);
