@@ -6977,6 +6977,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, $location, PR
         doc.autoTable(usuario.columns, usuario.data,  {
             startY: doc.autoTable.previous.finalY + 10,
             showHeader: 'never',
+             margin: {top: 25},
             addPageContent: pageContent,
             headerStyles: {fillColor: [230, 230, 230], fontSize:10, textColor: [0,0, 0], halign:'center'},
             styles: { overflow: 'linebreak', fontSize:10, lineWidth: 0, textColor: [0,0, 0], halign:'center'},
@@ -6992,6 +6993,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, $location, PR
         doc.autoTable(unidad.columns, unidad.data,  {
             startY: doc.autoTable.previous.finalY + 5,
             showHeader: 'never',
+            margin: {top: 25},
             addPageContent: pageContent,
             headerStyles: {fillColor: [230, 230, 230], fontSize:10, textColor: [0,0, 0], halign:'center'},
             styles: { overflow: 'linebreak', fontSize:8, lineWidth: 0, textColor: [0,0, 0]},
@@ -7199,6 +7201,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, $location, PR
         doc.autoTable(descr.columns, descr.data,  {
             startY: doc.autoTable.previous.finalY + 8,
             showHeader: 'never',
+             margin: {top: 25},
             addPageContent: pageContent,
             headerStyles: {fillColor: [230, 230, 230], fontSize:10, textColor: [0,0, 0], halign:'center'},
             styles: { overflow: 'linebreak', fontSize:10, lineWidth: 0, textColor: [0,0, 0]},
@@ -7210,6 +7213,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, $location, PR
         doc.autoTable(usuario.columns, usuario.data,  {
             startY: doc.autoTable.previous.finalY + 10,
             showHeader: 'never',
+             margin: {top: 25},
             addPageContent: pageContent,
             headerStyles: {fillColor: [230, 230, 230], fontSize:10, textColor: [0,0, 0], halign:'center'},
             styles: { overflow: 'linebreak', fontSize:10, lineWidth: 0, textColor: [0,0, 0], halign:'center'},
@@ -7224,6 +7228,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, $location, PR
         
         doc.autoTable(unidad.columns, unidad.data,  {
             startY: doc.autoTable.previous.finalY + 5,
+            margin: {top: 25},
             showHeader: 'never',
             addPageContent: pageContent,
             headerStyles: {fillColor: [230, 230, 230], fontSize:10, textColor: [0,0, 0], halign:'center'},

@@ -1,7 +1,7 @@
 <div ng-controller="DomicilioOperativoControlador as domicilioOpe">
 
      <!-- Modal para mensajes -->
-    <div class="modal fade sombraDivModal" id="domicilioModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="true" data-backdrop="static">
+    <div class="modal fade sombraDivModal" id="domicilioModal"  role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="true" data-backdrop="static">
         <br>    <br>   <br>
         <div class="modal-dialog modalPrincipal">
            
@@ -61,8 +61,8 @@
 
                     <!--- Botón para cambiar el método de ingresar la dirección -->
                     <div class="col-sm-3 col-xs-6">                            
-                        <button ng-disabled="fuente == 'Fiscal'" ng-show="!sinCP" class="btn btn-block botonBordeNegro" data-toggle="tooltip" data-placement="bottom" title="No se conoce el C.P." ng-click="ConocerCP()">Sin C.P.</button>
-                        <button ng-show="sinCP" class="btn btn-block botonBordeNegro" data-toggle="tooltip" data-placement="bottom" title="Se conoce el C.P."  ng-click="ConocerCP()" style="margin-top:-1px">Con C.P.</button>
+                        <a ng-disabled="fuente == 'Fiscal'" ng-show="!sinCP" class="btn btn-block botonBordeNegro" data-toggle="tooltip" data-placement="bottom" title="No se conoce el C.P." ng-click="ConocerCP()">Sin C.P.</a>
+                        <a ng-show="sinCP" class="btn btn-block botonBordeNegro" data-toggle="tooltip" data-placement="bottom" title="Se conoce el C.P."  ng-click="ConocerCP()" style="margin-top:-1px">Con C.P.</a>
                     </div>
                 </div>
 
@@ -70,8 +70,8 @@
                 <!-- Estado y Munucipio-->
                 <div class="row">
                     <!-- Estado -->
-                    <div class="col-sm-6 etiquetaDropdownList">
-                         <label>Estado</label>
+                    <div class="col-sm-6 ">
+                         <!--<label>Estado</label>
                          <div class="dropdown">
 
                             <button ng-disabled="!sinCP" class="dropdown-toggle  {{claseDomicilio.estado}}" data-toggle="dropdown">
@@ -87,12 +87,21 @@
                                 </li>
                             </ul>
 
-                        </div>
+                        </div>-->
+                        
+                         <div class="entrada2" >
+                            <input  ng-disabled="!sinCP" type="text"  class="form-control entrada" ng-model="dir.estado" uib-typeahead=" e as (e.Estado) for e in estadoMexico | filter:$viewValue | orderBy:'Estado' | limitTo:5" typeahead-on-select="CambiarEstado(dir.estado.Estado, noEstado)" typeahead-select-on-blur="true" typeahead-focus-first="true" typeahead-no-results="noEstado" autocomplete="off" ng-blur="ValidarEstado(noEstado)">
+                            <label>Estado</label>
+                        </div> 
+                    
                     </div>
-                    <br class="hidden-sm hidden-md hidden-lg">
+                   
+                    
+                    
+                    <br class="hidden-sm hidden-md hidden-lg"><br class="hidden-sm hidden-md hidden-lg">
                     <!-- Municipio -->
-                    <div class="col-sm-6 etiquetaDropdownList">
-                         <label>Municipio</label>
+                    <div class="col-sm-6">
+                         <!--<label>Municipio</label>
                          <div class="dropdown">
 
                             <button ng-disabled="!sinCP || nuevoDomicilio.Estado.length == 0" class="dropdown-toggle {{claseDomicilio.municipio}}" data-toggle="dropdown">
@@ -108,11 +117,16 @@
                                 </li>
                             </ul>
 
-                        </div>
+                        </div>-->
+                        
+                        <div class="entrada2" >
+                            <input  ng-disabled="!sinCP || nuevoDomicilio.Estado.length == 0 || noEstado" type="text"  class="form-control entrada" ng-model="dir.municipio" uib-typeahead=" m as (m.Municipio) for m in codigoPostal | filter:{Municipio:$viewValue}  | orderBy:'Municipio' | unique: 'Municipio' | limitTo:5" typeahead-on-select="CambiarMunicipio(dir.municipio.Municipio)" typeahead-select-on-blur="true" typeahead-focus-first="true" typeahead-no-results="noMunicipio" autocomplete="off" ng-blur="ValidarMunicipio(noMunicipio)">
+                            <label>Municipio</label>
+                        </div> 
                     </div>
                 </div>
 
-                <br>
+                <br> <br>
                 <!-- Ciudad y colonia -->
                 <div class="row">
                     <!-- Ciudad -->
@@ -138,7 +152,7 @@
                     <br class="hidden-sm hidden-md hidden-lg">
                     <!-- Colonia -->
                     <div class="col-sm-6 etiquetaDropdownList">
-                         <label>Colonia</label>
+                         <!--<label>Colonia</label>
                          <div class="dropdown">
 
                             <button ng-disabled="(!sinCP && nuevoDomicilio.Codigo.length != 5) || nuevoDomicilio.Ciudad.length == 0" class="dropdown-toggle {{claseDomicilio.colonia}}" data-toggle="dropdown">
@@ -158,7 +172,22 @@
                                 </li>
                             </ul>
 
+                        </div>-->
+                        
+  
+                        
+                        <br>
+                        <div class="entrada2" >
+                            <input ng-disabled="(!sinCP && nuevoDomicilio.Codigo.length != 5) || nuevoDomicilio.Ciudad.length == 0 || otraColonia" type="text"  class="form-control entrada" ng-model="dir.colonia" uib-typeahead=" c as (c.Colonia) for c in codigoPostal | filter:$viewValue | filter:{Municipio:nuevoDomicilio.Municipio, Ciudad:nuevoDomicilio.Ciudad}:true | limitTo:5" typeahead-on-select="CambiarColonia(dir.colonia.Colonia)" typeahead-select-on-blur="true" typeahead-focus-first="true" typeahead-no-results="otraColoniaId" autocomplete="off" ng-blur="ValidarColonia(otraColoniaId)">
+                            <label>Colonia</label>
+                        </div>  
+
+                        <div ng-if="otraColoniaId" style="margin-top: 2px; border: 1px solid lightgray; width: 100%" ng-show="!otraColonia && dir.colonia">
+                           <div style="padding-top: 3px; padding-bottom: 3px">
+                            <a class="btn btn-sm btnOtraColonia btn-block" ng-click="CambiarColonia('OtraColonia')">Otra Colonia</a>
+                           </div>
                         </div>
+
                     </div>
                 
                 </div>
@@ -167,9 +196,15 @@
                 <div ng-show="otraColonia">
                     <div class="row" >
                         <div class="col-sm-offset-6 col-sm-6">
-                             <div class="entrada2">
-                                <input ng-pattern="erNombreGeneral" type="text" required class="{{claseDomicilio.otra}} form-control" name="otraColonia" ng-model="nuevoDomicilio.Colonia" maxlength="120"/>
-                                <label>Otra Colonia</label>
+                            <div class="input-group">
+                                 <div class="entrada2">
+                                    <input ng-pattern="erNombreGeneral" id="modelOtraColonia" type="text" required class="{{claseDomicilio.otra}} form-control" name="otraColonia" ng-model="nuevoDomicilio.Colonia" maxlength="120" style="height:33px" />
+                                    <label>Otra Colonia</label>
+                                </div>
+                                
+                                <div class="input-group-btn">
+                                    <span class="input-group-addon entrada" ng-click="otraColonia = false" style="cursor: pointer; height: 33px"> <span class="fa fa-times-circle"></span></span>  
+                                </div>
                             </div>
                         </div>
                     </div>

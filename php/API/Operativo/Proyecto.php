@@ -1866,5 +1866,47 @@ function EditarProyectoPresupuesto()
 
     echo '[{"Estatus": "Exitoso"}]';
 }
+
+function GetReporteProyecto()
+{
+    global $app;
+    global $session_expiration_time;
+
+    $request = \Slim\Slim::getInstance()->request();
+    $filtro = json_decode($request->getBody());
+    
+    
+    if($filtro->unidadId != -1 && $filtro->fecha1 == -1 && $filtro->fecha2 == -1)
+    {
+         $sql = "SELECT * FROM ProyectoReporteVista WHERE UnidadNegocioId = ".$filtro->unidadId."";
+    }
+    else if($filtro->unidadId == -1 && $filtro->fecha1 != -1 && $filtro->fecha2 != -1)
+    {
+         $sql = "SELECT * FROM ProyectoReporteVista WHERE FechaInicio >= '".$filtro->fecha1."' AND FechaFin <= '".$filtro->fecha2."'";
+    }
+    else
+    {
+        $sql = "SELECT * FROM ProyectoReporteVista WHERE UnidadNegocioId = ".$filtro->unidadId." AND FechaInicio >= '".$filtro->fecha1."' AND FechaFin <= '".$filtro->fecha2."'";
+    }
+
+    try 
+    {
+        $db = getConnection();
+
+        $stmt = $db->query($sql);
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+        $db = null;
+        echo json_encode($response);  
+    } 
+    catch(PDOException $e) 
+    {
+        $db = null;
+        echo $e;
+        echo '[ { "Estatus": "Fallo" } ]';
+        //$app->status(409);
+        $app->stop();
+    }
+}
     
 ?>

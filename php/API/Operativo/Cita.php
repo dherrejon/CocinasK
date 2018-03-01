@@ -382,7 +382,7 @@ function GetCitaPendiente($unidad, $colaborador)
     }
     else
     {
-         $sql = "SELECT * FROM CitaPendienteVista WHERE ResponsableId = ".$unidad." OR ResponsableId = ".$colaborador;
+         $sql = "SELECT * FROM CitaPendienteVista WHERE UnidadResponsableId = ".$unidad." OR ColaboradorRespondableId = ".$colaborador;
     }
 
     try 
@@ -396,8 +396,8 @@ function GetCitaPendiente($unidad, $colaborador)
     catch(PDOException $e) 
     {
         $db = null;
-        //echo $e;
-        echo '[ { "Estatus": "Fallo" } ]';
+        echo $e;
+        //echo '[ { "Estatus": "Fallo" } ]';
         //$app->status(409);
         $app->stop();
     }

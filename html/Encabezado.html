@@ -25,8 +25,8 @@
                 
                 <!-- logo -->
                 <div class="col-sm-3 col-xs-8">
-                    <a href="#Home"> <img ng-src="img/Encabezado/logo.png" class=" claseLogoSM hidden-xs" /></a>
-                    <a href="#Home"><img ng-src="img/Encabezado/logo.png" class=" claseLogoXS hidden-sm hidden-md hidden-lg"></a>
+                    <a ng-click="IrAHomePerfil(usuario.PerfilSeleccionado)" style="cursor: pointer"> <img ng-src="img/Encabezado/logo.png" class=" claseLogoSM hidden-xs" /></a>
+                    <a ng-click="IrAHomePerfil(usuario.PerfilSeleccionado)" style="cursor: pointer"><img ng-src="img/Encabezado/logo.png" class=" claseLogoXS hidden-sm hidden-md hidden-lg"></a>
                 </div>
                 
                 <nav ng-class="barraNavArriba">

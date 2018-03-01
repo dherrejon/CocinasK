@@ -187,6 +187,9 @@ app.controller("ReporteContratoControlador", function($scope, $rootScope, $http,
         $scope.buscar = false;
         $scope.busqueda = "";
         $scope.contrato = [];
+        
+        $('#fechaFin').datetimepicker("minDate", false);
+        $('#fechaInicio').datetimepicker("maxDate", new Date());
     };
     
     //---- Enviar Filtro
@@ -521,7 +524,7 @@ app.controller("ReporteContratoControlador", function($scope, $rootScope, $http,
         $scope.IdentificarPermisos();
         if(!$scope.permiso.ver)
         {
-            $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
+            $rootScope.IrAHomePerfil($scope.usuarioLogeado.PerfilSeleccionado);
         }
         else
         {

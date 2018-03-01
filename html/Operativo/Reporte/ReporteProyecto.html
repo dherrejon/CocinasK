@@ -1,0 +1,256 @@
+<div ng-controller="ReporteProyectoControlador as rproyecto" class="container-fluid">
+    
+  <!-- Título -->
+   <div class="row">
+       <div class="col-xs-12">
+           <h3>Reporte de Proyectos</h3>
+       </div>
+   </div>
+   <br>
+   
+   <div class="row">
+      <!-- Fecha -->
+       <div class="col-sm-6" >
+          
+          <label>Fecha</label>
+          <div class="input-group input-daterange">
+                <input type="text" class="form-control entrada" id="fechaInicio" onblur="angular.element(this).scope().CambiarFechaInicio(this)" style="height: 33px">
+                <div class="input-group-addon" style="background: white; color: black; border-color: white"> a </div>
+                <input type="text" class="form-control entrada" id="fechaFin" onblur="angular.element(this).scope().CambiarFechaFin(this)" style="height: 33px">
+            </div>
+           
+        </div>
+        <br class="hidden-sm hidden-md hidden-lg"> 
+        <!-- Unidad de Negocio -->
+        <div class="col-sm-6" ng-show="permiso.verTodo">
+          
+          <label>Unidad Negocio</label>
+          <div class="dropdown">
+
+                <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown" style="height: 33px">
+                   {{filtro.unidad.NombreTipoUnidadNegocio}} <span ng-show="filtro.unidad.NombreTipoUnidadNegocio.length > 0">-</span> {{filtro.unidad.Nombre}}
+                    <span class="pull-right">
+                        <span class="caret "></span>
+                    </span>
+                </button>
+
+                <ul class="dropdown-menu listaOpcionesDropdownList" style="min-width: 100%">
+                   <li>
+                       
+                       <a  href="" class="dropdownOpcionModal" ng-click="CambiarUnidadNegocio('ninguna')">
+                            <span>NINGUNA</span>
+                        </a>
+                    </li>
+                    
+                    <li ng-repeat="unidad in unidad | orderBy:['NombreTipoUnidadNegocio', 'Nombre']">
+                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarUnidadNegocio(unidad)">
+                            <span>{{unidad.NombreTipoUnidadNegocio}} - {{unidad.Nombre}}</span>
+                        </a>
+                    </li>
+                </ul>
+
+            </div>
+           
+        </div>
+        
+    </div>
+    <br>
+    
+    <div class="row">
+        <div class="col-xs-12">
+            <div ng-repeat="error in mensajeError track by $index">
+                <span class="textoError">{{error}}</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-xs-12">
+            
+            <div class="pull-right">
+                
+                <button class="btn btnContornoNegro" ng-click="LimpiarFiltro()">Limpiar</button>
+                
+                <button class="btn btnContornoNegro" style="margin-left: 10px" ng-click="GetContratoFiltro()">Buscar </button>
+            </div>
+            
+        </div>
+    </div>
+    <br><br>
+    
+    <!-- resultado -->
+    <div ng-show="buscar">
+      
+      <div class="row" ng-show="proyecto.length > 0">
+           
+           <div class="col-sm-6" >
+
+              <label>Estatus</label>
+              <div class="dropdown">
+
+                    <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown" style="height: 33px; ">
+                       {{filtroEstatus.Nombre}} 
+                        <span class="pull-right">
+                            <span class="caret "></span>
+                        </span>
+                    </button>
+
+                    <ul class="dropdown-menu listaOpcionesDropdownList" style="min-width: 100%">
+                       <li>
+
+                           <a  href="" class="dropdownOpcionModal" ng-click="CambiarEstatusFiltro('ninguno')">
+                                <span>NINGUNO</span>
+                            </a>
+                        </li>
+
+                        <li ng-repeat="estatus in estatusProyecto | orderBy:['EstatusProyectoId'] ">
+                            <a  href="" class="dropdownOpcionModal" ng-click="CambiarEstatusFiltro(estatus)">
+                                <span>{{estatus.Nombre}}</span>
+                            </a>
+                        </li>
+                    </ul>
+
+                </div>
+
+            </div>
+            
+            <div class="col-sm-6" style="margin-top: 25px">
+               <div class="input-group">
+                    <input type="text" ng-model="busqueda" placeholder="Buscar" class="entrada form-control" style="height: 33px">
+                    
+                    <div class="input-group-btn">
+                        <button class="btn btnTimes" ng-click="busqueda = ''" style="height: 33px">
+                            <span class="fa fa-times"></span>
+                        </button>
+                    </div>
+              </div>
+            </div>
+            
+        </div>
+        <br>
+       
+        <div class="row" ng-show="proyecto.length > 0">
+           <div class="col-xs-12" >
+               <div class="table-responsive" style="overflow: scroll; max-height: 650px;">
+                <table class="table table-hover table-striped">
+                    <thead class="TituloTabla" >
+                      <tr>
+                       
+                       <th>
+                            <button class="btn botonOrdenar" ng-click="CambiarOrdenar('Cliente')" style="padding:  0px">
+                                <b>Cliente</b> <span ng-class="{'fa fa-arrow-up': ordenar == 'Cliente', 'fa fa-arrow-down': ordenar == '-Cliente'}"></span>
+                            </button>
+                        </th>
+                        
+                        <th>
+                            <button class="btn botonOrdenar" ng-click="CambiarOrdenar('NombreUnidadNegocio')" style="padding:  0px">
+                                <b>UnidadNegocio</b> <span ng-class="{'fa fa-arrow-up': ordenar == 'NombreUnidadNegocio', 'fa fa-arrow-down': ordenar == '-NombreUnidadNegocio'}"></span>
+                            </button>
+                        </th>
+                        
+                         <th>
+                            <button class="btn botonOrdenar" ng-click="CambiarOrdenar('NombreTipoProyecto')" style="padding:  0px">
+                                <b>Tipo Proyecto</b> <span ng-class="{'fa fa-arrow-up': ordenar == 'NombreTipoProyecto', 'fa fa-arrow-down': ordenar == '-NombreTipoProyecto'}"></span>
+                            </button>
+                        </th>
+                        
+                        <th>
+                            <button class="btn botonOrdenar" ng-click="CambiarOrdenar('Nombre')" style="padding:  0px">
+                                <b>Nombre</b> <span ng-class="{'fa fa-arrow-up': ordenar == 'Nombre', 'fa fa-arrow-down': ordenar == '-Nombre'}"></span>
+                            </button>
+                        </th>
+                        
+                   
+                        <th>
+                            <button class="btn botonOrdenar" ng-click="CambiarOrdenar('FechaInicio')" style="padding:  0px">
+                                <b>Fecha</b> <span ng-class="{'fa fa-arrow-up': ordenar == 'FechaInicio', 'fa fa-arrow-down': ordenar == '-FechaInicio'}"></span>
+                            </button>
+                        </th>
+                        
+                        
+                        <th><span class=""><b>Estatus</b></span></th>
+                        <th><span class="text-center"><b>Perfil</b></span></th>
+                        
+                      </tr>
+                    </thead>
+                    <tbody >
+                        <tr ng-repeat="proyecto in proyecto | orderBy:[ordenar, 'Cliente', 'FechaInicio'] | filter:busqueda | filter:FiltroProyecto">
+                            <td>{{proyecto.Cliente}}</td>
+                            
+                            <td>{{proyecto.NombreTipoUnidadNegocio}} - {{proyecto.NombreUnidadNegocio}}</td>
+                            
+                            <td>{{proyecto.NombreTipoProyecto}}</td>
+                            
+                            <td>{{proyecto.Nombre}}</td>
+                            
+                            <td>{{proyecto.FechaFormato}}</td>
+                            
+                            <td  style="min-width: 90px !important">
+                               <div class="dropdown" >
+                                    <button class="dropdown-toggle  btn btnStatusProyecto {{proyecto.NombreEstatusProyecto}}" data-toggle="dropdown" style="font-size:14px; width: 100%; height: auto;">
+                                        <span  ng-class="GetClaseEstatus(cita.NombreEstatusCita)">{{proyecto.NombreEstatusProyecto}}</span>
+                                        <span class="pull-right" ng-show="proyecto.EstatusProyectoId != '2'">
+                                            <span class="caret"></span>
+                                        </span>
+                                    </button>
+
+                                    <ul class="dropdown-menu dropdown-menu-right dropdownRight" style="display: float" >
+                                        <li ng-repeat="estatus in estatusProyecto | orderBy:'EstatusProyectoId'" ng-show="MostrarEstatus(proyecto.EstatusProyectoId, estatus.EstatusProyectoId)">
+                                            <a  href="" class="dropdownOpcionModal" ng-click="CambiarEstatusCita(cita, estatus)">
+                                                <span>{{estatus.Nombre}}</span>
+                                            </a>
+                                        </li>
+
+                                    </ul>
+                                </div>
+                              </td>
+                            
+                            <td class="text-center">
+                                <a class="BotonOperacion" href="#PerfilCliente/{{proyecto.PersonaId}}/Proyectos" >
+                                    <span class="fa fa-user fa-2x"></span>
+                                </a>
+
+                            </td>
+                            
+                        </tr>
+
+                    </tbody>
+               </table>
+               </div>
+            </div>
+       </div>
+  
+       <div class="row" ng-show="proyecto.length == 0">
+           <div class="col-xs-12">
+               <div  class="textoPerfilHome">
+                    <span>Sin datos encontrados.</span>
+               </div>
+           </div>
+       </div>
+    </div>
+    
+    <!-- ---------------------------------------- Modales -------------------------------- -->
+    
+    <!-- Modal para mensajes -->
+    <div class="modal fade sombraDivModal" id="mensajeReporteContrato" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <br>    <br>   <br>
+        <div class="modal-dialog modalPrincipal modal-sm">
+           <br>
+            <div class="row">
+                <div class="col-xs-12 text-center" style="font-size:12pt">
+                   {{mensaje}}
+                </div>
+            </div>
+            <br>
+            <div class="row">
+            
+                <div class="col-xs-12">
+                    <button focus class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close">Aceptar</button>
+                </div>
+            </div>
+        </div>   
+    </div>
+    
+</div>
+
+     

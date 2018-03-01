@@ -1,8 +1,8 @@
 app.controller("OperativoControlador", function($scope, $rootScope, datosUsuario, $window, $location)
 {   
     $scope.titulo = "Operativo";
+    $scope.tabsel = "home";
     
-
     /*----------------verificar los permisos---------------------*/
     $rootScope.permisoOperativo = {verTodosCliente: false};
     $scope.permisoTab = {citas:false, pagos: false};
@@ -24,13 +24,7 @@ app.controller("OperativoControlador", function($scope, $rootScope, datosUsuario
             if($scope.usuarioLogeado.Permiso[k] == "OpeRPAConsultar")
             {
                 $scope.permisoTab.pagos = true;
-                $scope.tabsel = "pagoPendiente";
             }
-        }
-        
-        if(!$scope.permisoTab.pagos && $scope.permisoTab.citas)
-        {
-            $scope.tabsel = "cita";
         }
 
     };

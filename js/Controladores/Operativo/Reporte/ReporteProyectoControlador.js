@@ -1,18 +1,19 @@
-app.controller("ReportePersonaRegistradaController", function($scope, $rootScope, $http, $q, CONFIG, $window,  $routeParams, $location, datosUsuario)
+app.controller("ReporteProyectoControlador", function($scope, $rootScope, $http, $q, CONFIG, $window,  $routeParams, $location, datosUsuario)
 {   
     $rootScope.clasePrincipal = "";
+    
     /*----------------verificar los permisos---------------------*/
-    $scope.permiso = {verTodo: false, ver: false, editarEstatus: false};
+    $scope.permiso = {verTodo: false, ver: false};
     $rootScope.permisoOperativo = {verTodosCliente: false};
-
+    
     $scope.unidad = [];
     $scope.filtro = {fecha1: "", fecha2: "", unidad: new Object()};
     $scope.buscar = false;
-    $scope.ordenar = "Nombre";
+    $scope.ordenar = "Cliente";
     $scope.busqueda = "";
+    $scope.estatusProyecto = GetEstatusProyecto();
+    $scope.filtroEstatus = new Object();
     
-    $scope.numPresupuesto = "Todo";
-    $scope.filtroPresupuesto = ["Todo", "Con Presupuesto", "Sin Presupuesto"];
     
     $scope.IdentificarPermisos = function()
     {
@@ -23,13 +24,9 @@ app.controller("ReportePersonaRegistradaController", function($scope, $rootScope
                 $scope.permiso.verTodo = true;
                 $rootScope.permisoOperativo.verTodosCliente = true;
             }
-            else if($scope.usuarioLogeado.Permiso[k] == "OpePRConsultar")
+            else if($scope.usuarioLogeado.Permiso[k] == "OpeRProConsultar")
             {
                 $scope.permiso.ver = true;
-            }
-            else if($scope.usuarioLogeado.Permiso[k] == "OpePREEstatus")
-            {
-                $scope.permiso.editarEstatus = true;
             }
         }
     };
@@ -64,9 +61,23 @@ app.controller("ReportePersonaRegistradaController", function($scope, $rootScope
         {
             $scope.ordenar = campoOrdenar;
         }
+
     };
     
     //---------------- Filtro -----------------
+    $scope.FiltroProyecto = function(proyecto)
+    {
+        if($scope.filtroEstatus.EstatusProyectoId)
+        {
+            if($scope.filtroEstatus.EstatusProyectoId != proyecto.EstatusProyectoId)
+            {
+                return false;
+            }
+        }
+        
+        return true;
+    };
+    
     $scope.CambiarUnidadNegocio = function(unidad)
     {
         if(unidad == 'ninguna')
@@ -76,6 +87,18 @@ app.controller("ReportePersonaRegistradaController", function($scope, $rootScope
         else
         {
             $scope.filtro.unidad = unidad;
+        }
+    };
+    
+    $scope.CambiarEstatusFiltro = function(estatus)
+    {
+        if(estatus == 'ninguno')
+        {
+            $scope.filtroEstatus = new Object();
+        }
+        else
+        {
+            $scope.filtroEstatus = estatus;
         }
     };
     
@@ -132,86 +155,39 @@ app.controller("ReportePersonaRegistradaController", function($scope, $rootScope
     $scope.LimpiarFiltro = function()
     {
         $scope.filtro = {fecha1: "", fecha2: "", unidad: new Object()};
+        $scope.filtroEstatus = new Object();
+        
         $('#fechaInicio').data("DateTimePicker").clear();
         $('#fechaFin').data("DateTimePicker").clear();
         
         $scope.buscar = false;
         $scope.busqueda = "";
-        $scope.persona = [];
-        $scope.numPresupuesto = "Todo";
+        $scope.proyecto = [];
         
         $('#fechaFin').datetimepicker("minDate", false);
         $('#fechaInicio').datetimepicker("maxDate", new Date());
     };
     
-    //_------ Fitro numero de presupuestos
-    $scope.CambiarFiltroPresupuesto = function(filtro)
-    {
-        $scope.numPresupuesto = filtro;
-    };
-    
-    $scope.FiltroPersona = function(persona)
-    {
-        if($scope.numPresupuesto == "Todo")
-        {
-            return true;
-        }
-        else if($scope.numPresupuesto == "Con Presupuesto")
-        {
-            if(persona.NumeroPresupuesto > 0)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        else if($scope.numPresupuesto == "Sin Presupuesto")
-        {
-            if(persona.NumeroPresupuesto === 0)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }  
-    };
-    
     //---- Enviar Filtro
-    $scope.GetReportePersonaRegistrada = function()
+    $scope.GetReporteProyecto = function()
     {   
-        GetReportePersonaRegistrada($http, $q, CONFIG, $scope.datos).then(function(data)
+        GetReporteProyecto($http, $q, CONFIG, $scope.datos).then(function(data)
         {
             for(var k=0; k<data.length; k++)
             {
-                data[k].NumeroPresupuesto  = parseFloat(data[k].NumeroPresupuesto);
-                data[k].RegistroFormato = TransformarFechaEsp2(data[k].Registro);
-            }
-                        
-            $scope.persona = data;
-            
-            $scope.unidadPersona = alasql("SELECT COUNT(*) AS Numero, NombreUnidadNegocio AS Nombre FROM ?   GROUP BY UnidadNegocioId, NombreUnidadNegocio", [$scope.persona]);
-            $scope.numeroSinPresupuesto = 0;
-            
-            for(var k=0; k<$scope.persona.length; k++)
-            {
-                if($scope.persona[k].Activo == "1" && $scope.persona[k].NumeroPresupuesto == 0)
-                {
-                   $scope.numeroSinPresupuesto++;
-                }
+                data[k].FechaFormato = TransformarFecha(data[k].FechaInicio);
             }
             
+            $scope.proyecto = data;
+    
         }).catch(function(error)
         {
-            $scope.pago = [];
+            $scope.proyecto = [];
             alert(error);
         });
     };
     
-    $scope.GetPersonaRegistradaFiltro = function()
+    $scope.GetContratoFiltro = function()
     {
         if(!$scope.ValidarFiltro())
         {
@@ -220,7 +196,7 @@ app.controller("ReportePersonaRegistradaController", function($scope, $rootScope
         else
         {
             $scope.buscar = true;
-            $scope.GetReportePersonaRegistrada();
+            $scope.GetReporteProyecto();
         }
     };
     
@@ -288,65 +264,35 @@ app.controller("ReportePersonaRegistradaController", function($scope, $rootScope
         }
     };
     
-    //-------------------------- Cambiar EStatus de la persona -----------------
-    $scope.CambiarEstatusPersona = function(persona)
+    //---------------------------- Estatus -----------------------
+    $scope.MostrarEstatus = function(actualId, cambiarId)
     {
-        $scope.cambiarPersona = persona;
-        $scope.nuevoEstatusPersona = persona.Activo == '1' ? '0' : '1';
-        
-        if($scope.nuevoEstatusPersona == "1")
+        if(actualId == cambiarId || cambiarId=="2")
         {
-            $scope.mensajeAdvertencia = "¿Estas seguro de cambiar el estatus de " + persona.Nombre + " a Activo?";
-        }
-        else
-        {
-            $scope.mensajeAdvertencia = "¿Estas seguro de cambiar el estatus de " + persona.Nombre + " a No Activo?";
+            return false;
         }
         
-        $('#CambiarEstatusPersona').modal('toggle');
-    };
-    
-    $scope.ConfirmarCambiarEstatusPersona = function()
-    {
-        var datos = new Object();
-        datos.PersonaId = $scope.cambiarPersona.PersonaId;
-        datos.Estatus = $scope.nuevoEstatusPersona;
-        
-        CambiarEstatusPersona($http, $q, CONFIG, datos).then(function(data)
+        if(actualId == "1")
         {
-            if(data == "Exitoso")
+            return true;
+        }
+        else if(actualId == "3")
+        {
+            return true;
+        }
+        else if(actualId == "4")
+        {
+            if(cambiarId != "1")
             {
-                $rootScope.mensaje = "El estatus de la persona se ha actualizado correctamente.";
-                 
-                for(var k=0; k<$scope.persona.length; k++)
-                {
-                    if($scope.persona[k].PersonaId == $scope.cambiarPersona.PersonaId)
-                    {
-                        $scope.persona[k].Activo = $scope.nuevoEstatusPersona;
-                        break;
-                    }
-                }
-                
-                if($scope.nuevoEstatusPersona == "0")
-                {
-                    $scope.numeroSinPresupuesto--;
-                }
-                else
-                {
-                    $scope.numeroSinPresupuesto++;
-                }
+                return false;
             }
             else
             {
-                $rootScope.mensaje = "Ha ocurrido un error. Intente más tarde.";
+                return true;
             }
-            $('#mensajeReportePersona').modal('toggle');
-        }).catch(function(error)
-        {
-            $rootScope.mensaje = "Ha ocurrido un error. Intente más tarde." + error;
-            $('#mensajeReportePersona').modal('toggle');
-        });  
+        }
     };
+    
     
     /*------------------Indentifica cuando los datos del usuario han cambiado-------------------*/
     $scope.Inicializar = function()
@@ -354,7 +300,7 @@ app.controller("ReportePersonaRegistradaController", function($scope, $rootScope
         $scope.IdentificarPermisos();
         if(!$scope.permiso.ver)
         {
-             $rootScope.IrAHomePerfil($scope.usuarioLogeado.PerfilSeleccionado);
+            $rootScope.IrAHomePerfil($scope.usuarioLogeado.PerfilSeleccionado);
         }
         else
         {

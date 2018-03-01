@@ -30,6 +30,8 @@ app.controller("DomicilioOperativoControlador", function($scope, $rootScope, $ht
         $scope.sinCP = false;
         $scope.otraColonia = false;
         
+        $scope.dir = {estado:"", municipio:"", ciudad:"", colonia:""};
+        
         $scope.fuente = DOMICILIO.GetFuente();
         
         $scope.GetCatalogosDomicilio();
@@ -230,6 +232,20 @@ app.controller("DomicilioOperativoControlador", function($scope, $rootScope, $ht
         }
     };
     
+    $scope.ValidarEstado = function(noEstado)
+    {
+        if(noEstado)
+        {
+            $scope.nuevoDomicilio.Estado = "";
+            $scope.nuevoDomicilio.Municipio = "";
+            $scope.nuevoDomicilio.Ciudad = ""; 
+            $scope.nuevoDomicilio.Colonia = ""; 
+            $scope.nuevoDomicilio.Codigo = "";
+            
+            $scope.dir = {estado:"", municipio:"", ciudad:"", colonia:""};
+        }
+    };
+    
     //Se selecciono un municipio distinto al seleccionado
     $scope.CambiarMunicipio = function(municipio)
     {
@@ -250,6 +266,21 @@ app.controller("DomicilioOperativoControlador", function($scope, $rootScope, $ht
         }
     };
     
+    $scope.ValidarMunicipio = function(noMunicipio)
+    {
+        if(noMunicipio)
+        {
+            $scope.nuevoDomicilio.Municipio = "";
+            $scope.nuevoDomicilio.Ciudad = ""; 
+            $scope.nuevoDomicilio.Colonia = ""; 
+            $scope.nuevoDomicilio.Codigo = "";
+            
+            $scope.dir.municipio = "";
+            $scope.dir.ciudad = "";
+            $scope.dir.colonia = "";
+        }
+    };
+    
     //Se selecciono una ciudad distinto al seleccionado
     $scope.CambiarCiudad = function(ciudad)
     {
@@ -258,6 +289,8 @@ app.controller("DomicilioOperativoControlador", function($scope, $rootScope, $ht
             $scope.nuevoDomicilio.Ciudad = ciudad;
             $scope.nuevoDomicilio.Colonia = "";
             $scope.nuevoDomicilio.Codigo = "";
+            
+            $scope.dir.colonia = "";
         }   
     };
     
@@ -268,7 +301,9 @@ app.controller("DomicilioOperativoControlador", function($scope, $rootScope, $ht
         if(colonia === "OtraColonia")
         {
             $scope.otraColonia = true; 
-            $scope.nuevoDomicilio.Colonia = "";
+            $scope.nuevoDomicilio.Colonia = $scope.dir.colonia;
+            $scope.dir.colonia = "";
+            document.getElementById('modelOtraColonia').focus();
             if($scope.sinCP)
             {
                 $scope.nuevoDomicilio.Codigo = "";
@@ -290,6 +325,15 @@ app.controller("DomicilioOperativoControlador", function($scope, $rootScope, $ht
                     }
                 }
             }
+        }
+    };
+    
+    $scope.ValidarColonia = function(noColonia)
+    {
+        if(noColonia)
+        {
+            $scope.nuevoDomicilio.Colonia = ""; 
+            $scope.nuevoDomicilio.Codigo = "";
         }
     };
     

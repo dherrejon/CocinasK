@@ -564,6 +564,8 @@
 
     $app->post('/GetReportePersonaRegistrada', $seguridad, $ChecarSesion, 'GetReportePersonaRegistrada');
 
+    $app->post('/CambiarEstatusPersona', $seguridad, $ChecarSesion, 'CambiarEstatusPersona');
+
     /*------------------ Variable del sistema ----------------------------------------------*/
     $app->get('/GetIVA', $seguridad, $ChecarSesion, 'GetIVA');
     $app->put('/EditarIVA', $seguridad, $ChecarSesion, 'EditarIVA');
@@ -582,6 +584,8 @@
     $app->post('/GetProyectoPersona', $seguridad, $ChecarSesion, 'GetProyectoPersona');
     $app->post('/CambiarEstatusProyecto', $seguridad, $ChecarSesion, 'CambiarEstatusProyecto');
     $app->put('/EditarProyecto', $seguridad, $ChecarSesion, 'EditarProyecto');
+
+    $app->post('/GetReporteProyecto', $seguridad, $ChecarSesion, 'GetReporteProyecto');
 
     /*------------------ Medio Pago ------------------------------*/
     $app->get('/GetMedioPago', $seguridad, $ChecarSesion, 'GetMedioPago');

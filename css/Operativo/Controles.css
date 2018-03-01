@@ -313,4 +313,53 @@
 }
 
 
+.btnOtraColonia, .btnOtraColonia:active, .btnOtraColonia:focus
+{
+    border: none;
+    border-radius: 0px;
+    background: white;
+    color: black;
+    text-align: left;
+    padding: 3px;
+    padding-left: 6px;
+    
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.btnOtraColonia:hover
+{
+    color: white;
+    background: rgb(250, 97, 21);
+}
+
+/*------- icono de presupuestos en el reporte de clientes -------------------*/
+.persona.atendido
+{
+    color: #088A08;
+}
+
+.btnPersonaPresupuesto, .btnPersonaPresupuesto:active, .btnPersonaPresupuesto:focus
+{
+    background: transparent;
+    color: #262626;
+    border-radius: 0px;
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.btnPersonaPresupuesto:hover
+{
+    background: lightgray;
+    color: #262626;
+}
+
+.btnPersonaPresupuesto:disabled
+{
+    opacity: 1.0;
+}
+
+
+
 

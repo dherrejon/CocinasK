@@ -926,5 +926,31 @@ function GetReportePersonaRegistrada()
     }
 }
 
+function CambiarEstatusPersona()
+{
+    global $app;
+    $request = \Slim\Slim::getInstance()->request();
+    $datos = json_decode($request->getBody());
+    try 
+    {
+        $db = getConnection();
+        
+        $sql = "UPDATE Persona SET Activo = ".$datos->Estatus." WHERE PersonaId = ".$datos->PersonaId."";
+        $stmt = $db->prepare($sql);
+        $stmt->execute();
+    
+        $db = null;
+        
+        echo '[{"Estatus": "Exitoso"}]';
+    }
+    catch(PDOException $e) 
+    {
+        echo '[{"Estatus":"Fallo"}]';
+        echo ($sql);
+        $app->status(409);
+        $app->stop();
+    }
+}
+
     
 ?>

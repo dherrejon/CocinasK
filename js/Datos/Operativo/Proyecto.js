@@ -448,3 +448,21 @@ function GetDatosPresupuesto($http, $q, CONFIG, presupuesto)
     
     return q.promise;
 }
+
+function GetReporteProyecto($http, $q, CONFIG, datos)     
+{
+    var q = $q.defer();
+
+    $http({      
+          method: 'POST',
+          url: CONFIG.APIURL + '/GetReporteProyecto',
+          data: datos
+
+      }).success(function(data)
+        {
+              q.resolve(data);
+        }).error(function(data, status){
+            q.resolve([]);
+     }); 
+    return q.promise;
+}

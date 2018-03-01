@@ -26,6 +26,13 @@
                     <div class="tab2" role="tabpanel">
 
                         <ul class="nav nav-tabs" role="tablist">
+                            <li  ng-class="{active: tabsel == 'home'}">
+                                <a  href="" aria-controls="home" role="tab" data-toggle="tab" ng-click="SeleccionarTab('home')">
+                                    <span class="fa fa-home"> </span>
+                                    <span class="hidden-xs"> Inicio </span>
+                                </a>
+                            </li>
+                            
                             <li  ng-class="{active: tabsel == 'pagoPendiente'}">
                                 <a  href="" aria-controls="pagoPendiente" role="tab" data-toggle="tab" ng-click="SeleccionarTab('pagoPendiente')" ng-if="permisoTab.pagos">
                                     <span class="fa fa-dollar"> </span>
@@ -46,7 +53,13 @@
 
                         <!-- Contenido -->
                         <div class="tab-content">
-
+                            
+                            <!-- Home  -->
+                            <div role="pafoPendiente" class="tab-pane " id="home" ng-class="{'in active': tabsel == 'home'}" ng-if="tabsel == 'home'">
+                              <br>  
+                                <div ng-include=" 'html/Home.html' "></div>
+                            </div>
+                            
                             <!-- Pago pendiente -->
                             <div role="pafoPendiente" class="tab-pane " id="pagoPendiente" ng-class="{'in active': tabsel == 'pagoPendiente'}" ng-if="tabsel == 'pagoPendiente'">
                               <br>  

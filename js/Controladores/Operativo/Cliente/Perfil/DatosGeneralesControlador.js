@@ -468,25 +468,29 @@ app.controller("DatosClienteControlador", function($scope, $rootScope, CITA, $ht
             $scope.claseAdicional.nombre = "entrada";
         }
         
-        if(correoInvalido && telefonoInvalido)
+
+        if(!telefonoInvalido)
         {
-            $scope.mensajeError[$scope.mensajeError.length] = "*Desbes de indicar un teléfono o un correo electrónico.";
-        }
-        else
-        {
-            if($scope.nuevoContactoAdicional.Telefono == undefined)
+            if(!$rootScope.erTelefono.test($scope.nuevoContactoAdicional.Telefono))
             {
-                $scope.mensajeError[$scope.mensajeError.length] = "*Escribe un teléfono válido.";
+                $scope.mensajeError[$scope.mensajeError.length] = "*Indica un teléfono válido.";
                 $scope.claseAdicional.telefono = "entradaError";
             }
             else
             {
                 $scope.claseAdicional.telefono = "entrada";
             }
-
-            if($scope.nuevoContactoAdicional.Correo == undefined)
+        }
+        else
+        {
+            $scope.claseAdicional.telefono = "entrada";
+        }
+        
+        if(!correoInvalido)
+        {
+            if(!$rootScope.erEmail.test($scope.nuevoContactoAdicional.Correo))
             {
-                $scope.mensajeError[$scope.mensajeError.length] = "*Escribe un corrreo electronico válido.";
+                $scope.mensajeError[$scope.mensajeError.length] = "*Indica un correo válido.";
                 $scope.claseAdicional.correo = "entradaError";
             }
             else
@@ -494,6 +498,11 @@ app.controller("DatosClienteControlador", function($scope, $rootScope, CITA, $ht
                 $scope.claseAdicional.correo = "entrada";
             }
         }
+        else
+        {
+            $scope.claseAdicional.correo = "entrada";
+        }
+        
         
         if($scope.mensajeError.length > 0)
         {

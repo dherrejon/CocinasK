@@ -178,9 +178,7 @@ app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpPro
     }).*/
     
     //Operativo
-    when('/Operativo',{
-        templateUrl: 'html/Operativo/Operativo.html'
-    }).
+    
     when('/Cliente',{
         templateUrl: 'html/Operativo/Cliente/Cliente.html'
     }).
@@ -199,6 +197,12 @@ app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpPro
     }).
     when('/ReportePagoPendiente',{
         templateUrl: 'html/Operativo/Reporte/ReportePagoPendiente.html'
+    }).
+    when('/ReporteProyecto',{
+        templateUrl: 'html/Operativo/Reporte/ReporteProyecto.html'
+    }).
+    when('/Operativo',{
+        templateUrl: 'html/Operativo/Operativo.html'
     }).
     
     otherwise({

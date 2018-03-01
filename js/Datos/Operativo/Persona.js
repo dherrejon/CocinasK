@@ -851,3 +851,31 @@ function GetReportePersonaRegistrada($http, $q, CONFIG, datos)
      }); 
     return q.promise;
 }
+
+
+function CambiarEstatusPersona($http, $q, CONFIG, estatus) 
+{
+    var q = $q.defer();
+
+    $http({      
+          method: 'POST',
+          url: CONFIG.APIURL + '/CambiarEstatusPersona',
+          data: estatus
+
+      }).success(function(data)
+        {
+            if(data[0].Estatus == "Exitoso")
+            {
+                q.resolve("Exitoso");
+            }
+            else
+            {
+                q.resolve("Fallo");
+            }
+        }).error(function(data, Estatus){
+            q.resolve(Estatus);
+
+     }); 
+    
+    return q.promise;
+}

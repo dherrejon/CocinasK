@@ -173,6 +173,9 @@ app.controller("ReportePagoController", function($scope, $rootScope, $http, $q, 
         $scope.busqueda = "";
         $scope.pago = [];
         $scope.totalPago = 0;
+        
+        $('#fechaFin').datetimepicker("minDate", false);
+        $('#fechaInicio').datetimepicker("maxDate", new Date());
     };
     
     //---- Enviar Filtro
@@ -298,7 +301,7 @@ app.controller("ReportePagoController", function($scope, $rootScope, $http, $q, 
         $scope.IdentificarPermisos();
         if(!$scope.permiso.ver)
         {
-            $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
+            $rootScope.IrAHomePerfil($scope.usuarioLogeado.PerfilSeleccionado);
         }
         else
         {
