@@ -172,10 +172,6 @@ app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpPro
         when('/CostoModulo',{
             templateUrl: 'html/Administrador/Catalogo/Modulo/CostoModulo.html'
         }).
-    //Ejecutivo
-    /*when('/Ejecutivo',{
-        templateUrl: 'html/Ejecutivo/Ejecutivo.html'
-    }).*/
     
     //Operativo
     
@@ -204,6 +200,21 @@ app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpPro
     when('/Operativo',{
         templateUrl: 'html/Operativo/Operativo.html'
     }).
+    
+    //ejecutivo
+     when('/Ejecutivo',{
+        templateUrl: 'html/Home.html'
+    }).
+    
+    //reportes
+    when('/ReporteMedioCaptacion',{
+        templateUrl: 'html/Ejecutivo/Reportes/ReporteMedioCaptacion.html'
+    }).
+    when('/ReporteClienteProspecto',{
+        templateUrl: 'html/Ejecutivo/Reportes/ReporteClienteProspecto.html'
+    }).
+    
+    
     
     otherwise({
         templateUrl: 'html/Login.html'

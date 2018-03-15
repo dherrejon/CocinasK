@@ -169,3 +169,21 @@ function ActualizarMedioCaptacion($http, CONFIG, $q, medio)
      }); 
     return q.promise;
 }
+
+function GetReporteMedioCaptacion($http, $q, CONFIG, datos)     
+{
+    var q = $q.defer();
+
+    $http({      
+          method: 'POST',
+          url: CONFIG.APIURL + '/GetReporteMedioCaptacion',
+          data: datos
+
+      }).success(function(data)
+        {
+              q.resolve(data);
+        }).error(function(data, status){
+            q.resolve([]);
+     }); 
+    return q.promise;
+}

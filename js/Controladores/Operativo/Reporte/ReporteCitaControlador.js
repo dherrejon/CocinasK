@@ -3,7 +3,7 @@ app.controller("ReporteCitaController", function($scope, $rootScope, $http, $q, 
     $rootScope.clasePrincipal = "";
     
     $scope.unidad = [];
-    $scope.filtro = {unidad: new Object(), estatus: new Object(), tarea: new Object()};
+    $scope.filtro = {unidad: new Object(), estatus: new Object(), tarea: new Object(), responsable: new Object()};
     $scope.ordenar = "Fecha";
     $scope.cita = [];
     $scope.estatus = GetEstatusCita();
@@ -83,6 +83,19 @@ app.controller("ReporteCitaController", function($scope, $rootScope, $http, $q, 
         }
     };
     
+    $scope.CambiarResponsableFiltro = function(responsable, tipo)
+    {
+        if(responsable == 'ninguno')
+        {
+            $scope.filtro.responsable = new Object();
+        }
+        else
+        {
+            $scope.filtro.responsable = responsable;
+            $scope.filtro.responsable.Tipo = tipo;
+        }
+    };
+    
     $scope.FiltroCita = function(cita)
     {
         //unidad
@@ -110,6 +123,26 @@ app.controller("ReporteCitaController", function($scope, $rootScope, $http, $q, 
             {
                 return false;
             }
+        }
+        
+        //responsable
+        if($scope.filtro.responsable.Nombre)
+        {
+            if($scope.filtro.responsable.Tipo == "Unidad")
+            {
+                if(cita.UnidadResponsableId != $scope.filtro.responsable.UnidadNegocioId)
+                {
+                    return false;
+                }
+            }
+            else if($scope.filtro.responsable.Tipo == "Colaborador")
+            {
+                if(cita.ColaboradorRespondableId != $scope.filtro.responsable.ColaboradorId)
+                {
+                    return false;
+                }   
+            }
+            
         }
         
         return true;
@@ -297,7 +330,10 @@ app.controller("ReporteCitaController", function($scope, $rootScope, $http, $q, 
                     data[k].FechaFormato = TransformarFechaEsp2(data[k].Fecha);
                     $scope.GetEstatusCita(data[k]);
                 }
-
+                
+                $scope.responsableUnidad = alasql("SELECT DISTINCT UnidadResponsableId as UnidadNegocioId, NombreResponsable as Nombre FROM ? WHERE UnidadResponsableId IS NOT NULL", [data]);
+                $scope.responsableColaborador = alasql("SELECT DISTINCT ColaboradorRespondableId as ColaboradorId, NombreResponsable as Nombre FROM ? WHERE ColaboradorRespondableId IS NOT NULL", [data]);
+                    
                 $scope.cita = data;
             }
             else

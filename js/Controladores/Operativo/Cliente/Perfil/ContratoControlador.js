@@ -213,6 +213,8 @@ app.controller("ContratoClienteControlador", function($scope, $rootScope, CITA, 
                 {
                     $scope.detalle = data[1].Presupuesto;
                     $scope.VerTipoCubierta(data[1].Presupuesto);
+                    
+                    $scope.CalcularTipoModuloCantidad(data[1].Presupuesto.Modulo);
                 }
                 else if($scope.optPresupuesto == "EditarContrato")
                 {
@@ -231,6 +233,18 @@ app.controller("ContratoClienteControlador", function($scope, $rootScope, CITA, 
             $rootScope.mensaje = "Ha ocurrido un error intente más tarde.";
             $('#mensajePerfil').modal('toggle');
         });
+    };
+    
+    $scope.CalcularTipoModuloCantidad = function(modulo)
+    {   
+        
+        for(var k=0; k<modulo.length; k++)
+        {
+            modulo[k].Cantidad = parseInt(modulo[k].Cantidad);
+        }
+        
+        $scope.cantidadTipoModulo = [];
+        $scope.cantidadTipoModulo= alasql("SELECT TipoModuloId, NombreTipoModulo AS Nombre, SUM(Cantidad) AS Cantidad FROM ? GROUP BY TipoModuloId, NombreTipoModulo", [modulo]);
     };
 
     $scope.VerTipoCubierta = function(data)

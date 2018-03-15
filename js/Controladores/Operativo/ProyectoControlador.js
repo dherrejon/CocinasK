@@ -6411,7 +6411,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, $location, PR
             {
                 if($scope.presupuesto.PromocionMueble != undefined )
                 {
-                     return $scope.presupuesto.PromocionMueble.Descuento + "% de descuento.";
+                    return $scope.presupuesto.PromocionMueble.Descuento + "% de descuento hasta " + $scope.presupuesto.PromocionMueble.FechaLimite + ".";
                 }
                
             }
@@ -6426,7 +6426,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, $location, PR
             {
                 if($scope.presupuesto.PromocionCubierta != undefined )
                 {
-                    return $scope.presupuesto.PromocionCubierta.Descuento + "% de descuento.";
+                    return $scope.presupuesto.PromocionCubierta.Descuento + "% de descuento hasta " + $scope.presupuesto.PromocionCubierta.FechaLimite + ".";
                 }
             }
         }

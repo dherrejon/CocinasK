@@ -8,7 +8,7 @@
                 <div class="perfilTexto text-center"><br>¿Qué perfil deseas usar?</div>
                 <br>
                 <div class="col-sm-4" ng-repeat="perfil in Perfiles">
-                    <button class="btn btn-block btn-md PerfilBoton" ng-click="SeleccionarPerfil(perfil)" ng-show="perfil.visible" ng-disabled=" perfil.nombre == 'Ejecutivo'">{{perfil.nombre}}</button>
+                    <button class="btn btn-block btn-md PerfilBoton" ng-click="SeleccionarPerfil(perfil)" ng-show="perfil.visible" >{{perfil.nombre}}</button>
                 </div>
                 <br><br class="hidden-xs"><br class="hidden-xs"><br class="hidden-xs">
             </div>

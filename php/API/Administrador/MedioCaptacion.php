@@ -252,5 +252,54 @@ function ActualizarMedioCaptacionAgregar()
         $app->stop();
     }
 }
+
+//--- Reporte de medios de captacion 
+function GetReporteMedioCaptacion()
+{
+    global $app;
+    global $session_expiration_time;
+
+    $request = \Slim\Slim::getInstance()->request();
+    $filtro = json_decode($request->getBody());
+    
+    
+    $sql = "SELECT * FROM MedioCaptacionReporteVista";
+    
+    if($filtro->unidadId == -1 && $filtro->fecha1 == -1 && $filtro->fecha2 == -1)
+    {
+        $sql = "SELECT * FROM MedioCaptacionReporteVista";
+    }
+    else if($filtro->unidadId != -1 && $filtro->fecha1 == -1 && $filtro->fecha2 == -1)
+    {
+         $sql = "SELECT * FROM MedioCaptacionReporteVista WHERE UnidadNegocioId = ".$filtro->unidadId."";
+    }
+    else if($filtro->unidadId == -1 && $filtro->fecha1 != -1 && $filtro->fecha2 != -1)
+    {
+         $sql = "SELECT * FROM MedioCaptacionReporteVista WHERE Registro >= '".$filtro->fecha1."' AND Registro <= '".$filtro->fecha2."'";
+    }
+    else
+    {
+        $sql = "SELECT * FROM MedioCaptacionReporteVista WHERE UnidadNegocioId = ".$filtro->unidadId." AND Registro >= '".$filtro->fecha1."' AND Registro <= '".$filtro->fecha2."'";
+    }
+    
+    try 
+    {
+        $db = getConnection();
+
+        $stmt = $db->query($sql);
+        $medioCaptacion = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $db = null;
+        echo json_encode($medioCaptacion); 
+    } 
+    catch(PDOException $e) 
+    {
+        $db = null;
+        echo $e;
+        //echo '[ { "Estatus": "Fallo" } ]';
+        //$app->status(409);
+        $app->stop();
+    } 
+    
+}
     
 ?>

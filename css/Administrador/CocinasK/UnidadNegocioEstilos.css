@@ -283,6 +283,26 @@
     background: lightgray; 
 }
 
+.dropdownOpcionModalTitulo, .dropdownOpcionModalTitulo:hover, .dropdownOpcionModalTitulo:focus, .dropdownOpcionModalTitulo:active
+{
+    background: lightgray !important;
+    color: #262626 !important;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(38,38,38,0.4);
+    cursor: pointer;
+    white-space: normal;
+    text-align: center;
+    cursor: default;
+}
+
+.dropdownOpcionModal:disabled
+{
+    cursor: default;
+    background: lightgray; 
+}
+
+
 .buscar
 {
     border: 2px solid #262626;
@@ -301,7 +321,8 @@
 {
     background: #262626;
     color: white !important;
-    outline: none;
+    
+    outline: none !important;
     box-shadow: none;
 }
 

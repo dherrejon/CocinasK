@@ -94,6 +94,61 @@
         
         </div>
         <br ng-show="verFiltro">
+        
+        <div class="row"  ng-show="cita.length > 0 && verFiltro">
+        
+            <!-- Responsable -->
+            <div class="col-sm-6" ng-show="permisoOperativo.verTodosCliente">
+
+              <label>Responsable</label>
+              <div class="dropdown">
+
+                    <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown" style="height: 33px">
+                       {{filtro.responsable.Nombre}}
+                        <span class="pull-right">
+                            <span class="caret "></span>
+                        </span>
+                    </button>
+
+                    <ul class="dropdown-menu listaOpcionesDropdownList" style="min-width: 100%; max-height: 200px;">
+                       <li>
+                           <a  href="" class="dropdownOpcionModal" ng-click="CambiarResponsableFiltro('ninguno')">
+                                <span>NINGUNO</span>
+                            </a>
+                        </li>
+                        
+                         <li>
+                           <a  href="" class="dropdownOpcionModalTitulo" ng-disabled="true">
+                                <span>Colaboradores</span>
+                            </a>
+                        </li>
+                        
+                        
+                        <li ng-repeat="colaborador in responsableColaborador | orderBy:['Nombre']">
+                            <a  href="" class="dropdownOpcionModal" ng-click="CambiarResponsableFiltro(colaborador, 'Colaborador')">
+                                <span>{{colaborador.Nombre}}</span>
+                            </a>
+                        </li>
+                        
+                        <li>
+                           <a  href="" class="dropdownOpcionModalTitulo" ng-disabled="true">
+                                <span>Unidades de Negocio</span>
+                            </a>
+                        </li>
+
+                        <li ng-repeat="unidad in responsableUnidad | orderBy:['Nombre']">
+                            <a  href="" class="dropdownOpcionModal" ng-click="CambiarResponsableFiltro(unidad, 'Unidad')">
+                                <span>{{unidad.Nombre}}</span>
+                            </a>
+                        </li>
+                    </ul>
+
+                </div>
+
+            </div>
+        
+        </div>
+        <br ng-show="verFiltro">
      
         <div class="row" ng-show="cita.length > 0 && verFiltro">
            <div class="col-sm-6" >

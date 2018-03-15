@@ -294,6 +294,59 @@ app.controller("ReporteProyectoControlador", function($scope, $rootScope, $http,
     };
     
     
+    //-------- Cambiar de estatus el proyecto -------
+    $scope.CambiarEstatusProyecto = function(proyecto, estatus)
+    {
+        $scope.ProyetoActualizar = proyecto;
+        $scope.estatusActualizar = estatus;
+        
+        $scope.mensajeAdvertencia = "¿Estas seguro de cambiar el estatus del proyecto a " + estatus.Nombre + "?";
+        
+        $("#modalEstatusProyecto").modal('toggle');
+    };
+    
+    $scope.CancelarEstatusProyecto = function()
+    {
+        $scope.ProyetoActualizar = null;
+        $scope.estatusActualizar = null;
+    };
+    
+    $scope.ConfirmarActualizarProyecto = function()
+    {        
+        var datos = new Object();
+        datos.ProyectoId = $scope.ProyetoActualizar.ProyectoId;
+        datos.EstatusProyectoId = $scope.estatusActualizar.EstatusProyectoId;
+        
+        
+        CambiarEstatusProyecto($http, $q, CONFIG, datos).then(function(data)
+        {
+            if(data == "Exitoso")
+            {
+                $rootScope.mensaje = "El estatus del proyecto se ha actualizado correctamente.";
+                
+                for(var k=0; k<$scope.proyecto.length; k++)
+                {
+                    if($scope.ProyetoActualizar.ProyectoId == $scope.proyecto[k].ProyectoId)
+                    {
+                        $scope.proyecto[k].EstatusProyectoId = $scope.estatusActualizar.EstatusProyectoId;
+                        $scope.proyecto[k].NombreEstatusProyecto = $scope.estatusActualizar.Nombre;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                $rootScope.mensaje = "Ha ocurrido un error. Intente más tarde.";
+            }
+            $('#mensajeReporteProyecto').modal('toggle');
+        }).catch(function(error)
+        {
+            $rootScope.mensaje = "Ha ocurrido un error. Intente más tarde." + error;
+            $('#mensajeReporteProyecto').modal('toggle');
+        });
+        
+    };
+    
     /*------------------Indentifica cuando los datos del usuario han cambiado-------------------*/
     $scope.Inicializar = function()
     {

@@ -125,6 +125,9 @@ app.controller("ProyectoClienteControlador", function($scope, $rootScope, CITA, 
         {
             $scope.detalle = data[1].Presupuesto;
             $scope.VerTipoCubierta(data[1].Presupuesto);
+            
+            console.log(data[1].Presupuesto.Modulo);
+            $scope.CalcularTipoModuloCantidad(data[1].Presupuesto.Modulo);
         }
         else if(opt == "Editar")
         {
@@ -143,6 +146,18 @@ app.controller("ProyectoClienteControlador", function($scope, $rootScope, CITA, 
             $scope.SetDatosPresupuesto(data[1].Presupuesto, $scope.proyectoContrato);
             CONTRATO.AgregarContrato(data[1].Presupuesto);
         }
+    };
+    
+    $scope.CalcularTipoModuloCantidad = function(modulo)
+    {   
+        
+        for(var k=0; k<modulo.length; k++)
+        {
+            modulo[k].Cantidad = parseInt(modulo[k].Cantidad);
+        }
+        
+        $scope.cantidadTipoModulo = [];
+        $scope.cantidadTipoModulo= alasql("SELECT TipoModuloId, NombreTipoModulo AS Nombre, SUM(Cantidad) AS Cantidad FROM ? GROUP BY TipoModuloId, NombreTipoModulo", [modulo]);
     };
 
     $scope.SetDatosPresupuesto = function(presupuesto, proyecto)
@@ -277,6 +292,12 @@ app.controller("ProyectoClienteControlador", function($scope, $rootScope, CITA, 
         proyecto.Domicilio = jQuery.extend({}, data.Domicilio);
         
         return proyecto;
+    };
+    
+    $scope.AbrirPopover = function(id)
+    {
+        id = '#' + id;
+        $(id).popover('show');
     };
     
     //--------------------- Cambiar Estatus --------------------

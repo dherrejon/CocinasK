@@ -575,7 +575,16 @@ var OpcionOperativo =
 
 var OpcionEjecutivo =
 [
-   { 
+    { 
+        Opcion: {texto:"Reportes", id:"reportes"},
+        elemento: [ 
+                    { menu: 1, referencia: "#ReporteMedioCaptacion", texto:"Medio de Captación",  show:false, tipo:"enlace", permiso:[{clave:"EjeRMCConsultar"}]},
+                    { menu: 1, referencia: "#ReporteClienteProspecto", texto:"% Cliente - Prospecto",  show:false, tipo:"enlace", permiso:[{clave:"EjeRCPConsultar"}]},
+                  ]                      
+    },
+    
+    { 
+       
         Opcion: {texto:"Usuario", id:"usuario"},
         elemento: [ 
                         { texto:"Cambiar Contraseña", funcion:"CambiarContraseña", show:true, tipo:"funcion"},

@@ -523,6 +523,8 @@
     $app->put('/ActualizarMedioCaptacionAgregar', $seguridad, $ChecarSesion, 'ActualizarMedioCaptacionAgregar');
     $app->put('/ActualizarMedioCaptacion', $seguridad, $ChecarSesion, 'ActualizarMedioCaptacion');
 
+    $app->post('/GetReporteMedioCaptacion', $seguridad, $ChecarSesion, 'GetReporteMedioCaptacion');
+
     /*------------------ Cita ----------------------------------------------*/
     $app->post('/AgregarCita', $seguridad, $ChecarSesion, 'AgregarCita');
     $app->put('/EditarCita', $seguridad, $ChecarSesion, 'EditarCita');

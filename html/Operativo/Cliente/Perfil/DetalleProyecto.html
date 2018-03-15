@@ -177,6 +177,15 @@
                     <span class="fa fa-chevron-up" style="width:20px;" ng-if="verDetalle.modulo"></span>
                     <span>Módulos</span>
                 </button>
+                
+                
+                <!-- Contador de tipo de módulo -->
+                <div class="row" ng-if="verDetalle.modulo">
+                    <div class="col-xs-6 col-sm-4 col-md-3" ng-repeat="tipo in cantidadTipoModulo | orderBy:'Nombre'" style="margin-bottom:10px">
+                        <span class="textoNumeroTipoModulo">{{tipo.Cantidad}}</span>
+                        <spna class="textoTipoModulo"> {{tipo.Nombre}}(s)</spna> 
+                    </div>
+                </div>
 
                 <div class="table-responsive" ng-if="verDetalle.modulo">
                     <table class="table table-hover table-striped table-condensed">

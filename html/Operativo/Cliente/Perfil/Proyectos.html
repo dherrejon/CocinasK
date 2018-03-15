@@ -91,6 +91,9 @@
                                 <th style="width: 70px"><span class=""><b>#</b></span></th>
                                 <th><span class=""><b>Título</b></span></th>
                                 <th><span class=""><b>Fecha</b></span></th>
+                                <th class="text-center"><span ><b>Des. Cliente</b></span></th>
+                                <th class="text-center"><span class="text-center"><b>Des. Interna</b></span></th>
+
                                 <th class="text-center" style="width: 110px; min-width: 110px"><span>  </span></th>
                                 <th class="text-center" style="width: 30px"><span></span></th>
                               </tr>
@@ -101,8 +104,28 @@
                                  <td>{{presupuesto.PresupuestoId}}</td>
                                  <td> {{presupuesto.Titulo}} </td>
                                  <td>{{presupuesto.FechaCreacion}}</td>
+                                 
+                                 <!-- descripcion cliente -->
+                                 <td class="text-center">
+                                  <a  ng-show="presupuesto.DescripcionCliente" tabindex="0" class="BotonOperacion" role="button" data-toggle="popover" data-trigger="focus" data-placement="bottom" title="Descripción cliente" data-content="{{presupuesto.DescripcionCliente}}" ng-click="AbrirPopover(('dc'+presupuesto.PresupuestoId))" id="dc{{presupuesto.PresupuestoId}}">
+                                      <span class="fa fa-eye  fa-2x"></span>
+                                  </a>
+                                  
+                                  <span ng-if="!presupuesto.DescripcionCliente" class="fa fa-eye fa-2x botonRegistroDeshabilitado"></span>
+                                  
+                                </td> 
                                 
+                                <!-- descripcion interna -->
                                 <td class="text-center">
+                                  <a ng-show="presupuesto.DescripcionInterna" tabindex="0" class="BotonOperacion" role="button" data-toggle="popover" data-trigger="focus" data-placement="bottom" title="Descripción interna" data-content="{{presupuesto.DescripcionInterna}}" ng-click="AbrirPopover(('di'+presupuesto.PresupuestoId))" id="di{{presupuesto.PresupuestoId}}">
+                                      <span class="fa fa-eye  fa-2x"></span>
+                                  </a>
+                                  
+                                  <span ng-if="!presupuesto.DescripcionInterna" class="fa fa-eye fa-2x botonRegistroDeshabilitado"></span>
+                                  
+                                </td> 
+
+                                <td class="text-center" style="width: 110px; min-width: 110px">
                                     <a  class="BotonOperacion contratar" ng-click="Contratar(presupuesto, proyecto)" ng-if="proyecto.EstatusProyecto.EstatusProyectoId != '2'">
                                         <span class="fa fa-handshake-o text-center"></span> Contratar
                                     </a>
