@@ -6728,11 +6728,18 @@ app.controller("ProyectoControlador", function($scope, $rootScope, $location, PR
                 {
                     str = str + " de " + totalPagesExp;
                 }
-
-                doc.setFontSize(10);
-                doc.text(str, 14.11, 287);
                 
-                page = doc.internal.getCurrentPageInfo().pageNumber
+                doc.setFontSize(10);
+
+                doc.text(str, 173, 287);
+                
+                doc.setFontSize(8);
+                
+                var sucursal = "Sucursal " + $scope.UnidadNegocioDato.Ciudad + " " + $scope.UnidadNegocioDato.Estado + "\nDirección " + $scope.UnidadNegocioDato.Domicilio + "\nTeléfono " + $filter('tel')($scope.UnidadNegocioDato.Telefono); ;
+                doc.text(sucursal, 14.11, 280);
+                
+                
+                page = doc.internal.getCurrentPageInfo().pageNumber;
             }
         };
         
@@ -6990,7 +6997,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, $location, PR
             }
         });
         
-        doc.autoTable(unidad.columns, unidad.data,  {
+        /*doc.autoTable(unidad.columns, unidad.data,  {
             startY: doc.autoTable.previous.finalY + 5,
             showHeader: 'never',
             margin: {top: 25},
@@ -7004,7 +7011,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, $location, PR
             {
                 cell.styles.cellPadding = 0;
             }
-        });
+        });*/
         
         
         //doc.setPage(1 + doc.internal.getCurrentPageInfo().pageNumber - doc.autoTable.previous.pageCount);
@@ -7075,7 +7082,14 @@ app.controller("ProyectoControlador", function($scope, $rootScope, $location, PR
                 }
 
                 doc.setFontSize(10);
-                doc.text(str, 14.11, 287);
+
+                doc.text(str, 173, 287);
+                
+                doc.setFontSize(8);
+                
+                var sucursal = "Sucursal " + $scope.UnidadNegocioDato.Ciudad + " " + $scope.UnidadNegocioDato.Estado + "\nDirección " + $scope.UnidadNegocioDato.Domicilio + "\nTeléfono " + $filter('tel')($scope.UnidadNegocioDato.Telefono); ;
+                doc.text(sucursal, 14.11, 280);
+                
                 
                 page = doc.internal.getCurrentPageInfo().pageNumber;
             }

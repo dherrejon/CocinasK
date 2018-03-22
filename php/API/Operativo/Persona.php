@@ -952,5 +952,53 @@ function CambiarEstatusPersona()
     }
 }
 
+function GetReporteClientePersona()
+{
+    global $app;
+    global $session_expiration_time;
+
+    $request = \Slim\Slim::getInstance()->request();
+    $filtro = json_decode($request->getBody());
+    
+    
+    $sql = "SELECT Numero FROM ClientePersonaReporteVista";
+    
+    if($filtro->unidadId == -1 && $filtro->fecha1 == -1 && $filtro->fecha2 == -1)
+    {
+        $sql = "SELECT Numero FROM ClientePersonaReporteVista";
+    }
+    else if($filtro->unidadId != -1 && $filtro->fecha1 == -1 && $filtro->fecha2 == -1)
+    {
+         $sql = "SELECT Numero FROM ClientePersonaReporteVista WHERE UnidadNegocioId = ".$filtro->unidadId."";
+    }
+    else if($filtro->unidadId == -1 && $filtro->fecha1 != -1 && $filtro->fecha2 != -1)
+    {
+         $sql = "SELECT Numero FROM ClientePersonaReporteVista WHERE Registro >= '".$filtro->fecha1."' AND Registro <= '".$filtro->fecha2."'";
+    }
+    else
+    {
+        $sql = "SELECT Numero FROM ClientePersonaReporteVista WHERE UnidadNegocioId = ".$filtro->unidadId." AND Registro >= '".$filtro->fecha1."' AND Registro <= '".$filtro->fecha2."'";
+    }
+    
+    try 
+    {
+        $db = getConnection();
+
+        $stmt = $db->query($sql);
+        $persona = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $db = null;
+        echo json_encode($persona); 
+    } 
+    catch(PDOException $e) 
+    {
+        $db = null;
+        echo $sql;
+        //echo '[ { "Estatus": "Fallo" } ]';
+        //$app->status(409);
+        $app->stop();
+    } 
+    
+}
+
     
 ?>

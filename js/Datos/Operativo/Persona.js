@@ -879,3 +879,22 @@ function CambiarEstatusPersona($http, $q, CONFIG, estatus)
     
     return q.promise;
 }
+
+
+function GetReporteClientePersona($http, $q, CONFIG, datos)     
+{
+    var q = $q.defer();
+
+    $http({      
+          method: 'POST',
+          url: CONFIG.APIURL + '/GetReporteClientePersona',
+          data: datos
+
+      }).success(function(data)
+        {
+              q.resolve(data);
+        }).error(function(data, status){
+            q.resolve([]);
+     }); 
+    return q.promise;
+}

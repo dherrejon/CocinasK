@@ -126,7 +126,6 @@ app.controller("ProyectoClienteControlador", function($scope, $rootScope, CITA, 
             $scope.detalle = data[1].Presupuesto;
             $scope.VerTipoCubierta(data[1].Presupuesto);
             
-            console.log(data[1].Presupuesto.Modulo);
             $scope.CalcularTipoModuloCantidad(data[1].Presupuesto.Modulo);
         }
         else if(opt == "Editar")

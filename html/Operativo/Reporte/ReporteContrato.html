@@ -110,6 +110,8 @@
                             </button>
                         </th>
                         
+                        <th><span class=""><b>Nombre</b></span></th>
+                        
                        <th><span class=""><b># Presupuesto</b></span></th>
                        
                        <th><span class=""><b>Estatus</b></span></th>
@@ -160,6 +162,8 @@
                     <tbody >
                         <tr ng-repeat="contrato in contrato | filter:busqueda">
                             <td>{{contrato.ContratoId}}</td>
+                            
+                            <td>{{contrato.ProyectoNombre}}</td>
                             
                             <td>{{contrato.PresupuestoId}}</td>
                             

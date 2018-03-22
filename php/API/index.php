@@ -565,6 +565,7 @@
     $app->get('/GetPromocionPersona/:id', $seguridad, $ChecarSesion, 'GetPromocionPersona');
 
     $app->post('/GetReportePersonaRegistrada', $seguridad, $ChecarSesion, 'GetReportePersonaRegistrada');
+    $app->post('/GetReporteClientePersona', $seguridad, $ChecarSesion, 'GetReporteClientePersona');
 
     $app->post('/CambiarEstatusPersona', $seguridad, $ChecarSesion, 'CambiarEstatusPersona');
 

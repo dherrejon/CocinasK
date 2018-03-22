@@ -54,6 +54,9 @@ app.controller("DomicilioOperativoControlador", function($scope, $rootScope, $ht
         {
             $scope.otraColonia = true;
         }
+
+        $scope.dir = {estado:"", municipio:"", ciudad:"", colonia:""};
+        $scope.dir = {estado:$scope.nuevoDomicilio.Estado, municipio:$scope.nuevoDomicilio.Municipio, ciudad:$scope.nuevoDomicilio.Ciudad, colonia:$scope.nuevoDomicilio.Colonia};
         
         $('#domicilioModal').modal('toggle');
     });
@@ -74,6 +77,9 @@ app.controller("DomicilioOperativoControlador", function($scope, $rootScope, $ht
         {
             $scope.otraColonia = true;
         }
+        
+        $scope.dir = {estado:"", municipio:"", ciudad:"", colonia:""};
+        $scope.dir = {estado:$scope.nuevoDomicilio.Estado, municipio:$scope.nuevoDomicilio.Municipio, ciudad:$scope.nuevoDomicilio.Ciudad, colonia:$scope.nuevoDomicilio.Colonia};
         
         $('#domicilioModal').modal('toggle');
     });

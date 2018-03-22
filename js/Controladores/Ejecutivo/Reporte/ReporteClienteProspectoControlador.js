@@ -2,27 +2,21 @@ app.controller("ReporteClienteProspectoControlador", function($scope, $rootScope
 {   
     $rootScope.clasePrincipal = "";
     /*----------------verificar los permisos---------------------*/
-    $scope.permiso = {ver: false, actulizarOtro:false};
+    $scope.permiso = {ver: false};
     
     $scope.unidad = [];
     $scope.filtro = {fecha1: "", fecha2: "", unidad: new Object()};
     $scope.buscar = false;
     
-    $scope.medioCaptacion = [];
-    $scope.otro = [];
+    $scope.reporte = new Object();
     
     $scope.IdentificarPermisos = function()
     {
         for(var k=0; k < $scope.usuarioLogeado.Permiso.length; k++)
         {
-            if($scope.usuarioLogeado.Permiso[k] == "EjeRMCConsultar")
+            if($scope.usuarioLogeado.Permiso[k] == "EjeRCPConsultar")
             {
                 $scope.permiso.ver = true;
-            }
-            
-            if($scope.usuarioLogeado.Permiso[k] == "EjeAOMCActualizar")
-            {
-                $scope.permiso.actulizarOtro = true;
             }
         }
     };
@@ -42,18 +36,6 @@ app.controller("ReporteClienteProspectoControlador", function($scope, $rootScope
         }).catch(function(error)
         {
             $scope.unidadNegocio = [];
-            alert(error);
-        });
-    };
-    
-    $scope.GetMedioCaptacion = function()              
-    {
-        GetMedioCaptacion($http, $q, CONFIG).then(function(data)
-        {
-            $scope.medioCaptacionCatalogo = data;
-        
-        }).catch(function(error)
-        {
             alert(error);
         });
     };
@@ -134,27 +116,50 @@ app.controller("ReporteClienteProspectoControlador", function($scope, $rootScope
     };
     
     //---- Enviar Filtro
-    $scope.GetReporteMedioCaptacion = function()
+    $scope.GetReporteClientePersona = function()
     {   
-        GetReporteMedioCaptacion($http, $q, CONFIG, $scope.datos).then(function(data)
+        GetReporteClientePersona($http, $q, CONFIG, $scope.datos).then(function(data)
         {
-            var sql = "SELECT *, IF(MedioUsado = '0', 0, COUNT(*) )AS Numero FROM ?  GROUP BY MedioCaptacionId ORDER BY Nombre";
-            $scope.medioCaptacion = alasql(sql, [data]);
+            $scope.reporte = new Object();
+            $scope.reporte.NumeroPersona = data.length;
+            $scope.reporte.NumeroCliente = 0;
+            $scope.reporte.NumeroClientePro = 0;
+            $scope.reporte.NumeroClienteNormal = 0;
             
-            var sql = "SELECT DISTINCT Otro AS Nombre FROM ? WHERE MedioCaptacionId = '0' ORDER BY Otro ASC";
-            $scope.otro = alasql(sql, [data]);
-            
-            $scope.total = 0;
-            for(var k=0; k<$scope.medioCaptacion.length; k++)
+            for(var k=0; k<data.length; k++)
             {
-                $scope.total += parseInt($scope.medioCaptacion[k].Numero);
+                data[k].Numero = parseInt(data[k].Numero);
+                
+                if(data[k].Numero > 0)
+                {
+                    $scope.reporte.NumeroCliente++;
+                    
+                    if(data[k].Numero > 1)
+                    {
+                        $scope.reporte.NumeroClientePro++;
+                    }
+                    else
+                    {
+                        $scope.reporte.NumeroClienteNormal++;
+                    }
+                }
             }
             
-            for(var k=0; k<$scope.medioCaptacion.length; k++)
-            {
-                $scope.medioCaptacion[k].Porcentaje = parseInt($scope.medioCaptacion[k].Numero)/$scope.total * 100;
-                $scope.medioCaptacion[k].Porcentaje = parseFloat($scope.medioCaptacion[k].Porcentaje.toFixed(2));
-            }
+            $scope.reporte.PorcentajePersona = (($scope.reporte.NumeroPersona - $scope.reporte.NumeroCliente)/$scope.reporte.NumeroPersona)*100;
+            $scope.reporte.PorcentajeCliente = ($scope.reporte.NumeroCliente/$scope.reporte.NumeroPersona)*100;
+            $scope.reporte.PorcentajeClientePro = ($scope.reporte.NumeroClientePro/$scope.reporte.NumeroPersona)*100;
+            $scope.reporte.PorcentajeClienteNormal = ($scope.reporte.NumeroClienteNormal/$scope.reporte.NumeroPersona)*100;
+            
+            
+            $scope.reporte.PorcentajePersona = parseFloat($scope.reporte.PorcentajePersona.toFixed(2));
+            $scope.reporte.PorcentajeCliente = parseFloat($scope.reporte.PorcentajeCliente.toFixed(2));
+            $scope.reporte.PorcentajeClientePro = parseFloat($scope.reporte.PorcentajeClientePro.toFixed(2));
+            $scope.reporte.PorcentajeClienteNormal = parseFloat($scope.reporte.PorcentajeClienteNormal.toFixed(2));
+            
+            $scope.reporte.PorcentajeClienteRedondeado = Math.round($scope.reporte.PorcentajeCliente/10);
+            
+            
+            //$scope.reporte.Leyenda = "Por cada 10 personas registradas" + $scope.reporte.PorcentajeClienteRedondeado + " se convierten en clientes de Cocinas k";
             
             $scope.Graficar();
             
@@ -173,7 +178,7 @@ app.controller("ReporteClienteProspectoControlador", function($scope, $rootScope
         else
         {
             $scope.buscar = true;
-            $scope.GetReporteMedioCaptacion();
+            $scope.GetReporteClientePersona();
         }
     };
     
@@ -239,18 +244,20 @@ app.controller("ReporteClienteProspectoControlador", function($scope, $rootScope
         var label = [];
         var valor = [];
         
-        for(var k=0; k<$scope.medioCaptacion.length; k++)
-        {
-            label[k] = $scope.medioCaptacion[k].Nombre + " (" +  $scope.medioCaptacion[k].Numero + ")";
-            valor[k] = $scope.medioCaptacion[k].Porcentaje;
-        }
+        label[0] = "Personas registradas sin contrato (" + ($scope.reporte.NumeroPersona - $scope.reporte.NumeroCliente) + ")";
+        label[1] = "Personas con un contrato (" + $scope.reporte.NumeroClienteNormal + ")";
+        label[2] = "Personas con más de un contrato (" + $scope.reporte.NumeroClientePro + ")";
         
-        $('#myChart').remove();
+        valor[0] = $scope.reporte.PorcentajePersona;
+        valor[1] = $scope.reporte.PorcentajeClienteNormal;
+        valor[2] = $scope.reporte.PorcentajeClientePro;
         
-        $('#contenedorGrafica').append('<canvas id="myChart"><canvas>');
+        $('#chartCliente').remove();
+        
+        $('#contenedorGraficaCliente').append('<canvas id="chartCliente"><canvas>');
        
         
-        var ctx = document.getElementById('myChart').getContext('2d');
+        var ctx = document.getElementById('chartCliente').getContext('2d');
         var chart = new Chart(ctx, {
             // The type of chart we want to create
             type: 'pie',
@@ -261,7 +268,7 @@ app.controller("ReporteClienteProspectoControlador", function($scope, $rootScope
                 labels: label,
                 datasets: [{
                     label: "My First dataset",
-                    backgroundColor: ['red', 'rgb(250, 97, 21)', 'purple', 'pink', 'skyblue', 'blue', 'green', 'darkgreen', '#F1C40F', 'lightgray', 'black', 'darkred', '#D7BDE2', '#48C9B0', '#34495E', '#F39C12', '#33FCFF'],
+                    backgroundColor: ['lightgray', 'red', 'rgb(250, 97, 21)'],
                     borderColor: 'rgb(255, 255, 255)',
                     data: valor,
                 }],
@@ -271,140 +278,6 @@ app.controller("ReporteClienteProspectoControlador", function($scope, $rootScope
             options: {}
         });  
     };
-    
-    
-    
-    //-------------------- Otro Medio Captacion -------------------------------------------------
-    $scope.AbrirMedioCaptacionOtro = function()
-    { 
-        $scope.InicializarOtroMedioCaptacion();
-        
-        $('#medioCaptacionModalOtroReporte').modal('toggle');
-    };
-    
-    $scope.InicializarOtroMedioCaptacion = function()
-    {
-        for(var k=0; k<$scope.otro.length; k++)
-        {
-            $scope.otro[k].Seleccionado = false;
-        }
-        
-        $scope.otroNuevo = false;
-        $scope.medioCaptacionOtro = new MedioCaptacion();
-        $scope.mensajeErrorOtro = [];
-    };
-    
-    $scope.CambiarMedioCaptacion = function(medio)
-    {
-        if(medio == "Nuevo")
-        {
-            $scope.otroNuevo  = true;
-            $scope.medioCaptacionOtro = new MedioCaptacion();
-        }
-        else
-        {
-            $scope.otroNuevo = false;
-            $scope.medioCaptacionOtro = medio;
-        }
-        
-    };
-    
-    $scope.TerminarMedioCaptacionOtro = function(nombreInvalido)
-    {
-        if(!$scope.ValidarDatosOtroMedioCaptacion(nombreInvalido))
-        {
-            return;
-        }
-        else
-        {
-            $scope.medioCaptacionOtro.Otro = $scope.otro;
-            $scope.medioCaptacionOtro.Nuevo = $scope.otroNuevo;
-            $scope.ActualizarMedioCaptacion();
-        }
-    };
-    
-    $scope.ActualizarMedioCaptacion = function()
-    {
-        ActualizarMedioCaptacion($http, CONFIG, $q, $scope.medioCaptacionOtro).then(function(data)
-        {
-            if(data[0].Estatus == "Exitoso")
-            {
-                //$('#medioCaptacionModalOtro').modal('toggle');
-                $scope.mensaje = "El medio de captación se ha actualizado.";
-                
-                $scope.GetReporteMedioCaptacion();
-                
-                if($scope.otroNuevo)
-                {
-                    $scope.GetMedioCaptacion();
-                }
-                
-                $scope.InicializarOtroMedioCaptacion();
-            }
-            else
-            {
-                $scope.mensaje = "Ha ocurrido un error. Intente más tarde";   
-            }
-            $('#mensajeMedioCaptacionReporte').modal('toggle');
-        }).catch(function(error)
-        {
-            $scope.mensaje = "Ha ocurrido un error. Intente más tarde. Error: " + error;
-            $('#mensajeMedioCaptacionReporte').modal('toggle');
-        });
-    };
-    
-    $scope.ValidarDatosOtroMedioCaptacion = function(nombreInvalido)
-    {
-        $scope.mensajeErrorOtro = [];
-        if($scope.otroNuevo)
-        {
-            if(nombreInvalido)
-            {
-                $scope.mensajeErrorOtro[$scope.mensajeErrorOtro.length] = "*El nombre solo puede tener los siguientes caracteres: letras, números, '.', '+', '-' y '#'.";
-            }
-            else
-            {
-                for(var k=0; k<$scope.medioCaptacionCatalogo.length; k++)
-                {
-                    if($scope.medioCaptacionOtro.Nombre.toLowerCase() == $scope.medioCaptacion[k].Nombre.toLowerCase())
-                    {
-                        $scope.mensajeErrorOtro[$scope.mensajeErrorOtro.length] = "*El medio de captación " + $scope.medioCaptacionOtro.Nombre.toLowerCase() + " ya existe.";
-                        return false;
-                    }
-                }
-            }
-        }
-        else
-        {
-            if(!$scope.medioCaptacionOtro.Nombre)
-            {
-                $scope.mensajeErrorOtro[$scope.mensajeErrorOtro.length] = "*Selecciona un medio de captación.";
-            }
-        }
-        
-        var seleccionado = false;
-        for(var k=0; k<$scope.otro.length; k++)
-        {
-            if($scope.otro[k].Seleccionado)
-            {
-                seleccionado = true;
-            }
-        }
-        if(!seleccionado)
-        {
-            $scope.mensajeErrorOtro[$scope.mensajeErrorOtro.length] = "*Selecciona mínimo un medio de captación a actualizar.";
-        }
-        
-        if($scope.mensajeErrorOtro.length>0)
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
-    };
- 
 
     /*------------------Indentifica cuando los datos del usuario han cambiado-------------------*/
     $scope.Inicializar = function()
@@ -418,7 +291,7 @@ app.controller("ReporteClienteProspectoControlador", function($scope, $rootScope
         else
         {
             $scope.GetUnidadNegocio();
-            $scope.GetMedioCaptacion();
+            $scope.GetContratoFiltro();
         }
     };
     

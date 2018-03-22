@@ -2575,7 +2575,10 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
             });
         }
         
-        pageContent();
+        
+        lastH = doc.autoTable.previous.finalY;
+        
+        //pageContent();
         
         //especificaciones
         if($scope.contrato.Especificacion.length > 0)
@@ -2594,10 +2597,10 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
             
             wc += 7;
             
-            doc.addPage();
             
             doc.autoTable(espt.columns, espt.data, {
-            margin: {top: 25},
+            margin: {top: 25,  bottom: 65},
+            startY: lastH + 5,
             addPageContent: pageContent,
             headerStyles: {fillColor: [255, 255, 255], textColor: 20, fontStyle: 'bold', halign:'center', fontSize: 14}, 
             styles: {overflow: 'linebreak'},
@@ -2607,7 +2610,8 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
             lastH = doc.autoTable.previous.finalY;
             
             doc.autoTable(esp.columns, esp.data,  {
-                margin: {top: 25},
+                margin: {top: 25, bottom: 50},
+                addPageContent: pageContent,
                 startY: lastH + 5,
                 headerStyles: {fillColor: [230, 230, 230], fontSize:10, textColor: [0,0, 0], halign:'left', fontStyle: 'bold'},
                 styles: { overflow: 'linebreak', fontSize:10, fillColor: [255, 255, 255], textColor: [0, 0, 0]},
