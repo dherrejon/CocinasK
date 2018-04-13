@@ -503,7 +503,7 @@ var OpcionAdministrador =
             
                         { menu: 2, referencia: "", texto:"Clientes", show:false, tipo:"dropdownlist", id:"ConfigurarModulo", clase:"dropdown-submenu", divider:true,
                                 opcion:[
-                                            { referencia: "#ConfigurarCliente", texto:"Configuración", show:false, permiso:[{clave:"ConMCaConsultar"}]}
+                                            { referencia: "#ConfigurarCliente", texto:"Configuración", show:false, permiso:[{clave:"ConMCaConsultar"}, {clave:"AdmEncConsultar"}]}
                                        ]
                         }, 
             

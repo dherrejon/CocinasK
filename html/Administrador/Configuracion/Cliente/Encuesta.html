@@ -1,0 +1,350 @@
+<div ng-controller="EncuestaControlador as encuesta" ng-init="GetEncuesta()">
+    
+    <div class="row">
+       
+        <div class="col-md-11 col-xs-10">
+           <div class="pull-right">
+                <button class="btn  botonIrA" data-toggle="tooltip" data-placement="bottom" title="Cambiar los medios de captación con la etiqueta 'Otros'" ng-click="AbrirMedioCaptacionOtro()">
+                    <span> Encuestas </span>
+                    <span class="fa fa-arrow-right"></span>
+                </button>
+            </div>
+        </div>
+        <br>
+            
+        <div class="col-md-11 col-xs-10">            
+            <div class="table-responsive TablaUnidadNegocio">
+                <table class="table table-hover table-striped table-condensed">
+                    <thead class="TituloTabla">
+                      <tr>
+                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenarMedioCaptacion('Nombre')"><b>Nombre </b><b ng-if="ordenarPorMedioCaptacion === 'Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPorMedioCaptacion === '-Nombre'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonFalso"><b>Editar</b></button></th>
+                        <th><button class="btn botonFalso"><b>Activo</b></button></th>
+                      </tr>
+                    </thead>
+                    <tbody >
+                      <tr ng-repeat="medio in medioCaptacion | orderBy:[ordenarPorMedioCaptacion, 'Nombre'] | filter:{Nombre:buscarMedioCaptacion}" ng-if="medio.MedioCaptacionId > 0">
+                        <td>{{medio.Nombre}}</td>
+
+                        <td class="text-center">
+                            <a ng-if="permisoUsuario.medioCaptacion.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirMedioCaptacion('Editar', medio)">
+                                <span class="fa fa-pencil fa-2x"></span>
+                            </a>
+
+                            <span ng-if="!permisoUsuario.medioCaptacion.editar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
+                        </td>
+
+                        <td class="text-center">
+                            <div class="checkbox">
+                                <label>
+                                    <input ng-disabled="!permisoUsuario.medioCaptacion.activar" ng-model="medio.Activo" type="checkbox" value="" ng-click="ActivarDesactivarMedioCaptacion(medio)">
+                                    <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+                                </label>
+                            </div>
+                        </td>
+
+                      </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-xs-2 col-md-1">
+             <button ng-disabled="!permisoUsuario.medioCaptacion.agregar"  class="btn btn-block botonOperacion fa fa-plus text-center" data-toggle="tooltip" data-placement="bottom" title="Agregar Medio de Captación" ng-click="AbrirMedioCaptacion('Agregar', null)"></button>
+             
+             <br><br>
+             <!-- Boton buscar -->
+            <div class="dropdown">
+                
+                <button class="btn btn btn-block botonOperacion fa fa-search text-center" data-toggle="dropdown" ></button>
+                    
+                <ul class="dropdown-menu dropdown-menu-right operacionPanel">
+
+                    <li style="width: 225px; height: 35px !important;">
+
+                        <form role="buscar" style="max-width: 200px; height: 25px !important;">
+                            <div class="input-group" >
+                              <input  type="text" class="form-control operacionPanelEntrada" placeholder="Buscar" style="margin-left: 5px; width: 175px;" ng-model="buscarMedioCaptacion">
+                              <span class="input-group-btn" style="width: 25px;">
+                                <button class="btn operacionPanelBoton" type="button">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                              </span>
+                            </div>
+                        </form>
+                    </li>
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+                     
+     <!------------------------------------ Modales -------------------------------------------------------------------->
+                      
+    <!---- Modal para Agregar-editar medio de captacion -->
+    <div class="modal fade" id="medioCaptacionModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static" >
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <!-- encabezado del modal -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarMedioCaptacion()"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center" ng-if="operacion === 'Agregar'">Agregar Medio de Captación</h3>
+                            <h3 class="text-center" ng-if="operacion === 'Editar'">Editar Medio de Captación</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+                <br>
+
+                <form class="modal-body" name="medioCaptacionForma">
+                    <div class="row">
+                    
+                        <div class="col-sm-6" style="margin-top:10px">
+                            <!-- Nombre -->
+                             <div class="entrada2">
+                                <input ng-pattern="erNombreGeneral" type="text" required class="{{claseMedioCaptacion.nombre}} form-control" name="nombre" ng-model="nuevoMedioCaptacion.Nombre"/>
+                                <label>Nombre</label>
+                            </div>
+                        </div>
+                        <br class="hidden-sm hidden-md hidden-lg">
+                        <!-- Activo -->
+                       <div class="col-sm-6" style="margin-top:10px">
+                             <label class="btn checkBoxActivo">Medio Captación Activo <input type="checkbox" class="badgebox" ng-model="nuevoMedioCaptacion.Activo"><span class="badge">&check;</span></label>
+                        </div>
+
+                    </div>
+                    <br>
+                    <!-------- mensaje de error ---->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div ng-repeat="error in mensajeError">
+                                <span class="textoError">{{error}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!---- botones de operacion --->
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <button class="btn botonCancelar btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarMedioCaptacion()">CANCELAR</button>
+                        </div>
+                        
+                        <div class="col-xs-6">
+                            <button focus class="btn botonAvanzar btn-block" ng-click="TerminarMedioCaptacion(medioCaptacionForma.nombre.$invalid)">TERMINAR</button>
+                        </div>
+                    </div>
+                    <br>
+                </form>
+            </div>
+            <br><br><br>
+        </div>
+    </div>
+        
+    <!---- Modal para actualizar medio de captacion -->
+    <div class="modal fade" id="medioCaptacionModalOtro" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static" >
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <!-- encabezado del modal -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="margenModal">
+                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarMedioCaptacionOtro()"><span aria-hidden="true">&times;</span></button>
+                            <h3 class="text-center">Actualizar Medio de Captación Otro</h3>
+                            <hr class="separador">
+                        </div>
+                    </div>
+                </div>
+
+                <form class="modal-body" name="medioCaptacionOtroForma">
+                    <div class="row">
+                      
+                       <div class="col-sm-6" ng-if="otroNuevo">
+                           <br>
+                            <div class="input-group">
+                              
+                                <div class="entrada2" >
+                                    <input ng-pattern="erNombreGeneral" type="text" required class="entrada form-control" name="nombre" ng-model="medioCaptacionOtro.Nombre"/>
+                                    <label>Nuevo Medio Captación...</label>
+                                </div> 
+                             
+                                <div class="input-group-btn">
+                                    <div class="dropdown">
+                                       <button  type="button" class="btn botonPanelOculto" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <span class="caret"></span>
+                                        </button>
+
+                                        <ul class="dropdown-menu dropdown-menu-right elemetosDropdownListModal">
+
+                                           <li> <a href="" class="dropdownOpcionModal text-center" ng-click="CambiarMedioCaptacion('Nuevo')"> 
+                                                <span>NUEVO</span>
+                                            </a></li>
+                                            <div role="separator" class="dropdown-divider"></div>
+
+                                            <li ng-repeat="medio in medioCaptacion  | orderBy:'Nombre'" ng-if="medio.MedioCaptacionId !=  '0' ">
+                                                <a  href="" class="dropdownOpcionModal"  ng-click="CambiarMedioCaptacion(medio)">
+                                                    <span>{{medio.Nombre}}</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                                
+                        </div>
+                        
+                        <div class="col-sm-6" ng-if="!otroNuevo">
+                            <label>Medio de Captación</label>
+                             <div class="dropdown">
+
+                                <button class="dropdown-toggle  {{claseOtro.medio}} " data-toggle="dropdown">
+                                    <span>{{medioCaptacionOtro.Nombre}}</span>
+                                    <span class="caret"></span>
+                                </button>
+
+                                <ul class="dropdown-menu elemetosDropdownListModal">
+                                   <li> <a href="" class="dropdownOpcionModal text-center" ng-click="CambiarMedioCaptacion('Nuevo')"> 
+                                        <span>NUEVO</span>
+                                    </a></li>
+                                    <div role="separator" class="dropdown-divider"></div>
+                                    
+                                    <li ng-repeat="medio in medioCaptacion | orderBy:'Nombre'"  ng-if="medio.MedioCaptacionId !=  '0' ">
+                                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarMedioCaptacion(medio)">
+                                            <span>{{medio.Nombre}}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row" ng-if="medioOtro.length > 0">
+                        <div class="col-xs-12 subtituloModal">
+                            Seleccionas los medios de captación que desees actualizar.
+                        </div>
+                        <br> <br>
+                        <div class="col-xs-12">
+                            <div class="piezaPorComponenteTabla">
+                                <table class="table table-hover">
+                                    <thead class="TituloTabla">
+                                      <tr>
+                                        <th><button class="btn botonOrdenar"><b>Nombre</b></button></th>
+                                        <th><button class="btn botonFalso"><b>Seleccionar</b></button></th>
+                                      </tr>
+                                    </thead>
+                                    <tbody ng-repeat="medio in medioOtro | orderBy:'Nombre'">
+                                      <tr>
+
+                                        <td>{{medio.Nombre}}</td>
+
+                                        <td class="text-center">
+                                            <div class="checkbox">
+                                                <label>
+                                                    <input ng-disabled="!permisoUsuario.medioCaptacion.activar" ng-model="medio.Seleccionado" type="checkbox" value="">
+                                                    <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+                                                </label>
+                                            </div>
+                                        </td>
+
+                                      </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" ng-if="medioOtro.length == 0">
+                        <br>
+                        <div class="col-xs-12 subtituloModal">
+                            <span class="recuperarPassword">No hay clientes con medio de captación "Otro".</span>
+                        </div>
+                    </div>
+                    <br>
+                    <!-------- mensaje de error ---->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div ng-repeat="error in mensajeError">
+                                <span class="textoError">{{error}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!---- botones de operacion --->
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <button class="btn botonCancelar btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarMedioCaptacionOtro()">CANCELAR</button>
+                        </div>
+                        
+                        <div class="col-xs-6">
+                            <button focus class="btn botonAvanzar btn-block" ng-click="TerminarMedioCaptacionOtro(medioCaptacionOtroForma.nombre.$invalid)">TERMINAR</button>
+                        </div>
+                    </div>
+                    <br>
+                </form>
+            </div>
+            <br><br><br>
+        </div>
+    </div>
+         
+    <!-- Desactivar Modal -->
+    <div class="modal fade" id="modalActivarDesactivarMedioCaptacion" data-keyboard="false" data-backdrop="static">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                
+                <div class="modal-body">
+                    <br>
+                    <div class="panel panel-default modalMensaje">
+                        <br>
+                        <b>{{mensajeAdvertencia}}</b>
+                        <br><br>
+
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <button class="btn botonCancelar" data-dismiss="modal" aria-label="Close" ng-click="CancelarEstatusActivoMedioCaptacion()">No</button>
+                            </div>
+                            <div class="col-xs-6">
+                                <button class="btn botonAvanzar" data-dismiss="modal" aria-label="Close" ng-click="ConfirmarActualizarTipoAccesorio()">Si</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div> 
+    
+    <!-- Modal para mensajes -->
+    <div class="modal fade" id="mensajeMedioCaptacion">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                
+                <div class="modal-body">
+                    <div class="panel panel-default modalMensaje">
+                        <br>
+                        <b>{{mensaje}}</b>
+
+                        <br><br>
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <button class="btn  botonAvanzar" data-dismiss="modal" aria-label="Close">Aceptar</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>  
+                        
+</div>
+
+     

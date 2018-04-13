@@ -7240,7 +7240,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, $location, PR
             }
         });
         
-        doc.autoTable(unidad.columns, unidad.data,  {
+        /*doc.autoTable(unidad.columns, unidad.data,  {
             startY: doc.autoTable.previous.finalY + 5,
             margin: {top: 25},
             showHeader: 'never',
@@ -7254,7 +7254,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, $location, PR
             {
                 cell.styles.cellPadding = 0;
             }
-        });
+        });*/
         
         var nombre = 'PC_' + $scope.presupuesto.Persona.Nombre + $scope.presupuesto.Persona.PrimerApellido + $scope.presupuesto.PresupuestoId + ".pdf";
         

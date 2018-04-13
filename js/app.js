@@ -1,6 +1,12 @@
 var app = angular.module('CocinasK',['ngRoute', 'angular.filter','angular-md5', 'angular-loading-bar', 'ui.bootstrap']);
 
  //Configuracion del jason token, APIURL: indica la direccion del directorio de index.php
+
+function getUrlBase ()
+{
+    return "php/API/index.php/";
+}
+
 app.constant('CONFIG',
 {        
         APIURL: "php/API/index.php",

@@ -42,9 +42,17 @@
                 <div class="tab-content">
                     
                     <!-- Medio Captacion -->
-                    <div role="tabpanel" class="tab-pane in active" id="MedioCaptacion" ng-if="permisoUsuario.medioCaptacion.consultar">
+                    <div role="tabpanel" class="tab-pane" id="MedioCaptacion" ng-if="permisoUsuario.medioCaptacion.consultar ">
+                      <br> 
+                        <div ng-include=" 'html/Administrador/Configuracion/Cliente/MedioCaptacion.html' " ng-if="titulo == 'Medio de Captación'">
+                            
+                        </div>
+                    </div>
+                    
+                    <!-- Encuesta -->
+                    <div role="tabpanel" class="tab-pane in active" id="Encuesta" ng-if="permisoUsuario.encuesta.consultar ">
                       <br>  
-                        <div ng-include=" 'html/Administrador/Configuracion/Cliente/MedioCaptacion.html' ">
+                        <div ng-include=" 'html/Administrador/Configuracion/Cliente/Encuesta.html' " ng-if="titulo == 'Encuestas'">
                             
                         </div>
                     </div>

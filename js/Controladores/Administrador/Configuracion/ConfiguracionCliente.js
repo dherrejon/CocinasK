@@ -3,7 +3,8 @@ app.controller("ConfiguaracionClinete", function($scope, $http, $q, CONFIG, $roo
     $rootScope.clasePrincipal = "";
     
     $scope.permisoUsuario = {
-                            medioCaptacion:{consultar:false, agregar:false, editar:false, activar:false}
+                            medioCaptacion:{consultar:false, agregar:false, editar:false, activar:false},
+                            encuesta:{consultar:false, agregar:false, editar:false, activar:false}
                             };
     
     $scope.IdentificarPermisos = function()
@@ -26,21 +27,43 @@ app.controller("ConfiguaracionClinete", function($scope, $http, $q, CONFIG, $roo
             {
                 $scope.permisoUsuario.medioCaptacion.activar= true;
             }
+            
+            if($scope.usuarioLogeado.Permiso[k] == "AdmEncConsultar")
+            {
+                $scope.permisoUsuario.encuesta.consultar = true;
+            }
+            else if($scope.usuarioLogeado.Permiso[k] == "AdmEncAgregar")
+            {
+                $scope.permisoUsuario.encuesta.agregar= true;
+            }
+            else if($scope.usuarioLogeado.Permiso[k] == "AdmEncEditar")
+            {
+                $scope.permisoUsuario.encuesta.editar = true;
+            }
+            else if($scope.usuarioLogeado.Permiso[k] == "AdmEncActivar")
+            {
+                $scope.permisoUsuario.encuesta.activar= true;
+            }
         }
     };
     
-    $scope.titulo = "Medio de Captación";
+    $scope.titulo = "Encuestas";
     $scope.tabs = tabConfigurarClientes;
     
     //Cambia el contenido de la pestaña
     $scope.SeleccionarTab = function(tab, index)    
     {
         $scope.titulo = tab.titulo;
-        
+    
         switch (index)
         {
             case 0:  
                 $('#MedioCaptacion').show();
+                $('#Encuesta').hide();
+                break;
+            case 1:  
+                $('#Encuesta').show();
+                $('#MedioCaptacion').hide();
                 break;
             default:
                 break;
@@ -57,7 +80,7 @@ app.controller("ConfiguaracionClinete", function($scope, $http, $q, CONFIG, $roo
             if($scope.usuarioLogeado.PerfilSeleccionado == "Administrador")
             {
                 $scope.IdentificarPermisos();
-                if(!$scope.permisoUsuario.medioCaptacion.consultar)
+                if(!$scope.permisoUsuario.medioCaptacion.consultar && !$scope.permisoUsuario.encuesta.consultar)
                 {
                    $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
                 }
@@ -93,7 +116,7 @@ app.controller("ConfiguaracionClinete", function($scope, $http, $q, CONFIG, $roo
             if($scope.usuarioLogeado.PerfilSeleccionado == "Administrador")
             {
                 $scope.IdentificarPermisos();
-                if(!$scope.permisoUsuario.medioCaptacion.consultar)
+                if(!$scope.permisoUsuario.medioCaptacion.consultar && !$scope.permisoUsuario.encuesta.consultar)
                 {
                    $rootScope.VolverAHome($scope.usuarioLogeado.PerfilSeleccionado);
                 }
@@ -114,5 +137,6 @@ app.controller("ConfiguaracionClinete", function($scope, $http, $q, CONFIG, $roo
 //Pestañas
 var tabConfigurarClientes = 
     [
-        {titulo:"Medio de Captación", referencia: "#MedioCaptacion", clase:"active", area:"medioCaptacion"}
+        {titulo:"Medio de Captación", referencia: "#MedioCaptacion", clase:"", area:"medioCaptacion"},
+        {titulo:"Encuestas", referencia: "#Encuesta", clase:"active", area:"encuesta"}
     ];

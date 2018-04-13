@@ -745,6 +745,8 @@ app.controller("ContratoClienteControlador", function($scope, $rootScope, CITA, 
     
     $scope.AgregarPago = function()
     {   
+        $scope.nuevoPago.UsuarioId = $scope.usuario.UsuarioId;
+            
         AgregarPago($http, $q, CONFIG, $scope.nuevoPago).then(function(data)
         {
             if(data[0].Estatus == "Exitoso")

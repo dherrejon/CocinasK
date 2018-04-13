@@ -27,6 +27,7 @@
     require 'Administrador/Promocion.php';
     require 'Administrador/PlanPago.php';
     require 'Administrador/MedioCaptacion.php';
+    require 'Administrador/Encuesta.php';
     require 'Administrador/TipoProyecto.php';
     require 'Administrador/Variable.php';
     require 'Administrador/ConceptoVenta.php';

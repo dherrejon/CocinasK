@@ -178,6 +178,7 @@
                                     <thead class="TituloTabla" style="background: lightgray; border-color: lightgray; color:black">
                                       <tr>
                                         <th><span class=""><b>Fecha</b></span></th>
+                                        <th><span class=""><b>Registró</b></span></th>
                                         <th><span class=""><b># Doc. Fiscal</b></span></th>
                                         <th><span class=""><b>Cantidad</b></span></th>
                                       </tr>
@@ -187,6 +188,9 @@
                                         
                                         <tr ng-repeat="pago in contrato.EstadoCuenta.Pago">
                                             <td>{{pago.FechaFormato}} {{pago.Hora}}</td>
+                                            
+                                            <td>{{pago.Colaborador}}</td>
+                                            
                                             <td>
                                                 {{pago.NoNotaCargo == '' ? 'Fac: ' : 'NC: '}} 
                                                 {{pago.NumeroDocumentoFiscal}}
@@ -250,6 +254,7 @@
                                         
                                         <tr >
                                            <td>{{contrato.FechaVentaFormato}}</td>
+                                           <td></td>
                                            <td>{{contrato.NoFactura != null ? 'Fac: ' + contrato.NoFactura : 'Sin factura'}}</td>
                                            <td class="textoRojo"><b>- {{contrato.TotalContrato | currency}}</b></td>
                                         </tr>

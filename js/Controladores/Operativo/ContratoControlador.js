@@ -2073,6 +2073,7 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
         $scope.contrato.CancelarAnticipo = false;
         if($scope.operacion == "Editar")
         {
+            console.log($scope.contratoAux);
             if(!$scope.ModificarCompleto)
             {
                 if($scope.contratoAux.NoNotaCargo != $scope.contrato.NoNotaCargo)

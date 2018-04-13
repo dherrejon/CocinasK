@@ -470,13 +470,13 @@ function AgregarContrato()
     $countMeses = count($contrato->PagoMeses);
     $countContado = count($contrato->PagoContado);
 
-    $sql = "INSERT INTO PagoContrato(ContratoId, MedioPagoId, TipoPagoId, Pago, Fecha, NoNotaCargo, Concepto) VALUES";
+    $sql = "INSERT INTO PagoContrato(ContratoId, MedioPagoId, TipoPagoId, Pago, Fecha, NoNotaCargo, Concepto, UsuarioId) VALUES";
 
     if($contrato->TotalContado > 0)
     {
         for($k=0; $k<$countContado; $k++)
         {
-            $sql .= " ('".$contrato->ContratoId."', '".$contrato->PagoContado[$k]->MedioPago->MedioPagoId."', 1, '".$contrato->PagoContado[$k]->Pago."', NOW() - INTERVAL 9 HOUR, '".$contrato->NoNotaCargo."', 'Anticipo'),";
+            $sql .= " ('".$contrato->ContratoId."', '".$contrato->PagoContado[$k]->MedioPago->MedioPagoId."', 1, '".$contrato->PagoContado[$k]->Pago."', NOW() - INTERVAL 9 HOUR, '".$contrato->NoNotaCargo."', 'Anticipo', '".$contrato->UsuarioId."'),";
         }
     }
 
@@ -484,7 +484,7 @@ function AgregarContrato()
     {
         for($k=0; $k<$countMeses; $k++)
         {
-            $sql .= " ('".$contrato->ContratoId."', '".$contrato->PagoMeses[$k]->MedioPago->MedioPagoId."', 2, '".$contrato->PagoMeses[$k]->Pago."', NOW() - INTERVAL 9 HOUR, '".$contrato->NoNotaCargo."', 'Anticipo'),";
+            $sql .= " ('".$contrato->ContratoId."', '".$contrato->PagoMeses[$k]->MedioPago->MedioPagoId."', 2, '".$contrato->PagoMeses[$k]->Pago."', NOW() - INTERVAL 9 HOUR, '".$contrato->NoNotaCargo."', 'Anticipo', '".$contrato->UsuarioId."'),";
         }
     }
 
@@ -747,14 +747,14 @@ function AgregarPago()
 
     $count = count($pago->Pago);
 
-    $sql = "INSERT INTO PagoContrato(ContratoId, MedioPagoId, TipoPagoId, Pago, Fecha, NoNotaCargo, Concepto) VALUES";
+    $sql = "INSERT INTO PagoContrato(ContratoId, MedioPagoId, TipoPagoId, Pago, Fecha, NoNotaCargo, Concepto, UsuarioId) VALUES";
 
 
     if($count > 0)
     {
         for($k=0; $k<$count; $k++)
         {
-            $sql .= " ('".$pago->ContratoId."', '".$pago->Pago[$k]->MedioPago->MedioPagoId."', 2, '".$pago->Pago[$k]->Pago."', NOW() - INTERVAL 9 HOUR, '".$pago->NoNotaCargo."', 'Abono'),";
+            $sql .= " ('".$pago->ContratoId."', '".$pago->Pago[$k]->MedioPago->MedioPagoId."', 1, '".$pago->Pago[$k]->Pago."', NOW() - INTERVAL 9 HOUR, '".$pago->NoNotaCargo."', 'Abono', '".$pago->UsuarioId."')";
         }
     }
 
@@ -769,7 +769,7 @@ function AgregarPago()
     } 
     catch(PDOException $e) 
     {
-        echo($e);
+        echo($sql);
         $db->rollBack();
         echo '[ { "Estatus": "Fallo" } ]';
         $app->status(409);
@@ -1291,7 +1291,7 @@ function CancelarPago()
     $request = \Slim\Slim::getInstance()->request();
     $datos = json_decode($request->getBody());
 
-    $sql = "SELECT COUNT(*) as Numero FROM UsuarioCompleto WHERE NombreUsuario = '".$datos->Usuario."' AND Password = '".$datos->Password2."' AND Clave='OpeCaPConsultar'";
+    $sql = "SELECT COUNT(*) as Numero, UsuarioId FROM UsuarioCompleto WHERE NombreUsuario = '".$datos->Usuario."' AND Password = '".$datos->Password2."' AND Clave='OpeCaPConsultar'";
 
     try 
     {   
@@ -1300,6 +1300,7 @@ function CancelarPago()
         $response = $stmt->fetchAll(PDO::FETCH_OBJ);
 
         $count = $response[0]->Numero;
+        $usuarioId = $response[0]->UsuarioId;
     }
     catch(PDOException $e) 
     {    
@@ -1311,8 +1312,8 @@ function CancelarPago()
     
     if($count == 1)
     {
-        $sql = "INSERT INTO PagoContrato(ContratoId, MedioPagoId, TipoPagoId, Pago, Fecha, NoNotaCargo, Concepto, MotivoCancelacion, Cancelado) VALUES
-                ('".$datos->ContratoId."', 0, 1, '".$datos->Descuento."', NOW() - INTERVAL 9 HOUR, '".$datos->NoNotaCargo."', 'Cancelación', '".$datos->Motivo."', '1')";
+        $sql = "INSERT INTO PagoContrato(ContratoId, MedioPagoId, TipoPagoId, Pago, Fecha, NoNotaCargo, Concepto, MotivoCancelacion, Cancelado, UsuarioId) VALUES
+                ('".$datos->ContratoId."', 0, 1, '".$datos->Descuento."', NOW() - INTERVAL 9 HOUR, '".$datos->NoNotaCargo."', 'Cancelación', '".$datos->Motivo."', '1', '".$usuarioId."')";
 
 
         try 
@@ -1858,13 +1859,13 @@ function EditarContrato()
     
     if($count > 0)
     {
-        $sql = "INSERT INTO PagoContrato(ContratoId, MedioPagoId, TipoPagoId, Pago, Fecha, NoNotaCargo, Concepto, MotivoCancelacion, Cancelado) VALUES";
+        $sql = "INSERT INTO PagoContrato(ContratoId, MedioPagoId, TipoPagoId, Pago, Fecha, NoNotaCargo, Concepto, MotivoCancelacion, Cancelado, UsuarioId) VALUES";
         
         if($count > 0)
         {
             for($k=0; $k<$count; $k++)
             {
-                $sql .= " ('".$contrato->ContratoId."', '".$contrato->AbonoContrato[$k]->MedioPagoId."', '".$contrato->AbonoContrato[$k]->TipoPagoId."', '".$contrato->AbonoContrato[$k]->Pago."', STR_TO_DATE('".$contrato->AbonoContrato[$k]->Fecha." ".$contrato->AbonoContrato[$k]->Hora."', '%Y-%m-%d %H:%i'), '".$contrato->AbonoContrato[$k]->NoNotaCargo."', '".$contrato->AbonoContrato[$k]->Concepto."', '".$contrato->AbonoContrato[$k]->MotivoCancelacion."',  '".$contrato->AbonoContrato[$k]->Cancelado."'),";
+                $sql .= " ('".$contrato->ContratoId."', '".$contrato->AbonoContrato[$k]->MedioPagoId."', '".$contrato->AbonoContrato[$k]->TipoPagoId."', '".$contrato->AbonoContrato[$k]->Pago."', STR_TO_DATE('".$contrato->AbonoContrato[$k]->Fecha." ".$contrato->AbonoContrato[$k]->Hora."', '%Y-%m-%d %H:%i'), '".$contrato->AbonoContrato[$k]->NoNotaCargo."', '".$contrato->AbonoContrato[$k]->Concepto."', '".$contrato->AbonoContrato[$k]->MotivoCancelacion."',  '".$contrato->AbonoContrato[$k]->Cancelado."', '".$contrato->UsuarioId."'),";
             }
 
             $sql = rtrim($sql, ",");
@@ -1921,8 +1922,8 @@ function EditarContrato()
         }
         
         
-        $sql = "INSERT INTO PagoContrato(ContratoId, MedioPagoId, TipoPagoId, Pago, Fecha, NoNotaCargo, Concepto, MotivoCancelacion, Cancelado) VALUES
-                ('".$contrato->ContratoId."', 0, 1, '-".$anticipo[0]->Anticipo."', NOW() - INTERVAL 9 HOUR, '".$anticipo[0]->NoNotaCargo."', 'Cancelación', 'Modificación del Contrato', '1')";
+        $sql = "INSERT INTO PagoContrato(ContratoId, MedioPagoId, TipoPagoId, Pago, Fecha, NoNotaCargo, Concepto, MotivoCancelacion, Cancelado, UsuarioId) VALUES
+                ('".$contrato->ContratoId."', 0, 1, '-".$anticipo[0]->Anticipo."', NOW() - INTERVAL 9 HOUR, '".$anticipo[0]->NoNotaCargo."', 'Cancelación', 'Modificación del Contrato', '1', '".$contrato->UsuarioId."')";
 
 
         try 
@@ -1942,7 +1943,7 @@ function EditarContrato()
         $countMeses = count($contrato->PagoMeses);
         $countContado = count($contrato->PagoContado);
 
-        $sql = "INSERT INTO PagoContrato(ContratoId, MedioPagoId, TipoPagoId, Pago, Fecha, NoNotaCargo, Concepto) VALUES";
+        $sql = "INSERT INTO PagoContrato(ContratoId, MedioPagoId, TipoPagoId, Pago, Fecha, NoNotaCargo, Concepto, UsuarioId) VALUES";
 
         if($countMeses > 0)
         {
@@ -1950,7 +1951,7 @@ function EditarContrato()
             {
                 for($k=0; $k<$countMeses; $k++)
                 {
-                    $sql .= " ('".$contrato->ContratoId."', '".$contrato->PagoMeses[$k]->MedioPago->MedioPagoId."', 2, '".$contrato->PagoMeses[$k]->Pago."', NOW() - INTERVAL 9 HOUR, '".$contrato->NoNotaCargo."', 'Anticipo'),";
+                    $sql .= " ('".$contrato->ContratoId."', '".$contrato->PagoMeses[$k]->MedioPago->MedioPagoId."', 2, '".$contrato->PagoMeses[$k]->Pago."', NOW() - INTERVAL 9 HOUR, '".$contrato->NoNotaCargo."', 'Anticipo', '".$contrato->UsuarioId."'),";
                 }
             }
         }
@@ -1961,7 +1962,7 @@ function EditarContrato()
             {
                 for($k=0; $k<$countContado; $k++)
                 {
-                    $sql .= " ('".$contrato->ContratoId."', '".$contrato->PagoContado[$k]->MedioPago->MedioPagoId."', 1, '".$contrato->PagoContado[$k]->Pago."', NOW() - INTERVAL 9 HOUR, '".$contrato->NoNotaCargo."', 'Anticipo'),";
+                    $sql .= " ('".$contrato->ContratoId."', '".$contrato->PagoContado[$k]->MedioPago->MedioPagoId."', 1, '".$contrato->PagoContado[$k]->Pago."', NOW() - INTERVAL 9 HOUR, '".$contrato->NoNotaCargo."', 'Anticipo', '".$contrato->UsuarioId."'),";
                 }
             }
         }

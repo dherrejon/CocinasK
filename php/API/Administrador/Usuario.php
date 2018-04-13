@@ -178,7 +178,7 @@ function AgregarUsuario()
         {
             $to= $usuario->contacto[$k]->Contacto;
             $subject_message = "Bienvenido al Sistema Integral de Cocinas K";
-            $body_message = "Ya puedes acceder al Sistema Integral de Cocinas K (http://sistemack.com). Tu usuario y " .utf8_decode("contraseña"). " son los siguientes:";
+            $body_message = "Ya puedes acceder al Sistema Integral de Cocinas K (http://sistemack.cocinask.com). Tu usuario y " .utf8_decode("contraseña"). " son los siguientes:";
             $body_message .= "\n\n";
             $body_message .="Usario: ". $usuario->colaborador->NombreUsuario;
             $body_message .= "\n  ".utf8_decode("contraseña").": ". base64_decode($usuario->colaborador->Correo);
@@ -396,7 +396,7 @@ function CambiarPassword()
         {
             $to= $nuevoUsuario->contacto[$k]->Contacto;
             $subject_message = "Cocinas K: ". utf8_decode("Contraseña"). " Reestablecida";
-            $body_message = "Tu ". utf8_decode("contraseña"). " fue cambiada. Accede al Sistema Integral de Cococians K (http://sistemack.com) y cambia tu ". utf8_decode("contraseña")." inmediatamente.";
+            $body_message = "Tu ". utf8_decode("contraseña"). " fue cambiada. Accede al Sistema Integral de Cococians K (http://sistemack.cocinask.com) y cambia tu ". utf8_decode("contraseña")." inmediatamente.";
             $body_message .= "\n\n";
             $body_message .="Nueva ". utf8_decode("contraseña"). ":";
             $body_message .= base64_decode($nuevoUsuario->usuario->Correo);
@@ -602,7 +602,7 @@ function RecuperarPassword()
         $subject_message = "Recuperar contraseña";
         $body_message = "Accede al enlace especificado para que puedas reiniciar tu " .utf8_decode("contraseña");
         $body_message .= "\n\n";
-        $body_message .="Enlace: http://sistemack.com/#/RecuperarPassword/".$response[0]->UsuarioId."/".$codigo;
+        $body_message .="Enlace: http://sistemack.cocinask.com/#/RecuperarPassword/".$response[0]->UsuarioId."/".$codigo;
 
         $header = "De: Cocinas K\r\n";
 

@@ -95,6 +95,12 @@ app.controller("ReportePagoController", function($scope, $rootScope, $http, $q, 
             case "Unidad":
                 $scope.pago = alasql("SELECT * FROM ? ORDER BY  NombreTipoUnidadNegocio ASC, NombreUnidadNegocio ASC", [$scope.pago]);
                 break;
+            case "Colaborador":
+                $scope.pago = alasql("SELECT * FROM ? ORDER BY  Colaborador ASC, NombreUnidadNegocio ASC", [$scope.pago]);
+                break;
+            case "-Colaborador":
+                $scope.pago = alasql("SELECT * FROM ? ORDER BY  Colaborador DESC, NombreUnidadNegocio DESC", [$scope.pago]);
+                break;  
             default: 
                 break;
         }

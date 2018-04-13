@@ -850,7 +850,7 @@
                                             </ul>
                                             
                                              <span class="input-group-btn" ng-if="contrato.PromocionCubierta.TipoPromocionId == '1' || contrato.PromocionCubierta.TipoPromocionId == '3'">
-                                                <button class="btn chgDescuento"  ng-disabled="contrato.PromocionCubierta.Descuento == contrato.PromocionCubierta.DescuentoMinimo" ng-click="contrato.PromocionCubierta.Descuento = contrato.PromocionCubierta.Descuento - 1; CalcularValoresContratoCubierta()"> <span class="fa fa-minus"></span> </button>
+                                                <button class="btn chgDescuento"  ng-disabled="contrato.PromocionCubierta.Descuento == GetDescuentoMinimo(contrato.PromocionCubierta)" ng-click="contrato.PromocionCubierta.Descuento = contrato.PromocionCubierta.Descuento - 1; CalcularValoresContratoCubierta()"> <span class="fa fa-minus"></span> </button>
                                                 <button class="btn chgDescuento" ng-disabled="contrato.PromocionCubierta.Descuento == contrato.PromocionCubierta.DescuentoMaximo" ng-click="contrato.PromocionCubierta.Descuento = contrato.PromocionCubierta.Descuento + 1; CalcularValoresContratoCubierta()"> <span class="fa fa-plus"></span> </button>
                                             </span>
                                         

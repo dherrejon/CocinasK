@@ -134,6 +134,13 @@
                                 <b>Fecha</b> <span ng-class="{'fa fa-arrow-up': ordenar == 'Fecha', 'fa fa-arrow-down': ordenar == '-Fecha'}"></span>
                             </button>
                         </th>
+                        
+                        <th>
+                            <button class="btn botonOrdenar" ng-click="CambiarOrdenar('Colaborador')" style="padding:  0px">
+                                <b>Registró</b> <span ng-class="{'fa fa-arrow-up': ordenar == 'Colaborador', 'fa fa-arrow-down': ordenar == '-Colaborador'}"></span>
+                            </button>
+                        </th>
+                        
                         <th>
                             <button class="btn botonOrdenar" ng-click="CambiarOrdenar('Total')" style="padding:  0px">
                                 <b>Total</b> <span ng-class="{'fa fa-arrow-up': ordenar == 'Total', 'fa fa-arrow-down': ordenar == '-Total'}"></span>
@@ -157,6 +164,8 @@
                             
                             <td>{{pago.FechaFormato}} {{pago.Hora}}</td>
                             
+                            <td>{{pago.Colaborador}}</td>
+                            
                             <td class="">
                                <div class="dropdown">
                                    <button class="botonAgregarAcordion dropdown-toggle " style="font-size: 11pt; padding: 0px; background: transparent" data-toggle="dropdown" >
@@ -168,7 +177,7 @@
 
                                            <div ng-if="pago.Total > 0">
                                                <div style="margin-top: 5px" class="pull-left">
-                                                    <b >{{pago.Concepto}} - {{pago.NombreTipoPago}}</b>   
+                                                    <b >{{pago.Concepto}} </b>   
                                                </div>
 
 
@@ -184,7 +193,7 @@
                                                         <tbody>
                                                             <tr ng-repeat="desg in pago.Desgloce track by $index">
                                                                 <td>{{desg.Pago | currency}} </td>
-                                                                <td>{{desg.NombreMedioPago}} </td>
+                                                                <td>{{desg.NombreMedioPago}} - {{desg.NombreTipoPago}}</td>
                                                             </tr>
                                                         </tbody>
                                                     </table>
