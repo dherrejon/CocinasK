@@ -1,43 +1,33 @@
 <div ng-controller="EncuestaControlador as encuesta" ng-init="GetEncuesta()">
     
     <div class="row">
-       
-        <div class="col-md-11 col-xs-10">
-           <div class="pull-right">
-                <button class="btn  botonIrA" data-toggle="tooltip" data-placement="bottom" title="Cambiar los medios de captación con la etiqueta 'Otros'" ng-click="AbrirMedioCaptacionOtro()">
-                    <span> Encuestas </span>
-                    <span class="fa fa-arrow-right"></span>
-                </button>
-            </div>
-        </div>
-        <br>
             
         <div class="col-md-11 col-xs-10">            
             <div class="table-responsive TablaUnidadNegocio">
                 <table class="table table-hover table-striped table-condensed">
                     <thead class="TituloTabla">
                       <tr>
-                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenarMedioCaptacion('Nombre')"><b>Nombre </b><b ng-if="ordenarPorMedioCaptacion === 'Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenarPorMedioCaptacion === '-Nombre'" class="fa fa-arrow-down"></b></button></th>
+                        <th><button class="btn botonOrdenar" ng-click="CambiarOrdenEncuesta('Nombre')"><b>Nombre </b><b ng-if="ordenEncuesta === 'Nombre'" class="fa fa-arrow-up"></b>  <b ng-if="ordenEncuesta === '-Nombre'" class="fa fa-arrow-down"></b></button></th>
                         <th><button class="btn botonFalso"><b>Editar</b></button></th>
                         <th><button class="btn botonFalso"><b>Activo</b></button></th>
                       </tr>
                     </thead>
                     <tbody >
-                      <tr ng-repeat="medio in medioCaptacion | orderBy:[ordenarPorMedioCaptacion, 'Nombre'] | filter:{Nombre:buscarMedioCaptacion}" ng-if="medio.MedioCaptacionId > 0">
-                        <td>{{medio.Nombre}}</td>
+                      <tr ng-repeat="encuesta in encuesta | orderBy:[ordenEncuesta] | filter:{Nombre:buscarEncuesta}" >
+                        <td>{{encuesta.Nombre}}</td>
 
                         <td class="text-center">
-                            <a ng-if="permisoUsuario.medioCaptacion.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirMedioCaptacion('Editar', medio)">
+                            <a ng-if="permisoUsuario.encuesta.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirEncuesta('Editar', encuesta)">
                                 <span class="fa fa-pencil fa-2x"></span>
                             </a>
 
-                            <span ng-if="!permisoUsuario.medioCaptacion.editar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
+                            <span ng-if="!permisoUsuario.encuesta.editar" class="fa fa-pencil fa-2x botonRegistroDeshabilitado"></span>
                         </td>
 
                         <td class="text-center">
                             <div class="checkbox">
                                 <label>
-                                    <input ng-disabled="!permisoUsuario.medioCaptacion.activar" ng-model="medio.Activo" type="checkbox" value="" ng-click="ActivarDesactivarMedioCaptacion(medio)">
+                                    <input ng-disabled="!permisoUsuario.encuesta.activar" ng-model="encuesta.Activo" type="checkbox" value="" ng-click="CambiarEstatusEncuesta(encuesta)">
                                     <span class="cr"><i class="cr-icon fa fa-check"></i></span>
                                 </label>
                             </div>
@@ -50,7 +40,7 @@
         </div>
 
         <div class="col-xs-2 col-md-1">
-             <button ng-disabled="!permisoUsuario.medioCaptacion.agregar"  class="btn btn-block botonOperacion fa fa-plus text-center" data-toggle="tooltip" data-placement="bottom" title="Agregar Medio de Captación" ng-click="AbrirMedioCaptacion('Agregar', null)"></button>
+             <button ng-disabled="!permisoUsuario.encuesta.agregar"  class="btn btn-block botonOperacion fa fa-plus text-center" data-toggle="tooltip" data-placement="bottom" title="Agregar Medio de Captación" ng-click="AbrirEncuesta('Agregar', null)"></button>
              
              <br><br>
              <!-- Boton buscar -->
@@ -64,7 +54,7 @@
 
                         <form role="buscar" style="max-width: 200px; height: 25px !important;">
                             <div class="input-group" >
-                              <input  type="text" class="form-control operacionPanelEntrada" placeholder="Buscar" style="margin-left: 5px; width: 175px;" ng-model="buscarMedioCaptacion">
+                              <input  type="text" class="form-control operacionPanelEntrada" placeholder="Buscar" style="margin-left: 5px; width: 175px;" ng-model="buscarEncuesta">
                               <span class="input-group-btn" style="width: 25px;">
                                 <button class="btn operacionPanelBoton" type="button">
                                     <i class="fa fa-search"></i>
@@ -79,271 +69,211 @@
         </div>
     </div>
                      
-     <!------------------------------------ Modales -------------------------------------------------------------------->
+    <!------------------------------------ Modales -------------------------------------------------------------------->
+    
+    <!-- Encuestas -->
+    <div class="modal fade" id="encuestaModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="true" data-backdrop="static">
+        <div class="modalPantalla center-block" >
+          
+           <!-- Header -->
+           <div class="encabezadoModalStatic">
+            
+                <div class="row"> 
+                    <div class="col-xs-12">
+                        <div style="height: 20px"></div>
+                    </div>
+               </div>
+                <!-- Título -->
+                <div class="row"> 
+                    <div class="col-sm-12">
                       
-    <!---- Modal para Agregar-editar medio de captacion -->
-    <div class="modal fade" id="medioCaptacionModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static" >
-        <br>    <br>   <br>
-        <div class="modal-dialog modal-md">
-            <div class="modal-content">
-                <!-- encabezado del modal -->
+                    <div class="input-group">
+                       <div class="entrada2">
+                            <input autocomplete="off"  type="text" required class="entrada form-control" name="nombre" ng-model="nuevaEncuesta.Nombre" ng-maxlength="255"/>
+                            <label>Título</label>
+                        </div>
+                        
+                        <div class="input-group-btn">
+                            <button class="btn botonAgregarAcordion">
+                                <span class="fa fa-plus"></span>
+                                <span class="hidden-xs">Pregunta</span>
+                            </button>
+                        </div>     
+                    </div>
+                        
+                   </div> 
+                   
+                           
+                </div>
+                
+            </div>
+            
+            
+            <!-- Body -->
+            <div style="height: 90px;"></div>
+            
+            <div style="padding: 15px">
+               
+                <!-- Preguntas -->       
+                <div ng-repeat="pre in pregunta" class="animated" ng-class=" {slideInUp :Subir == pre.PreguntaId,  slideInDown : Bajar == pre.PreguntaId}">
+                   
+                   <div class="row" ng-if="$first"> <div class="col-xs-12"><div class="divisorGrisClaro1"> </div><div style="height: 10px"></div></div></div>
+                    
+                    <!-- pregunta -->
+                    <div class="row">
+                        <div class="col-xs-12">
+                           <span class="pregunta">
+                               {{$index + 1}}. {{pre.Pregunta}}
+                           </span>
+                        </div>
+                    </div>
+                    <div style="height: 10px"></div>
+                    
+                    <!-- Respuesta -->
+                    <div class="row">
+                        <div class="col-xs-12">
+                        
+                            <!-- Comentario -->
+                            <div ng-if="pre.TipoPregunta.TipoPreguntaId == '3'">
+                                <textarea class="taComentario" placeholder="Escribe un comentario" disabled></textarea>
+                            </div>
+                            
+                            <!-- Check Box - Radio button -->
+                            <div ng-if="pre.TipoPregunta.TipoPreguntaId != '3'" ng-repeat="respuesta in pre.Respuesta">
+                                
+                                <div class="row">
+                                    <div class="col-xs-12 respuesta">
+                                        <span style="font-size: 14pt" ng-class="{'fa fa-square-o' : pre.TipoPregunta.TipoPreguntaId == '2', 'fa fa-circle-o' : pre.TipoPregunta.TipoPreguntaId == '1'}"></span> 
+                                        <span>{{respuesta.Respuesta}}</span>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            
+                        </div>
+                    </div>
+                    
+                    <div style="height: 10px"></div>
+                    
+                    <div class="row">
+                         <div class="col-xs-12">
+                             
+                             <!-- orden -->
+                             <div class="btn-group">
+                                 
+                                 <button class="btn btnOpcionRespuesta" ng-disabled="$first" ng-click="SubirOrdenPregunta(pre, pregunta[$index-1], $index)"> 
+                                     <span class="fa fa-arrow-circle-o-up"></span>
+                                 </button>
+                                 
+                                 <button class="btn btnOpcionRespuesta" ng-disabled="$last" ng-click="BajarOrdenPregunta(pre, pregunta[$index+1], $index)"> 
+                                     <span class="fa fa-arrow-circle-o-down"></span>
+                                 </button>
+                                 
+                             </div>
+                             
+                             <!-- Operaciones -->
+                             <div class="btn-group pull-right">
+                                
+                                <button class="btn btnOpcionRespuesta"> 
+                                     <span class="fa fa-trash"></span>
+                                 </button>
+                                 
+                                 <button class="btn btnOpcionRespuesta"> 
+                                     <span class="fa fa-clone"></span>
+                                 </button>
+                                 
+                                 <button class="btn btnOpcionRespuesta"> 
+                                     <span class="fa fa-pencil"></span>
+                                 </button>
+                                 
+                             </div>
+                             
+                         </div>
+                    </div>
+                    
+                    
+                    <div class="row"> <div class="col-xs-12"><div class="divisorGrisClaro1"> </div><div style="height: 10px"></div></div></div>
+                    
+                </div>
+                
+                
+                
+                <!-------- mensaje de error ---->
                 <div class="row">
                     <div class="col-xs-12">
-                        <div class="margenModal">
-                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarMedioCaptacion()"><span aria-hidden="true">&times;</span></button>
-                            <h3 class="text-center" ng-if="operacion === 'Agregar'">Agregar Medio de Captación</h3>
-                            <h3 class="text-center" ng-if="operacion === 'Editar'">Editar Medio de Captación</h3>
-                            <hr class="separador">
+                        <div ng-repeat="error in mensajeError | unique:error track by $index">
+                            <span class="textoError">{{error}}</span>
                         </div>
                     </div>
                 </div>
                 <br>
-
-                <form class="modal-body" name="medioCaptacionForma">
-                    <div class="row">
-                    
-                        <div class="col-sm-6" style="margin-top:10px">
-                            <!-- Nombre -->
-                             <div class="entrada2">
-                                <input ng-pattern="erNombreGeneral" type="text" required class="{{claseMedioCaptacion.nombre}} form-control" name="nombre" ng-model="nuevoMedioCaptacion.Nombre"/>
-                                <label>Nombre</label>
-                            </div>
-                        </div>
-                        <br class="hidden-sm hidden-md hidden-lg">
-                        <!-- Activo -->
-                       <div class="col-sm-6" style="margin-top:10px">
-                             <label class="btn checkBoxActivo">Medio Captación Activo <input type="checkbox" class="badgebox" ng-model="nuevoMedioCaptacion.Activo"><span class="badge">&check;</span></label>
-                        </div>
-
-                    </div>
-                    <br>
-                    <!-------- mensaje de error ---->
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <div ng-repeat="error in mensajeError">
-                                <span class="textoError">{{error}}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <br>
-                    <!---- botones de operacion --->
-                    <div class="row">
-                        <div class="col-xs-6">
-                            <button class="btn botonCancelar btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarMedioCaptacion()">CANCELAR</button>
-                        </div>
-                        
-                        <div class="col-xs-6">
-                            <button focus class="btn botonAvanzar btn-block" ng-click="TerminarMedioCaptacion(medioCaptacionForma.nombre.$invalid)">TERMINAR</button>
-                        </div>
-                    </div>
-                    <br>
-                </form>
-            </div>
-            <br><br><br>
-        </div>
-    </div>
-        
-    <!---- Modal para actualizar medio de captacion -->
-    <div class="modal fade" id="medioCaptacionModalOtro" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static" >
-        <br>    <br>   <br>
-        <div class="modal-dialog modal-md">
-            <div class="modal-content">
-                <!-- encabezado del modal -->
-                <div class="row">
-                    <div class="col-xs-12">
-                        <div class="margenModal">
-                            <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarMedioCaptacionOtro()"><span aria-hidden="true">&times;</span></button>
-                            <h3 class="text-center">Actualizar Medio de Captación Otro</h3>
-                            <hr class="separador">
-                        </div>
-                    </div>
-                </div>
-
-                <form class="modal-body" name="medioCaptacionOtroForma">
-                    <div class="row">
-                      
-                       <div class="col-sm-6" ng-if="otroNuevo">
-                           <br>
-                            <div class="input-group">
-                              
-                                <div class="entrada2" >
-                                    <input ng-pattern="erNombreGeneral" type="text" required class="entrada form-control" name="nombre" ng-model="medioCaptacionOtro.Nombre"/>
-                                    <label>Nuevo Medio Captación...</label>
-                                </div> 
-                             
-                                <div class="input-group-btn">
-                                    <div class="dropdown">
-                                       <button  type="button" class="btn botonPanelOculto" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <span class="caret"></span>
-                                        </button>
-
-                                        <ul class="dropdown-menu dropdown-menu-right elemetosDropdownListModal">
-
-                                           <li> <a href="" class="dropdownOpcionModal text-center" ng-click="CambiarMedioCaptacion('Nuevo')"> 
-                                                <span>NUEVO</span>
-                                            </a></li>
-                                            <div role="separator" class="dropdown-divider"></div>
-
-                                            <li ng-repeat="medio in medioCaptacion  | orderBy:'Nombre'" ng-if="medio.MedioCaptacionId !=  '0' ">
-                                                <a  href="" class="dropdownOpcionModal"  ng-click="CambiarMedioCaptacion(medio)">
-                                                    <span>{{medio.Nombre}}</span>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                                
-                        </div>
-                        
-                        <div class="col-sm-6" ng-if="!otroNuevo">
-                            <label>Medio de Captación</label>
-                             <div class="dropdown">
-
-                                <button class="dropdown-toggle  {{claseOtro.medio}} " data-toggle="dropdown">
-                                    <span>{{medioCaptacionOtro.Nombre}}</span>
-                                    <span class="caret"></span>
-                                </button>
-
-                                <ul class="dropdown-menu elemetosDropdownListModal">
-                                   <li> <a href="" class="dropdownOpcionModal text-center" ng-click="CambiarMedioCaptacion('Nuevo')"> 
-                                        <span>NUEVO</span>
-                                    </a></li>
-                                    <div role="separator" class="dropdown-divider"></div>
-                                    
-                                    <li ng-repeat="medio in medioCaptacion | orderBy:'Nombre'"  ng-if="medio.MedioCaptacionId !=  '0' ">
-                                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarMedioCaptacion(medio)">
-                                            <span>{{medio.Nombre}}</span>
-                                        </a>
-                                    </li>
-                                </ul>
-
-                            </div>
-                        </div>
-                    </div>
-                    <br>
-                    <div class="row" ng-if="medioOtro.length > 0">
-                        <div class="col-xs-12 subtituloModal">
-                            Seleccionas los medios de captación que desees actualizar.
-                        </div>
-                        <br> <br>
-                        <div class="col-xs-12">
-                            <div class="piezaPorComponenteTabla">
-                                <table class="table table-hover">
-                                    <thead class="TituloTabla">
-                                      <tr>
-                                        <th><button class="btn botonOrdenar"><b>Nombre</b></button></th>
-                                        <th><button class="btn botonFalso"><b>Seleccionar</b></button></th>
-                                      </tr>
-                                    </thead>
-                                    <tbody ng-repeat="medio in medioOtro | orderBy:'Nombre'">
-                                      <tr>
-
-                                        <td>{{medio.Nombre}}</td>
-
-                                        <td class="text-center">
-                                            <div class="checkbox">
-                                                <label>
-                                                    <input ng-disabled="!permisoUsuario.medioCaptacion.activar" ng-model="medio.Seleccionado" type="checkbox" value="">
-                                                    <span class="cr"><i class="cr-icon fa fa-check"></i></span>
-                                                </label>
-                                            </div>
-                                        </td>
-
-                                      </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row" ng-if="medioOtro.length == 0">
-                        <br>
-                        <div class="col-xs-12 subtituloModal">
-                            <span class="recuperarPassword">No hay clientes con medio de captación "Otro".</span>
-                        </div>
-                    </div>
-                    <br>
-                    <!-------- mensaje de error ---->
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <div ng-repeat="error in mensajeError">
-                                <span class="textoError">{{error}}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <br>
-                    <!---- botones de operacion --->
-                    <div class="row">
-                        <div class="col-xs-6">
-                            <button class="btn botonCancelar btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarMedioCaptacionOtro()">CANCELAR</button>
-                        </div>
-                        
-                        <div class="col-xs-6">
-                            <button focus class="btn botonAvanzar btn-block" ng-click="TerminarMedioCaptacionOtro(medioCaptacionOtroForma.nombre.$invalid)">TERMINAR</button>
-                        </div>
-                    </div>
-                    <br>
-                </form>
-            </div>
-            <br><br><br>
-        </div>
-    </div>
-         
-    <!-- Desactivar Modal -->
-    <div class="modal fade" id="modalActivarDesactivarMedioCaptacion" data-keyboard="false" data-backdrop="static">
-        <br>    <br>   <br>
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                
-                <div class="modal-body">
-                    <br>
-                    <div class="panel panel-default modalMensaje">
-                        <br>
-                        <b>{{mensajeAdvertencia}}</b>
-                        <br><br>
-
-                        <div class="row">
-                            <div class="col-xs-6">
-                                <button class="btn botonCancelar" data-dismiss="modal" aria-label="Close" ng-click="CancelarEstatusActivoMedioCaptacion()">No</button>
-                            </div>
-                            <div class="col-xs-6">
-                                <button class="btn botonAvanzar" data-dismiss="modal" aria-label="Close" ng-click="ConfirmarActualizarTipoAccesorio()">Si</button>
-                            </div>
-                        </div>
-                        <br>
-                    </div>
-                </div>
-                
-            </div>
-        </div>
-    </div> 
     
-    <!-- Modal para mensajes -->
-    <div class="modal fade" id="mensajeMedioCaptacion">
-        <br>    <br>   <br>
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                
-                <div class="modal-body">
-                    <div class="panel panel-default modalMensaje">
-                        <br>
-                        <b>{{mensaje}}</b>
+            </div>
+            
+            
+            <div style="height: 70px;"></div>
+            
+            <!-- footer -->
+            <div class="modalFooter" style="border-top: 1px solid lightgray">
+                   
+                <!---- botones de operacion -->
+                <div class="row">
+                    <div class="col-xs-6">
+                        <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarPresupuestoModal()">CANCELAR</button>
+                    </div>
 
-                        <br><br>
-
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <button class="btn  botonAvanzar" data-dismiss="modal" aria-label="Close">Aceptar</button>
-                            </div>
-                        </div>
-                        <br>
+                    <div class="col-xs-6">
+                        <button focus class="btn botonOperacionModal btn-block" ng-click="TerminarCliente()">TERMINAR</button>
                     </div>
                 </div>
-                
             </div>
+            
         </div>
     </div>  
+                     
+    
+    <!-- Activar - Desactivar Encuesta -->
+    <div class="modal fade" id="modalEstatusEncuesta"  data-keyboard="true" data-backdrop="static">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm modalPrincipal text-center">
+           
+            <div class="row">
+                <div class="col-xs-12">
+                    <span style="font-size:14pt">{{mensajeAdvertencia}}</span>
+                </div>
+            </div>
+            <br><br>
+            <div class="row">
+                <div class="col-xs-6">
+                    <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="CancelarEstatusEncuesta()">No</button>
+                </div>
+                <div class="col-xs-6">
+                    <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="ConfirmarActualizarEncuesta()">Si</button>
+                </div>
+            </div>
+                        
+        </div>
+    </div>
+    
+    <!-- Modal para mensajes -->
+    <div class="modal fade sombraDivModal" id="mensajeEncuesta" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <br>    <br>   <br>
+        <div class="modal-dialog modalPrincipal modal-sm">
+           <br>
+            <div class="row">
+                <div class="col-xs-12 text-center" style="font-size:12pt">
+                   {{mensaje}}
+                </div>
+            </div>
+            <br>
+            <div class="row">
+            
+                <div class="col-xs-12">
+                    <button focus class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close">Aceptar</button>
+                </div>
+            </div>
+        </div>   
+    </div>
                         
 </div>
 

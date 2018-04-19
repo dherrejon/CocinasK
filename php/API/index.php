@@ -631,6 +631,12 @@
     /*------------------------- Pagos ------------------------------*/
     $app->post('/GetReportePago', $seguridad, $ChecarSesion, 'GetReportePago');
     $app->get('/GetReportePagoPendiente/:id', $seguridad, $ChecarSesion, 'GetReportePagoPendiente');
+
+
+    /*------------------------- Encuesta ------------------------------*/
+    $app->get('/Encuesta', $seguridad, $ChecarSesion, 'GetEncuesta');
+    $app->get('/Encuesta/:id/Pregunta', $seguridad, $ChecarSesion, 'GetPreguntaEncuesta');
+    $app->put('/Encuesta/Estatus', $seguridad, $ChecarSesion, 'EstatusEncuesta');
     
     $app->run(); 
 

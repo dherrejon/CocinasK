@@ -1,0 +1,64 @@
+.encabezadoModalStatic
+{
+    position: fixed;  
+    width: 90%;
+    top: 5%;
+    padding: 15px 15px 20px 15px;
+    z-index: 2;
+    background: white;
+}
+
+.pregunta
+{
+    color: #262626;
+    font-size: 14pt;
+}
+
+.divisorGrisClaro1
+{
+    height: 1px;
+    background: lightgray;
+    border-bottom: 10px !important;
+}
+
+.taComentario
+{
+    min-width: 100%;
+    width: 100%;
+    border: 1px solid #262626;
+    border-radius: 3px;
+}
+
+.taComentario:disabled
+{
+    height: 50px;
+    background: rgb(240, 240, 240);
+    resize: none;
+}
+
+.respuesta
+{
+    font-size: 12pt;
+    color: gray;
+}
+
+.btnOpcionRespuesta, .btnOpcionRespuesta:active, .btnOpcionRespuesta:focus
+{
+    color: #262626;
+    background: white;
+    border: none;
+    font-size: 13pt;
+    
+    outline: none !important;
+    box-shadow: none;
+}
+
+.btnOpcionRespuesta:hover
+{
+    color: rgb(250, 97, 21);
+}
+
+.btnOpcionRespuesta:disabled
+{
+    color: lightgray;
+}
