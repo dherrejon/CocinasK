@@ -94,7 +94,7 @@
                         </div>
                         
                         <div class="input-group-btn">
-                            <button class="btn botonAgregarAcordion">
+                            <button class="btn botonAgregarAcordion" ng-click="AbrirPregunta('Agregar', null)">
                                 <span class="fa fa-plus"></span>
                                 <span class="hidden-xs">Pregunta</span>
                             </button>
@@ -153,8 +153,41 @@
                         </div>
                     </div>
                     
+                    <!-- opciones de respuesta -->
+                    <div class="row" ng-if="pre.Otro || pre.Comentario">
+                       
+                       <!-- Otro -->
+                       <div class="col-xs-12" ng-if="pre.Otro">
+                            <div>
+                                <div class="row">
+                                    <div class="col-xs-12 respuesta">
+                                        <span style="font-size: 14pt" ng-class="{'fa fa-square-o' : pre.TipoPregunta.TipoPreguntaId == '2', 'fa fa-circle-o' : pre.TipoPregunta.TipoPreguntaId == '1'}"></span> 
+                                        <span>Otro</span>
+                                        
+                                        <input type="text" placeholder="Especificar" class="inputEspecifica" disabled/>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                       </div>
+                       
+                       <!-- divisor -->
+                       <div class="col-xs-12">
+                            <div style="height: 10px"></div>  
+                        </div>
+                        
+                        <!-- Comentario -->
+                       <div class="col-xs-12"  ng-if="pre.Comentario">
+                            <div>
+                                <textarea class="taComentario" placeholder="Escribe un comentario" disabled></textarea>
+                            </div>
+                       </div>
+                    </div>
+                    
+                    
                     <div style="height: 10px"></div>
                     
+                    <!-- botones de opciones -->
                     <div class="row">
                          <div class="col-xs-12">
                              
@@ -178,11 +211,11 @@
                                      <span class="fa fa-trash"></span>
                                  </button>
                                  
-                                 <button class="btn btnOpcionRespuesta"> 
+                                 <button class="btn btnOpcionRespuesta"  ng-click="AbrirPregunta('Copiar', pre)"> 
                                      <span class="fa fa-clone"></span>
                                  </button>
                                  
-                                 <button class="btn btnOpcionRespuesta"> 
+                                 <button class="btn btnOpcionRespuesta"  ng-click="AbrirPregunta('Editar', pre)"> 
                                      <span class="fa fa-pencil"></span>
                                  </button>
                                  
@@ -230,6 +263,185 @@
             
         </div>
     </div>  
+                    
+    <!-- Pregunta -->
+    <div class="modal fade sombraDivModal" id="preguntaModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="true" data-backdrop="static">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-lg modalPrincipal " >
+           
+            <div class="row">
+                <div class="col-xs-12">
+                    <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarPresupuestoModal()"><span aria-hidden="true">&times;</span></button>
+                    <span  class="tituloModal">{{operacionPregunta}} Pregunta</span>
+                </div>
+            </div>
+            <br><br>
+            
+            <form name="pref" id="preguntaForma">
+              
+                <!-- Pregunta -->
+                <div class="row"> 
+                    <div class="col-sm-12">
+                       <div class="entrada2">
+                            <input autocomplete="off"  type="text" required class="entrada form-control" name="'pregunta'" ng-model="nuevaPregunta.Pregunta" ng-maxlength="255"/>
+                            <label>Pregunta</label>
+                        </div>
+                   </div>     
+                </div>
+                
+                 <br>
+                 
+                <div class="row"> <div class="col-xs-12"><div class="divisorGrisClaro1"> </div><div style="height: 30px"></div></div></div>
+               
+                <!-- Tipo de Pregunta -->
+                <div class="row">
+                  
+                    <div class="col-sm-6 col-xs-12 etiquetaDropdownList">
+                         <label>Tipo de Pregunta</label>
+                         <div class="dropdown">
+
+                            <button ng-disabled=" personaSeleccionada" class="dropdown-toggle dropdownlistModal " data-toggle="dropdown">
+                                <span>{{nuevaPregunta.TipoPregunta.Nombre}}</span>
+                                <span class="caret"></span>
+                            </button>
+                            
+                            <ul class="dropdown-menu listaOpcionesDropdownList " >                                
+                                <li ng-repeat="tipo in tipoPregunta">
+                                    <a  href="" class="dropdownOpcionModal" ng-click="CambiarTipoPregunta(tipo)">
+                                        <span>{{tipo.Nombre}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div>
+                        
+                    <div ng-if="nuevaCita.Persona.MedioCaptacion.MedioCaptacionId == '0'" class="hidden-sm hidden-md hidden-lg"> <br> </div>
+                   
+                    <div class="col-sm-6" ng-if="nuevaCita.Persona.MedioCaptacion.MedioCaptacionId == '0'">
+                       <div class="entrada2">
+                            <input ng-disabled=" personaSeleccionada"  ng-pattern="erNombreGeneral" type="text" required class="{{claseCita.paso1.otro}} form-control" name="nombreMedioCaptacion" ng-model="nuevaCita.Persona.NombreMedioCaptacion" ng-maxlength="120"/>
+                            <label>Nombre Medio de Captación*</label>
+                        </div>
+                   </div>             
+                </div>
+                
+                <!-- opciones de pregunta -->
+                <div class="row">
+                   <!-- otro-->
+                    <div class="col-xs-6">
+                        <div class="checkbox checkboxOperativo optCheck">
+                            <label style="width:100%;">
+                                <input  ng-model="nuevaPregunta.Otro" type="checkbox" ng-disabled="nuevaPregunta.TipoPregunta.TipoPreguntaId == '3'">
+                                <span class="cr"> <i class="cr-icon fa fa-check"></i> </span>
+                                <span  ng-class="{colorGray : nuevaPregunta.TipoPregunta.TipoPreguntaId == '3'}">Agregar opción "Otro"</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- comentario -->
+                    <div class="col-xs-6">
+                        <div class="checkbox checkboxOperativo optCheck"  >
+                            <label style="width:100%;">
+                                <input  ng-model="nuevaPregunta.Comentario" type="checkbox" ng-disabled="nuevaPregunta.TipoPregunta.TipoPreguntaId == '3'">
+                                <span class="cr"> <i class="cr-icon fa fa-check"></i> </span>
+                                <span ng-class="{colorGray : nuevaPregunta.TipoPregunta.TipoPreguntaId == '3'}">Agregar campo para comentario</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="row"> <div class="col-xs-12"><div class="divisorGrisClaro1"> </div><div style="height: 10px"></div></div></div>
+                
+                <div class="row">
+                    <div class="col-xs-12">
+                        <h4>Respuestas</h4>
+                    </div>
+                </div>
+                <br>
+                
+                <!-- Respuestas -->
+                <div class="row" ng-if="nuevaPregunta.TipoPregunta.TipoPreguntaId != '3'" >
+                    <div class="col-xs-12" ng-repeat="respuesta in nuevaPregunta.Respuesta" >
+                        <div  class="input-group" >
+                           
+                           <div class="input-group-addon addonRespuesta">
+                               <span style="font-size: 14pt" class="fa fa-square-o " ng-if="nuevaPregunta.TipoPregunta.TipoPreguntaId == '2'"></span>
+                               <span style="font-size: 14pt" class="fa fa-circle-o " ng-if="nuevaPregunta.TipoPregunta.TipoPreguntaId == '1'"></span>
+                           </div>
+                            
+                            <input type="text" placeholder="Respuesta {{$index+1}}" ng-model="respuesta.Respuesta" class="form-control inputRespuesta">
+                            
+                            <div class="input-group-btn">
+                                <button class="btn btnRespuesta">
+                                    <span class="fa fa-minus-circle"></span>
+                                </button>
+                                
+                                <button class="btn btnRespuesta">
+                                    <span class="fa fa-plus-circle"></span>
+                                </button>
+                            </div>
+                            
+                        </div>
+                        
+                        <div style="height: 10px"></div>
+                    </div>
+                </div>
+                
+                <!-- opciones de respuesta -->
+                <div class="row" ng-if="nuevaPregunta.Otro || nuevaPregunta.Comentario">
+
+                   <!-- Otro -->
+                   <div class="col-xs-12" ng-if="nuevaPregunta.Otro">
+                        <div  class="input-group" >
+                           
+                           <div class="input-group-addon addonRespuesta">
+                               <span style="font-size: 14pt" class="fa fa-square-o " ng-if="nuevaPregunta.TipoPregunta.TipoPreguntaId == '2'"></span>
+                               <span style="font-size: 14pt" class="fa fa-circle-o " ng-if="nuevaPregunta.TipoPregunta.TipoPreguntaId == '1'"></span>
+                               <span style="font-size: 12pt; margin-left: 12px">Otro</span>
+                           </div>
+                            
+                            <input type="text" placeholder="Especificar" class="inputEspecifica" disabled/>
+                            
+                        </div>
+                   </div>
+
+                   <!-- divisor -->
+                   <div class="col-xs-12">
+                        <div style="height: 20px"></div>  
+                    </div>
+
+                    <!-- Comentario -->
+                   <div class="col-xs-12"  ng-if="nuevaPregunta.Comentario">
+                        <div>
+                            <textarea class="taComentario" placeholder="Escribe un comentario" disabled></textarea>
+                        </div>
+                   </div>
+                    </div>
+               
+                <!-------- mensaje de error ---->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div ng-repeat="error in mensajeError | unique:error track by $index">
+                            <span class="textoError">{{error}}</span>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <!---- botones de operacion -->
+                <div class="row">
+                    <div class="col-xs-6">
+                        <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarPresupuestoModal()">CANCELAR</button>
+                    </div>
+
+                    <div class="col-xs-6">
+                        <button focus class="btn botonOperacionModal btn-block" ng-click="TerminarCliente()">TERMINAR</button>
+                    </div>
+                </div>
+            <br>
+            </form>
+        </div>
+    </div>
                      
     
     <!-- Activar - Desactivar Encuesta -->
@@ -276,5 +488,6 @@
     </div>
                         
 </div>
-
-     
+    
+    
+    

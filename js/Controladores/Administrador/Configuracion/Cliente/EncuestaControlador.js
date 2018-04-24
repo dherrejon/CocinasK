@@ -11,6 +11,9 @@ app.controller("EncuestaControlador", function($scope, $http, $q, CONFIG, $rootS
     $scope.Subir = null;
     $scope.Bajar = null;
     
+    $scope.operacionPregunta = "";
+    $scope.nuevaPregunta = null;
+    $scope.tipoPregunta = GetTipoPregunta();
 
     $scope.GetEncuesta = function()
     {   
@@ -201,8 +204,42 @@ app.controller("EncuestaControlador", function($scope, $http, $q, CONFIG, $rootS
             
              $("#mensajeEncuesta").modal('toggle');
         });
-        
-        
-        
     };
+    
+    
+    //-----------------  Pregunta ------------------------
+    $scope.AbrirPregunta = function(operacion, objeto)
+    {
+        $scope.operacionPregunta = operacion;
+        
+        if(operacion == "Agregar")
+        {
+            $scope.nuevaPregunta = new Pregunta();
+        }
+        else if(operacion == "Editar")
+        {
+            $scope.nuevaPregunta = SetPregunta(objeto, "Editar");
+        }
+        else if(operacion == "Copiar")
+        {
+            $scope.nuevaPregunta = SetPregunta(objeto, "Copiar");
+        }
+        
+        $("#preguntaModal").modal('toggle');
+    };
+    
+    
+    //------- tipo pregunta ---
+    $scope.CambiarTipoPregunta = function(tipo)
+    {
+        $scope.nuevaPregunta.TipoPregunta = tipo;
+        
+        
+        if(tipo.TipoPreguntaId == "3")
+        {
+            $scope.nuevaPregunta.Otro = false;
+            $scope.nuevaPregunta.Comentario = false;
+        }
+    };
+    
 });

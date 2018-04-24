@@ -117,15 +117,15 @@ function GetTipoPregunta()
     var tipoPregunta = [];
     
     tipoPregunta[0] = new TipoPregunta();
-    tipoPregunta[0].TipoPreguntaId = 1;
+    tipoPregunta[0].TipoPreguntaId = "1";
     tipoPregunta[0].Nombre = "Opción Multiple";
     
     tipoPregunta[1] = new TipoPregunta();
-    tipoPregunta[1].TipoPreguntaId = 2;
+    tipoPregunta[1].TipoPreguntaId = "2";
     tipoPregunta[1].Nombre = "Selección Multiple";
     
     tipoPregunta[2] = new TipoPregunta();
-    tipoPregunta[2].TipoPreguntaId = 3;
+    tipoPregunta[2].TipoPreguntaId = "3";
     tipoPregunta[2].Nombre = "Comentario";
     
     
