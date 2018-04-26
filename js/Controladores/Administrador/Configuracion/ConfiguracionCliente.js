@@ -47,7 +47,7 @@ app.controller("ConfiguaracionClinete", function($scope, $http, $q, CONFIG, $roo
         }
     };
     
-    $scope.titulo = "Encuestas";
+    $scope.titulo = "Medio de Captación";
     $scope.tabs = tabConfigurarClientes;
     
     //Cambia el contenido de la pestaña
@@ -137,6 +137,6 @@ app.controller("ConfiguaracionClinete", function($scope, $http, $q, CONFIG, $roo
 //Pestañas
 var tabConfigurarClientes = 
     [
-        {titulo:"Medio de Captación", referencia: "#MedioCaptacion", clase:"", area:"medioCaptacion"},
-        {titulo:"Encuestas", referencia: "#Encuesta", clase:"active", area:"encuesta"}
+        {titulo:"Medio de Captación", referencia: "#MedioCaptacion", clase:"active", area:"medioCaptacion"},
+        {titulo:"Encuestas", referencia: "#Encuesta", clase:"", area:"encuesta"}
     ];

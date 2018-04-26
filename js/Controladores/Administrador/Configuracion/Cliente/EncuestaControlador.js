@@ -10,6 +10,7 @@ app.controller("EncuestaControlador", function($scope, $http, $q, CONFIG, $rootS
     
     $scope.Subir = null;
     $scope.Bajar = null;
+    $scope.Borrar = null;
     
     $scope.operacionPregunta = "";
     $scope.nuevaPregunta = null;
@@ -88,6 +89,7 @@ app.controller("EncuestaControlador", function($scope, $http, $q, CONFIG, $rootS
         if(operacion == "Agregar")
         {
             $scope.nuevaEncuesta = new Encuesta();
+            $scope.pregunta = [];
         }
         else if(operacion == "Editar")
         {
@@ -160,7 +162,130 @@ app.controller("EncuestaControlador", function($scope, $http, $q, CONFIG, $rootS
         }, 700);
     };
     
-    //-------- Cambiar de estatus el proyecto -------
+    //--GuardarEncuesta 
+    $scope.GuardarEncuesta = function()
+    {
+        if(!$scope.ValidarEncuesta())
+        {
+            return;
+        }
+        else
+        {
+            var encuesta = SetEncuesta($scope.nuevaEncuesta, "Guardar");
+            
+            for(var k=0; k<$scope.pregunta.length; k++)
+            {
+                encuesta.Pregunta[k] = SetPregunta($scope.pregunta[k], "Guardar");
+            }
+            
+            
+            if($scope.operacion == "Agregar")
+            {
+                $scope.AgregarEncuesta(encuesta);
+            }
+            else if($scope.operacion == "Editar")
+            {
+                $scope.EditarEncuesta(encuesta);
+            }
+        }
+    };
+    
+    
+    $scope.AgregarEncuesta = function(encuesta)
+    {
+        (self.servicioObj = CocinasKService.Post('Encuesta', encuesta)).then(function (dataResponse) 
+        {
+            if (dataResponse.status == 200) 
+            {
+                $scope.GetEncuesta();
+                $scope.CerrarEncuesta();
+                $('#encuestaModal').modal('toggle');
+                
+                $scope.mensaje = "Encuesta agregada";
+                $('#mensajeEncuesta').modal('toggle');
+            } 
+            else 
+            {
+                $rootScope.$broadcast('Alerta', "Por el momento no se puede realizar la operación, intentelo más tarde", 'error');
+            }
+            self.servicioObj.detenerTiempo();
+        }, 
+        function (error) 
+        {
+            $rootScope.$broadcast('Alerta', error, 'error');
+        });
+    };
+    
+    $scope.EditarEncuesta = function(encuesta)
+    {
+        (self.servicioObj = CocinasKService.Put('Encuesta', encuesta)).then(function (dataResponse) 
+        {
+            if (dataResponse.status == 200) 
+            {
+                $scope.GetEncuesta();
+                $scope.CerrarEncuesta();
+                $('#encuestaModal').modal('toggle');
+                
+                $scope.mensaje = "Encuesta editada";
+                $('#mensajeEncuesta').modal('toggle');
+            } 
+            else 
+            {
+                $rootScope.$broadcast('Alerta', "Por el momento no se puede realizar la operación, intentelo más tarde", 'error');
+            }
+            self.servicioObj.detenerTiempo();
+        }, 
+        function (error) 
+        {
+            $rootScope.$broadcast('Alerta', error, 'error');
+        });
+    };
+    
+    $scope.ValidarEncuesta = function()
+    {
+        $scope.mensajeError = [];
+        
+        if(!$scope.nuevaEncuesta.Nombre)
+        {
+            $scope.mensajeError[$scope.mensajeError.length] = "Indica el título de la encuesta.";
+        }
+        else
+        {
+            for(var k=0; k<$scope.encuesta.length; k++)
+            {
+                if($scope.encuesta[k].Nombre.toLowerCase() == $scope.nuevaEncuesta.Nombre.toLowerCase() && $scope.encuesta[k].EncuestaId != $scope.nuevaEncuesta.EncuestaId)
+                {
+                    $scope.mensajeError[$scope.mensajeError.length] = "La encuesta " + $scope.nuevaEncuesta.Nombre + " ya existe.";
+                    break;
+                }
+            }
+        }
+        
+        if($scope.pregunta.length == 0)
+        {
+            $scope.mensajeError[$scope.mensajeError.length] = "Indica al menos una pregunta para la encuesta.";
+        }
+        
+        if($scope.mensajeError.length > 0)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    };
+    
+    //-- Cerrar Encuesta 
+    $scope.CerrarEncuesta = function()
+    {
+        $scope.nuevaEncuesta = null;
+        $scope.pregunta = [];
+        $scope.mensajeError = [];
+    };
+    
+    
+    //-------- Cambiar de estatus encuesta -------
     $scope.CambiarEstatusEncuesta = function(encuesta)
     {
         $scope.encuestaActualizar = encuesta;
@@ -215,6 +340,7 @@ app.controller("EncuestaControlador", function($scope, $http, $q, CONFIG, $rootS
         if(operacion == "Agregar")
         {
             $scope.nuevaPregunta = new Pregunta();
+            $scope.nuevaPregunta.Respuesta.push(new Respuesta());
         }
         else if(operacion == "Editar")
         {
@@ -229,6 +355,124 @@ app.controller("EncuestaControlador", function($scope, $http, $q, CONFIG, $rootS
     };
     
     
+    $scope.QuitarRespuesta = function(index)
+    {
+        $scope.nuevaPregunta.Respuesta.splice(index, 1);
+    };
+    
+    $scope.AgregarRespuesta = function()
+    {
+        $scope.nuevaPregunta.Respuesta.push(new Respuesta());
+    };
+    
+    //-- Guardar Pregunta
+    
+    $scope.GuardarPregunta = function()
+    {
+        if(!$scope.ValidarPregunta())
+        {
+            return;
+        }
+        else
+        {
+            if($scope.operacionPregunta == "Agregar" || $scope.operacionPregunta == "Copiar")
+            {
+                $scope.AgregarPregunta();
+            }
+            else if($scope.operacionPregunta == "Editar")
+            {
+                $scope.EditarPregunta();
+            }
+        }
+        
+        $('#preguntaModal').modal('toggle');
+    };
+    
+    $scope.AgregarPregunta = function()
+    {
+        //calcaular id de la pregunta
+        var id = -1;
+        
+        for(var k=0; k<$scope.pregunta.length; k++)
+        {
+            if(parseInt($scope.pregunta[k].PreguntaId) <= -1)
+            {
+                id--;
+            }
+        }
+        
+        $scope.nuevaPregunta.PreguntaId = id.toString();
+        
+        $scope.pregunta.push($scope.nuevaPregunta);
+    };
+    
+    $scope.EditarPregunta = function()
+    {
+        for(var k=0; k<$scope.pregunta.length; k++)
+        {
+            if($scope.pregunta[k].PreguntaId == $scope.nuevaPregunta.PreguntaId)
+            {
+                $scope.pregunta[k] = SetPregunta($scope.nuevaPregunta , 'Preguardar');
+                $scope.pregunta[k].Editar = true;
+                
+                return;
+            }
+        }
+    };
+    
+    
+    $scope.ValidarPregunta = function()
+    {
+        $scope.mensajeError = [];
+        
+        if(!$scope.nuevaPregunta.Pregunta)
+        {
+            $scope.mensajeError[$scope.mensajeError.length] = "Indica la pregunta";
+        }
+        
+        if(!$scope.nuevaPregunta.TipoPregunta.TipoPreguntaId)
+        {
+            $scope.mensajeError[$scope.mensajeError.length] = "Indica el tipo de pregunta";
+        }
+        else
+        {
+            if($scope.nuevaPregunta.TipoPregunta.TipoPreguntaId == "1" || $scope.nuevaPregunta.TipoPregunta.TipoPreguntaId == "2")
+            {
+                if($scope.nuevaPregunta.Respuesta.length == 0)
+                {
+                    $scope.mensajeError[$scope.mensajeError.length] = "Indica al menos una respuesta";
+                }
+                else
+                {
+                    for(var k=0; k<$scope.nuevaPregunta.Respuesta.length; k++)
+                    {
+                        if(!$scope.nuevaPregunta.Respuesta[k].Respuesta)
+                        {
+                            $scope.mensajeError[$scope.mensajeError.length] = "Indica la respuesta " + (k+1);
+                        }
+                    }
+                }
+            }
+        }
+        
+        if($scope.mensajeError.length > 0)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    };
+    
+    
+    //--- cerrar
+    $scope.CerrarPreguntaModal = function()
+    {
+        $scope.nuevaPregunta = null;
+        $scope.mensajeError = [];  
+    };
+    
     //------- tipo pregunta ---
     $scope.CambiarTipoPregunta = function(tipo)
     {
@@ -241,5 +485,42 @@ app.controller("EncuestaControlador", function($scope, $http, $q, CONFIG, $rootS
             $scope.nuevaPregunta.Comentario = false;
         }
     };
+    
+    //Eliminar Pregunta 
+    $scope.BorrarPregunta = function(pregunta)
+    {
+        $scope.mensajeAdvertencia = "¿Estas seguro de eliminar la pregungta \"" + pregunta.Pregunta  +"\" de la encuesta?";
+        $scope.idBorrarPregunta = pregunta.PreguntaId;
+        
+        $('#modalBorrarPregunta').modal('toggle');
+    };
+    
+    $scope.ConfirmarBorrarPregunta = function()
+    {
+        $scope.Borrar = $scope.idBorrarPregunta ;
+        setTimeout(function()
+        {
+            for(var i=0; i<$scope.pregunta.length; i++)
+            {
+                if($scope.pregunta[i].PreguntaId == $scope.idBorrarPregunta )
+                {
+                    $scope.pregunta.splice(i,1);
+                    break;
+                }
+            }   
+
+            $scope.Borrar = "";
+
+            $scope.$apply();
+        }, 700);
+    };
+    
+    $scope.CancelarBorrarPregunta = function()
+    {
+        $scope.mensajeAdvertencia = "";
+        $scope.idBorrarPregunta = "";  
+    };
+    
+
     
 });

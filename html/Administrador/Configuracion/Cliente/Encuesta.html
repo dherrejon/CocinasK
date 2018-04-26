@@ -40,7 +40,7 @@
         </div>
 
         <div class="col-xs-2 col-md-1">
-             <button ng-disabled="!permisoUsuario.encuesta.agregar"  class="btn btn-block botonOperacion fa fa-plus text-center" data-toggle="tooltip" data-placement="bottom" title="Agregar Medio de Captación" ng-click="AbrirEncuesta('Agregar', null)"></button>
+             <button ng-disabled="!permisoUsuario.encuesta.agregar"  class="btn btn-block botonOperacion fa fa-plus text-center" data-toggle="tooltip" data-placement="bottom" title="Agregar Encuesta" ng-click="AbrirEncuesta('Agregar', null)"></button>
              
              <br><br>
              <!-- Boton buscar -->
@@ -115,7 +115,7 @@
             <div style="padding: 15px">
                
                 <!-- Preguntas -->       
-                <div ng-repeat="pre in pregunta" class="animated" ng-class=" {slideInUp :Subir == pre.PreguntaId,  slideInDown : Bajar == pre.PreguntaId}">
+                <div ng-repeat="pre in pregunta" ng-if="!pre.Eliminada" class="animated" ng-class=" {slideInUp :Subir == pre.PreguntaId,  slideInDown : Bajar == pre.PreguntaId, slideOutRight:Borrar == pre.PreguntaId}">
                    
                    <div class="row" ng-if="$first"> <div class="col-xs-12"><div class="divisorGrisClaro1"> </div><div style="height: 10px"></div></div></div>
                     
@@ -207,7 +207,7 @@
                              <!-- Operaciones -->
                              <div class="btn-group pull-right">
                                 
-                                <button class="btn btnOpcionRespuesta"> 
+                                <button class="btn btnOpcionRespuesta" ng-click="BorrarPregunta(pre)"> 
                                      <span class="fa fa-trash"></span>
                                  </button>
                                  
@@ -252,11 +252,11 @@
                 <!---- botones de operacion -->
                 <div class="row">
                     <div class="col-xs-6">
-                        <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarPresupuestoModal()">CANCELAR</button>
+                        <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarEncuesta()">CANCELAR</button>
                     </div>
 
                     <div class="col-xs-6">
-                        <button focus class="btn botonOperacionModal btn-block" ng-click="TerminarCliente()">TERMINAR</button>
+                        <button focus class="btn botonOperacionModal btn-block" ng-click="GuardarEncuesta()">TERMINAR</button>
                     </div>
                 </div>
             </div>
@@ -265,13 +265,13 @@
     </div>  
                     
     <!-- Pregunta -->
-    <div class="modal fade sombraDivModal" id="preguntaModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="true" data-backdrop="static">
+    <div class="modal fade sombraDivModal"  id="preguntaModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="true" data-backdrop="static">
         <br>    <br>   <br>
-        <div class="modal-dialog modal-lg modalPrincipal " >
+        <div class="modal-dialog modal-lg modalPrincipal " style="width: 90%">
            
             <div class="row">
                 <div class="col-xs-12">
-                    <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarPresupuestoModal()"><span aria-hidden="true">&times;</span></button>
+                    <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarPreguntaModal()"><span aria-hidden="true">&times;</span></button>
                     <span  class="tituloModal">{{operacionPregunta}} Pregunta</span>
                 </div>
             </div>
@@ -353,15 +353,15 @@
                 <br>
                 <div class="row"> <div class="col-xs-12"><div class="divisorGrisClaro1"> </div><div style="height: 10px"></div></div></div>
                 
-                <div class="row">
+                <div class="row" ng-if="nuevaPregunta.TipoPregunta.TipoPreguntaId">
                     <div class="col-xs-12">
-                        <h4>Respuestas</h4>
+                        <h4>Respuestas </h4>
                     </div>
                 </div>
                 <br>
                 
                 <!-- Respuestas -->
-                <div class="row" ng-if="nuevaPregunta.TipoPregunta.TipoPreguntaId != '3'" >
+                <div class="row" ng-if="nuevaPregunta.TipoPregunta.TipoPreguntaId == '2' || nuevaPregunta.TipoPregunta.TipoPreguntaId == '1' " >
                     <div class="col-xs-12" ng-repeat="respuesta in nuevaPregunta.Respuesta" >
                         <div  class="input-group" >
                            
@@ -373,11 +373,11 @@
                             <input type="text" placeholder="Respuesta {{$index+1}}" ng-model="respuesta.Respuesta" class="form-control inputRespuesta">
                             
                             <div class="input-group-btn">
-                                <button class="btn btnRespuesta">
-                                    <span class="fa fa-minus-circle"></span>
+                                <button type="button" class="btn btnRespuesta" ng-disabled="nuevaPregunta.Respuesta.length == 1" ng-click="QuitarRespuesta($index)">
+                                    <span class="fa fa-minus-circle"  ></span>
                                 </button>
                                 
-                                <button class="btn btnRespuesta">
+                                <button class="btn btnRespuesta"  ng-click="AgregarRespuesta()">
                                     <span class="fa fa-plus-circle"></span>
                                 </button>
                             </div>
@@ -386,6 +386,15 @@
                         
                         <div style="height: 10px"></div>
                     </div>
+                </div>
+                
+                <!-- Comentario -->
+                <div class="row " ng-if="nuevaPregunta.TipoPregunta.TipoPreguntaId == '3'">
+                    <div class="col-xs-12">
+                        <div>
+                            <textarea class="taComentario" placeholder="Escribe un comentario" disabled></textarea>
+                        </div>
+                   </div>
                 </div>
                 
                 <!-- opciones de respuesta -->
@@ -417,7 +426,7 @@
                             <textarea class="taComentario" placeholder="Escribe un comentario" disabled></textarea>
                         </div>
                    </div>
-                    </div>
+                </div>
                
                 <!-------- mensaje de error ---->
                 <div class="row">
@@ -431,11 +440,11 @@
                 <!---- botones de operacion -->
                 <div class="row">
                     <div class="col-xs-6">
-                        <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarPresupuestoModal()">CANCELAR</button>
+                        <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarPreguntaModal()">CANCELAR</button>
                     </div>
 
                     <div class="col-xs-6">
-                        <button focus class="btn botonOperacionModal btn-block" ng-click="TerminarCliente()">TERMINAR</button>
+                        <button focus class="btn botonOperacionModal btn-block" ng-click="GuardarPregunta()">TERMINAR</button>
                     </div>
                 </div>
             <br>
@@ -461,6 +470,29 @@
                 </div>
                 <div class="col-xs-6">
                     <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="ConfirmarActualizarEncuesta()">Si</button>
+                </div>
+            </div>
+                        
+        </div>
+    </div>
+    
+    <!-- Borrar Pregunta -->
+    <div class="modal fade sombraDivModal" id="modalBorrarPregunta"  data-keyboard="true" data-backdrop="static">
+        <br>    <br>   <br>
+        <div class="modal-dialog modal-sm modalPrincipal text-center">
+           
+            <div class="row">
+                <div class="col-xs-12">
+                    <span style="font-size:14pt">{{mensajeAdvertencia}}</span>
+                </div>
+            </div>
+            <br><br>
+            <div class="row">
+                <div class="col-xs-6">
+                    <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="CancelarBorrarPregunta()">No</button>
+                </div>
+                <div class="col-xs-6">
+                    <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="ConfirmarBorrarPregunta()">Si</button>
                 </div>
             </div>
                         

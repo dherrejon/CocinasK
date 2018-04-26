@@ -134,3 +134,8 @@
 {
     color:  rgb(250, 97, 21);
 }
+
+.btnRespuesta:disabled, .btnRespuesta:hover:disabled
+{
+    color: gray;
+}

@@ -57,7 +57,6 @@ function SetPregunta(data, tipo)
     
     pregunta.PreguntaId = data.PreguntaId;
     pregunta.Pregunta = data.Pregunta;
-    pregunta.Respuesta = data.Respuesta;
     
     if(tipo == "Iniciar")
     {
@@ -68,6 +67,9 @@ function SetPregunta(data, tipo)
         pregunta.TipoPregunta.Nombre = data.NombreTipoPregunta;
         
         pregunta.Eliminada = false;
+        pregunta.Editar = false;
+        
+        pregunta.Respuesta = data.Respuesta;
     }
     else if(tipo == "Editar")
     {
@@ -77,6 +79,31 @@ function SetPregunta(data, tipo)
         pregunta.TipoPregunta = data.TipoPregunta;
         
         pregunta.Eliminada = data.Eliminada;
+        
+        
+        if(data.Respuesta.length == 0)
+        {
+            pregunta.Respuesta[0] = new Respuesta();
+        }
+        else
+        {
+            for(var k=0; k<data.Respuesta.length; k++)
+            {
+                pregunta.Respuesta[k] = SetRespuesta(data.Respuesta[k]);
+            }
+        }
+    }
+    else if(tipo == "Preguardar")
+    {
+        pregunta.Comentario = data.Comentario;
+        pregunta.Otro = data.Otro;
+        
+        pregunta.TipoPregunta = data.TipoPregunta;
+        
+        pregunta.Eliminada = data.Eliminada;
+        pregunta.Editar = pregunta.Editar;
+        
+        pregunta.Respuesta = data.Respuesta;
     }
     else if(tipo == "Guardar")
     {
@@ -86,6 +113,9 @@ function SetPregunta(data, tipo)
         pregunta.TipoPregunta = data.TipoPregunta;
         
         pregunta.Eliminada = data.Eliminada;
+        pregunta.Editar = pregunta.Editar;
+        
+        pregunta.Respuesta = data.Respuesta;
     }
     
     return pregunta;
@@ -99,6 +129,16 @@ class Respuesta
         this.RespuestaId = "";
         this.Respuesta = "";
     }
+}
+
+function SetRespuesta(data)
+{
+    var respuesta = new Respuesta();
+    
+    respuesta.RespuestaId = data.RespuestaId;
+    respuesta.Respuesta = data.Respuesta;
+    
+    return respuesta;
 }
 
 

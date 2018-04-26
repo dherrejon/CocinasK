@@ -637,6 +637,8 @@
     $app->get('/Encuesta', $seguridad, $ChecarSesion, 'GetEncuesta');
     $app->get('/Encuesta/:id/Pregunta', $seguridad, $ChecarSesion, 'GetPreguntaEncuesta');
     $app->put('/Encuesta/Estatus', $seguridad, $ChecarSesion, 'EstatusEncuesta');
+    $app->post('/Encuesta', $seguridad, $ChecarSesion, 'AgregarEncuesta');
+    $app->put('/Encuesta', $seguridad, $ChecarSesion, 'EditarEncuesta');
     
     $app->run(); 
 
