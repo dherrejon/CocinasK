@@ -553,6 +553,42 @@ function GetFechaEng(fecha)
     return year + "-" + mes + "-" + dia;
 }
 
+function GetFechaEngShort(fecha)
+{
+    var dia, mes, year;
+    
+    if(fecha.length == 11)
+    {
+        dia = parseInt(fecha.slice(0,2));
+        mes = fecha.slice(3,6);
+        year = fecha.slice(7);
+    }
+    if(fecha.length == 10)
+    {
+        dia = parseInt(fecha.slice(0,1));
+        mes = fecha.slice(2,5);
+        year = fecha.slice(6);
+    }
+    
+    
+    if(dia<10)
+    {
+        dia = "0" + dia;
+    }
+    
+    for(var k=0; k<Month.length; k++)
+    {
+        if(mes == Month[k])
+        {
+            mes = k<9 ? "0" + (k+1) : k+1;
+            break;
+        }
+    }
+    
+    return year + "-" + mes + "-" + dia;
+}
+
+
 function GetFechaAbrEng(fecha)
 {
     var dia = parseInt(fecha.slice(0,2));

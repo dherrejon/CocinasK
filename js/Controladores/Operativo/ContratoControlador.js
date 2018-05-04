@@ -1,4 +1,4 @@
-app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CONFIG, $filter, CONTRATO, DATOSFISCALES, datosUsuario)
+app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CONFIG, $filter, CONTRATO, DATOSFISCALES, datosUsuario, CocinasKService)
 {    
     $scope.pasos = [{nombre:"Datos", numero:1}, {nombre:"Promociones", numero:2}, {nombre:"Plan de pagos", numero:3}, {nombre:"Pagos", numero:4}, {nombre:"Factura", numero:5}, {nombre:"Especificación", numero:6}];
     $scope.mensajeError = [];
@@ -83,7 +83,14 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
         //Servicio
         for(var k=0; k<$scope.presupuesto.Servicio.length; k++)
         {
-            $scope.presupuesto.Servicio[k].Contrato = false;
+            if($scope.operacion == "Editar")
+            {
+                $scope.presupuesto.Servicio[k].Contrato = false;
+            }
+            else if($scope.operacion == "Agregar")
+            {
+                $scope.presupuesto.Servicio[k].Contrato = true;
+            }
         }
         
         //Maqueo
@@ -685,6 +692,27 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
         }).catch(function(error)
         {
             alert(error);
+        });
+    };
+    
+    $scope.GetNumeroContrato = function()
+    {   
+        (self.servicioObj = CocinasKService.Get('Contrato/Numero' )).then(function (dataResponse) 
+        {
+            if (dataResponse.status == 200) 
+            {
+                $scope.numeroContrato = dataResponse.data[0].Numero;
+            } 
+            else 
+            {
+                $rootScope.$broadcast('Alerta', "Por el momento no se puede cargar la información.", 'error');
+                $scope.encuesta = [];
+            }
+            self.servicioObj.detenerTiempo();
+        }, 
+        function (error) 
+        {
+            $rootScope.$broadcast('Alerta', error, 'error');
         });
     };
     
@@ -1893,6 +1921,15 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
         }
         
         $scope.buscasFiscal = "";
+        
+        if($scope.operacion == "Agregar")
+        {
+            $scope.GetNumeroContrato();
+        }
+        else if($scope.operacion == "Editar")
+        {
+            $scope.numeroContrato = $scope.contrato.ContratoId;
+        }
     };
     
     $scope.SetVarPaso5 = function()

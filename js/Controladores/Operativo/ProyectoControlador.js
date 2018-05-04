@@ -4290,6 +4290,22 @@ app.controller("ProyectoControlador", function($scope, $rootScope, $location, PR
             }
         }
         
+        var lados = false;
+        for(var m=0; m<$scope.ubicacion.length; m++)
+        {
+            if($scope.ubicacion[m].Lado1 || $scope.ubicacion[m].Lado2)
+            {
+                 lados = true;
+                 $scope.mensajeError[$scope.mensajeError.length] = "*Tienes una sección pendiente de agregar en " + $scope.ubicacion[m].Nombre + ".";
+            }
+        }
+        
+        if(lados)
+        {
+             $scope.mensajeError[$scope.mensajeError.length] = "*Para pasar al siguiente paso el Lado 1 y el Lado 2 de todas las ubicaciones deben estar vacios.";
+        }
+    
+        
         if($scope.mensajeError.length > 0)
         {
              return false;

@@ -2025,4 +2025,34 @@ function EditarContrato()
 
 }
 
+function GetNumeroContrato()
+{
+    $request = \Slim\Slim::getInstance()->request();
+    $contrato = json_decode($request->getBody());
+    global $app;
+    $sql;
+    
+    $sql = "SELECT (max(ContratoId) + 1) as ContratoId FROM Contrato";
+
+    try 
+    {
+        $db = getConnection();
+        $db->beginTransaction();
+
+        $stmt = $db->query($sql);
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+        
+        $app->status(200);
+        echo '[{"Numero": "'.$response[0]->ContratoId.'"}]';
+    }
+    catch(PDOException $e) 
+    {    
+        echo $e;
+        echo '[{"Estatus": "Fallido"}]';
+        $db->rollBack();
+        $app->status(409);
+        $app->stop();
+    }
+}
+
 ?>

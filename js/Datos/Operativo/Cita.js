@@ -266,6 +266,10 @@ function GetTareaCita()
     tarea[2].TareaCitaId = "3";
     tarea[2].Nombre = "Visita Sucursal";
     
+    tarea[3] = new TareaCita();
+    tarea[3].TareaCitaId = "4";
+    tarea[3].Nombre = "Seguimiento Venta";
+    
     return tarea;
 }
 

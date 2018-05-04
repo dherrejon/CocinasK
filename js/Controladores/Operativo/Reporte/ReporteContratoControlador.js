@@ -12,6 +12,7 @@ app.controller("ReporteContratoControlador", function($scope, $rootScope, $http,
     $scope.busqueda = "";
     $scope.ordenar = "-Contrato";
     
+    $scope.datosReporte = {contrato: 0, total: 0, anticipo:0};
     
     $scope.IdentificarPermisos = function()
     {
@@ -195,13 +196,15 @@ app.controller("ReporteContratoControlador", function($scope, $rootScope, $http,
     //---- Enviar Filtro
     $scope.GetReporteContrato = function()
     {   
+        $scope.datosReporte = {contrato: 0, total: 0, anticipo:0};
+        
         GetReporteContrato($http, $q, CONFIG, $scope.datos).then(function(data)
         {
             for(var k=0; k<data.length; k++)
             {
                 data[k].FechaVentaFormato = TransformarFecha(data[k].FechaVenta);
                 data[k].FechaEntregaFormato = data[k].FechaEntrega;
-                data[k].FechaEntrega = GetFechaEng(data[k].FechaEntrega); 
+                data[k].FechaEntrega = GetFechaEngShort(data[k].FechaEntrega); 
                 
                 data[k].ContratoId = parseInt(data[k].ContratoId);
                 data[k].Anticipo = parseFloat(data[k].Anticipo);
@@ -209,6 +212,17 @@ app.controller("ReporteContratoControlador", function($scope, $rootScope, $http,
             }
             
             $scope.contrato = data;
+            
+            if($scope.contrato.length > 0)
+            {
+                $scope.datosReporte.contrato = $scope.contrato.length;
+                $scope.datosReporte.total = alasql("SELECT SUM(TotalContrato) AS Total From ? ", [$scope.contrato]);
+                $scope.datosReporte.anticipo = alasql("SELECT SUM(Anticipo) AS Anticipo From ? ", [$scope.contrato]);
+                
+                $scope.datosReporte.total = $scope.datosReporte.total[0].Total;
+                $scope.datosReporte.anticipo = $scope.datosReporte.anticipo[0].Anticipo;
+            }
+
             
             $scope.Ordenar();
         }).catch(function(error)

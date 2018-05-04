@@ -628,6 +628,8 @@
 
     $app->post('/GetReporteContrato', $seguridad, $ChecarSesion, 'GetReporteContrato');
 
+    $app->get('/Contrato/Numero', $seguridad, $ChecarSesion, 'GetNumeroContrato');
+
     /*------------------------- Pagos ------------------------------*/
     $app->post('/GetReportePago', $seguridad, $ChecarSesion, 'GetReportePago');
     $app->get('/GetReportePagoPendiente/:id', $seguridad, $ChecarSesion, 'GetReportePagoPendiente');

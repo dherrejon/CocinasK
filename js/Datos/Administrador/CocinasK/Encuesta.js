@@ -93,6 +93,21 @@ function SetPregunta(data, tipo)
             }
         }
     }
+    else if(tipo == "Copiar")
+    {
+        pregunta.Comentario = data.Comentario;
+        pregunta.Otro = data.Otro;
+        
+        pregunta.TipoPregunta = data.TipoPregunta;
+        
+        pregunta.Eliminada = data.Eliminada;
+        
+        
+        for(var k=0; k<data.Respuesta.length; k++)
+        {
+            pregunta.Respuesta[k] = SetRespuesta(data.Respuesta[k]);
+        }
+    }
     else if(tipo == "Preguardar")
     {
         pregunta.Comentario = data.Comentario;

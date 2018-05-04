@@ -95,7 +95,22 @@
             </div>
             
         </div>
-        <br>
+        <br><br>
+        
+        <div class="row" ng-show="contrato.length > 0" >            
+            <div class="col-xs-6 col-sm-4"  style="margin-bottom:10px">
+                <span class="textoNumeroTipoModulo">{{datosReporte.contrato}}</span>
+                <spna class="textoTipoModulo"> {{contrato.length == 1 ? 'Contrato' : 'Contratos'}}</spna> 
+            </div>
+            <div class="col-xs-6 col-sm-4"  style="margin-bottom:10px">
+                <span class="textoNumeroTipoModulo">{{datosReporte.total | currency}}</span>
+                <spna class="textoTipoModulo"> Total</spna> 
+            </div>
+            <div class="col-xs-6 col-sm-4 "  style="margin-bottom:10px">
+                <span class="textoNumeroTipoModulo">{{datosReporte.anticipo | currency}}</span>
+                <spna class="textoTipoModulo"> Anticipo</spna> 
+            </div>
+        </div>
        
         <div class="row" ng-show="contrato.length > 0">
            <div class="col-xs-12" >
@@ -156,6 +171,9 @@
                                 <b>Total</b> <span ng-class="{'fa fa-arrow-up': ordenar == 'Total', 'fa fa-arrow-down': ordenar == '-Total'}"></span>
                             </button>
                         </th>
+                        
+                         <th><span class=""><b>Perfil</b></span></th>
+                        
                         <th><span class=""><b></b></span></th>
                       </tr>
                     </thead>
@@ -188,6 +206,12 @@
                             <td>{{contrato.Anticipo | currency}}</td>
                             
                             <td>{{contrato.TotalContrato | currency}}</td>
+                            
+                            <td class="text-center">
+                                <a class="BotonOperacion" target="_blank" href="#PerfilCliente/{{contrato.PersonaId}}/Contratos">
+                                    <span class="fa fa-user fa-2x"></span>
+                                </a>
+                            </td>
                             
                             <td class="">
                                <div class="dropdown">
