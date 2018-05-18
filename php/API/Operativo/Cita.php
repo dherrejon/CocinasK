@@ -149,12 +149,12 @@ function AgregarCita()
     {
         for($k=0; $k<$counDomicilio; $k++)
         {
-            $sql = "INSERT INTO DireccionPersona (TipoMedioContactoId, PersonaId, PaisId, Domicilio, Codigo, Estado, Municipio, Ciudad, Colonia, Activo) VALUES";
+            $sql = "INSERT INTO DireccionPersona (TipoMedioContactoId, PersonaId, PaisId, Domicilio, Codigo, Estado, Municipio, Ciudad, Colonia, Activo, Descripcion) VALUES";
 
 
             $sql .= " (".$cita->Persona->NuevoDomicilio[$k]->TipoMedioContacto->TipoMedioContactoId.", ".$cita->Persona->PersonaId.",
             1, '".$cita->Persona->NuevoDomicilio[$k]->Domicilio."', '".$cita->Persona->NuevoDomicilio[$k]->Codigo."', '".$cita->Persona->NuevoDomicilio[$k]->Estado."',
-            '".$cita->Persona->NuevoDomicilio[$k]->Municipio."', '".$cita->Persona->NuevoDomicilio[$k]->Ciudad."', '".$cita->Persona->NuevoDomicilio[$k]->Colonia."', 1),";
+            '".$cita->Persona->NuevoDomicilio[$k]->Municipio."', '".$cita->Persona->NuevoDomicilio[$k]->Ciudad."', '".$cita->Persona->NuevoDomicilio[$k]->Colonia."', 1, '".$cita->Persona->NuevoDomicilio[$k]->Descripcion."'),";
             
             $sql = rtrim($sql,",");
 

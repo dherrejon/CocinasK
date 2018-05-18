@@ -503,6 +503,66 @@ function AgregarContrato()
         $app->status(409);
         $app->stop();
     }
+    
+    
+    //--------------------- Encuestas ------------------------------------
+    $sql = "SELECT COUNT(*) AS Numero, EncuestaSugeridaId  FROM EncuestaSugerida WHERE EstatusEncuestaSugeridaId = 1 AND PersonaId = ".$contrato->PersonaId;
+
+    try 
+    {
+        $stmt = $db->query($sql);
+        $encuesta = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $numeroEncuesta = intval($encuesta[0]->Numero);
+    } 
+    catch(PDOException $e) 
+    {
+        echo '[ { "Estatus": "Fallo" } ]';
+        echo $sql;
+        $db->rollBack();
+        $app->status(409);
+        $app->stop();
+    }
+    
+    //Agregar Encuesta Sugerida
+    if($numeroEncuesta < 1)
+    {
+        $sql = "INSERT INTO EncuestaSugerida (PersonaId, TipoEncuestaId, EstatusEncuestaSugeridaId) VALUES (".$contrato->PersonaId.", 1, 1)";
+        try 
+        {            
+            $stmt = $db->prepare($sql);
+            $stmt->execute();
+            
+            $encuestaSugerida = $db->lastInsertId();
+        } 
+        catch(PDOException $e) 
+        {
+            echo($e);
+            $db->rollBack();
+            echo '[ { "Estatus": "Fallo" } ]';
+            $app->status(409);
+            $app->stop();
+        }
+    }
+    else
+    {
+        $encuestaSugerida = $encuesta[0]->EncuestaSugeridaId;
+    }
+    
+    //Agregar Motivo Encuesta Sugerida
+    $sql = "INSERT INTO MotivoEncuestaSugerida(EncuestaSugeridaId, ContratoId, Fecha) VALUES (".$encuestaSugerida.", ".$contrato->ContratoId.", NOW() - INTERVAL 9 HOUR)";
+    try 
+    {            
+        $stmt = $db->prepare($sql);
+        $stmt->execute();
+    } 
+    catch(PDOException $e) 
+    {
+        echo(json_encode($encuesta));
+        $db->rollBack();
+        echo '[ { "Estatus": "Fallo" } ]';
+        $app->status(409);
+        $app->stop();
+    }
 
     //-------------------- Actualizar Estus Presupuesto ------
     $sql = "UPDATE Proyecto SET EstatusProyectoId = 2 WHERE ProyectoId = '".$contrato->ProyectoId."'";
@@ -1055,8 +1115,10 @@ function GetDatosContrato()
     {
         $stmt = $db->query($sql);
         $response = $stmt->fetchAll(PDO::FETCH_OBJ);
-
-        $contrato->OpcionContrato = $response[0];
+        if($response)
+        {
+            $contrato->OpcionContrato = $response[0];
+        }
     } 
     catch(PDOException $e) 
     {

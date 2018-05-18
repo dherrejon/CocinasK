@@ -1737,13 +1737,13 @@
                                 </table>
                                 
                                 <!-- Descripcion -->
-                                <table id="descripcionContrato">
+                                <table ng-repeat="desc in contrato.Descripcion" id="descripcionContrato{{$index}}" >
                                     <tbody>
                                        <tr>
                                             <td > </td>
                                       </tr>
                                         
-                                       <tr ng-repeat="desc in contrato.Descripcion">
+                                       <tr >
                                             <td >-{{desc.Descripcion}}</td>
                                         </tr>
                                     </tbody>

@@ -197,12 +197,12 @@ function AgregarProyectoPresupuesto()
     {
         for($k=0; $k<$counDomicilio; $k++)
         {
-            $sql = "INSERT INTO DireccionPersona (TipoMedioContactoId, PersonaId, PaisId, Domicilio, Codigo, Estado, Municipio, Ciudad, Colonia, Activo) VALUES";
+            $sql = "INSERT INTO DireccionPersona (TipoMedioContactoId, PersonaId, PaisId, Domicilio, Codigo, Estado, Municipio, Ciudad, Colonia, Activo, Descripcion) VALUES";
 
 
             $sql .= " (".$presupuesto->Persona->NuevoDomicilio[$k]->TipoMedioContacto->TipoMedioContactoId.", ".$presupuesto->Persona->PersonaId.",
             1, '".$presupuesto->Persona->NuevoDomicilio[$k]->Domicilio."', '".$presupuesto->Persona->NuevoDomicilio[$k]->Codigo."', '".$presupuesto->Persona->NuevoDomicilio[$k]->Estado."',
-            '".$presupuesto->Persona->NuevoDomicilio[$k]->Municipio."', '".$presupuesto->Persona->NuevoDomicilio[$k]->Ciudad."', '".$presupuesto->Persona->NuevoDomicilio[$k]->Colonia."', 1),";
+            '".$presupuesto->Persona->NuevoDomicilio[$k]->Municipio."', '".$presupuesto->Persona->NuevoDomicilio[$k]->Ciudad."', '".$presupuesto->Persona->NuevoDomicilio[$k]->Colonia."', 1, '".$presupuesto->Persona->NuevoDomicilio[$k]->Descripcion."')";
             
             $sql = rtrim($sql,",");
 

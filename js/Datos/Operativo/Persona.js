@@ -464,6 +464,7 @@ function SetDireccionPersona(data)
     domicilio.Municipio = data.Municipio;
     domicilio.Ciudad = data.Ciudad;
     domicilio.Colonia = data.Colonia;
+    domicilio.Descripcion = data.Descripcion;
     
     domicilio.Activo = CambiarDatoEnteroABool(data.Activo);
     

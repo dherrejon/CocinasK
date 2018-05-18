@@ -104,6 +104,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, $location, PR
         $scope.opt = "Personalizar";
         
         $scope.presupuesto = new Presupuesto();
+        $scope.combinacion = null;
         
         $scope.copiarPresupuesto = true; //bandera que indica que despues de obtener los catálogos se deberan de copiar los datos de algun presupuesto
         $scope.personaSeleccionada = true; 

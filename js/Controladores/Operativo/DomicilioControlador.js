@@ -66,6 +66,7 @@ app.controller("DomicilioOperativoControlador", function($scope, $rootScope, $ht
         $scope.operacion = "Editar";
         $scope.tipoOperacion = "Editar Registro";
         $scope.nuevoDomicilio = DOMICILIO.GetDomicilio();
+        
         $scope.sinCP = false;
         $scope.otraColonia = false;
         
@@ -192,6 +193,9 @@ app.controller("DomicilioOperativoControlador", function($scope, $rootScope, $ht
                         $scope.nuevoDomicilio.Municipio = data[0].Municipio;
                         $scope.nuevoDomicilio.Ciudad = data[0].Ciudad;
                         $scope.nuevoDomicilio.Colonia = data[0].Colonia;
+                        
+                        $scope.dir.estado = $scope.nuevoDomicilio.Estado;
+                        $scope.dir.municipio = $scope.nuevoDomicilio.Municipio;
                     }
                 }).catch(function(error)
                 {
@@ -670,6 +674,7 @@ function SetDomicilio(data)
     domicilio.Ciudad = data.Ciudad;
     domicilio.Colonia = data.Colonia;
     domicilio.Activo = data.Activo;
+    domicilio.Descripcion = data.Descripcion;
     
     if(data.Pais !== undefined)
     {

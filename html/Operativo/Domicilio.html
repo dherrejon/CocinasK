@@ -211,6 +211,21 @@
                     <br>
                 </div>
                 
+                 <!-- Descripción -->
+                <div class="row">
+                    <div class="col-sm-12">
+                         <div class="">
+                            <label class="labelEntrada">
+                                Descripción
+                            </label>
+
+                            <textarea required type="text"  name="descripcion" class="form-control descripcionArea" ng-model="nuevoDomicilio.Descripcion" ng-maxlength="500" style="min-height: 50px; min-width: 100%"></textarea>
+                        </div>
+                        <br>
+                    </div>
+                </div> 
+                <br>
+                
                 <!-------- mensaje de error ---->
                 <div class="row">
                     <div class="col-xs-12">
@@ -318,6 +333,19 @@
                 </div>
             </div>
             <br>
+            
+            <div ng-if="domicilioDetalle.Descripcion">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <label>Descripción</label><br>
+                        <span>
+                            {{domicilioDetalle.Descripcion}}
+                        </span>
+                    </div>
+                </div>
+                
+                <br>
+            </div>
         
         </div>
     </div> 

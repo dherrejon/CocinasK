@@ -15,6 +15,8 @@ function CalcularCostoPuerta(muestrario, modulo, combinacion, margePresupuesto, 
             
             
             muestrario[j].Combinacion = [];
+            puerta = 0;
+            precio = 0;
             
             for(var i=0; i<combinacion.length; i++)
             {
@@ -27,8 +29,7 @@ function CalcularCostoPuerta(muestrario, modulo, combinacion, margePresupuesto, 
                     muestrario[j].Combinacion[im].Nombre = combinacion[i].Nombre;
                     
                     muestrario[j].Combinacion[im].PrecioVenta = 0;
-                    puerta = 0;
-                    precio = 0;
+                    
                     
                     //Obtener la puerta con el precio más alto del muestrario
                     for(var m=0; m<muestrario[j].Puerta.length; m++)
@@ -60,9 +61,9 @@ function CalcularCostoPuerta(muestrario, modulo, combinacion, margePresupuesto, 
 
                 for(var k=1; k<modulo.length; k++)
                 {
-                    CalcularConsumoPuerta(muestrario[j].Puerta[puerta], modulo[k]);
+                    CalcularConsumoPuerta(muestrario[j].Puerta[muestrario[j].Combinacion[i].Puerta], modulo[k]);
 
-                    muestrario[j].Combinacion[i].PrecioVenta  += CalcularPrecioVentaPuerta(muestrario[j].Puerta[puerta], muestrario[j].Combinacion[i].CombinacionMaterialId, modulo[k]);
+                    muestrario[j].Combinacion[i].PrecioVenta  += CalcularPrecioVentaPuerta(muestrario[j].Puerta[muestrario[j].Combinacion[i].Puerta], muestrario[j].Combinacion[i].CombinacionMaterialId, modulo[k]);
                 }   
                 
                 muestrario[j].Combinacion[i].PrecioVenta += ((muestrario[j].Combinacion[i].PrecioVenta*margePresupuesto)/100);

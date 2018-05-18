@@ -220,6 +220,7 @@ class Domicilio
         this.Ciudad = "";
         this.Colonia = "";
         this.Activo = true;
+        this.Descripcion = "";
         
         this.Pais.PaisId = "1";
     }

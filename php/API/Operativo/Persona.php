@@ -128,8 +128,8 @@ function AgregarDomicilioPersona()
     $request = \Slim\Slim::getInstance()->request();
     $domicilio = json_decode($request->getBody());
     global $app;
-    $sql = "INSERT INTO DireccionPersona (TipoMedioContactoId, PersonaId, PaisId, Codigo, Domicilio, Estado, Municipio, Ciudad, Colonia, Activo) 
-            VALUES(:TipoMedioContactoId, :PersonaId, 1, :Codigo, :Domicilio, :Estado, :Municipio, :Ciudad, :Colonia, 1)";
+    $sql = "INSERT INTO DireccionPersona (TipoMedioContactoId, PersonaId, PaisId, Codigo, Domicilio, Estado, Municipio, Ciudad, Colonia, Activo, Descripcion) 
+            VALUES(:TipoMedioContactoId, :PersonaId, 1, :Codigo, :Domicilio, :Estado, :Municipio, :Ciudad, :Colonia, 1, :Descripcion)";
 
     try 
     {
@@ -144,6 +144,7 @@ function AgregarDomicilioPersona()
         $stmt->bindParam("Municipio", $domicilio->Municipio);
         $stmt->bindParam("Ciudad", $domicilio->Ciudad);
         $stmt->bindParam("Colonia", $domicilio->Colonia);
+        $stmt->bindParam("Descripcion", $domicilio->Descripcion);
 
         $stmt->execute();
 
@@ -166,7 +167,7 @@ function EditarDireccionPersona()
     $direccion = json_decode($request->getBody());
    
     $sql = "UPDATE DireccionPersona SET TipoMedioContactoId='".$direccion->TipoMedioContacto->TipoMedioContactoId."', Domicilio='".$direccion->Domicilio."',
-    Codigo='".$direccion->Codigo."', Estado='".$direccion->Estado."', Municipio='".$direccion->Municipio."', Ciudad='".$direccion->Ciudad."', Colonia='".$direccion->Colonia."'   
+    Codigo='".$direccion->Codigo."', Estado='".$direccion->Estado."', Municipio='".$direccion->Municipio."', Ciudad='".$direccion->Ciudad."', Colonia='".$direccion->Colonia."', Descripcion='".$direccion->Descripcion."'  
     WHERE DireccionPersonaId=".$direccion->DireccionPersonaId."";
     
     try 

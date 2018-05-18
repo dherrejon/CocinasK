@@ -2401,11 +2401,17 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
         var ser = doc.autoTableHtmlToJson(document.getElementById("servicio"));
         var acc = doc.autoTableHtmlToJson(document.getElementById("accesorio"));
         var cub = doc.autoTableHtmlToJson(document.getElementById("cubierta"));
-        var desc = doc.autoTableHtmlToJson(document.getElementById("descripcionContrato"));
         var espt = doc.autoTableHtmlToJson(document.getElementById("especificaciontitulo"));
         var esp = doc.autoTableHtmlToJson(document.getElementById("especificacion"));
         var total = doc.autoTableHtmlToJson(document.getElementById("fechapago"));
         var pago = doc.autoTableHtmlToJson(document.getElementById("pagos"));
+        
+        var desc = [];
+        
+        for(var k=0; k<$scope.contrato.Descripcion.length; k++)
+        {
+            desc[k] = doc.autoTableHtmlToJson(document.getElementById("descripcionContrato" + k));
+        }
         
         //encabezado
         var venta = "Venta No. " + $scope.contrato.ContratoId; 
@@ -2596,24 +2602,31 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
             });
         }
         
-         lastH = doc.autoTable.previous.finalY;
+        lastH = doc.autoTable.previous.finalY;
         
         //descripcion
         if($scope.contrato.Descripcion.length > 0)
         {
-                doc.autoTable(desc.columns, desc.data, {
-                margin: {top: 25, bottom: 50},
-                ///addPageContent: pageContent,
-                startY: lastH + 5,
-                showHeader: 'never',
-                headerStyles: {fillColor: [255, 255, 255], textColor: 20, fontStyle: 'normal'}, 
-                styles: { overflow: 'linebreak', fontSize:10, fillColor: [255, 255, 255], textColor: [0, 0, 0], lineWidth: 0},
-                theme: 'grid',
-            });
+            var margen = 0;
+            for(var k=0; k<$scope.contrato.Descripcion.length; k++)
+            {
+                margen = k == 0 ? 5 : 0;
+                
+                doc.autoTable(desc[k].columns, desc[k].data, 
+                {
+                    margin: {top: 25, bottom: 50},
+                    addPageContent: pageContent,
+                    startY: lastH + margen,
+                    showHeader: 'never',
+                    headerStyles: {fillColor: [255, 255, 255], textColor: 20, fontStyle: 'normal'}, 
+                    styles: { overflow: 'linebreak', fontSize:10, fillColor: [255, 255, 255], textColor: [0, 0, 0], lineWidth: 0},
+                    theme: 'grid',
+                    pageBreak: 'avoid',
+                });
+                
+                lastH = doc.autoTable.previous.finalY;
+            }
         }
-        
-        
-        lastH = doc.autoTable.previous.finalY;
         
         //pageContent();
         

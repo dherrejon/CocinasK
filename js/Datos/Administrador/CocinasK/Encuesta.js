@@ -186,3 +186,31 @@ function GetTipoPregunta()
     
     return tipoPregunta;
 }
+
+//-- Catálogo de Encuestas --
+class TipoEncuesta
+{
+    constructor()
+    {
+        this.TipoEncuestaId = "";
+        this.Nombre = "";
+    }
+}
+
+function GetTipoPregunta()
+{
+    var tipoPregunta = [];
+    
+    tipoPregunta[0] = new TipoPregunta();
+    tipoPregunta[0].TipoPreguntaId = "1";
+    tipoPregunta[0].Nombre = "Contrató en Cocinas K";
+    
+    tipoPregunta[1] = new TipoPregunta();
+    tipoPregunta[1].TipoPreguntaId = "2";
+    tipoPregunta[1].Nombre = "Canceló Proyecto";
+    
+    
+    return tipoPregunta;
+}
+
+
