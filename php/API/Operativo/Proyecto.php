@@ -796,14 +796,11 @@ function CambiarEstatusProyecto()
     try 
     {
         $db = getConnection();
+        $db->beginTransaction();
         
         $sql = "UPDATE Proyecto SET EstatusProyectoId = ".$datos->EstatusProyectoId." WHERE ProyectoId = ".$datos->ProyectoId."";
         $stmt = $db->prepare($sql);
         $stmt->execute();
-    
-        $db = null;
-        
-        echo '[{"Estatus": "Exitoso"}]';
     }
     catch(PDOException $e) 
     {
@@ -811,7 +808,152 @@ function CambiarEstatusProyecto()
         //echo ($sql);
         $app->status(409);
         $app->stop();
+        $db->rollBack();
     }
+    
+    //Set en encuesta sugerida
+    if($datos->EstatusProyectoId == "4")
+    {
+         //--------------------- Encuestas ------------------------------------
+        //Verificar que no exista una encuesta sugeridad con el mismo tipo de encuesta pendiente
+        $sql = "SELECT COUNT(*) AS Numero, EncuestaSugeridaId  FROM EncuestaSugerida WHERE TipoEncuestaId = 2 AND EstatusEncuestaSugeridaId = 1 AND PersonaId = ".$datos->PersonaId;
+
+        try 
+        {
+            $stmt = $db->query($sql);
+            $encuesta = $stmt->fetchAll(PDO::FETCH_OBJ);
+            $numeroEncuesta = intval($encuesta[0]->Numero);
+        } 
+        catch(PDOException $e) 
+        {
+            echo '[ { "Estatus": "Fallo" } ]';
+            echo $sql;
+            $db->rollBack();
+            $app->status(409);
+            $app->stop();
+        }
+
+        //Agregar Encuesta Sugerida "Canceló Proyecto"
+        if($numeroEncuesta < 1)
+        {
+            $sql = "INSERT INTO EncuestaSugerida (PersonaId, TipoEncuestaId, EstatusEncuestaSugeridaId) VALUES (".$datos->PersonaId.", 2, 1)";
+            try 
+            {            
+                $stmt = $db->prepare($sql);
+                $stmt->execute();
+
+                $encuestaSugerida = $db->lastInsertId();
+            } 
+            catch(PDOException $e) 
+            {
+                echo($e);
+                $db->rollBack();
+                echo '[ { "Estatus": "Fallo" } ]';
+                $app->status(409);
+                $app->stop();
+            }
+        }
+        else
+        {
+            $encuestaSugerida = $encuesta[0]->EncuestaSugeridaId;
+        }
+
+        //Agregar Motivo Encuesta Sugerida
+        $sql = "INSERT INTO MotivoEncuestaSugerida(EncuestaSugeridaId, ProyectoId, Fecha) VALUES (".$encuestaSugerida.", ".$datos->ProyectoId.", NOW() - INTERVAL 9 HOUR)";
+        try 
+        {            
+            $stmt = $db->prepare($sql);
+            $stmt->execute();
+        } 
+        catch(PDOException $e) 
+        {
+            $db->rollBack();
+            echo '[ { "Estatus": "Fallo" } ]';
+            $app->status(409);
+            $app->stop();
+        }
+    }
+    
+    //Remove en Encuesta sugerida
+    if($datos->EstatusAnterior == "4")
+    {
+        $sql = "SELECT COUNT(*) as Numero, e.EncuestaSugeridaId FROM MotivoEncuestaSugerida m, EncuestaSugerida e 
+                WHERE e.EncuestaSugeridaId = m.EncuestaSugeridaId AND e.EstatusEncuestaSugeridaId = 1 AND m.ProyectoId =".$datos->ProyectoId;
+        
+        try 
+        {
+            $stmt = $db->query($sql);
+            $motivo = $stmt->fetchAll(PDO::FETCH_OBJ);
+            $numeroMotivo = intval($motivo[0]->Numero);
+            $encuestaSugeridaId = $motivo[0]->EncuestaSugeridaId;
+        } 
+        catch(PDOException $e) 
+        {
+            echo '[ { "Estatus": "Fallo" } ]';
+            echo $sql;
+            $db->rollBack();
+            $app->status(409);
+            $app->stop();
+        }
+        
+        if($numeroMotivo > 0)
+        {
+            $sql = "DELETE FROM MotivoEncuestaSugerida WHERE ProyectoId = ".$datos->ProyectoId;
+            try 
+            {            
+                $stmt = $db->prepare($sql);
+                $stmt->execute();
+            } 
+            catch(PDOException $e) 
+            {
+                $db->rollBack();
+                echo '[ { "Estatus": "Fallo" } ]';
+                $app->status(409);
+                $app->stop();
+            }
+            
+            $sql = "SELECT COUNT(*) as Numero FROM MotivoEncuestaSugerida
+                WHERE EncuestaSugeridaId = ".$encuestaSugeridaId;
+        
+            try 
+            {
+                $stmt = $db->query($sql);
+                $motivo = $stmt->fetchAll(PDO::FETCH_OBJ);
+                $numeroEncuestaSugerida = intval($motivo[0]->Numero);
+            } 
+            catch(PDOException $e) 
+            {
+                echo '[ { "Estatus": "Fallo" } ]';
+                echo $sql;
+                $db->rollBack();
+                $app->status(409);
+                $app->stop();
+            }
+            
+            if($numeroEncuestaSugerida == 0)
+            {
+                $sql = "UPDATE EncuestaSugerida SET EstatusEncuestaSugeridaId = 3, MotivoRechazo = 'El usuario volvió a activar el proyecto'  WHERE EncuestaSugeridaId = ".$encuestaSugeridaId;
+                try 
+                {            
+                    $stmt = $db->prepare($sql);
+                    $stmt->execute();
+                } 
+                catch(PDOException $e) 
+                {
+                    $db->rollBack();
+                    echo '[ { "Estatus": "Fallo" } ]';
+                    $app->status(409);
+                    $app->stop();
+                }
+            }
+        }        
+    }
+    
+    
+    $db->commit();
+    $db = null;
+    $app->status(200);
+    echo '[{"Estatus": "Exitoso"}]';
 }
 
 function EditarProyecto()

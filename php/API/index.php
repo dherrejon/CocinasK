@@ -641,6 +641,9 @@
     $app->put('/Encuesta/Estatus', $seguridad, $ChecarSesion, 'EstatusEncuesta');
     $app->post('/Encuesta', $seguridad, $ChecarSesion, 'AgregarEncuesta');
     $app->put('/Encuesta', $seguridad, $ChecarSesion, 'EditarEncuesta');
+
+    /*------------------------- Encuestas Sugeridas ------------------------------*/
+    $app->get('/Reporte/EncuestaSugerida/:unidad', $seguridad, $ChecarSesion, 'GetEncuestasSugeridas');
     
     $app->run(); 
 

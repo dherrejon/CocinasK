@@ -197,7 +197,7 @@ class TipoEncuesta
     }
 }
 
-function GetTipoPregunta()
+function GetTipoEncuesta()
 {
     var tipoPregunta = [];
     
@@ -208,6 +208,36 @@ function GetTipoPregunta()
     tipoPregunta[1] = new TipoPregunta();
     tipoPregunta[1].TipoPreguntaId = "2";
     tipoPregunta[1].Nombre = "Canceló Proyecto";
+    
+    
+    return tipoPregunta;
+}
+
+//-- Encuesta Sugerida --
+class EstatusEncuestaSugerida
+{
+    constructor()
+    {
+        this.EstatusEncuestaSugeridaId = "";
+        this.Nombre = "";
+    }
+}
+
+function GetEstatusEncuestaSugerida()
+{
+    var tipoPregunta = [];
+    
+    tipoPregunta[0] = new TipoPregunta();
+    tipoPregunta[0].EstatusEncuestaSugeridaId = "1";
+    tipoPregunta[0].Nombre = "Pendiente";
+    
+    tipoPregunta[1] = new TipoPregunta();
+    tipoPregunta[1].EstatusEncuestaSugeridaId = "2";
+    tipoPregunta[1].Nombre = "Realizada";
+    
+    tipoPregunta[1] = new TipoPregunta();
+    tipoPregunta[1].EstatusEncuestaSugeridaId = "3";
+    tipoPregunta[1].Nombre = "Rechazada";
     
     
     return tipoPregunta;

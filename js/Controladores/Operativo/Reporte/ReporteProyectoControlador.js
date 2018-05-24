@@ -316,6 +316,8 @@ app.controller("ReporteProyectoControlador", function($scope, $rootScope, $http,
         var datos = new Object();
         datos.ProyectoId = $scope.ProyetoActualizar.ProyectoId;
         datos.EstatusProyectoId = $scope.estatusActualizar.EstatusProyectoId;
+        datos.EstatusAnterior = $scope.ProyetoActualizar.EstatusProyectoId;
+        datos.PersonaId = $scope.ProyetoActualizar.PersonaId;
         
         
         CambiarEstatusProyecto($http, $q, CONFIG, datos).then(function(data)

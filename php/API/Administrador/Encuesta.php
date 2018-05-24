@@ -428,4 +428,67 @@ function EditarEncuesta()
     $db = null; 
 }
 
+
+//------------- Encuestas sugeridas ------------
+
+function GetEncuestasSugeridas($unidad)
+{
+    global $app;
+    global $session_expiration_time;
+
+    $request = \Slim\Slim::getInstance()->request();
+    $filtro = json_decode($request->getBody());
+    
+    if($unidad == '-1')
+    {
+        $sql = "SELECT * FROM EncuestaSugeridaVista GROUP BY EncuestaSugeridaId ";
+    }
+    else
+    {
+        $sql = "SELECT * FROM EncuestaSugeridaVista WHERE UnidadNegocioId = ".$unidad;
+    }
+    
+    try 
+    {
+        $db = getConnection();
+
+        $stmt = $db->query($sql);
+        $encuesta = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+        
+    } 
+    catch(PDOException $e) 
+    {
+        $db = null;
+        echo '[ { "Estatus": "Fallo" } ]';
+        //$app->status(409);
+        $app->stop();
+    }
+    
+    
+    $count = count($encuesta);
+    
+    for($i=0; $i<$count; $i++)
+    {
+        $sql = "SELECT * FROM MotivoEncuestaSugeridaVista WHERE EncuestaSugeridaId = ".$encuesta[$i]->EncuestaSugeridaId;
+        
+        try 
+        {
+            $stmt = $db->query($sql);
+            $encuesta[$i]->Motivo = $stmt->fetchAll(PDO::FETCH_OBJ);
+        } 
+        catch(PDOException $e) 
+        {
+            $db = null;
+            echo '[ { "Estatus": "Fallo" } ]';
+            $app->status(409);
+            $app->stop();
+        }
+    }
+    
+    $db = null;
+    echo json_encode($encuesta); 
+    
+}
+
 ?>

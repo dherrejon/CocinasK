@@ -2187,13 +2187,20 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
         var enc4 = " con las características siguientes:  ";
         var nombre = $scope.presupuesto.Persona.Nombre.toUpperCase() + " " + $scope.presupuesto.Persona.PrimerApellido.toUpperCase() + " " + $scope.presupuesto.Persona.SegundoApellido.toUpperCase();
         var total = $filter('currency')($scope.contrato.TotalContrato);
-        var totalnombre = numeroALetras($scope.contrato.TotalContrato, 
+        
+        var totalStr = $scope.contrato.TotalContrato.toFixed(2);
+        var entero = totalStr.substring(0, totalStr.length-3);
+        var decimal = totalStr.substring((totalStr.length-2), totalStr.length);
+        
+        var totalnombre = numeroALetras(entero, 
                         {
-                            plural: 'PESOS 00/100 M.N.',
-                            singular: 'PESOS 00/100 M.N.',
+                            plural: 'PESOS ',
+                            singular: 'PESOS ',
                             centPlural: '',
                             centSingular: ''
                         });
+        
+        totalnombre += decimal + "/100 M.N. ";
         
         var proyecto = "";
         if($scope.contrato.ProyectoNombre === undefined || $scope.contrato.ProyectoNombre  === "" || $scope.contrato.ProyectoNombre  === null)
@@ -3056,10 +3063,10 @@ var numeroALetras = (function()
             enteros: Math.floor(num),
             centavos: (((Math.round(num * 100)) - (Math.floor(num) * 100))),
             letrasCentavos: '',
-            letrasMonedaPlural: currency.plural || 'PESOS CHILENOS',//'PESOS', 'Dólares', 'Bolívares', 'etcs'
-            letrasMonedaSingular: currency.singular || 'PESO CHILENO', //'PESO', 'Dólar', 'Bolivar', 'etc'
-            letrasMonedaCentavoPlural: currency.centPlural || 'CHIQUI PESOS CHILENOS',
-            letrasMonedaCentavoSingular: currency.centSingular || 'CHIQUI PESO CHILENO'
+            letrasMonedaPlural: currency.plural || 'PESOS MEXICANOS',//'PESOS', 'Dólares', 'Bolívares', 'etcs'
+            letrasMonedaSingular: currency.singular || 'PESOS MEXICANOS', //'PESO', 'Dólar', 'Bolivar', 'etc'
+            letrasMonedaCentavoPlural: currency.centPlural || 'CENTAVOS',
+            letrasMonedaCentavoSingular: currency.centSingular || 'CENTAVOS'
         };
 
         if (data.centavos > 0) {

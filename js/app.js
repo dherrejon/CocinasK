@@ -203,9 +203,13 @@ app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpPro
     when('/ReporteProyecto',{
         templateUrl: 'html/Operativo/Reporte/ReporteProyecto.html'
     }).
+    when('/ReporteEncuestaSugerida',{
+        templateUrl: 'html/Operativo/Reporte/ReporteEncuestaSugerida.html'
+    }).
     when('/Operativo',{
         templateUrl: 'html/Operativo/Operativo.html'
     }).
+    
     
     //ejecutivo
      when('/Ejecutivo',{

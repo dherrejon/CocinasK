@@ -559,6 +559,7 @@ var OpcionOperativo =
                     { menu: 1, referencia: "#ReportePago", texto:"Pagos",  show:false, tipo:"enlace", permiso:[{clave:"OpeVRPConsultar"}]},
                     { menu: 1, referencia: "#ReportePersonasRegistradas", texto:"Personas Registradas",  show:false, tipo:"enlace", permiso:[{clave:"OpePRConsultar"}]},
                     { menu: 1, referencia: "#ReporteProyecto", texto:"Proyectos",  show:false, tipo:"enlace", permiso:[{clave:"OpeRProConsultar"}]},
+                    { menu: 2, divider: true, referencia: "#ReporteEncuestaSugerida", texto:"Encuesta Sugerida",  show:false, tipo:"enlace", permiso:[{clave:"OpeRESConsultar"}]},
                     //{ menu: 1, referencia: "#ReportePagoPendiente", texto:"Pagos Pendientes",  show:false, tipo:"enlace", permiso:[{clave:"OpeRPAConsultar"}]}
                   ]                      
     },

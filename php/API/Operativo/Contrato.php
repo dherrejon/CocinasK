@@ -506,7 +506,7 @@ function AgregarContrato()
     
     
     //--------------------- Encuestas ------------------------------------
-    $sql = "SELECT COUNT(*) AS Numero, EncuestaSugeridaId  FROM EncuestaSugerida WHERE EstatusEncuestaSugeridaId = 1 AND PersonaId = ".$contrato->PersonaId;
+    $sql = "SELECT COUNT(*) AS Numero, EncuestaSugeridaId  FROM EncuestaSugerida WHERE TipoEncuestaId = 1 AND EstatusEncuestaSugeridaId = 1 AND PersonaId = ".$contrato->PersonaId;
 
     try 
     {
