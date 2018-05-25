@@ -6,11 +6,15 @@ app.controller("ReporteEncuestaSugeridaController", function($scope, $rootScope,
     $scope.tipoEncuesta = [];
     $scope.estatusEncuestaSugerida = [];
     
+    $scope.filtro = {unidad: new Object(), tipoEncuesta: new Object(), estatusEncuesta: new Object(), buscar:""};
+    $scope.verFiltro = false;
+    
+    $scope.ordenar = "-UltimoMovimiento";
+    
     /*----------------verificar los permisos---------------------*/
     $scope.permiso = {verTodo: false, ver: false, aplicar: false};
     $rootScope.permisoOperativo = {verTodosCliente: false};
 
-    
     $scope.IdentificarPermisos = function()
     {
         for(var k=0; k < $scope.usuarioLogeado.Permiso.length; k++)
@@ -39,6 +43,8 @@ app.controller("ReporteEncuestaSugeridaController", function($scope, $rootScope,
         
         $scope.tipoEncuesta = GetTipoEncuesta();
         $scope.estatusEncuestaSugerida = GetEstatusEncuestaSugerida();
+        
+        $scope.filtro.estatusEncuesta = $scope.estatusEncuestaSugerida[0];
     };
     
     $scope.GetUnidadNegocio = function()
@@ -82,6 +88,74 @@ app.controller("ReporteEncuestaSugeridaController", function($scope, $rootScope,
         });
     };
     
+    
+    //filtrar
+    $scope.CambiarTipoEncuesta = function(tipo)
+    {
+        if(tipo != "ninguno")
+        {
+            $scope.filtro.tipoEncuesta = tipo;
+        }
+        else
+        {
+            $scope.filtro.tipoEncuesta = new Object();
+        }
+    };
+    
+    $scope.CambiarUnidadNegocio = function(unidad)
+    {
+        if(unidad != "ninguna")
+        {
+            $scope.filtro.unidad = unidad;
+        }
+        else
+        {
+            $scope.filtro.unidad = new Object();
+        }
+    };
+    
+    $scope.CambiarEstatusEncuesta = function(estatus)
+    {
+        if(estatus != "ninguno")
+        {
+            $scope.filtro.estatusEncuesta = estatus;
+        }
+        else
+        {
+            $scope.filtro.estatusEncuesta = new Object();
+        }
+    };
+    
+    $scope.FiltroEncuestaSugerida= function(encuesta)
+    {
+        if($scope.filtro.tipoEncuesta.TipoEncuestaId)
+        {
+            if($scope.filtro.tipoEncuesta.TipoEncuestaId != encuesta.TipoEncuestaId)
+            {
+                return false;
+            }
+        }
+        
+        if($scope.filtro.unidad.UnidadNegocioId)
+        {
+            if($scope.filtro.unidad.UnidadNegocioId != encuesta.UnidadNegocioId)
+            {
+                return false;
+            }
+        }
+        
+        if($scope.filtro.estatusEncuesta.EstatusEncuestaSugeridaId)
+        {
+            if($scope.filtro.estatusEncuesta.EstatusEncuestaSugeridaId != encuesta.EstatusEncuestaSugeridaId)
+            {
+                return false;
+            }
+        }
+        
+        
+        return true;
+    };
+    
     //----- Ordenar -------
     $scope.CambiarOrdenar = function(campoOrdenar)
     {
@@ -93,6 +167,19 @@ app.controller("ReporteEncuestaSugeridaController", function($scope, $rootScope,
         {
             $scope.ordenar = campoOrdenar;
         }
+    };
+    
+    //-- Detalle --
+    $scope.DetalleEncuesta = function(encuesta)
+    {
+        //Rechazada
+        if(encuesta.EstatusEncuestaSugeridaId == "3")
+        {
+            $scope.motivoRechazoDetalle = encuesta.MotivoRechazo;
+            $('#MotivoRechazo').modal('toggle');
+        }
+        
+        //Realizada
     };
     
     

@@ -202,11 +202,11 @@ function GetTipoEncuesta()
     var tipoPregunta = [];
     
     tipoPregunta[0] = new TipoPregunta();
-    tipoPregunta[0].TipoPreguntaId = "1";
+    tipoPregunta[0].TipoEncuestaId = "1";
     tipoPregunta[0].Nombre = "Contrató en Cocinas K";
     
     tipoPregunta[1] = new TipoPregunta();
-    tipoPregunta[1].TipoPreguntaId = "2";
+    tipoPregunta[1].TipoEncuestaId = "2";
     tipoPregunta[1].Nombre = "Canceló Proyecto";
     
     
@@ -235,9 +235,9 @@ function GetEstatusEncuestaSugerida()
     tipoPregunta[1].EstatusEncuestaSugeridaId = "2";
     tipoPregunta[1].Nombre = "Realizada";
     
-    tipoPregunta[1] = new TipoPregunta();
-    tipoPregunta[1].EstatusEncuestaSugeridaId = "3";
-    tipoPregunta[1].Nombre = "Rechazada";
+    tipoPregunta[2] = new TipoPregunta();
+    tipoPregunta[2].EstatusEncuestaSugeridaId = "3";
+    tipoPregunta[2].Nombre = "Rechazada";
     
     
     return tipoPregunta;

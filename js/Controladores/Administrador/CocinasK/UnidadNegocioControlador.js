@@ -1270,15 +1270,22 @@ app.filter('fechaEsp', function ()
 {
     return function (fecha) 
     {
-        var year = fecha.slice(0,4);
-        var mes = parseInt(fecha.slice(5,7))-1;
-        var dia = fecha.slice(8,10);
-        var hora = fecha.slice(10,16);
+        if(fecha)
+        {
+            var year = fecha.slice(0,4);
+            var mes = parseInt(fecha.slice(5,7))-1;
+            var dia = fecha.slice(8,10);
+            var hora = fecha.slice(10,16);
 
-        mes = GetMesNombre(mes);
+            mes = GetMesNombre(mes);
 
-        var fechaF = dia + "/"  + mes + "/" + year + hora;
+            var fechaF = dia + "/"  + mes + "/" + year + hora;
 
-        return fechaF;
+            return fechaF;
+        }
+        else
+        {
+            return '-';
+        }
     };
 });
