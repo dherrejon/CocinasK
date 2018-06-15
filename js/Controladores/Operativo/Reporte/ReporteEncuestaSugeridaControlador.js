@@ -30,7 +30,7 @@ app.controller("ReporteEncuestaSugeridaController", function($scope, $rootScope,
             }
             else if($scope.usuarioLogeado.Permiso[k] == "OpeApEnConsultar")
             {
-                $scope.permiso.false = true;
+                $scope.permiso.aplicar = true;
             }
         }
     };
@@ -180,8 +180,45 @@ app.controller("ReporteEncuestaSugeridaController", function($scope, $rootScope,
         }
         
         //Realizada
+        if(encuesta.EstatusEncuestaSugeridaId == "2")
+        {
+           $rootScope.$broadcast('DetalleEncuestaAplicada', encuesta);
+        }
+        
     };
     
+    //-- Rechazar encuesta --
+    $scope.RechazarEncuesta = function(data)
+    {
+        data.UsuarioId = $scope.usuario.UsuarioId;
+        $rootScope.$broadcast('RechazarEncuesta', data);
+    };
+    
+    $scope.$on('EncuestaRechazadaGuardada', function(evento, data)
+    {
+        for(var k=0; k<$scope.encuesta.length; k++)
+        {
+            if($scope.encuesta[k].EncuestaSugeridaId == data.encuestaSugeridaId)
+            {
+                $scope.encuesta[k].EstatusEncuestaSugeridaId = "3";
+                $scope.encuesta[k].NombreEstatusEncuestaSugerida = "Rechazada";
+                $scope.encuesta[k].MotivoRechazo = data.motivo;
+                break;
+            }
+        }
+    });
+    
+    //-- Aplicar encuesta --
+    $scope.AplicarEncuesta = function(data)
+    {
+        data.UsuarioId = $scope.usuario.UsuarioId;
+        $rootScope.$broadcast('AplicarEncuesta', data);
+    };
+    
+    $scope.$on('EncuestaAplicada', function()
+    {
+        $scope.GetReporteEncuetaSugerida();
+    });
     
     /*------------------Indentifica cuando los datos del usuario han cambiado-------------------*/
     $scope.Inicializar = function()

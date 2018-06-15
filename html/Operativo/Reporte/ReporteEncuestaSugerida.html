@@ -23,7 +23,7 @@
    <div class="row" ng-show="verFiltro">
       
         <!-- Motivo Encuesta (tipo encuesta) -->
-        <div class="col-sm-6" ng-show="permiso.verTodo">
+        <div class="col-sm-6" >
           
           <label>Motivo Encuesta</label>
           <div class="dropdown">
@@ -92,7 +92,7 @@
     <div class="row" ng-show="verFiltro">
       
         <!-- Estatus Encuesta -->
-        <div class="col-sm-6" ng-show="permiso.verTodo">
+        <div class="col-sm-6" >
           
           <label>Estatus</label>
           <div class="dropdown">
@@ -256,7 +256,7 @@
                         </td>
 
                         <td class="text-center">
-                            <a class="BotonOperacion" target="_blank" href="#PerfilCliente/{{persona.PersonaId}}/Encuestas">
+                            <a class="BotonOperacion" target="_blank" href="#PerfilCliente/{{encuesta.PersonaId}}/Encuestas">
                                 <span class="fa fa-user fa-2x"></span>
                             </a>
                         </td>
@@ -268,14 +268,14 @@
                                 </button>
 
                                 <ul class="dropdown-menu dropdown-menu-right dropdownRight" style="margin-top: 5px; width: auto">
-                                    <li ng-show="encuesta.EstatusEncuestaSugeridaId == '1'">
-                                        <a class="dropdownOpcionModal" ng-click="VerDetallePresupuesto(contrato.PresupuestoId, contrato.ProyectoId, contrato)">
+                                    <li ng-show="encuesta.EstatusEncuestaSugeridaId == '1' && permiso.aplicar">
+                                        <a class="dropdownOpcionModal" ng-click="AplicarEncuesta(encuesta)">
                                             <span class="fa fa-check"></span> Aplicar Encuesta 
                                         </a>
                                     </li>
 
-                                    <li ng-show="encuesta.EstatusEncuestaSugeridaId == '1'">
-                                        <a class="dropdownOpcionModal" ng-click="DetalleContrato(contrato)">
+                                    <li ng-show="encuesta.EstatusEncuestaSugeridaId == '1' && permiso.aplicar" >
+                                        <a class="dropdownOpcionModal" ng-click="RechazarEncuesta(encuesta)">
                                             <span class="fa fa-times"></span> Rechazar Encuesta
                                         </a>
                                     </li>
@@ -332,7 +332,7 @@
         </div>
     </div>-->
     
-    <!-- Modal para mensajes -->
+    <!-- Motivo rechazo encuesta -->
     <div class="modal fade sombraDivModal" id="MotivoRechazo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <br>    <br>   
         <div class="modal-dialog modalPrincipal modal-sm">

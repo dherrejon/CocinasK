@@ -1,0 +1,470 @@
+<div ng-controller="AplicarEncuestaControlador">
+     
+     
+     <!-- Modal para  aplicar encuesta -->
+    <div class="modal fade" id="aplicarEncuesta" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="true" data-backdrop="static">
+        <div class="modalPantalla center-block" >
+          
+              
+            <!-- Body -->
+            <div style="height: 16px;"></div>
+            
+            <div style="padding: 16px">
+               
+                <!-- Preguntas -->       
+                <div ng-repeat="pre in encuesta.pregunta" ng-if="!pre.Eliminada" class="animated" ng-class=" {slideInUp :Subir == pre.PreguntaId,  slideInDown : Bajar == pre.PreguntaId, slideOutRight:Borrar == pre.PreguntaId}">
+                   
+                   <div class="row" ng-if="$first"> <div class="col-xs-12"><div class="divisorGrisClaro1"> </div><div style="height: 10px"></div></div></div>
+                    
+                    <!-- pregunta -->
+                    <div class="row">
+                        <div class="col-xs-12">
+                           <span class="pregunta">
+                               {{$index + 1}}. {{pre.Pregunta}}
+                           </span>
+                        </div>
+                    </div>
+                    <div style="height: 10px"></div>
+                    
+                    <!-- Respuesta -->
+                    <div class="row">
+                        <div class="col-xs-12">
+                        
+                            <!-- Comentario -->
+                            <div ng-if="pre.TipoPregunta.TipoPreguntaId == '3'">
+                                 <textarea  required placeholder="Escribe un comentario" type="text"  class="form-control descripcionArea" ng-model="pre.ComentarioRespuesta" maxlength="500" style="min-height: 100px; min-width: 100%"></textarea>
+                            </div>
+                            
+                            <!-- Check Box -->
+                            <div ng-if="pre.TipoPregunta.TipoPreguntaId != '1'" ng-repeat="respuesta in pre.Respuesta">
+                                
+                                <div class="row">
+                                    <div class="col-xs-12 respuesta">
+                                        
+                                        <div class="checkbox checkboxOperativo itemPresupuesto" style="margin-left: 0px; border-bottom-width: 0px; color: black" >
+                                            <label style="width:100%">
+                                                <input  ng-model="respuesta.RespuestaSel" type="checkbox" >
+                                                <span class="cr"> <i class="cr-icon fa fa-check"></i> </span>
+                                                <span>{{respuesta.Respuesta}}</span>
+                                            </label>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            
+                            <!-- Radio button -->
+                            <div ng-if="pre.TipoPregunta.TipoPreguntaId != '2'" ng-repeat="respuesta in pre.Respuesta">
+                                
+                                <div class="row">
+                                    <div class="col-xs-12 respuesta">
+                                        
+                                        <div class="checkbox checkboxOperativo itemPresupuesto" style="margin-left: 0px; border-bottom-width: 0px; color: black" >
+                                            <label style="width:100%">
+                                                <input  value="{{respuesta.Respuesta}}" ng-model="pre.RespuestaSel" type="radio" name="radio{{pre.PreguntaId}}" style="display: none" >
+                                                <i class="ratioBtn {{ pre.RespuestaSel ==  respuesta.Respuesta ? 'fa fa-dot-circle-o checked' : 'fa fa-circle-o'}} "></i>
+                                                <span>{{respuesta.Respuesta}}</span>
+                                            </label>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            
+                        </div>
+                    </div>
+                    
+                    <!-- opciones de respuesta -->
+                    <div class="row" ng-if="pre.Otro || pre.Comentario">
+                       
+                       <!-- Otro -->
+                       <div class="col-xs-12" ng-if="pre.Otro">
+                            <div>
+                                <div class="row">
+                                    <div class="col-xs-12 respuesta">
+                                        
+                                        <!-- Otro check box -->
+                                        <div ng-if="pre.TipoPregunta.TipoPreguntaId != '1'" style="display: inline-block">
+                                            <div class="checkbox checkboxOperativo itemPresupuesto" style="margin-left: 0px; border-bottom-width: 0px; color: black" >
+                                                <label style="width:100%">
+                                                    <input  ng-model="pre.RespuestaSelotro" type="checkbox" >
+                                                    <span class="cr"> <i class="cr-icon fa fa-check"></i> </span>
+                                                    <span style="margin-right: 16px">Otro</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        
+                                         <!-- Otro check box -->
+                                         <div ng-if="pre.TipoPregunta.TipoPreguntaId != '2'" style="display: inline-block">
+                                             <div class="checkbox checkboxOperativo itemPresupuesto" style="margin-left: 0px; border-bottom-width: 0px; color: black" >
+                                                <label style="width:100%">
+                                                    <input  value="Otro" ng-model="pre.RespuestaSel" type="radio" name="radio{{pre.PreguntaId}}" style="display: none" >
+                                                    <i class="ratioBtn {{ pre.RespuestaSel ==  'Otro' ? 'fa fa-dot-circle-o checked' : 'fa fa-circle-o'}} "></i>
+                                                    <span style="margin-right: 16px">Otro</span>
+                                                </label>
+                                            </div>
+                                         </div>
+                                        
+                                        <!-- Especificar Otro checkBox -->
+                                        <div style="display: inline-block; "  ng-if="pre.TipoPregunta.TipoPreguntaId != '1'">
+                                             <input type="text" ng-model="pre.EspecificarOtro" placeholder="Especificar" class="EspecificarInput"  ng-disabled="pre.RespuestaSelotro != true"/>
+                                        </div>
+                                        
+                                        <!-- Especificar Otro ratio button -->
+                                        <div style="display: inline-block; "  ng-if="pre.TipoPregunta.TipoPreguntaId != '2'">
+                                             <input type="text" ng-model="pre.EspecificarOtro" placeholder="Especificar" class="EspecificarInput"  ng-disabled="pre.RespuestaSel != 'Otro'"/>
+                                        </div>
+                                        
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                       </div>
+                       
+                       <!-- divisor -->
+                       <div class="col-xs-12">
+                            <div style="height: 10px"></div>  
+                        </div>
+                        
+                        <!-- Comentario -->
+                       <div class="col-xs-12"  ng-if="pre.Comentario">
+                            <div>
+                                <textarea  required placeholder="Escribe un comentario" type="text"  class="form-control descripcionArea" ng-model="pre.ComentarioRespuesta" maxlength="500" style="min-height: 100px; min-width: 100%"></textarea>
+                            </div>
+                       </div>
+                    </div>
+                     <br>
+                    <!-------- mensaje de error ---->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            
+                            <span class="textoError">{{pre.Error}}</span>
+                            
+                        </div>
+                    </div>
+               
+                    
+                    
+                    <div style="height: 10px"></div>
+                    
+                    
+                    <div class="row"> <div class="col-xs-12"><div class="divisorGrisClaro1"> </div><div style="height: 10px"></div></div></div>
+                    
+                </div>
+                
+    
+            </div>
+            
+            
+            <div style="height: 70px;"></div>
+            
+            <!-- footer -->
+            <div class="modalFooter" style="border-top: 1px solid lightgray">
+                   
+                <!---- botones de operacion -->
+                <div class="row">
+                    <div class="col-xs-6">
+                        <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarEncuesta()">CANCELAR</button>
+                    </div>
+
+                    <div class="col-xs-6">
+                        <button focus class="btn botonOperacionModal btn-block" ng-click="GuardarEncuestaAplicada()">TERMINAR</button>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>  
+    
+     
+     <!-- Modal para seleccionar encuesta a aplicar -->
+    <div class="modal fade sombraDivModal" id="encuestaLista" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="true" data-backdrop="static">
+        <br>    <br>   <br>
+        <div class="modal-dialog modalPrincipal">
+           
+            <div class="row">
+                <div class="col-xs-12">
+                    <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarEncuestaLista()"><span aria-hidden="true">&times;</span></button>
+                    <span  class="tituloModal">
+                        Aplicar Encuesta  
+                        <span ng-if="encuesta.tipo">({{encuesta.tipo}})</span>
+                    </span>
+                </div>
+            </div>
+            <br>
+            
+            <form name="encuestaLista" >
+                
+                <div class="row">
+                   <div class="col-xs-12 ">
+                       <span class="textoInstruccion">Selecciona la encuesta que deseas aplicar al cliente.</span>
+                   </div>
+               </div>
+               <br>
+                     
+                <!-- Lista de encuestas -->        
+                <div class="row">
+                    <div class="col-xs-12">            
+                        <div class="table-responsive TablaUnidadNegocio">
+                            <table class="table table-hover table-striped table-condensed">
+                                <thead class="TituloTabla">
+                                  <tr>
+                                    <th><button class="btn botonOrdenar" ng-click="CambiarOrdenEncuesta('Nombre')"><b>Encuesta </b></button></th>
+                                    <th class="text-center"><button class="btn botonFalso"><b>Seleccionar</b></button></th>
+                                  </tr>
+                                </thead>
+                                <tbody >
+                                  <tr ng-repeat="enc in encuestaLista | orderBy:'Nombre'" ng-show="enc.Activo == true">
+                                    <td>{{enc.Nombre}}</td>
+
+
+                                    <td class="text-center" style="padding: 10px 0px">
+                                         <a  class="BotonOperacion contratar" ng-click="AplicarEncuesta(enc)">
+                                            Aplicar
+                                        </a>
+                                    </td>
+
+                                  </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <!---- botones de operacion -->
+                <div class="row">
+                   <div class="col-xs-6" >
+                        <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarEncuestaLista()">CANCELAR</button>
+                    </div>
+                </div>
+            <br>
+            </form> 
+            
+        </div>
+    </div> 
+
+     <!-- Modal para rechazar encuesta -->
+    <div class="modal fade sombraDivModal" id="rechazoEncuesta" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="true" data-backdrop="static">
+        <br>    <br>   <br>
+        <div class="modal-dialog modalPrincipal">
+           
+            <div class="row">
+                <div class="col-xs-12">
+                    <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarModalRechazarEncuesta()"><span aria-hidden="true">&times;</span></button>
+                    <span  class="tituloModal">Rechazar Encuesta</span>
+                </div>
+            </div>
+            <br>
+            
+            <form name="rechazoencuesta" >
+                
+                <div class="row">
+                   <div class="col-xs-12 ">
+                       <span class="textoInstruccion">Indica la razón por la cual el cliente rechazó realizar la encuesta.</span>
+                   </div>
+               </div>
+               <br>
+                     
+                <!-- Motivo de rechazo encuesta -->        
+                <div class="row">
+                    <div class="col-sm-12" >
+                         <div class="">
+                            <textarea autofocus required type="text"  class="form-control descripcionArea" ng-model="motivoRechazo.motivo" ng-maxlength="255" style="min-height: 100px; min-width: 100%"></textarea>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                      
+                       
+                <!-------- mensaje de error ---->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div ng-repeat="error in mensajeError">
+                            <span class="textoError">{{error}}</span>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <!---- botones de operacion -->
+                <div class="row">
+                   <div class="col-xs-6" >
+                        <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarModalRechazarEncuesta()">CANCELAR</button>
+                    </div>
+
+                    <div class="col-xs-6">
+                        <button focus class="btn botonOperacionModal btn-block" ng-click="TerminarRechazarEncuesta()">TERMINAR</button>
+                    </div>
+                </div>
+            <br>
+            </form> 
+            
+        </div>
+    </div> 
+                    
+    <!-- Detalle Encuesta Aplicada -->
+    <div class="modal fade" id="detalleEncuesta" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="true" data-backdrop="static">
+        <div class="modalPantalla center-block" >
+          
+           <!-- Header -->
+           <div class="encabezadoModalStatic">
+            
+                <div class="row">
+
+                    <div class="col-sm-12">
+                      
+                      <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarDetalle()"><span aria-hidden="true">&times;</span></button>
+                        
+                       <!--Encuesta-->
+                        <span>
+                            <b>Encuesta: </b> <span>{{detalleEncuesta.NombreEncuesta}}</span>
+                        </span><br>
+                        <!-- Cliente -->
+                        <span>
+                            <b>Cliente: </b> <span>{{detalleEncuesta.Cliente}}</span>
+                        </span><br>
+                        <!-- Aplico (Colaborador)-->
+                        <span>
+                            <b>Aplicó: </b> <span>{{detalleEncuesta.Colaborador}}</span><br>
+                        </span>
+                        <!-- Fecha -->
+                        <span>
+                            <b>Fecha: </b> <span>{{detalleEncuesta.Fecha | fechaEsp}}  - {{detalleEncuesta.Hora}}</span>
+                        </span><br>
+
+                    </div>
+                </div>
+                
+            </div>
+            
+            
+            <!-- Body -->
+            <div style="height: 115px;"></div>
+            
+            <div style="padding: 15px">
+               
+                <!-- Preguntas -->       
+                <div ng-repeat="pre in detalleEncuesta.Pregunta" ng-if="!pre.Eliminada" class="animated" ng-class=" {slideInUp :Subir == pre.PreguntaId,  slideInDown : Bajar == pre.PreguntaId, slideOutRight:Borrar == pre.PreguntaId}">
+                   
+                   <div class="row" ng-if="$first"> <div class="col-xs-12"><div class="divisorGrisClaro1"> </div><div style="height: 10px"></div></div></div>
+                    
+                    <!-- pregunta -->
+                    <div class="row">
+                        <div class="col-xs-12">
+                           <span class="pregunta">
+                               {{$index + 1}}. {{pre.Pregunta}}
+                           </span>
+                        </div>
+                    </div>
+                    <div style="height: 10px"></div>
+                    
+                    <!-- Respuesta -->
+                    <div class="row">
+                        <div class="col-xs-12">
+                        
+                            <!-- Comentario -->
+                            <div ng-if="pre.TipoPregunta.TipoPreguntaId == '3'">
+                                <textarea ng-model="pre.ComentarioRespuesta" class="taComentario" placeholder="Escribe un comentario" disabled></textarea>
+                            </div>
+                            
+                            <!-- Check Box - Radio button -->
+                            <div ng-if="pre.TipoPregunta.TipoPreguntaId != '3'" ng-repeat="respuesta in pre.Respuesta">
+                                
+                                <div class="row">
+                                    <div class="col-xs-12 respuesta">
+                                          <span style="font-size: 14pt" class="fa fa-square-o" ng-if="pre.TipoPregunta.TipoPreguntaId == '2' && !respuesta.RespuestaSel"></span>
+                                            <span style="font-size: 14pt" class="fa fa-circle-o" ng-if="pre.TipoPregunta.TipoPreguntaId == '1' && pre.RespuestaSel.toLowerCase() != respuesta.Respuesta.toLowerCase()"></span>
+                                            
+                                            <span style="font-size: 14pt" class="fa fa-check-square-o textoNaranja" ng-if="pre.TipoPregunta.TipoPreguntaId == '2' && respuesta.RespuestaSel"></span>
+                                            <span style="font-size: 14pt" class="fa fa-dot-circle-o textoNaranja" ng-if="pre.TipoPregunta.TipoPreguntaId == '1' && pre.RespuestaSel.toLowerCase() == respuesta.Respuesta.toLowerCase()"></span>   
+                                        
+                                        <span ng-class="{textoNegro: respuesta.RespuestaSel == true || pre.RespuestaSel == respuesta.Respuesta}">{{respuesta.Respuesta}}</span>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            
+                        </div>
+                    </div>
+                    
+                    <!-- opciones de respuesta -->
+                    <div class="row" ng-if="pre.Otro || pre.Comentario">
+                       
+                       <!-- Otro -->
+                       <div class="col-xs-12" ng-if="pre.Otro">
+                            <div>
+                                <div class="row">
+                                    <div class="col-xs-12 respuesta">
+                                        
+                                        <div style="display: inline-block; margin-right: 16px">
+                                            <span style="font-size: 14pt" class="fa fa-square-o" ng-if="pre.TipoPregunta.TipoPreguntaId == '2' && !pre.RespuestaSelOtro"></span>
+                                            <span style="font-size: 14pt" class="fa fa-circle-o" ng-if="pre.TipoPregunta.TipoPreguntaId == '1' && pre.RespuestaSel != 'Otro'"></span>
+                                            
+                                            <span style="font-size: 14pt" class="fa fa-check-square-o textoNaranja" ng-if="pre.TipoPregunta.TipoPreguntaId == '2' && pre.RespuestaSelOtro"></span>
+                                            <span style="font-size: 14pt" class="fa fa-dot-circle-o textoNaranja" ng-if="pre.TipoPregunta.TipoPreguntaId == '1' && pre.RespuestaSel == 'Otro'"></span>        
+                                                    
+                                            <span ng-class="{textoNegro: pre.RespuestaSelOtro == true || pre.RespuestaSel == 'Otro'}">Otro</span>
+                                        </div>
+                                        
+                                        <div style="display: inline-block;  border-bottom: 2px solid black; color: black">
+                                            <span style="font-size: 12pt !important;">{{pre.EspecificarOtro}}</span>
+                                        </div>
+                                        
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                       </div>
+                       
+                       <!-- divisor -->
+                       <div class="col-xs-12">
+                            <div style="height: 10px"></div>  
+                        </div>
+                        
+                        <!-- Comentario -->
+                       <div class="col-xs-12"  ng-if="pre.Comentario">
+                            <div>
+                                <textarea ng-model="pre.ComentarioRespuesta" class="taComentario" placeholder="Escribe un comentario" disabled></textarea>
+                            </div>
+                       </div>
+                    </div>
+                    
+                    
+                    <div style="height: 10px"></div>
+                    
+                    
+                    <div class="row"> <div class="col-xs-12"><div class="divisorGrisClaro1"> </div><div style="height: 10px"></div></div></div>
+                    
+                </div>
+                
+    
+            </div>
+            
+        </div>
+    </div>
+    
+    
+    <!-- Modal para mensajes -->
+    <div class="modal fade sombraDivModal" id="mensajeAplicarEncuesta" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <br>    <br>   <br>
+        <div class="modal-dialog modalPrincipal modal-sm">
+           <br>
+            <div class="row">
+                <div class="col-xs-12 text-center" style="font-size:12pt">
+                   {{mensaje}}
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-xs-12">
+                    <button focus class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close">Aceptar</button>
+                </div>
+            </div>
+        </div> 
+    </div> 
+
+    
+</div>
+
+     

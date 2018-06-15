@@ -814,7 +814,7 @@ function AgregarPago()
     {
         for($k=0; $k<$count; $k++)
         {
-            $sql .= " ('".$pago->ContratoId."', '".$pago->Pago[$k]->MedioPago->MedioPagoId."', 1, '".$pago->Pago[$k]->Pago."', NOW() - INTERVAL 9 HOUR, '".$pago->NoNotaCargo."', 'Abono', '".$pago->UsuarioId."')";
+            $sql .= " ('".$pago->ContratoId."', '".$pago->Pago[$k]->MedioPago->MedioPagoId."', 1, '".$pago->Pago[$k]->Pago."', NOW() - INTERVAL 9 HOUR, '".$pago->NoNotaCargo."', 'Abono', '".$pago->UsuarioId."'),";
         }
     }
 
@@ -1477,20 +1477,84 @@ function GetReporteContrato()
 }
 
 
+function GetReporteContratoDetalle()
+{
+    global $app;
+    global $session_expiration_time;
+
+    $request = \Slim\Slim::getInstance()->request();
+    $filtro = json_decode($request->getBody());
+    
+    
+    if($filtro->unidadId == -1 && $filtro->fecha1 == -1 && $filtro->fecha2 == -1)
+    {
+        $sql = "SELECT * FROM ReporteContratoDetalleVista";
+    }
+    else if($filtro->unidadId != -1 && $filtro->fecha1 == -1 && $filtro->fecha2 == -1)
+    {
+         $sql = "SELECT * FROM ReporteContratoDetalleVista WHERE UnidadNegocioId = ".$filtro->unidadId."";
+    }
+    else if($filtro->unidadId == -1 && $filtro->fecha1 != -1 && $filtro->fecha2 != -1)
+    {
+         $sql = "SELECT * FROM ReporteContratoDetalleVista WHERE FechaVenta >= '".$filtro->fecha1."' AND FechaVenta <= '".$filtro->fecha2."'";
+    }
+    else
+    {
+        $sql = "SELECT * FROM ReporteContratoDetalleVista WHERE UnidadNegocioId = ".$filtro->unidadId." AND FechaVenta >= '".$filtro->fecha1."' AND FechaVenta <= '".$filtro->fecha2."'";
+    }
+
+    try 
+    {
+        $db = getConnection();
+
+        $stmt = $db->query($sql);
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+        $db = null;
+        echo json_encode($response);  
+    } 
+    catch(PDOException $e) 
+    {
+        $db = null;
+        echo $e;
+        echo '[ { "Estatus": "Fallo" } ]';
+        //$app->status(409);
+        $app->stop();
+    }
+}
+
 function EditarContrato()
 {
     $request = \Slim\Slim::getInstance()->request();
     $contrato = json_decode($request->getBody());
     global $app;
     $sql;
-
-    //--------------- Eliminar Contrato ------------------------------
-    $sql = "DELETE FROM Contrato WHERE ContratoId = ".$contrato->ContratoId;
+    
+    
+    //--------------- Motivo Encuesta Sugerida -------
+    $sql = "SELECT * FROM MotivoEncuestaSugerida WHERE ContratoId = ".$contrato->ContratoId;
     try 
     {
         $db = getConnection();
         $db->beginTransaction();
-        
+        $stmt = $db->prepare($sql);
+        $stmt->execute();
+        $motivoencuesta = $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
+    catch(PDOException $e) 
+    {
+        echo '[{"Estatus":"Fallo"}]';
+        $db->rollBack();
+        echo ($sql);
+        $app->status(409);
+        $app->stop();
+    }
+    
+
+    //--------------- Eliminar Contrato ------------------------------
+    $sql = "DELETE FROM Contrato WHERE ContratoId = ".$contrato->ContratoId;
+    try 
+    {        
         $stmt = $db->prepare($sql); 
         $stmt->execute(); 
         
@@ -1512,6 +1576,8 @@ function EditarContrato()
         $estatus = 2;
     }
     
+    
+ 
     //--------------------- Datos contrato ---------------------
     $sql = "INSERT INTO Contrato(ContratoId, PersonaId, EstatusContratoId, ProyectoId, PresupuestoId, PlanPagoId, ConceptoVentaId, UsuarioId, FechaVenta, FechaEntrega, Encabezado, ProyectoNombre, NoFactura, NoNotaCargo, Modificar) 
                         VALUES (:ContratoId, :PersonaId, ".$estatus.", :ProyectoId, :PresupuestoId, :PlanPagoId, :ConceptoVentaId, :UsuarioId, :FechaVenta, :FechaEntrega, :Encabezado, :ProyectoNombre, :NoFactura, :NoNotaCargo, NULL)";
@@ -1543,6 +1609,32 @@ function EditarContrato()
         echo '[ { "Estatus": "Fallo" } ]';
         $app->status(409);
         $app->stop();
+    }
+    
+    //-------- Agregar a Motivo encuesta Sugerida ----
+    if($motivoencuesta[0])
+    {
+        $sql = "INSERT INTO MotivoEncuestaSugerida(EncuestaSugeridaId, ContratoId, Fecha) 
+                        VALUES (:EncuestaSugeridaId, :ContratoId, :Fecha)";
+
+        try 
+        {
+            $stmt = $db->prepare($sql);
+
+            $stmt->bindParam("EncuestaSugeridaId", $motivoencuesta[0]->EncuestaSugeridaId);
+            $stmt->bindParam("ContratoId", $motivoencuesta[0]->ContratoId);
+            $stmt->bindParam("Fecha", $motivoencuesta[0]->Fecha);
+
+            $stmt->execute();
+        } 
+        catch(PDOException $e) 
+        {
+            echo($e);
+            $db->rollBack();
+            echo '[ { "Estatus": "Fallo" } ]';
+            $app->status(409);
+            $app->stop();
+        }
     }
 
     //--------------------- Opcion contrato ------------

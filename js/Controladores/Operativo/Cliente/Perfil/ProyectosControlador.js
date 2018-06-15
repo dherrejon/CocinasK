@@ -1,4 +1,4 @@
-app.controller("ProyectoClienteControlador", function($scope, $rootScope, CITA, $http, $q, CONFIG, PRESUPUESTO, DOMICILIO, OPEPRESUPUESTO, CONTRATO, $filter, datosUsuario)
+app.controller("ProyectoClienteControlador", function($scope, $rootScope, CITA, $http, $q, CONFIG, PRESUPUESTO, $window, DOMICILIO, OPEPRESUPUESTO, CONTRATO, $filter, datosUsuario, COSCONPRESUPUESTO)
 {  
     $scope.proyecto = [];
     $scope.estatus = [];
@@ -630,6 +630,15 @@ app.controller("ProyectoClienteControlador", function($scope, $rootScope, CITA, 
             }
         }
     });
+    
+    //---------------- Costo - Consumo Presupuesto ---------------------------
+    $scope.IrCostoConsumoPresupuesto = function(presupuesto)
+    {
+        var dato = [presupuesto.PresupuestoId];
+        
+        COSCONPRESUPUESTO.SetPresupuesto(dato);
+        $window.location = "#/CostoConsumoPresupuesto";
+    };
     
     
     //Inicializar

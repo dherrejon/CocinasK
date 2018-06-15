@@ -2070,7 +2070,7 @@
                         <span class="textoInstruccion" >Selecciona la ubicación de la cubierta</span><br>
                     </span>
                     <div class="row">
-                      <div ng-repeat="ubicacion in ubicacion | orderBy:'UbicacionId'" ng-show="ubicacion.Activo && ubicacion.Seleccionado && tipoCubiertaPresupuesto == '2'"><!--  -->
+                      <div ng-repeat="ubicacion in ubicacion | orderBy:'UbicacionCubiertaId'" ng-show="ubicacion.Activo && ubicacion.Seleccionado && tipoCubiertaPresupuesto == '2'"><!--  -->
                            <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4" style="margin-bottom:15px">
 
                                <label class="btn checkBoxActivoPre" ng-class="{checkBoxActivoPreNaranja: ubicacion.Presupuesto}">
@@ -2084,7 +2084,7 @@
                     </div>
                     
                     <div class="row">
-                      <div ng-repeat="ubicacion in ubicacion | orderBy:'UbicacionId'" ng-show="ubicacion.Activo && ubicacion.SeleccionadoAglomerado && tipoCubiertaPresupuesto == '1'">
+                      <div ng-repeat="ubicacion in ubicacion | orderBy:'UbicacionCubiertaId'" ng-show="ubicacion.Activo && ubicacion.SeleccionadoAglomerado && tipoCubiertaPresupuesto == '1'">
                            <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4" style="margin-bottom:15px">
 
                                <label class="btn checkBoxActivoPre" ng-class="{checkBoxActivoPreNaranja: ubicacion.Presupuesto}">

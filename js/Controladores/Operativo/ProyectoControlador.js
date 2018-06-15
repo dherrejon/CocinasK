@@ -404,6 +404,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, $location, PR
                         if($scope.tipoCubierta[k].Ubicacion[i].UbicacionCubiertaId == $scope.ubicacion[j].UbicacionCubiertaId)
                         {
                             ubicado = true;
+                            console.log($scope.ubicacion[j].UbicacionCubiertaId);
                             break;
                         }
                     }
@@ -431,11 +432,11 @@ app.controller("ProyectoControlador", function($scope, $rootScope, $location, PR
                     {
                         if($scope.tipoCubierta[k].TipoCubiertaId == "1")
                         {
-                            $scope.ubicacion[i].SeleccionadoAglomerado = true;
+                            $scope.ubicacion[j].SeleccionadoAglomerado = true;
                         }
                         else if($scope.tipoCubierta[k].TipoCubiertaId == "2")
                         {
-                            $scope.ubicacion[i].Seleccionado = true;
+                            $scope.ubicacion[j].Seleccionado = true;
                         }
                     }
                 }
@@ -443,6 +444,8 @@ app.controller("ProyectoControlador", function($scope, $rootScope, $location, PR
 
             }
         }
+        
+        console.log($scope.ubicacion);
         
         if($scope.presupuesto.Proyecto.TipoProyecto.Mueble)
         {

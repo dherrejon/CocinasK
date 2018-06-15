@@ -210,6 +210,10 @@ app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpPro
         templateUrl: 'html/Operativo/Operativo.html'
     }).
     
+        //--- costos consumo presupuesto
+    when('/CostoConsumoPresupuesto',{
+        templateUrl: 'html/Operativo/Presupuesto/CostoConsumoPresupuesto.html'
+    }).
     
     //ejecutivo
      when('/Ejecutivo',{

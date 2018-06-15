@@ -41,6 +41,7 @@
     require 'Operativo/Proyecto.php';
     require 'Operativo/Contrato.php';
     require 'Operativo/Pago.php';
+    require 'Operativo/CostoConsumoPresupuesto.php';
 
     /*------------General----------*/
     require 'General/Direccion.php';
@@ -627,6 +628,7 @@
     $app->post('/CancelarPago', $seguridad, $ChecarSesion, 'CancelarPago');
 
     $app->post('/GetReporteContrato', $seguridad, $ChecarSesion, 'GetReporteContrato');
+    $app->post('/GetReporteContrato/Detalle', $seguridad, $ChecarSesion, 'GetReporteContratoDetalle');
 
     $app->get('/Contrato/Numero', $seguridad, $ChecarSesion, 'GetNumeroContrato');
 
@@ -644,6 +646,16 @@
 
     /*------------------------- Encuestas Sugeridas ------------------------------*/
     $app->get('/Reporte/EncuestaSugerida/:unidad', $seguridad, $ChecarSesion, 'GetEncuestasSugeridas');
+    $app->get('/Reporte/EncuestaSugerida/Cliente/:id', $seguridad, $ChecarSesion, 'GetEncuestasSugeridasCliente');
+    $app->get('/Encuesta/Aplicada/Cliente/:id', $seguridad, $ChecarSesion, 'GetEncuestaPorPersona');
+    
+    $app->put('/Encuesta/Rechazar', $seguridad, $ChecarSesion, 'RechazarEncuesta');
+    $app->post('/Encuesta/Aplicar', $seguridad, $ChecarSesion, 'AplicarEncuesta');
+    $app->get('/Encuesta/Aplicar/Detalle/:id', $seguridad, $ChecarSesion, 'AplicarEncuestaDetalle');
+
+    /*------------------------- Costo/Consumo  ------------------------------*/
+    $app->post('/CostoConsumo', $seguridad, $ChecarSesion, 'GetCatalogosCostoConsumo');
+    $app->post('/CostoConsumo/Modulo', $seguridad, $ChecarSesion, 'GetModuloPresupuestoCostoConsumo');
     
     $app->run(); 
 

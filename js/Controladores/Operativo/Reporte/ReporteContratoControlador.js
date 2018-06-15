@@ -2,7 +2,7 @@ app.controller("ReporteContratoControlador", function($scope, $rootScope, $http,
 {   
     $rootScope.clasePrincipal = "";
     /*----------------verificar los permisos---------------------*/
-    $scope.permiso = {verTodo: false, ver: false};
+    $scope.permiso = {verTodo: false, ver: false, adminitrador:false};
     $rootScope.permisoOperativo = {verTodosCliente: false};
     
     $scope.unidad = [];
@@ -26,6 +26,15 @@ app.controller("ReporteContratoControlador", function($scope, $rootScope, $http,
             else if($scope.usuarioLogeado.Permiso[k] == "OpeVRCConsultar")
             {
                 $scope.permiso.ver = true;
+            }
+        }
+        
+        for(var k=0; k < $scope.usuarioLogeado.Perfil.length; k++)
+        {
+            if($scope.usuarioLogeado.Perfil[k] == "Administrador")
+            {
+                $scope.permiso.adminitrador = true;
+                break;
             }
         }
     };
@@ -225,6 +234,34 @@ app.controller("ReporteContratoControlador", function($scope, $rootScope, $http,
 
             
             $scope.Ordenar();
+        }).catch(function(error)
+        {
+            $scope.pago = [];
+            alert(error);
+        });
+    };
+    
+    $scope.GetReporteContratoDetalle = function()
+    {   
+        GetReporteContratoDetalle($http, $q, CONFIG, $scope.datos).then(function(data)
+        {
+            for(var k=0; k<data.length; k++)
+            {
+                data[k].FechaEntregaFormato = data[k].FechaEntrega;
+                data[k].FechaEntrega = GetFechaEngShort(data[k].FechaEntrega); 
+                
+                data[k].ContratoId = parseInt(data[k].ContratoId);
+
+            }
+            
+            $scope.contratoDetalle = data;
+            
+            setTimeout(function()
+            {
+                 ExportarExcel('contratoTable', 'Contratos');
+            }, 500);
+            
+        
         }).catch(function(error)
         {
             $scope.pago = [];
@@ -544,6 +581,11 @@ app.controller("ReporteContratoControlador", function($scope, $rootScope, $http,
         {
             alert(error);
         });
+    };
+    
+    $scope.ExportarExcel = function()
+    {
+        $scope.GetReporteContratoDetalle();
     };
     
     /*------------------Indentifica cuando los datos del usuario han cambiado-------------------*/

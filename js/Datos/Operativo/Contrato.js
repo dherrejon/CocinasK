@@ -499,6 +499,24 @@ function GetReporteContrato($http, $q, CONFIG, datos)
     return q.promise;
 }
 
+function GetReporteContratoDetalle($http, $q, CONFIG, datos)     
+{
+    var q = $q.defer();
+
+    $http({      
+          method: 'POST',
+          url: CONFIG.APIURL + '/GetReporteContrato/Detalle',
+          data: datos
+
+      }).success(function(data)
+        {
+              q.resolve(data);
+        }).error(function(data, status){
+            q.resolve([]);
+     }); 
+    return q.promise;
+}
+
 //------------------------- funciones
 function GetHoy()
 {
@@ -611,6 +629,20 @@ function GetFechaAbrEng(fecha)
     
     return year + "-" + mes + "-" + dia;
 }
+
+//Excel
+function ExportarExcel(tabla, titulo)
+{
+    var data_type = 'data:application/vnd.ms-excel';
+    var table_div = document.getElementById(tabla);
+    var table_html = table_div.outerHTML.replace(/ /g, '%20');
+
+    var a = document.createElement('a');
+    a.href = data_type + ', ' + table_html;
+    a.download = titulo  + '.xls';
+    a.click();
+}
+
 
 var mesesN = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 var mesAbr = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];

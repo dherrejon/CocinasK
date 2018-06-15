@@ -361,5 +361,35 @@
 }
 
 
+/*-- ratio buttons --*/
+.ratioBtn
+{
+    color: #262626;
+    font-size: 20px !important;
+}
 
+.ratioBtn.checked
+{
+    color: rgb(250, 97, 21);
+}
+
+
+/*-- otro btn --*/
+.btnWhiteBorder, .btnWhiteBorder:active, .btnWhiteBorder:focus
+{
+    height: 33px;
+    border: 2px solid #262626;
+    background: white;
+    color: #262626;
+    border-radius: 0px;
+    
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.btnWhiteBorder:hover
+{
+    background: lightgray;
+    color: #262626;
+}
 

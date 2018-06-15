@@ -166,8 +166,16 @@
                                             </li>
                                             
                                             <li>
-                                                <a class="dropdownOpcionModal" ng-disabled="true"  ng-click="PersonalizarPresupuesto(presupuesto, proyecto)">
+                                                <a class="dropdownOpcionModal"  ng-click="PersonalizarPresupuesto(presupuesto, proyecto)">
                                                     <span class="fa fa-address-book-o"></span> Personalizado
+                                                </a>
+                                            </li>
+                                            
+                                            <li ng-if="permisoOperativo.costoConsumoPresupuesto" class="divider" style="color: black; border-width: 2px; margin: 0px; background: lightgray; height: 3px"></li>
+                                             
+                                            <li ng-if="permisoOperativo.costoConsumoPresupuesto">
+                                                <a class="dropdownOpcionModal"  style="border-top: 1px solid rgba(38,38,38,0.4);" ng-click="IrCostoConsumoPresupuesto(presupuesto)">
+                                                    <span class="fa fa-dollar"></span> Costo/Consumo
                                                 </a>
                                             </li>
                                             
