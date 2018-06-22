@@ -36,7 +36,10 @@ function GetCatalogosCostoConsumo()
     }
     
     //-- Material --
-    $sql = "SELECT MaterialId, Nombre, CostoUnidad FROM Material WHERE MaterialDe = 'Módulo'";
+    $sql = "SELECT m.MaterialId, m.Nombre AS NombreMaterial, m.CostoUnidad, tm.Nombre AS NombreTipoMaterial
+            FROM Material m
+            INNER JOIN TipoMaterial tm ON tm.TipoMaterialId = m.TipoMaterialId
+            WHERE MaterialDe = 'Módulo'";
     
     try 
     {
@@ -161,7 +164,7 @@ function GetModuloPresupuestoCostoConsumo()
         //piezas
         for($i=0; $i<$countcomponente; $i++)
         {
-             $sql = "SELECT p.PiezaId, p.Nombre, p.FormulaAncho, p.FormulaLargo
+             $sql = "SELECT p.PiezaId, p.Nombre, p.FormulaAncho, p.FormulaLargo, pc.Cantidad
                     FROM Pieza p
                     INNER JOIN PiezaPorComponente pc ON pc.PiezaId = p.PiezaId
                     WHERE pc.ComponenteId = ".$componente[$i]->ComponenteId;
@@ -184,7 +187,7 @@ function GetModuloPresupuestoCostoConsumo()
         for($i=0; $i<$countcomponente; $i++)
         {
             $sql = "SELECT cm.CombinacionMaterialId, cm.Nombre, cm.Grueso, 
-                           cm.MaterialId, cm.TipoMaterialId, cm.NombreMaterial 
+                           cm.MaterialId, cm.TipoMaterialId, cm.NombreMaterial, cm.NombreTipoMaterial
                     FROM CombinacionMaterialVista cm
                     WHERE cm.ComponenteId = ".$componente[$i]->ComponenteId;
         
@@ -281,11 +284,105 @@ function GetModuloPresupuestoCostoConsumo()
             $app->status(409);
             $app->stop();
         }
-    }    
+    }
+    
+    //--Puertas-- 
+    $sql = "SELECT  p.NombreMuestrario as Muestrario, p.Nombre as Puerta, p.PuertaId, p.MuestrarioId
+            FROM PuertaPresupuesto pp
+            INNER JOIN PuertaVista p ON p.MuestrarioId = pp.MuestrarioId
+            WHERE PresupuestoId IN (".$in.")
+            GROUP BY p.PuertaId";
+    
+    try 
+    {
+        $db = getConnection();
+        $stmt = $db->query($sql);
+        $puerta = $stmt->fetchAll(PDO::FETCH_OBJ);
+    } 
+    catch(PDOException $e) 
+    {
+        echo $e;
+        echo '[ { "Estatus": "Fallo" } ]';
+        $app->status(409);
+        $app->stop();
+    }
+    
+    $countPuerta = count($puerta);
+    
+    for($k=0; $k<$countPuerta; $k++)
+    {
+        //Componente puerta
+        $sql = "SELECT c.ComponenteId, c.Nombre, cp.ComponentePorPuertaId
+                FROM Componente c
+                INNER JOIN ComponentePorPuerta cp ON cp.ComponenteId = c.ComponenteId
+                WHERE cp.PuertaId = ".$puerta[$k]->PuertaId;
+        
+        try 
+        {
+            $stmt = $db->query($sql);
+            $componente = $stmt->fetchAll(PDO::FETCH_OBJ);
+            $puerta[$k]->Componente = $componente;
+        } 
+        catch(PDOException $e) 
+        {
+            echo $e;
+            echo '[ { "Estatus": "Fallo" } ]';
+            $app->status(409);
+            $app->stop();
+        }
+        
+        $countComponentePuerta = count($puerta[$k]->Componente);
+        
+        for($i=0; $i<$countComponentePuerta; $i++)
+        {
+            //pieza componenete puerta
+            $sql = "SELECT p.PiezaId, p.Nombre, p.FormulaAncho, p.FormulaLargo, pp.Cantidad
+                    FROM Pieza p
+                    INNER JOIN PiezaPorComponentePuerta pp ON pp.PiezaId = p.PiezaId
+                    WHERE pp.ComponentePorPuertaId =  ".$puerta[$k]->Componente[$i]->ComponentePorPuertaId;
+        
+            try 
+            {
+                $stmt = $db->query($sql);
+                $puerta[$k]->Componente[$i]->Pieza = $stmt->fetchAll(PDO::FETCH_OBJ);
+            } 
+            catch(PDOException $e) 
+            {
+                echo $e;
+                echo '[ { "Estatus": "Fallo" } ]';
+                $app->status(409);
+                $app->stop();
+            }
+            
+            //Combinacion componenete puerta
+            $sql = "SELECT cm.CombinacionMaterialId, c.Nombre, cm.Grueso, 
+                           cm.MaterialId, tm.TipoMaterialId, m.Nombre AS NombreMaterial , tm.Nombre AS NombreTipoMaterial
+                    FROM CombinacionPorMaterialComponente cm
+                    INNER JOIN Material m ON m.MaterialId = cm.MaterialId
+                    INNER JOIN TipoMaterial tm ON tm.TipoMaterialId = m.TipoMaterialId
+                    INNER JOIN CombinacionMaterial c ON c.CombinacionMaterialId = cm.CombinacionMaterialId
+                    WHERE cm.ComponentePorPuertaId =  ".$puerta[$k]->Componente[$i]->ComponentePorPuertaId;
+        
+            try 
+            {
+                $stmt = $db->query($sql);
+                $puerta[$k]->Componente[$i]->Combinacion = $stmt->fetchAll(PDO::FETCH_OBJ);
+            } 
+            catch(PDOException $e) 
+            {
+                echo $e;
+                echo '[ { "Estatus": "Fallo" } ]';
+                $app->status(409);
+                $app->stop();
+            }
+            
+            
+        }
+    }
     
     $app->status(200);
     $db = null;
-    echo '{"modulo":'.json_encode($modulo).'} '; 
+    echo '{"modulo":'.json_encode($modulo).', "puerta":'.json_encode($puerta).'}'; 
 }
 
     

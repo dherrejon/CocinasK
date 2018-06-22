@@ -4,6 +4,8 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
     $scope.presupuesto = [];
     $scope.combinacion = [];
     $scope.material = [];
+    $scope.modulo = [];
+    $scope.puerta = [];
 
     //------------ Cargar Catalogos --------------------
     $scope.CargarCatalagosInicio = function()
@@ -11,7 +13,6 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
         //$scope.presupuesto = COSCONPRESUPUESTO.GetPresupuesto();
         $scope.presupuesto = ["101", "336", "337"];
         $scope.GetCatalogosCostoConsumo();
-        $scope.GetModuloPresupuesto();
         
        // console.log($scope.presupuesto);
     };
@@ -27,6 +28,8 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
             
                 console.log($scope.combinacion);
                 console.log($scope.material);
+                
+                $scope.GetModuloPresupuesto();
             } 
             else 
             {
@@ -47,7 +50,11 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
         {
             if (dataResponse.status == 200) 
             {
-                console.log(dataResponse.data.modulo);
+                $scope.modulo = dataResponse.data.modulo;
+                $scope.puerta = dataResponse.data.puerta;
+                
+                $scope.SetPrecioMaterial();
+                //console.log(dataResponse.data.modulo);
             } 
             else 
             {
@@ -61,6 +68,78 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
             $rootScope.$broadcast('Alerta', error, 'error');
         });
     };
+    
+    $scope.SetPrecioMaterial = function()
+    {
+        //modulo
+        for(var i=0; i<$scope.modulo.length; i++) //i->módulo
+        {
+            //componente
+            for(var j=0; j<$scope.modulo[i].Componente.length; j++)  //j-> componente
+            {
+                for(var k=0; k<$scope.modulo[i].Componente[j].Combinacion.length; k++) //k--> Combinacion
+                {
+                    var combinacion = $scope.modulo[i].Componente[j].Combinacion[k];
+                    combinacion.Costo = $scope.GetCostoMaterial(combinacion.MaterialId, combinacion.Grueso);
+                }
+            }
+            
+            //componente especial
+            for(var j=0; j<$scope.modulo[i].ComponenteEspecial.length; j++) //j-> componente especial
+            {
+                 for(var k=0; k<$scope.modulo[i].ComponenteEspecial[j].Combinacion.length; k++) //k--> Combinacion
+                {
+                    var combinacion = $scope.modulo[i].ComponenteEspecial[j].Combinacion[k];
+                    combinacion.Costo = $scope.GetCostoMaterial(combinacion.MaterialId, combinacion.Grueso);
+                    
+                }
+            }
+        }
+        
+        //puerta
+        for(var i=0; i<$scope.puerta.length; i++) //i->puerta
+        {
+            //componente
+            for(var j=0; j<$scope.puerta[i].Componente.length; j++)  //j-> componente
+            {
+                for(var k=0; k<$scope.puerta[i].Componente[j].Combinacion.length; k++) //k--> Combinacion
+                {
+                    var combinacion = $scope.puerta[i].Componente[j].Combinacion[k];
+                    combinacion.Costo = $scope.GetCostoMaterial(combinacion.MaterialId, combinacion.Grueso);
+                }
+            }
+        }
+        
+         console.log($scope.modulo);
+         console.log($scope.puerta);
+    };
+    
+    $scope.GetCostoMaterial = function(id, grueso)
+    {
+        for(var m=0; m<$scope.material.length; m++) //m-> material
+        {
+            if(id == $scope.material[m].MaterialId)
+            {
+                if($scope.material[m].Grueso.length > 0)
+                {
+                    for(var n=0; n<$scope.material[m].Grueso.length; n++) //n->grueso
+                    {
+                        if(grueso == $scope.material[m].Grueso[n].Grueso)
+                        {
+                            return parseFloat($scope.material[m].Grueso[n].CostoUnidad);
+                        }
+                    }
+                }
+                else
+                {
+                    return parseFloat($scope.material[m].CostoUnidad);
+                }
+            }
+        }
+        
+        return 0;
+    };
+    
     
     /*------------------  Valida el inicio de sesion y los permisos -------------------*/
     $scope.Inicializar = function()

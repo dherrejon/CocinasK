@@ -1,7 +1,44 @@
 <div ng-controller="CostoConsumoPresupuesto" >
 
-<h1> Costo - consumo</h1>
+    <h1> Costo - consumo</h1>
+
+
+    <div class="row" ng-repeat="material in material" style="margin-top:10px">
+
+
+        <div class="col-xs-6 " >
+            <span class="pull-right">{{material.NombreTipoMaterial}} - {{material.NombreMaterial}}</span>
+        </div>
+
+        <div class="col-xs-6" ng-if="material.Grueso.length == 0">
+            <input type="text" class="form-control" ng-model="material.CostoUnidad">
+        </div>
+
+        <div ng-if="material.Grueso.length > 0">
+            <br>
+            <div class="row" ng-repeat="grueso in material.Grueso" style="margin-top:10px">
+
+                <div class="col-xs-6" >
+                    <span class="pull-right" style="color:blue">{{grueso.Grueso}} </span>
+                </div>
+
+                <div class="col-xs-6" >
+                    <input type="text" class="form-control" ng-model="grueso.CostoUnidad">
+                </div>
+            </div>
+        </div>
+
+    </div>
     
+    <br>
+    <div class="row">
+       <div class="col-xs-12">
+           <div class="pull-right">
+                <button class="btn btn-primary" ng-click="SetPrecioMaterial()"> Calcular </button>
+            </div>
+        </div>
+    </div>
+
 </div>
 
      
