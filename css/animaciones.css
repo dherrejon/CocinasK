@@ -38,6 +38,7 @@ RawBlameHistory
   animation-duration: 2s;
 }
 
+
 .animated.flipOutX,
 .animated.flipOutY,
 .animated.bounceIn,
@@ -45,6 +46,14 @@ RawBlameHistory
   -webkit-animation-duration: .75s;
   animation-duration: .75s;
 }
+
+.animated.fadeInLeft,
+.animated.fadeOutLeft,
+{
+  -webkit-animation-duration: .4s !important;
+  animation-duration: .4s !important;
+}
+
 
 @-webkit-keyframes bounce {
   from, 20%, 53%, 80%, to {

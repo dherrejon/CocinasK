@@ -36,7 +36,7 @@ function GetCatalogosCostoConsumo()
     }
     
     //-- Material --
-    $sql = "SELECT m.MaterialId, m.Nombre AS NombreMaterial, m.CostoUnidad, tm.Nombre AS NombreTipoMaterial
+    $sql = "SELECT m.MaterialId, m.Nombre AS NombreMaterial, m.CostoUnidad, tm.Nombre AS NombreTipoMaterial, tm.TipoMaterialId
             FROM Material m
             INNER JOIN TipoMaterial tm ON tm.TipoMaterialId = m.TipoMaterialId
             WHERE MaterialDe = 'Módulo'";
@@ -140,7 +140,7 @@ function GetModuloPresupuestoCostoConsumo()
         array_push($modulo[$k]->ComponenteEspecial, $entrepano);
         
         //Componente
-        $sql = "SELECT c.ComponenteId, c.Nombre
+        $sql = "SELECT c.ComponenteId, c.Nombre, cm.Cantidad
                 FROM Componente c
                 INNER JOIN ComponentePorModulo cm ON cm.ComponenteId = c.ComponenteId
                 WHERE cm.ModuloId = ".$modulo[$k]->ModuloId;
@@ -268,7 +268,7 @@ function GetModuloPresupuestoCostoConsumo()
         }
         
         //Parte 
-        $sql = "SELECT pm.TipoParteId, pm.Ancho
+        $sql = "SELECT pm.TipoParteId as ParteId, pm.Ancho
                 FROM PartePorModulo pm
                 WHERE pm.ModuloId = ".$modulo[$k]->ModuloId;
         

@@ -15,3 +15,18 @@ app.factory('COSCONPRESUPUESTO',function($rootScope)
 
     return service;
 });
+
+app.filter('decimal', function () 
+{
+    return function (valor) 
+    {
+        if(valor)
+        {
+            return valor.toFixed(2);
+        }
+        else
+        {
+            return '';
+        }
+    };
+});

@@ -1,17 +1,25 @@
 app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsuario, $window, datosUsuario, COSCONPRESUPUESTO, CocinasKService)
 {   
+    $rootScope.clasePrincipal = "";
     $scope.permiso = {ver: false};
     $scope.presupuesto = [];
     $scope.combinacion = [];
     $scope.material = [];
+    $scope.materialInicial = [];
     $scope.modulo = [];
     $scope.puerta = [];
-
+    $scope.configuracion = false;
+    $scope.animacionCon = "";
+    $scope.conCombinacion = false;
+    $scope.conPrecio = false;
+    $scope.verPor = "combinacion";
+    
     //------------ Cargar Catalogos --------------------
     $scope.CargarCatalagosInicio = function()
     {
         //$scope.presupuesto = COSCONPRESUPUESTO.GetPresupuesto();
-        $scope.presupuesto = ["101", "336", "337"];
+        //$scope.presupuesto = ["101", "336", "337"];
+        $scope.presupuesto = ["491"];
         $scope.GetCatalogosCostoConsumo();
         
        // console.log($scope.presupuesto);
@@ -25,6 +33,13 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
             {
                 $scope.combinacion = dataResponse.data.combinacion;
                 $scope.material = dataResponse.data.material;
+                
+                for(var k=0; k<$scope.combinacion.length; k++)
+                {
+                    $scope.combinacion[k].Ver = true;
+                }
+                
+                $scope.materialInicial = jQuery.extend({}, dataResponse.data.material);
             
                 console.log($scope.combinacion);
                 console.log($scope.material);
@@ -52,6 +67,15 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
             {
                 $scope.modulo = dataResponse.data.modulo;
                 $scope.puerta = dataResponse.data.puerta;
+                
+                for(var k=0; k<$scope.modulo.length; k++)
+                {
+                    $scope.modulo[k].AnchoNumero = FraccionADecimal($scope.modulo[k].Ancho);        
+                    $scope.modulo[k].AltoNumero = FraccionADecimal($scope.modulo[k].Alto);        
+                    $scope.modulo[k].ProfundoNumero = FraccionADecimal($scope.modulo[k].Profundo); 
+                    
+                    $scope.modulo[k].Cantidad = parseInt($scope.modulo[k].Cantidad);
+                }
                 
                 $scope.SetPrecioMaterial();
                 //console.log(dataResponse.data.modulo);
@@ -110,6 +134,8 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
             }
         }
         
+        $scope.CalcularCostoConsumo();
+        
          console.log($scope.modulo);
          console.log($scope.puerta);
     };
@@ -140,6 +166,204 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
         return 0;
     };
     
+    //-- -------------------- configuración ---------
+    $scope.AbrirConfiguracion = function()
+    {
+        $scope.animacionCon = "abrir";
+        $scope.configuracion = true;
+        $("body").addClass('noscroll');
+    };
+    
+    $scope.ReestablecerCombinacion = function()
+    {
+        for(var k=0; k<$scope.combinacion.length; k++)
+        {
+            $scope.combinacion[k].Ver = true;
+            $scope.material = jQuery.extend({}, $scope.materialInicial);
+            $scope.SetPrecioMaterial();
+        }  
+    };
+    
+    $scope.CerrarConfiguracion = function()
+    {
+      $scope.animacionCon = "cerrar";
+        
+      setTimeout(function()
+      {
+          $scope.configuracion = false;
+          $("body").removeClass('noscroll');
+          $scope.$apply();
+      }, 400);  
+    };
+    
+    window.addEventListener('click', function(e)
+    { 
+      if(document.getElementById('sidebar'))
+      {
+          if(document.getElementById('sidebar').contains(e.target) && !document.getElementById('sidebar-content').contains(e.target))
+          {
+            $scope.animacionCon = "cerrar";
+            $scope.$apply();
+            $scope.CerrarConfiguracion();
+          } 
+      }
+
+    });
+    
+    //--- calcular costo - consumo ---
+    $scope.CalcularCostoConsumo = function()
+    {
+        for(var k=0; k<$scope.modulo.length; k++)
+        {
+            CalcularCostoConsumoModulo($scope.modulo[k], $scope.combinacion, $scope.material);
+        }
+        
+        $scope.CalcularValoresCombinacion();
+    };
+    
+    //-- Calcula los valore por combinacion 
+    $scope.CalcularValoresCombinacion = function()
+    {
+        for(var combinacion of $scope.combinacion)
+        {
+            combinacion.Costo = 0;
+            combinacion.CostoDesperdicio = 0;
+            combinacion.CostoConsumible = 0;
+            combinacion.CostoMargen = 0;
+            combinacion.Material = [];
+        
+            if(combinacion.Ver)
+            {
+                for(var modulo of $scope.modulo) 
+                {
+                    //--costos--
+                    for(var moduloCombinacion of modulo.Combinacion)
+                    {
+                        if(moduloCombinacion.CombinacionMaterialId == combinacion.CombinacionMaterialId)
+                        {
+                            combinacion.Costo += moduloCombinacion.Costo * modulo.Cantidad;
+                            combinacion.CostoDesperdicio += moduloCombinacion.CostoDesperdicio * modulo.Cantidad;
+                            combinacion.CostoConsumible = moduloCombinacion.CostoConsumible * modulo.Cantidad;
+                            combinacion.CostoMargen =  moduloCombinacion.CostoMargen * modulo.Cantidad;
+                            break;
+                        }
+                    }
+                    
+                    //-- consumos --
+                    
+                    //material
+                    for(var material of $scope.material)
+                    {
+                        var mataux = {TipoMaterialId:material.TipoMaterialId, MaterialId:material.MaterialId, Material:material.NombreMaterial, Grueso:"1", Consumo:0, ConsumoDesperdicio: 0, GruesoN:1};
+                        if(material.Grueso.length > 0)
+                        {
+                            for(var grueso of material.Grueso)
+                            {
+                                var gruesoaux;
+                                
+                                gruesoaux =  jQuery.extend({}, mataux);
+                                gruesoaux.Grueso = grueso.Grueso;
+                                gruesoaux.GruesoN = FraccionADecimal(grueso.Grueso);
+                                combinacion.Material.push(gruesoaux);
+        
+                                //var gruesoAux = {Grueso: grueso.Grueso, Consumo:0, ConsumoDesperdicio:0};
+                                //mataux.Grueso.push(gruesoAux);
+                            }
+                        }
+                        else
+                        {
+                            combinacion.Material.push(mataux);
+                        }                    
+                    }
+                    
+                    
+                    //componente
+                    for(var componente of modulo.Componente)
+                    {
+                        for(var componenteCombinacion of componente.Combinacion)
+                        {
+                            if(componenteCombinacion.CombinacionMaterialId == combinacion.CombinacionMaterialId)
+                            {
+                                for(var material of combinacion.Material)
+                                {
+                                    if(material.MaterialId == componenteCombinacion.MaterialId)
+                                    {
+                                        if(material.Grueso != "1")
+                                        {
+                                            //for(grueso of material.Grueso)
+                                            //{
+                                                if(material.Grueso == componenteCombinacion.Grueso)
+                                                {
+                                                    material.Consumo += componenteCombinacion.Consumo;
+                                                    material.ConsumoDesperdicio += componenteCombinacion.ConsumoDesperdicio;
+                                                    break;
+                                                }
+                                            //}
+                                        }
+                                        else
+                                        {
+                                            material.Consumo += componenteCombinacion.Consumo;
+                                            material.ConsumoDesperdicio += componenteCombinacion.ConsumoDesperdicio;
+                                            break;
+                                        }
+                                        
+                                        
+                                    }
+                                }
+                                
+                                break;
+                            }
+                        }
+                    }
+                    
+                    //componente especial
+                    for(var especial of modulo.ComponenteEspecial)
+                    {
+                        for(var especialCombinacion of especial.Combinacion)
+                        {
+                            if(especialCombinacion.CombinacionMaterialId == combinacion.CombinacionMaterialId)
+                            {
+                                for(var material of combinacion.Material)
+                                {
+                                    if(material.MaterialId == especialCombinacion.MaterialId)
+                                    {
+                                        if(material.Grueso != "1")
+                                        {
+                                            //for(grueso of material.Grueso)
+                                            //{
+                                                if(material.Grueso == especialCombinacion.Grueso)
+                                                {
+                                                    material.Consumo += especialCombinacion.Consumo;
+                                                    material.ConsumoDesperdicio += especialCombinacion.ConsumoDesperdicio;
+                                                    break;
+                                                }
+                                            //}
+                                        }
+                                        else
+                                        {
+                                            material.Consumo += especialCombinacion.Consumo;
+                                            material.ConsumoDesperdicio += especialCombinacion.ConsumoDesperdicio;
+                                            break;
+                                        }
+                                        
+                                        
+                                    }
+                                }
+                                
+                                break;
+                            }
+                        }  
+                    }
+                    
+                }
+            }
+        }
+       
+        
+        console.log($scope.modulo);
+        console.log($scope.combinacion);
+       
+    };
     
     /*------------------  Valida el inicio de sesion y los permisos -------------------*/
     $scope.Inicializar = function()

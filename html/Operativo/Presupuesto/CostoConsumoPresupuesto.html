@@ -1,9 +1,96 @@
-<div ng-controller="CostoConsumoPresupuesto" >
+<div ng-controller="CostoConsumoPresupuesto" class="container">
+    
+    <!-- configuración -->
+    <div class="btnVertical">
+       
+       <button class="btn" ng-click="AbrirConfiguracion()">
+           <span class="fa fa-cog"></span>
+           <span> Configuaración</span>
+       </button>
+       
+    </div>
+   
+   <!-- Título -->
+   <div class="row">
+       <div class="col-xs-12">
+           <h3>Reporte de Costo - Consumo</h3>
+       </div>
+   </div>
+   <br>
+    
+    <div class="row">
+        <div class="col-xs-12 col-sm-6">
+            <div class="checkbox checkboxOperativo itemPresupuesto" style="margin-left: 0px; border-bottom-width: 0px; color: black" >
+                <label style="width:100%">
+                    <input  value="combinacion" ng-model="verPor" type="radio" name="ver" style="display: none" >
+                    <i class="ratioBtn {{ verPor ==  'combinacion' ? 'fa fa-dot-circle-o checked' : 'fa fa-circle-o'}} "></i>
+                    <span>Ver por combinación</span>
+                </label>
+            </div>
+        </div>
+        
+        <div class="col-xs-12 col-sm-6">
+            <div class="checkbox checkboxOperativo itemPresupuesto" style="margin-left: 0px; border-bottom-width: 0px; color: black" >
+                <label style="width:100%">
+                    <input  value="modulo" ng-model="verPor" type="radio" name="ver" style="display: none" >
+                    <i class="ratioBtn {{ verPor ==  'modulo' ? 'fa fa-dot-circle-o checked' : 'fa fa-circle-o'}} "></i>
+                    <span>Ver por módulo</span>
+                </label>
+            </div>
+        </div>
+    </div>
+    <br>
+    
+    <div class="row" style="margin-bottom: 16px">
+        <div class="col-xs-12">
+            <span style="color: gray; font-weight: bold; font-size: 20px">Consumo</span>
+        </div>
+    </div>
+    
+    <!-- Ver por combinación -->
+    <div class="row">
+        <div class="col-xs-12">
+           
+           <div class="table-responsive" style="overflow: scroll; max-height: 500px;">
+               <table class="table table-hover">
+                    <thead class="TituloTabla" >
+                      <tr>
+                        <!--<th><span class=""><b>Combinación</b></span></th>-->
+                        <th><span class=""><b>Material</b></span></th>
+                        <th class="text-center"><span><b>Grueso</b></span></th>
+                        <th class="text-center"><span><b>Consumo(pie2)</b></span></th>
+                        <th class="text-center"><span><b>+Desperdicop (pie2)</b></span></th>
+                      </tr>
+                   </thead>
+                   
+                   <tbody ng-repeat="combinacion in combinacion | orderBy:['CombinacionMaterialId']" ng-show="combinacion.Ver">
+                      
+                      <tr>
+                          <td class="text-center"   rowspan="combinacion.Material.length "  colspan="4" style="background: rgb(247, 247, 247)"><b>{{combinacion.Nombre}}</b></td>
+                       </tr>
+                       
+                       <tr ng-repeat="material in combinacion.Material | orderBy:['TipoMaterialId', 'Material', 'GruesoN'] track by $index" ng-show="material.Consumo > 0">
+                            
+                            <td>{{material.Material}}</td>
+                            <td class="text-center">{{material.Grueso}}</td>
+                            <td class="text-center">{{material.Consumo | decimal}}</td>
+                            <td class="text-center" >{{material.ConsumoDesperdicio | decimal}}</td>
+                            
+                       </tr>
+                       
+                       
+                   </tbody>
+                   
+               </table>
+               
+           </div>
+            
+        </div>
+    </div>
 
-    <h1> Costo - consumo</h1>
-
-
-    <div class="row" ng-repeat="material in material" style="margin-top:10px">
+    
+   
+    <!--<div class="row" ng-repeat="material in material" style="margin-top:10px">
 
 
         <div class="col-xs-6 " >
@@ -35,6 +122,106 @@
        <div class="col-xs-12">
            <div class="pull-right">
                 <button class="btn btn-primary" ng-click="SetPrecioMaterial()"> Calcular </button>
+            </div>
+        </div>
+    </div>-->
+    
+    
+    <!-- --------- configuración de materiales y combinaciones ---------- -->
+
+    <div ng-show="configuracion" class="sidebar {{animacionCon}}" id="sidebar">
+       <!-- contenido -->
+        <div id="sidebar-content" class="sidebar-content animated" ng-class="{'fadeInLeft' : animacionCon == 'abrir', 'fadeOutLeft' : animacionCon == 'cerrar'}">
+
+            <!-- header -->
+            <div class="sidebar-header">
+                <div class="row" style="margin-left: 0px; margin-right: 0px">
+                    <div class="col-xs-12" style="padding: 0px">
+
+                       <div class="input-group">
+                           <span class="form-control sidebar-title">
+                               <span class="fa fa-cog"></span>
+                               Configuración
+                           </span>
+
+                           <div class="input-group-btn">
+                               <button class="btn sidebar-close" ng-click="CerrarConfiguracion()"> 
+                                   <span class="fa fa-times"></span>
+                               </button>
+                           </div>
+
+                       </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!--  body -->
+            <div class="sidebar-body">
+
+                <!-- combinaciones -->
+
+                <div class="row" ng-click="conCombinacion = !conCombinacion" style="margin-left: 0px; margin-right: 0px">
+                    <div class="col-xs-12" style="padding: 0px">
+                        <div class="sidebar-divider" style="padding: 4px 16px">
+                            <span>Combinaciones</span>
+                            <span class="pull-right"><span class="fa" ng-class="{'fa-chevron-right': !conCombinacion, 'fa-chevron-up': conCombinacion}"></span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" ng-show="conCombinacion" style="margin-left: 0px; margin-right: 0px; margin-bottom: 12px">
+                    
+                    <div class="col-xs-12" style="padding: 0px; margin-top: 12px; margin-bottom: 12px">
+                        <div style="padding: 0px 16px">
+                            <span style="color: gray; font-size: 10pt">Elige las combinaciones que desees ver</span>
+                        </div>
+                    </div>
+                     
+                    <div class="col-xs-12" ng-repeat="combinacion in combinacion" style="padding: 0px">
+                        <div style="padding: 0px 0px">
+                            <div class="checkbox checkboxOperativo itemPresupuesto" style="margin-left: -3px; border-bottom-width: 0px; color: black" >
+                                <label style="width:100%">
+                                    <input  ng-model="combinacion.Ver" type="checkbox" >
+                                    <span class="cr"> <i class="cr-icon fa fa-check"></i> </span>
+                                    <span style="font-size: 12pt">{{combinacion.Nombre}}</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row" ng-click="conPrecio = !conPrecio" style="margin-left: 0px; margin-right: 0px">
+                    <div class="col-xs-12" style="padding: 0px">
+                        <div class="sidebar-divider" style="padding: 4px 16px">
+                            <span>Precios</span>
+                            <span class="pull-right"><span class="fa" ng-class="{'fa-chevron-right': !conPrecio, 'fa-chevron-up': conPrecio}"></span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!--<div ng-show="conPrecio" >
+                    Precios<br>
+                     Precios<br>
+                      Precios<br>
+                       Precios<br>
+                </div>-->
+
+            </div>
+
+
+            <!-- footer -->
+            <div class="sidebar-footer">
+                <div class="row">
+                    <div class="col-xs-6" style="padding-left: 32px">
+                        <button class="btn btn-block sidebar-btnOpt">Reestablecer</button>
+                    </div>
+
+                    <div class="col-xs-6"  style="padding-right: 32px">
+                        <button class="btn btn-block sidebar-btnOpt primary">Aplicar</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
