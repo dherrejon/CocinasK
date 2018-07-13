@@ -451,7 +451,7 @@
 {
     width: 350px;
     height: 100vh;
-    overflow: scroll;
+   
 
     background: white;
 }
@@ -462,6 +462,7 @@
     width: 350px;
     top: 0px;
     left: 0px;
+    z-index: 20000;
     
     background: white;
     padding: 4px 0px 4px 0px;
@@ -478,6 +479,8 @@
     padding: 8px 0px 8px 0px;
     
     border-top: 1px solid lightgray;
+    
+      z-index: 20000;
 }
 
 .sidebar-title
@@ -563,5 +566,16 @@
 
 .sidebar-body
 {
-   
+    padding-bottom: 66px;
+    z-index: 1500;
+    background: white;
+}
+
+.addonMaterial
+{
+    width: 130px;
+    background: white;
+    color: #262626;
+    text-align: right;
+    border-width: 0px;
 }

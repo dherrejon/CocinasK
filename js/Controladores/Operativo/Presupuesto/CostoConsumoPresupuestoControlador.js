@@ -10,9 +10,12 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
     $scope.puerta = [];
     $scope.configuracion = false;
     $scope.animacionCon = "";
-    $scope.conCombinacion = false;
-    $scope.conPrecio = false;
+    $scope.conCombinacion = true;
+    $scope.conPrecio = true;
     $scope.verPor = "combinacion";
+    $scope.puertaSel = null;
+    
+    $scope.acordion = {costo: true, consumo: true};
     
     //------------ Cargar Catalogos --------------------
     $scope.CargarCatalagosInicio = function()
@@ -39,7 +42,24 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
                     $scope.combinacion[k].Ver = true;
                 }
                 
-                $scope.materialInicial = jQuery.extend({}, dataResponse.data.material);
+                $scope.materialInicial = [];
+                for(var material of $scope.material)
+                {
+                    for(var grueso in material.Grueso)
+                    {                    
+                        material.GruesoN = FraccionADecimal(grueso.Grueso);
+                    }
+                    
+                    $scope.materialInicial.push(jQuery.extend({}, material));
+                    
+                    $scope.materialInicial[$scope.materialInicial.length-1].Grueso = [];
+            
+                    for(var grueso of material.Grueso)
+                    {
+                        $scope.materialInicial[$scope.materialInicial.length-1].Grueso.push(jQuery.extend({}, grueso));
+                    }
+                }
+                
             
                 console.log($scope.combinacion);
                 console.log($scope.material);
@@ -172,16 +192,129 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
         $scope.animacionCon = "abrir";
         $scope.configuracion = true;
         $("body").addClass('noscroll');
+        
+        $scope.combinacionConf = [];
+        $scope.materialConf = [];
+        
+        for(var combinacion of $scope.combinacion)
+        {
+            $scope.combinacionConf.push(jQuery.extend({}, combinacion));
+        }
+        
+        for(var material of $scope.material)
+        {
+            $scope.materialConf.push(jQuery.extend({}, material));
+            
+            $scope.materialConf[$scope.materialConf.length-1].Grueso = [];
+            
+            for(var grueso of material.Grueso)
+            {
+                $scope.materialConf[$scope.materialConf.length-1].Grueso.push(jQuery.extend({}, grueso));
+            }
+        }
+        
+        console.log($scope.materialConf );
     };
     
     $scope.ReestablecerCombinacion = function()
     {
-        for(var k=0; k<$scope.combinacion.length; k++)
+        $scope.materialConf = [];
+        
+        for(var k=0; k<$scope.combinacionConf.length; k++)
         {
-            $scope.combinacion[k].Ver = true;
-            $scope.material = jQuery.extend({}, $scope.materialInicial);
-            $scope.SetPrecioMaterial();
+            $scope.combinacionConf[k].Ver = true;
         }  
+        
+        console.log($scope.materialInicial);
+        for(var material of $scope.materialInicial)
+        {
+            $scope.materialConf.push(jQuery.extend({}, material));
+            $scope.materialConf[$scope.materialConf.length-1].Grueso = [];
+            
+            for(var grueso of material.Grueso)
+            {
+                $scope.materialConf[$scope.materialConf.length-1].Grueso.push(jQuery.extend({}, grueso));
+            }
+        }
+    };
+    
+    $scope.AplicarConfiguracion = function()
+    {
+        if(!$scope.ValidarPrecios($scope.combinacionConf, $scope.materialConf))
+        {
+            $('#mensajeCostoConsumoPresupuesto').modal('toggle');
+            return;
+        }
+        else
+        {
+            $scope.combinacion = [];
+            $scope.material = [];
+
+            for(var combinacion of $scope.combinacionConf)
+            {
+                $scope.combinacion.push(jQuery.extend({}, combinacion));
+            }
+
+            for(var material of $scope.materialConf)
+            {
+                $scope.material.push(jQuery.extend({}, material));
+
+                $scope.material[$scope.material.length-1].Grueso = [];
+
+                for(var grueso of material.Grueso)
+                {
+                    $scope.material[$scope.material.length-1].Grueso.push(jQuery.extend({}, grueso));
+                }
+            }
+
+            $scope.SetPrecioMaterial();
+            $scope.CerrarConfiguracion();
+        }
+    };
+    
+    $scope.ValidarPrecios = function(combinacion, data)
+    {  
+        var comVer = false;
+        for(var com of combinacion)
+        {
+            if(com.Ver)
+            {
+                comVer = true;
+            }
+        }
+        
+        if(!comVer)
+        {
+            $scope.mensaje = "Al menos una combinación debe de estar seleccionada.";
+            return false;
+        }
+        
+        
+        for(var material of data)
+        {
+            if(material.Grueso.length == 0)
+            {
+                if(!material.CostoUnidad)
+                {
+                    $scope.mensaje = "Verifica que los precios sean números decimales con máximo dos decimales.";
+                    return false;
+                }
+            }
+            else
+            {
+                for(var grueso of material.Grueso)
+                {
+                    if(!grueso.CostoUnidad)
+                    {
+                        $scope.mensaje = "Verifica que los precios sean números decimales con máximo dos decimales.";
+                        return false;
+                    }
+                }
+            }
+        }
+        
+        return true;
+        
     };
     
     $scope.CerrarConfiguracion = function()
@@ -196,7 +329,12 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
       }, 400);  
     };
     
-    window.addEventListener('click', function(e)
+    
+    $scope.SetCombinacion = function(data)
+    {
+        return Array.from(data);
+    };
+    /*window.addEventListener('click', function(e)
     { 
       if(document.getElementById('sidebar'))
       {
@@ -208,16 +346,49 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
           } 
       }
 
-    });
+    });*/
+    
+    //-- ------- Funcionalidad de vista -- ---------
+    $scope.CambiarPuerta = function(puerta)
+    {
+        if($scope.puertaSel != puerta)
+        {
+            if(puerta == 'ninguna')
+            {
+                $scope.puertaSel  = null;
+            }
+            else
+            {
+                $scope.puertaSel = puerta;
+                
+                for(var modulo of $scope.modulo)
+                {
+                    CalcularCostoConsumoPuerta(modulo, $scope.combinacion, $scope.puertaSel);
+                }
+            }
+            $scope.CalcularValoresCombinacion();
+        }
+    };
     
     //--- calcular costo - consumo ---
     $scope.CalcularCostoConsumo = function()
     {
+        //costo - consumo módulo
         for(var k=0; k<$scope.modulo.length; k++)
         {
             CalcularCostoConsumoModulo($scope.modulo[k], $scope.combinacion, $scope.material);
         }
         
+        //Costo - Consumo puerta
+        if($scope.puertaSel)
+        {
+            for(var modulo of $scope.modulo)
+            {
+                CalcularCostoConsumoPuerta(modulo, $scope.combinacion, $scope.puertaSel);
+            }
+        }
+        
+        //Costo - Consumo Total
         $scope.CalcularValoresCombinacion();
     };
     
@@ -237,17 +408,38 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
                 for(var modulo of $scope.modulo) 
                 {
                     //--costos--
+                    //módulos
                     for(var moduloCombinacion of modulo.Combinacion)
                     {
                         if(moduloCombinacion.CombinacionMaterialId == combinacion.CombinacionMaterialId)
                         {
                             combinacion.Costo += moduloCombinacion.Costo * modulo.Cantidad;
-                            combinacion.CostoDesperdicio += moduloCombinacion.CostoDesperdicio * modulo.Cantidad;
-                            combinacion.CostoConsumible = moduloCombinacion.CostoConsumible * modulo.Cantidad;
-                            combinacion.CostoMargen =  moduloCombinacion.CostoMargen * modulo.Cantidad;
+                            //combinacion.CostoDesperdicio += moduloCombinacion.CostoDesperdicio * modulo.Cantidad;
+                            //combinacion.CostoConsumible = moduloCombinacion.CostoConsumible * modulo.Cantidad;
+                            //combinacion.CostoMargen =  moduloCombinacion.CostoMargen * modulo.Cantidad;
                             break;
                         }
                     }
+                    //puertas
+                    if($scope.puertaSel)
+                    {
+                        for(var componente of $scope.puertaSel.Componente)
+                        {
+                            for(var puertaCombinacion of componente.Combinacion)
+                            {
+                                if(puertaCombinacion.CombinacionMaterialId == combinacion.CombinacionMaterialId)
+                                {
+                                     combinacion.Costo += (componente.Consumo * parseFloat(puertaCombinacion.Costo) * modulo.Cantidad);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    
+                    //Otros Costo
+                    combinacion.CostoDesperdicio  = combinacion.Costo + (combinacion.Costo*(modulo.Desperdicio/100));
+                    combinacion.CostoConsumible = combinacion.CostoDesperdicio   + modulo.CostoConsumible;
+                    combinacion.CostoMargen = combinacion.CostoConsumible + (combinacion.CostoConsumible * (modulo.Margen/100));
                     
                     //-- consumos --
                     
@@ -277,7 +469,7 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
                     }
                     
                     
-                    //componente
+                    //componente módulo
                     for(var componente of modulo.Componente)
                     {
                         for(var componenteCombinacion of componente.Combinacion)
@@ -353,6 +545,45 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
                                 break;
                             }
                         }  
+                    }
+                    
+                    //componente puerta
+                    if($scope.puertaSel)
+                    {
+                        for(var componente of $scope.puertaSel.Componente)
+                        {
+                            for(var componenteCombinacion of componente.Combinacion)
+                            {
+                                if(componenteCombinacion.CombinacionMaterialId == combinacion.CombinacionMaterialId)
+                                {
+                                    for(var material of combinacion.Material)
+                                    {
+                                        if(material.MaterialId == componenteCombinacion.MaterialId)
+                                        {
+                                            if(material.Grueso != "1")
+                                            {
+                                                if(material.Grueso == componenteCombinacion.Grueso)
+                                                {
+                                                    material.Consumo += componente.Consumo;
+                                                    material.ConsumoDesperdicio += componente.ConsumoDesperdicio;
+                                                    break;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                material.Consumo += componente.Consumo;
+                                                material.ConsumoDesperdicio += componente.ConsumoDesperdicio;
+                                                break;
+                                            }
+
+
+                                        }
+                                    }
+
+                                    break;
+                                }
+                            }
+                        }
                     }
                     
                 }

@@ -9,6 +9,7 @@
        </button>
        
     </div>
+    
    
    <!-- Título -->
    <div class="row">
@@ -18,6 +19,8 @@
    </div>
    <br>
     
+    
+    <!-- Ver por -->
     <div class="row">
         <div class="col-xs-12 col-sm-6">
             <div class="checkbox checkboxOperativo itemPresupuesto" style="margin-left: 0px; border-bottom-width: 0px; color: black" >
@@ -41,92 +44,189 @@
     </div>
     <br>
     
-    <div class="row" style="margin-bottom: 16px">
-        <div class="col-xs-12">
-            <span style="color: gray; font-weight: bold; font-size: 20px">Consumo</span>
-        </div>
-    </div>
-    
-    <!-- Ver por combinación -->
+    <!-- Puerta -->
     <div class="row">
-        <div class="col-xs-12">
+        <div class="col-sm-6">
+          
+          <label>Puerta</label>
+          <div class="dropdown">
+
+                <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown" style="height: 33px">
+                    <span ng-show="puertaSel">{{puertaSel.Puerta}} ({{puertaSel.Muestrario}})</span>
+                    <span ng-show="!puertaSel">Ninguna</span>
+                    <span class="pull-right">
+                        <span class="caret "></span>
+                    </span>
+                </button>
+
+                <ul class="dropdown-menu listaOpcionesDropdownList" style="min-width: 100%">
+                   <li>
+                       <a  href="" class="dropdownOpcionModal" ng-click="CambiarPuerta('ninguna')">
+                            <span>NINGUNA</span>
+                        </a>
+                    </li>
+                    
+                    <li ng-repeat="puerta in puerta | orderBy:['Puerta', 'Muestrario']">
+                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarPuerta(puerta)">
+                            <span>{{puerta.Puerta}} ({{puerta.Muestrario}})</span>
+                        </a>
+                    </li>
+                </ul>
+
+            </div>
            
-           <div class="table-responsive" style="overflow: scroll; max-height: 500px;">
-               <table class="table table-hover">
-                    <thead class="TituloTabla" >
-                      <tr>
-                        <!--<th><span class=""><b>Combinación</b></span></th>-->
-                        <th><span class=""><b>Material</b></span></th>
-                        <th class="text-center"><span><b>Grueso</b></span></th>
-                        <th class="text-center"><span><b>Consumo(pie2)</b></span></th>
-                        <th class="text-center"><span><b>+Desperdicop (pie2)</b></span></th>
-                      </tr>
-                   </thead>
-                   
-                   <tbody ng-repeat="combinacion in combinacion | orderBy:['CombinacionMaterialId']" ng-show="combinacion.Ver">
-                      
-                      <tr>
-                          <td class="text-center"   rowspan="combinacion.Material.length "  colspan="4" style="background: rgb(247, 247, 247)"><b>{{combinacion.Nombre}}</b></td>
-                       </tr>
-                       
-                       <tr ng-repeat="material in combinacion.Material | orderBy:['TipoMaterialId', 'Material', 'GruesoN'] track by $index" ng-show="material.Consumo > 0">
-                            
-                            <td>{{material.Material}}</td>
-                            <td class="text-center">{{material.Grueso}}</td>
-                            <td class="text-center">{{material.Consumo | decimal}}</td>
-                            <td class="text-center" >{{material.ConsumoDesperdicio | decimal}}</td>
-                            
-                       </tr>
-                       
-                       
-                   </tbody>
-                   
-               </table>
-               
-           </div>
-            
         </div>
     </div>
-
+    <br>
     
    
-    <!--<div class="row" ng-repeat="material in material" style="margin-top:10px">
-
-
-        <div class="col-xs-6 " >
-            <span class="pull-right">{{material.NombreTipoMaterial}} - {{material.NombreMaterial}}</span>
-        </div>
-
-        <div class="col-xs-6" ng-if="material.Grueso.length == 0">
-            <input type="text" class="form-control" ng-model="material.CostoUnidad">
-        </div>
-
-        <div ng-if="material.Grueso.length > 0">
-            <br>
-            <div class="row" ng-repeat="grueso in material.Grueso" style="margin-top:10px">
-
-                <div class="col-xs-6" >
-                    <span class="pull-right" style="color:blue">{{grueso.Grueso}} </span>
-                </div>
-
-                <div class="col-xs-6" >
-                    <input type="text" class="form-control" ng-model="grueso.CostoUnidad">
-                </div>
+    
+    <!-- Ver por combinación -->
+    
+    <!-- consumo -->
+     <div class="row" style="margin-bottom: 16px">
+        <div class="col-xs-12">
+            <div class="btnStatusProyecto form-control"  style="overflow:hidden !important;  font-weight: normal; height: 34px;" ng-click="acordion.consumo = !acordion.consumo" ng-class="{Seleccionado: acordion.consumo}"> 
+                <span class="fa fa-chevron-right" style="width:20px;" ng-if="!acordion.consumo"></span>
+                <span class="fa fa-chevron-up" style="width:20px;" ng-if="acordion.consumo"></span>
+                Consumo
             </div>
         </div>
-
     </div>
     
-    <br>
-    <div class="row">
-       <div class="col-xs-12">
-           <div class="pull-right">
-                <button class="btn btn-primary" ng-click="SetPrecioMaterial()"> Calcular </button>
+    <form class="contenedorAcordio" style="margin-top: -20px"  ng-show="acordion.consumo">
+        <div class="row ">
+            <div class="col-xs-12">
+               <br>
+               <div class="table-responsive" style="overflow: scroll; max-height: 500px;">
+                   <table class="table table-hover">
+                        <thead class="TituloTabla"  style="background:  rgb(250, 97, 21); border-color:  rgb(250, 97, 21); color:white">
+                          <tr>
+                            <!--<th><span class=""><b>Combinación</b></span></th>-->
+                            <th><span class=""><b>Material</b></span></th>
+                            <th class="text-center"><span><b>Grueso</b></span></th>
+                            <th class="text-center"><span><b>Consumo(pie2)</b></span></th>
+                            <th class="text-center"><span><b>+Desperdicop (pie2)</b></span></th>
+                          </tr>
+                       </thead>
+
+                       <tbody ng-repeat="combinacion in combinacion | orderBy:['CombinacionMaterialId']" ng-show="combinacion.Ver">
+
+                          <tr>
+                              <td class="text-center"   rowspan="combinacion.Material.length "  colspan="4" style="background: lightgray; color: black"><b>{{combinacion.Nombre}}</b></td>
+                           </tr>
+
+                           <tr ng-repeat="material in combinacion.Material | orderBy:['TipoMaterialId', 'Material', 'GruesoN'] track by $index" ng-show="material.Consumo > 0">
+
+                                <td>{{material.Material}}</td>
+                                <td class="text-center">{{material.Grueso}}</td>
+                                <td class="text-center">{{material.Consumo | decimal}}</td>
+                                <td class="text-center" >{{material.ConsumoDesperdicio | decimal}}</td>
+
+                           </tr>
+
+
+                       </tbody>
+
+                   </table>
+
+               </div>
+
             </div>
         </div>
-    </div>-->
+    </form>
     
+    <!-- Costo -->
+     <div class="row" style="margin-bottom: 16px">
+        <div class="col-xs-12">
+            <div class="btnStatusProyecto form-control"  style="overflow:hidden !important;  font-weight: normal; height: 34px;" ng-click="acordion.costo = !acordion.costo" ng-class="{Seleccionado: acordion.costo}"> 
+                <span class="fa fa-chevron-right" style="width:20px;" ng-if="!acordion.costo"></span>
+                <span class="fa fa-chevron-up" style="width:20px;" ng-if="acordion.costo"></span>
+                Costo
+            </div>
+        </div>
+    </div>
     
+    <form class="contenedorAcordio" style="margin-top: -20px"  ng-show="acordion.costo">
+        
+       <!-- combinacion -->
+       <div class="row" ng-if="verPor == 'combinacion'">
+            <div class="col-xs-12">
+               <br>
+               <div class="table-responsive" style="overflow: scroll; max-height: 500px;">
+                   <table class="table table-hover">
+                        <thead class="TituloTabla"  style="background:  rgb(250, 97, 21); border-color:  rgb(250, 97, 21); color:white">
+                          <tr>
+                            <th><span class=""><b>Combinación</b></span></th>
+                            <th class="text-center"><span><b>Costo</b></span></th>
+                            <th class="text-center"><span><b>+Desperdicio</b></span></th>
+                            <th class="text-center"><span><b>+Consumible</b></span></th>
+                            <th class="text-center"><span><b>+Margen</b></span></th>
+                          </tr>
+                       </thead>
+
+                       <tbody>
+        
+                           <tr  ng-repeat="combinacion in combinacion | orderBy:['CombinacionMaterialId']" ng-show="combinacion.Ver">
+
+                                <td>{{combinacion.Nombre}}</td>
+                                <td class="text-center">{{combinacion.Costo | currency}}</td>
+                                <td class="text-center">{{combinacion.CostoDesperdicio | currency}}</td>
+                                <td class="text-center">{{combinacion.CostoConsumible | currency}}</td>
+                               <td class="text-center">{{combinacion.CostoMargen | currency}}</td>
+                           </tr>
+
+                       </tbody>
+
+                   </table>
+
+               </div>
+
+            </div>
+        </div>
+        
+        <!-- Módulo -->
+        <div class="row" ng-if="verPor == 'modulo'">
+            <div class="col-xs-12">
+               <br>
+               <div class="table-responsive" style="overflow: scroll; max-height: 500px;">
+                   <table class="table table-hover">
+                        <thead class="TituloTabla"  style="background:  rgb(250, 97, 21); border-color:  rgb(250, 97, 21); color:white">
+                          <tr>
+                            <th><span class=""><b>Modulo</b></span></th>
+                            <th class="text-center"><span><b>Ancho</b></span></th>
+                            <th class="text-center"><span><b>Alto</b></span></th>
+                            <th class="text-center"><span><b>Profundo</b></span></th>
+                            <th class="text-center"><span><b>Cantidad</b></span></th>
+                            <th class="text-center"><span><b>Costo c/u</b></span></th>
+                            <th class="text-center"><span><b>+Desperdicio</b></span></th>
+                            <th class="text-center"><span><b>+Consumible</b></span></th>
+                            <th class="text-center"><span><b>+Margen</b></span></th>
+                          </tr>
+                       </thead>
+
+                       <tbody>
+        
+                           <tr  ng-repeat="modulo in modulo | orderBy:['NombreTipoModulo', 'Nombre', 'AnchoNumero', 'AltoNumero', 'ProfundoNumero']">
+                                <td>{{modulo.NombreTipoModulo - modulo.Nombre}}</td>
+                                <td class="text-center">{{combinacion.Costo | currency}}</td>
+                                <td class="text-center">{{combinacion.CostoDesperdicio | currency}}</td>
+                                <td class="text-center">{{combinacion.CostoConsumible | currency}}</td>
+                               <td class="text-center">{{combinacion.CostoMargen | currency}}</td>
+                           </tr>
+
+                       </tbody>
+
+                   </table>
+
+               </div>
+
+            </div>
+        </div>
+        
+    </form>
+
+        
     <!-- --------- configuración de materiales y combinaciones ---------- -->
 
     <div ng-show="configuracion" class="sidebar {{animacionCon}}" id="sidebar">
@@ -178,19 +278,18 @@
                         </div>
                     </div>
                      
-                    <div class="col-xs-12" ng-repeat="combinacion in combinacion" style="padding: 0px">
+                    <div class="col-xs-12" ng-repeat="comb in combinacionConf" style="padding: 0px">
                         <div style="padding: 0px 0px">
-                            <div class="checkbox checkboxOperativo itemPresupuesto" style="margin-left: -3px; border-bottom-width: 0px; color: black" >
+                            <div class="checkbox checkboxOperativo itemPresupuesto" style="margin-left: -4px; border-bottom-width: 0px; color: black" >
                                 <label style="width:100%">
-                                    <input  ng-model="combinacion.Ver" type="checkbox" >
+                                    <input  ng-model="comb.Ver" type="checkbox" >
                                     <span class="cr"> <i class="cr-icon fa fa-check"></i> </span>
-                                    <span style="font-size: 12pt">{{combinacion.Nombre}}</span>
+                                    <span style="font-size: 12pt">{{comb.Nombre}}</span>
                                 </label>
                             </div>
                         </div>
                     </div>
                 </div>
-
 
                 <div class="row" ng-click="conPrecio = !conPrecio" style="margin-left: 0px; margin-right: 0px">
                     <div class="col-xs-12" style="padding: 0px">
@@ -201,12 +300,31 @@
                     </div>
                 </div>
 
-                <!--<div ng-show="conPrecio" >
-                    Precios<br>
-                     Precios<br>
-                      Precios<br>
-                       Precios<br>
-                </div>-->
+                <div ng-show="conPrecio" >
+                    <div class="row" ng-show="conCombinacion" style="margin-left: 0px; margin-right: 0px; margin-bottom: 12px">
+                    
+                        <div class="col-xs-12" style="padding: 0px; margin-top: 12px; margin-bottom: 12px">
+                            <div style="padding: 0px 16px">
+                            
+                                <div ng-class="{'input-group': material.Grueso.length == 0}" style="margin-bottom: 12px" ng-repeat="material in materialConf | orderBy:['TipoMaterialId', 'NombreMaterial']" >
+                                    <!-- sin gruesos -->
+                                    <div class="input-group-addon addonMaterial" ng-if="material.Grueso.length == 0">{{material.NombreMaterial}}</div>
+                                    <input class="form-control entrada" ng-model="material.CostoUnidad" style="text-align: right" ng-if="material.Grueso.length == 0" ng-pattern="erDecimal">
+                                    
+                                    <!-- con grueso -->
+                                    <div class="addonMaterial" ng-if="material.Grueso.length > 0"  style="margin-bottom: 12px; padding-right: 12px">{{material.NombreMaterial}}</div>
+                                    
+                                    <div class="input-group" ng-if="material.Grueso.length > 0" ng-repeat="grueso in material.Grueso | orderBy:['GruesoN']" style="margin-bottom: 12px">
+                                        <div class="input-group-addon addonMaterial" >{{grueso.Grueso}}</div>
+                                        <input class="form-control entrada" ng-model="grueso.CostoUnidad" style="text-align: right" ng-pattern="erDecimal">
+                                    </div>
+
+                                </div>
+                            
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
             </div>
 
@@ -214,17 +332,37 @@
             <!-- footer -->
             <div class="sidebar-footer">
                 <div class="row">
-                    <div class="col-xs-6" style="padding-left: 32px">
-                        <button class="btn btn-block sidebar-btnOpt">Reestablecer</button>
+                    <div class="col-xs-6" style="padding-left: 32px" >
+                        <button class="btn btn-block sidebar-btnOpt" ng-click="ReestablecerCombinacion()">Reestablecer</button>
                     </div>
 
                     <div class="col-xs-6"  style="padding-right: 32px">
-                        <button class="btn btn-block sidebar-btnOpt primary">Aplicar</button>
+                        <button class="btn btn-block sidebar-btnOpt primary" ng-click="AplicarConfiguracion()">Aplicar</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    
+    <!-- ------------------- Modales ---------------------- -->
+     <!-- Modal para mensajes -->
+    <div class="modal fade sombraDivModal" id="mensajeCostoConsumoPresupuesto" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <br>    <br>   <br>
+        <div class="modal-dialog modalPrincipal modal-sm">
+           <br>
+            <div class="row">
+                <div class="col-xs-12 text-center" style="font-size:12pt">
+                   {{mensaje}}
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-xs-12">
+                    <button focus class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close">Aceptar</button>
+                </div>
+            </div>
+        </div> 
+    </div> 
 
 </div>
 

@@ -108,11 +108,12 @@ function CalcularConsumoCostoModulo(modulo, combinacion)
         }
     }
     
-    var CostoDesperdicio  = CostoTotal + (CostoTotal*(modulo.Desperdicio/100));
-    var CostoConsumible = CostoDesperdicio + modulo.CostoConsumible;
-    var CostoMargen = CostoConsumible + (CostoConsumible * (modulo.Margen/100));
+    //var CostoDesperdicio  = CostoTotal + (CostoTotal*(modulo.Desperdicio/100));
+    //var CostoConsumible = CostoDesperdicio + modulo.CostoConsumible;
+    //var CostoMargen = CostoConsumible + (CostoConsumible * (modulo.Margen/100));
     
-    combinacion = {CombinacionMaterialId: combinacion, Costo: CostoTotal, CostoDesperdicio: CostoDesperdicio, CostoConsumible: CostoConsumible, CostoMargen: CostoMargen};
+    //combinacion = {CombinacionMaterialId: combinacion, Costo: CostoTotal, CostoDesperdicio: CostoDesperdicio, CostoConsumible: CostoConsumible, CostoMargen: CostoMargen};
+    combinacion = {CombinacionMaterialId: combinacion, Costo: CostoTotal};
     
     modulo.Combinacion.push(combinacion);
     
