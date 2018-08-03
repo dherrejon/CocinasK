@@ -25,7 +25,7 @@
         <div class="col-xs-12 col-sm-6">
             <div class="checkbox checkboxOperativo itemPresupuesto" style="margin-left: 0px; border-bottom-width: 0px; color: black" >
                 <label style="width:100%">
-                    <input  value="combinacion" ng-model="verPor" type="radio" name="ver" style="display: none" >
+                    <input  value="combinacion" ng-model="verPor" type="radio" name="ver" style="display: none" ng-change="CambiarVerPor()">
                     <i class="ratioBtn {{ verPor ==  'combinacion' ? 'fa fa-dot-circle-o checked' : 'fa fa-circle-o'}} "></i>
                     <span>Ver por combinación</span>
                 </label>
@@ -95,7 +95,10 @@
     </div>
     
     <form class="contenedorAcordio" style="margin-top: -20px"  ng-show="acordion.consumo">
-        <div class="row ">
+       
+        
+        <!-- combinacion -->
+        <div class="row " ng-if="verPor == 'combinacion'">
             <div class="col-xs-12">
                <br>
                <div class="table-responsive" style="overflow: scroll; max-height: 500px;">
@@ -105,8 +108,8 @@
                             <!--<th><span class=""><b>Combinación</b></span></th>-->
                             <th><span class=""><b>Material</b></span></th>
                             <th class="text-center"><span><b>Grueso</b></span></th>
-                            <th class="text-center"><span><b>Consumo(pie2)</b></span></th>
-                            <th class="text-center"><span><b>+Desperdicop (pie2)</b></span></th>
+                            <th class="text-center"><span><b>Consumo (pie<sup>2</sup>)</b></span></th>
+                            <th class="text-center"><span><b>+Desperdico (pie<sup>2</sup>)</b></span></th>
                           </tr>
                        </thead>
 
@@ -134,6 +137,188 @@
 
             </div>
         </div>
+        
+        <!-- módulo -->
+        <div ng-show="verPor == 'modulo'">
+           
+            <br>
+           <!-- filtros tipo módulo,  modulo -->
+           <div class="row">
+                
+               <!-- tipo módulo -->    
+               <div class="col-sm-6" >
+
+                  <label>Tipo de Módulo</label>
+                  <div class="dropdown">
+
+                        <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown" style="height: 33px; ">
+                           {{filtroModulo.TipoModulo.Nombre}} 
+                            <span class="pull-right">
+                                <span class="caret "></span>
+                            </span>
+                        </button>
+
+                        <ul class="dropdown-menu listaOpcionesDropdownList" style="min-width: 100%">
+                           <li>
+
+                               <a  href="" class="dropdownOpcionModal" ng-click="CambiarTipoModuloFiltro('Ninguno')">
+                                    <span>NINGUNO</span>
+                                </a>
+                            </li>
+
+                            <li ng-repeat="tipo in tipomodulo | orderBy:['Nombre'] ">
+                                <a  href="" class="dropdownOpcionModal" ng-click="CambiarTipoModuloFiltro(tipo)">
+                                    <span>{{tipo.Nombre}}</span>
+                                </a>
+                            </li>
+                        </ul>
+
+                    </div>
+
+                </div>
+
+                <!--  módulo -->    
+               <div class="col-sm-6" >
+
+                  <label>Módulo</label>
+                  <div class="dropdown">
+
+                        <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown" style="height: 33px;" ng-disabled="!filtroModulo.TipoModulo.TipoModuloId">
+                           {{filtroModulo.Modulo.Nombre}} 
+                            <span class="pull-right">
+                                <span class="caret "></span>
+                            </span>
+                        </button>
+
+                        <ul class="dropdown-menu listaOpcionesDropdownList" style="min-width: 100%">
+                           <li>
+
+                               <a  href="" class="dropdownOpcionModal" ng-click="CambiarModuloFiltro('Ninguno')">
+                                    <span>NINGUNO</span>
+                                </a>
+                            </li>
+
+                            <li ng-repeat="modulo in modulofiltro | orderBy:['Nombre'] | filter:{TipoModuloId:filtroModulo.TipoModulo.TipoModuloId }">
+                                <a  href="" class="dropdownOpcionModal" ng-click="CambiarModuloFiltro(modulo)">
+                                    <span>{{modulo.Nombre}}</span>
+                                </a>
+                            </li>
+                        </ul>
+
+                    </div>
+
+                </div>
+
+            </div>
+            
+            <br>
+           
+           <!-- radio button total - unitario -->
+            <div class="row">
+                <div class="col-xs-12 col-sm-6">
+                    <div class="checkbox checkboxOperativo itemPresupuesto" style="margin-left: 0px; border-bottom-width: 0px; color: black" >
+                        <label style="width:100%">
+                            <input  value="total" ng-model="consumoRadio" type="radio" name="consumoRadio" style="display: none" >
+                            <i class="ratioBtn {{ consumoRadio ==  'total' ? 'fa fa-dot-circle-o checked' : 'fa fa-circle-o'}} "></i>
+                            <span>Consumo Total</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-sm-6">
+                    <div class="checkbox checkboxOperativo itemPresupuesto" style="margin-left: 0px; border-bottom-width: 0px; color: black" >
+                        <label style="width:100%">
+                            <input  value="unitario" ng-model="consumoRadio" type="radio" name="consumoRadio" style="display: none" ng-disabled="verPor == 'combinacion'">
+                            <i class="ratioBtn {{ consumoRadio ==  'unitario' ? 'fa fa-dot-circle-o checked' : 'fa fa-circle-o'}} "></i>
+                            <span>Consumo Unitario</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Módulo -->
+        <div class="row" ng-show="verPor == 'modulo'">
+            <div class="col-xs-12">
+               <br>
+               <div class="table-responsive" style="overflow: scroll; max-height: 500px;">
+                   <table class="table table-hover">
+                        <thead class="TituloTabla"  style="background:  rgb(250, 97, 21); border-color:  rgb(250, 97, 21); color:white">
+                          <tr>
+                            <th><span class=""><b>Combinación</b></span></th>
+                            <th><span class=""><b>Material</b></span></th>
+                            <th class="text-center"><span><b>Grueso</b></span></th>
+                            <th class="text-center"><span><b>Consumo (pie<sub>2</sub>)</b></span></th>
+                            <th class="text-center"><span><b>+Desperdicio (pie<sub>2</sub>)</b></span></th>
+                          </tr>
+                       </thead>
+
+                       <tbody ng-repeat="modulo in modulo |filter:{TipoModuloId: filtroModulo.TipoModulo.TipoModuloId, Nombre:filtroModulo.Modulo.Nombre} | orderBy:['NombreTipoModulo', 'Nombre', 'AnchoNumero', 'AltoNumero', 'ProfundoNumero']">
+                       
+                           <tr>
+                              <td class="text-center"   rowspan="modulo.Combinacion.length "  colspan="5" style="background: lightgray; color: black">
+                                  <b>({{modulo.Cantidad}}) {{modulo.NombreTipoModulo}} - {{modulo.Nombre}} <span style="margin-left: 10px">{{modulo.Ancho}}" {{modulo.Alto}}" {{modulo.Profundo}}"</span></b> 
+                                  
+                                  <button class="btn BotonOperacion tabla pull-right" style="margin-top: -8px">
+                                      <span class="fa fa-puzzle-piece" ng-click=""></span>
+                                  </button>
+                              </td>
+                              
+                           </tr>
+
+                           <tr ng-repeat="combinacion in modulo.Combinacion | orderBy:['CombinacionMaterialId']">
+
+                               <td style="background: #F2F2F2; color: black">
+                                  <b>{{combinacion.Nombre}} </b> 
+                              </td>
+
+                              <!-- Material -->
+                              <td style="padding: 0px">
+                                  <table style=" width: 100%; margin-bottom: 0px !important" class="table">
+                                    <tr ng-repeat="material in combinacion.Material | orderBy:['TipoMaterialId', 'Material', 'GruesoN'] track by $index" ng-show="material.ConsumoUnitario > 0">
+                                        <td>{{material.Material}}</td>
+                                     </tr>
+                                 </table>
+                              </td>
+
+                              <!-- Grueso -->
+                              <td style="padding: 0px">
+                                 <table style=" width: 100%; margin-bottom: 0px !important" class="table">
+                                     <tr ng-repeat="material in combinacion.Material | orderBy:['TipoMaterialId', 'Material', 'GruesoN'] track by $index" ng-show="material.ConsumoUnitario > 0">
+                                           <td class="text-center">{{material.Grueso}}</td>
+                                     </tr>
+                                 </table>
+                              </td>
+
+                              <!-- Consumo -->
+                              <td class="text-center" style="padding: 0px">
+                                 <table style=" width: 100%; margin-bottom: 0px !important" class="table">
+                                     <tr class="text-center" ng-repeat="material in combinacion.Material | orderBy:['TipoMaterialId', 'Material', 'GruesoN'] track by $index" ng-show="material.ConsumoUnitario > 0">
+                                           <td class="text-center">{{consumoRadio == 'unitario' ?  material.ConsumoUnitario : material.ConsumoTotal | decimal}}</td>
+                                     </tr>
+                                 </table>
+                              </td>
+
+                              <!-- Consumo Desperdicio -->
+                              <td class="text-center" style="padding: 0px">
+                                 <table  style=" width: 100%; margin-bottom: 0px !important" class="table">
+                                     <tr class="text-center" ng-repeat="material in combinacion.Material | orderBy:['TipoMaterialId', 'Material', 'GruesoN'] track by $index" ng-show="material.ConsumoUnitario > 0">
+                                           <td class="text-center" >{{consumoRadio == 'unitario' ? material.ConsumoDesperdicioUnitario : material.ConsumoDesperdicioTotal | decimal}}</td>
+                                     </tr>
+                                 </table>
+                              </td>
+
+                           </tr>
+
+                       </tbody>
+
+                   </table>
+
+               </div>
+
+            </div>
+        </div>
+        
     </form>
     
     <!-- Costo -->
@@ -148,6 +333,28 @@
     </div>
     
     <form class="contenedorAcordio" style="margin-top: -20px"  ng-show="acordion.costo">
+       
+        <div class="row">
+            <div class="col-xs-12 col-sm-6">
+                <div class="checkbox checkboxOperativo itemPresupuesto" style="margin-left: 0px; border-bottom-width: 0px; color: black" >
+                    <label style="width:100%">
+                        <input  value="total" ng-model="costoRadio" type="radio" name="costoRadio" style="display: none" >
+                        <i class="ratioBtn {{ costoRadio ==  'total' ? 'fa fa-dot-circle-o checked' : 'fa fa-circle-o'}} "></i>
+                        <span>Costo Total</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="col-xs-12 col-sm-6">
+                <div class="checkbox checkboxOperativo itemPresupuesto" style="margin-left: 0px; border-bottom-width: 0px; color: black" >
+                    <label style="width:100%">
+                        <input  value="unitario" ng-model="costoRadio" type="radio" name="costoRadio" style="display: none" ng-disabled="verPor == 'combinacion'">
+                        <i class="ratioBtn {{ costoRadio ==  'unitario' ? 'fa fa-dot-circle-o checked' : 'fa fa-circle-o'}} "></i>
+                        <span>Costo Unitario</span>
+                    </label>
+                </div>
+            </div>
+        </div>
         
        <!-- combinacion -->
        <div class="row" ng-if="verPor == 'combinacion'">
@@ -193,11 +400,7 @@
                    <table class="table table-hover">
                         <thead class="TituloTabla"  style="background:  rgb(250, 97, 21); border-color:  rgb(250, 97, 21); color:white">
                           <tr>
-                            <th><span class=""><b>Modulo</b></span></th>
-                            <th class="text-center"><span><b>Ancho</b></span></th>
-                            <th class="text-center"><span><b>Alto</b></span></th>
-                            <th class="text-center"><span><b>Profundo</b></span></th>
-                            <th class="text-center"><span><b>Cantidad</b></span></th>
+                            <th><span class=""><b>Combinación</b></span></th>
                             <th class="text-center"><span><b>Costo c/u</b></span></th>
                             <th class="text-center"><span><b>+Desperdicio</b></span></th>
                             <th class="text-center"><span><b>+Consumible</b></span></th>
@@ -205,14 +408,28 @@
                           </tr>
                        </thead>
 
-                       <tbody>
+                       <tbody ng-repeat="modulo in modulo | orderBy:['NombreTipoModulo', 'Nombre', 'AnchoNumero', 'AltoNumero', 'ProfundoNumero']">
+                       
+                           <tr>
+                              <td class="text-center"   rowspan="modulo.Combinacion.length "  colspan="5" style="background: lightgray; color: black">
+                                  <b>({{modulo.Cantidad}}) {{modulo.NombreTipoModulo}} - {{modulo.Nombre}} <span style="margin-left: 10px">{{modulo.Ancho}}" {{modulo.Alto}}" {{modulo.Profundo}}"</span></b> 
+                              </td>
+                           </tr>
         
-                           <tr  ng-repeat="modulo in modulo | orderBy:['NombreTipoModulo', 'Nombre', 'AnchoNumero', 'AltoNumero', 'ProfundoNumero']">
-                                <td>{{modulo.NombreTipoModulo - modulo.Nombre}}</td>
-                                <td class="text-center">{{combinacion.Costo | currency}}</td>
-                                <td class="text-center">{{combinacion.CostoDesperdicio | currency}}</td>
-                                <td class="text-center">{{combinacion.CostoConsumible | currency}}</td>
-                               <td class="text-center">{{combinacion.CostoMargen | currency}}</td>
+                           <tr ng-repeat="combinacion in modulo.Combinacion | orderBy:['CombinacionMaterialId']">
+                                <td>{{combinacion.Nombre}}</td>
+                                <td class="text-center">
+                                    {{(costoRadio == 'unitario' ? combinacion.CostoUnitario : costoRadio == 'total' ? combinacion.CostoTotal : 0) | currency}}
+                                </td>
+                                <td class="text-center">
+                                     {{(costoRadio == 'unitario' ? combinacion.CostoDesperdicioUnitario : costoRadio == 'total' ? combinacion.CostoDesperdicioTotal : 0) | currency}}
+                                </td>
+                                <td class="text-center">
+                                     {{(costoRadio == 'unitario' ? combinacion.CostoConsumibleUnitario : costoRadio == 'total' ? combinacion.CostoConsumibleTotal : 0) | currency}}
+                                </td>
+                                <td class="text-center">
+                                     {{(costoRadio == 'unitario' ? combinacion.CostoMargenUnitario : costoRadio == 'total' ? combinacion.CostoMargenTotal : 0) | currency}}
+                                </td>
                            </tr>
 
                        </tbody>

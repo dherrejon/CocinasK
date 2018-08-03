@@ -58,13 +58,13 @@ function CalcularCostoConsumoModulo(modulo, combinacion, material)
         if(combinacion[k].Ver)
         {
             SustituirFormulaCompleta(modulo, combinacion[k].CombinacionMaterialId); //componente y pieza
-            CalcularConsumoCostoModulo(modulo, combinacion[k].CombinacionMaterialId);
+            CalcularConsumoCostoModulo(modulo, combinacion[k].CombinacionMaterialId, combinacion[k].Nombre);
         }
     }
 }
 
 
-function CalcularConsumoCostoModulo(modulo, combinacion)
+function CalcularConsumoCostoModulo(modulo, combinacion, nombreCombinacion)
 {
     var CostoTotal = 0;
     var consumoTotal = 0;
@@ -113,7 +113,7 @@ function CalcularConsumoCostoModulo(modulo, combinacion)
     //var CostoMargen = CostoConsumible + (CostoConsumible * (modulo.Margen/100));
     
     //combinacion = {CombinacionMaterialId: combinacion, Costo: CostoTotal, CostoDesperdicio: CostoDesperdicio, CostoConsumible: CostoConsumible, CostoMargen: CostoMargen};
-    combinacion = {CombinacionMaterialId: combinacion, Costo: CostoTotal};
+    combinacion = {CombinacionMaterialId: combinacion, Nombre:nombreCombinacion, Costo: CostoTotal};
     
     modulo.Combinacion.push(combinacion);
     

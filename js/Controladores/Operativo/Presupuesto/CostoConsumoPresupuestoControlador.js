@@ -6,7 +6,8 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
     $scope.combinacion = [];
     $scope.material = [];
     $scope.materialInicial = [];
-    $scope.modulo = [];
+    $scope.modulofiltro = [];
+    $scope.tipomodulo = [];
     $scope.puerta = [];
     $scope.configuracion = false;
     $scope.animacionCon = "";
@@ -14,15 +15,18 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
     $scope.conPrecio = true;
     $scope.verPor = "combinacion";
     $scope.puertaSel = null;
+    $scope.costoRadio = "total";
+    $scope.consumoRadio = "total";
     
     $scope.acordion = {costo: true, consumo: true};
+    $scope.filtroModulo = {TipoModulo: {TipoModuloId:"", Nombre:""}, Modulo: {TipoModuloId:"", Nombre:""}};
     
     //------------ Cargar Catalogos --------------------
     $scope.CargarCatalagosInicio = function()
     {
         //$scope.presupuesto = COSCONPRESUPUESTO.GetPresupuesto();
         //$scope.presupuesto = ["101", "336", "337"];
-        $scope.presupuesto = ["491"];
+        $scope.presupuesto = ["417"]; //417
         $scope.GetCatalogosCostoConsumo();
         
        // console.log($scope.presupuesto);
@@ -87,6 +91,8 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
             {
                 $scope.modulo = dataResponse.data.modulo;
                 $scope.puerta = dataResponse.data.puerta;
+                $scope.tipomodulo = alasql('SELECT DISTINCT TipoModuloId, NombreTipoModulo as Nombre FROM ?', [$scope.modulo]);
+                $scope.modulofiltro = alasql('SELECT DISTINCT TipoModuloId, Nombre FROM ?', [$scope.modulo]);
                 
                 for(var k=0; k<$scope.modulo.length; k++)
                 {
@@ -95,10 +101,12 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
                     $scope.modulo[k].ProfundoNumero = FraccionADecimal($scope.modulo[k].Profundo); 
                     
                     $scope.modulo[k].Cantidad = parseInt($scope.modulo[k].Cantidad);
+                    $scope.modulo[k].Margen = parseFloat($scope.modulo[k].Margen);
+                    $scope.modulo[k].Desperdicio = parseFloat($scope.modulo[k].Desperdicio);
                 }
                 
                 $scope.SetPrecioMaterial();
-                //console.log(dataResponse.data.modulo);
+                console.log($scope.tipomodulo);
             } 
             else 
             {
@@ -356,6 +364,11 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
             if(puerta == 'ninguna')
             {
                 $scope.puertaSel  = null;
+                
+                for(var modulo of $scope.modulo)
+                {
+                    modulo.Puerta = null;
+                }
             }
             else
             {
@@ -364,11 +377,114 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
                 for(var modulo of $scope.modulo)
                 {
                     CalcularCostoConsumoPuerta(modulo, $scope.combinacion, $scope.puertaSel);
+                    modulo.Puerta = $scope.SetPuertaValores($scope.puertaSel);
                 }
             }
             $scope.CalcularValoresCombinacion();
+            $scope.CalcularValoresModulo();
+            
+            console.log($scope.puertaSel);
         }
     };
+    
+    $scope.SetPuertaValores = function(data)
+    {
+        var puerta = new Object();
+        
+        puerta.PuertaId = data.PuertaId;
+        puerta.Puerta = data.Puerta;
+        puerta.MuestrarioId = data.MuestrarioId;
+        puerta.Muestrario = data.Muestrario;
+        puerta.Componente = [];
+        
+        for(var comp of data.Componente)
+        {
+            var aux = new Object();
+            
+            aux.Nombre = comp.Nombre;
+            aux.ConsumoDesperdicio = comp.ConsumoDesperdicio;
+            aux.Consumo = comp.Consumo;
+            aux.Nombre = comp.Nombre;
+            aux.ComponentePorPuertaId = comp.ComponentePorPuertaId;
+            aux.ComponenteId = comp.ComponenteId;
+            aux.Combinacion = [];
+            
+            for(var comb of comp.Combinacion)
+            {
+                var aux2 = new Object();
+                
+                aux2.TipoMaterialId = comb.TipoMaterialId;
+                aux2.NombreTipoMaterial = comb.NombreTipoMaterial;
+                aux2.NombreMaterial = comb.NombreMaterial;
+                aux2.Nombre = comb.Nombre;
+                aux2.MaterialId = comb.MaterialId;
+                aux2.Grueso = comb.Grueso;
+                aux2.Costo = comb.Costo;
+                aux2.CombinacionMaterialId = comb.CombinacionMaterialId;
+                
+                aux.Combinacion.push(aux2);
+            }
+            
+            puerta.Componente.push(aux);
+        }
+        
+        
+        
+        return puerta;
+    };
+    
+    $scope.CambiarVerPor = function()
+    {
+        if($scope.verPor == 'combinacion')
+        {
+            $scope.costoRadio = 'total';
+        }
+    };
+    
+    //-- filtros --
+    $scope.CambiarTipoModuloFiltro = function(tipomodulo)
+    {
+        if(tipomodulo.TipoModuloId == $scope.filtroModulo.TipoModulo.TipoModuloId )
+        {
+            return;
+        }
+        
+        if(tipomodulo == "Ninguno")
+        {
+            $scope.filtroModulo.TipoModulo.TipoModuloId = "";
+            $scope.filtroModulo.TipoModulo.Nombre = "";
+        }
+        else
+        {
+            $scope.filtroModulo.TipoModulo.TipoModuloId = tipomodulo.TipoModuloId;
+            $scope.filtroModulo.TipoModulo.Nombre = tipomodulo.Nombre;
+        }
+        
+        $scope.filtroModulo.Modulo.TipoModuloId = "";
+        $scope.filtroModulo.Modulo.Nombre = "";
+        
+    };
+    
+    $scope.CambiarModuloFiltro = function(modulo)
+    {
+        if($scope.filtroModulo.Modulo.Nombre == modulo.Nombre)
+        {
+            return;
+        }
+        
+        if(modulo == "Ninguno")
+        {
+            $scope.filtroModulo.Modulo.TipoModuloId = "";
+            $scope.filtroModulo.Modulo.Nombre = "";
+        }
+        else
+        {
+            $scope.filtroModulo.Modulo.TipoModuloId = modulo.TipoModuloId;
+            $scope.filtroModulo.Modulo.Nombre = modulo.Nombre;
+        }
+        
+    };
+    
     
     //--- calcular costo - consumo ---
     $scope.CalcularCostoConsumo = function()
@@ -385,11 +501,22 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
             for(var modulo of $scope.modulo)
             {
                 CalcularCostoConsumoPuerta(modulo, $scope.combinacion, $scope.puertaSel);
+                 modulo.Puerta = $scope.SetPuertaValores($scope.puertaSel);
+            }
+        }
+        else
+        {
+            for(var modulo of $scope.modulo)
+            {
+                modulo.Puerta = null;
             }
         }
         
+        console.log($scope.modulo);
+        
         //Costo - Consumo Total
         $scope.CalcularValoresCombinacion();
+        $scope.CalcularValoresModulo();
     };
     
     //-- Calcula los valore por combinacion 
@@ -407,7 +534,7 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
             {
                 for(var modulo of $scope.modulo) 
                 {
-                    //--costos--
+                    //-- costos --
                     //módulos
                     for(var moduloCombinacion of modulo.Combinacion)
                     {
@@ -420,10 +547,11 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
                             break;
                         }
                     }
+                    
                     //puertas
                     if($scope.puertaSel)
                     {
-                        for(var componente of $scope.puertaSel.Componente)
+                        for(var componente of modulo.Puerta.Componente)
                         {
                             for(var puertaCombinacion of componente.Combinacion)
                             {
@@ -438,7 +566,7 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
                     
                     //Otros Costo
                     combinacion.CostoDesperdicio  = combinacion.Costo + (combinacion.Costo*(modulo.Desperdicio/100));
-                    combinacion.CostoConsumible = combinacion.CostoDesperdicio   + modulo.CostoConsumible;
+                    combinacion.CostoConsumible = combinacion.CostoDesperdicio   + (modulo.CostoConsumible * modulo.Cantidad);
                     combinacion.CostoMargen = combinacion.CostoConsumible + (combinacion.CostoConsumible * (modulo.Margen/100));
                     
                     //-- consumos --
@@ -486,16 +614,16 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
                                             //{
                                                 if(material.Grueso == componenteCombinacion.Grueso)
                                                 {
-                                                    material.Consumo += componenteCombinacion.Consumo;
-                                                    material.ConsumoDesperdicio += componenteCombinacion.ConsumoDesperdicio;
+                                                    material.Consumo += componenteCombinacion.Consumo * modulo.Cantidad;
+                                                    material.ConsumoDesperdicio += componenteCombinacion.ConsumoDesperdicio * modulo.Cantidad;
                                                     break;
                                                 }
                                             //}
                                         }
                                         else
                                         {
-                                            material.Consumo += componenteCombinacion.Consumo;
-                                            material.ConsumoDesperdicio += componenteCombinacion.ConsumoDesperdicio;
+                                            material.Consumo += componenteCombinacion.Consumo * modulo.Cantidad;
+                                            material.ConsumoDesperdicio += componenteCombinacion.ConsumoDesperdicio * modulo.Cantidad;
                                             break;
                                         }
                                         
@@ -525,16 +653,16 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
                                             //{
                                                 if(material.Grueso == especialCombinacion.Grueso)
                                                 {
-                                                    material.Consumo += especialCombinacion.Consumo;
-                                                    material.ConsumoDesperdicio += especialCombinacion.ConsumoDesperdicio;
+                                                    material.Consumo += especialCombinacion.Consumo * modulo.Cantidad;
+                                                    material.ConsumoDesperdicio += especialCombinacion.ConsumoDesperdicio * modulo.Cantidad;
                                                     break;
                                                 }
                                             //}
                                         }
                                         else
                                         {
-                                            material.Consumo += especialCombinacion.Consumo;
-                                            material.ConsumoDesperdicio += especialCombinacion.ConsumoDesperdicio;
+                                            material.Consumo += especialCombinacion.Consumo * modulo.Cantidad;
+                                            material.ConsumoDesperdicio += especialCombinacion.ConsumoDesperdicio * modulo.Cantidad;
                                             break;
                                         }
                                         
@@ -550,7 +678,7 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
                     //componente puerta
                     if($scope.puertaSel)
                     {
-                        for(var componente of $scope.puertaSel.Componente)
+                        for(var componente of modulo.Puerta.Componente)
                         {
                             for(var componenteCombinacion of componente.Combinacion)
                             {
@@ -564,15 +692,15 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
                                             {
                                                 if(material.Grueso == componenteCombinacion.Grueso)
                                                 {
-                                                    material.Consumo += componente.Consumo;
-                                                    material.ConsumoDesperdicio += componente.ConsumoDesperdicio;
+                                                    material.Consumo += componente.Consumo * modulo.Cantidad;
+                                                    material.ConsumoDesperdicio += componente.ConsumoDesperdicio * modulo.Cantidad;
                                                     break;
                                                 }
                                             }
                                             else
                                             {
-                                                material.Consumo += componente.Consumo;
-                                                material.ConsumoDesperdicio += componente.ConsumoDesperdicio;
+                                                material.Consumo += componente.Consumo * modulo.Cantidad;
+                                                material.ConsumoDesperdicio += componente.ConsumoDesperdicio * modulo.Cantidad;
                                                 break;
                                             }
 
@@ -594,6 +722,210 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
         console.log($scope.modulo);
         console.log($scope.combinacion);
        
+    };
+    
+    //calcular los valores por módulo
+    $scope.CalcularValoresModulo = function()
+    {   
+        for(var modulo of $scope.modulo)
+        {
+            for(var combinacion of modulo.Combinacion)
+            {
+                //-- Costo ---
+                //modulo
+                combinacion.CostoUnitario = combinacion.Costo;
+                
+                //puerta
+                if($scope.puertaSel)
+                {
+                    for(var componente of modulo.Puerta.Componente)
+                    {
+                        for(var puertaCombinacion of componente.Combinacion)
+                        {
+                            if(puertaCombinacion.CombinacionMaterialId == combinacion.CombinacionMaterialId)
+                            {
+                                combinacion.CostoUnitario += (componente.Consumo * parseFloat(puertaCombinacion.Costo));
+                                break;
+                            }
+                        }
+                    }
+                }
+                
+                combinacion.CostoDesperdicioUnitario  = combinacion.CostoUnitario + (combinacion.CostoUnitario*(modulo.Desperdicio/100));
+                combinacion.CostoConsumibleUnitario = combinacion.CostoDesperdicioUnitario + modulo.CostoConsumible;
+                combinacion.CostoMargenUnitario = combinacion.CostoConsumibleUnitario + (combinacion.CostoConsumibleUnitario * (modulo.Margen/100));
+                
+                combinacion.CostoTotal = combinacion.CostoUnitario * modulo.Cantidad;
+                combinacion.CostoDesperdicioTotal  = combinacion.CostoTotal + (combinacion.CostoTotal*(modulo.Desperdicio/100));
+                combinacion.CostoConsumibleTotal = combinacion.CostoDesperdicioTotal   + (modulo.CostoConsumible * modulo.Cantidad);
+                combinacion.CostoMargenTotal = combinacion.CostoConsumibleTotal + (combinacion.CostoConsumibleTotal * (modulo.Margen/100));
+                
+                
+                //-- Consumo --
+                //Módulo consumo
+                
+                for(var combinacion of modulo.Combinacion)
+                {
+                    //material
+                    combinacion.Material = [];
+
+                    for(var material of $scope.material)
+                    {
+                        var mataux = {TipoMaterialId:material.TipoMaterialId, MaterialId:material.MaterialId, Material:material.NombreMaterial, Grueso:"1", ConsumoUnitario:0, ConsumoDesperdicioUnitario: 0,  ConsumoTotal: 0, ConsumoDesperdicioTotal: 0, GruesoN:1};
+                        if(material.Grueso.length > 0)
+                        {
+                            for(var grueso of material.Grueso)
+                            {
+                                var gruesoaux;
+
+                                gruesoaux =  jQuery.extend({}, mataux);
+                                gruesoaux.Grueso = grueso.Grueso;
+                                gruesoaux.GruesoN = FraccionADecimal(grueso.Grueso);
+                                combinacion.Material.push(gruesoaux);
+
+                                //var gruesoAux = {Grueso: grueso.Grueso, Consumo:0, ConsumoDesperdicio:0};
+                                //mataux.Grueso.push(gruesoAux);
+                            }
+                        }
+                        else
+                        {
+                            combinacion.Material.push(mataux);
+                        }                    
+                    }   
+                    
+                    //componente módulo
+                    for(var componente of modulo.Componente)
+                    {
+                        for(var componenteCombinacion of componente.Combinacion)
+                        {
+                            if(componenteCombinacion.CombinacionMaterialId == combinacion.CombinacionMaterialId)
+                            {
+                                for(var material of combinacion.Material)
+                                {
+                                    if(material.MaterialId == componenteCombinacion.MaterialId)
+                                    {
+                                        if(material.Grueso != "1")
+                                        {
+                                            if(material.Grueso == componenteCombinacion.Grueso)
+                                            {
+                                                material.ConsumoUnitario += componenteCombinacion.Consumo;
+                                                material.ConsumoDesperdicioUnitario += componenteCombinacion.ConsumoDesperdicio;
+                                                
+                                                material.ConsumoTotal += componenteCombinacion.Consumo * modulo.Cantidad;
+                                                material.ConsumoDesperdicioTotal += componenteCombinacion.ConsumoDesperdicio * modulo.Cantidad;
+                                                break;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            material.ConsumoUnitario += componenteCombinacion.Consumo;
+                                            material.ConsumoDesperdicioUnitario += componenteCombinacion.ConsumoDesperdicio;
+                                            
+                                            material.ConsumoTotal += componenteCombinacion.Consumo * modulo.Cantidad;
+                                            material.ConsumoDesperdicioTotal += componenteCombinacion.ConsumoDesperdicio * modulo.Cantidad;
+                                            break;
+                                        }
+
+
+                                    }
+                                }
+
+                                break;
+                            }
+                        }
+                    }
+                    
+                    //componente especial
+                    for(var especial of modulo.ComponenteEspecial)
+                    {
+                        for(var especialCombinacion of especial.Combinacion)
+                        {
+                            if(especialCombinacion.CombinacionMaterialId == combinacion.CombinacionMaterialId)
+                            {
+                                for(var material of combinacion.Material)
+                                {
+                                    if(material.MaterialId == especialCombinacion.MaterialId)
+                                    {
+                                        if(material.Grueso != "1")
+                                        {
+                                            if(material.Grueso == especialCombinacion.Grueso)
+                                            {
+                                                material.ConsumoUnitario += especialCombinacion.Consumo;
+                                                material.ConsumoDesperdicioUnitario += especialCombinacion.ConsumoDesperdicio;
+                                                
+                                                material.ConsumoTotal += especialCombinacion.Consumo * modulo.Cantidad;
+                                                material.ConsumoDesperdicioTotal += especialCombinacion.ConsumoDesperdicio * modulo.Cantidad;
+                                                break;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            material.ConsumoUnitario += especialCombinacion.Consumo;
+                                            material.ConsumoDesperdicioUnitario += especialCombinacion.ConsumoDesperdicio;
+                                            
+                                            material.ConsumoTotal += especialCombinacion.Consumo * modulo.Cantidad;
+                                            material.ConsumoDesperdicioTotal += especialCombinacion.ConsumoDesperdicio * modulo.Cantidad;
+                                            break;
+                                        }
+                                        
+                                        
+                                    }
+                                }
+                                
+                                break;
+                            }
+                        }  
+                    }
+                    
+                    //componente puerta
+                    if($scope.puertaSel)
+                    {
+                        for(var componente of modulo.Puerta.Componente)
+                        {
+                            for(var componenteCombinacion of componente.Combinacion)
+                            {
+                                if(componenteCombinacion.CombinacionMaterialId == combinacion.CombinacionMaterialId)
+                                {
+                                    for(var material of combinacion.Material)
+                                    {
+                                        if(material.MaterialId == componenteCombinacion.MaterialId)
+                                        {
+                                            if(material.Grueso != "1")
+                                            {
+                                                if(material.Grueso == componenteCombinacion.Grueso)
+                                                {
+                                                    material.ConsumoUnitario += componente.Consumo;
+                                                    material.ConsumoDesperdicioUnitario += componente.ConsumoDesperdicio;
+                                                    
+                                                    material.ConsumoTotal += componente.Consumo * modulo.Cantidad;
+                                                    material.ConsumoDesperdicioTotal += componente.ConsumoDesperdicio * modulo.Cantidad;
+                                                    break;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                material.ConsumoUnitario += componente.Consumo;
+                                                material.ConsumoDesperdicioUnitario += componente.ConsumoDesperdicio;
+                                                
+                                                material.ConsumoTotal += componente.Consumo * modulo.Cantidad;
+                                                material.ConsumoDesperdicioTotal += componente.ConsumoDesperdicio * modulo.Cantidad;
+                                                break;
+                                            }
+
+
+                                        }
+                                    }
+
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                 }
+                    
+
+            }        
+        }
     };
     
     /*------------------  Valida el inicio de sesion y los permisos -------------------*/

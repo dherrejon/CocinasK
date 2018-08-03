@@ -579,3 +579,10 @@
     text-align: right;
     border-width: 0px;
 }
+
+.BotonOperacion.tabla
+{
+    background: transparent;
+    font-size: 20px;
+    padding: 0px 10px;
+}

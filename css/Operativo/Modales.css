@@ -203,6 +203,11 @@
     opacity: .5;
 }
 
+.checkboxOperativo > label > input:disabled~span, .checkboxOperativo > label > input:disabled~i
+{
+    color: gray
+}
+
 /*modal*/
 
 .sombraDivModal
