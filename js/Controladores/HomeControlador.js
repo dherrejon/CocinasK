@@ -36,7 +36,7 @@ app.controller("HomeControlador", function($scope, $rootScope, $http, CONFIG, $q
         {
             if($scope.usuarioLogeado.PerfilSeleccionado === "")
             {
-                $location.path('/Home');
+                $location.path('/Perfil');
             }
         }
     });

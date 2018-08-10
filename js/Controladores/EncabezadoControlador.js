@@ -228,7 +228,7 @@ app.controller("EncabezadoControlador", function($scope, $rootScope, $http, $loc
         {
             if(perfil == $rootScope.Perfiles[k].nombre)         //Se verifica con que perfil cuenta el usuario
             {
-                $location = $rootScope.Perfiles[k].paginaPrincipal;
+                $window.location = $rootScope.Perfiles[k].paginaPrincipal;
             }
         } 
     };

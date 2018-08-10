@@ -128,7 +128,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, $location, PR
         
         $scope.presupuesto = new Presupuesto();
         
-        $scope.copiarPresupuesto = true; //bandera que indica que despues de obtener los catálogos se deberan de copiar los datos de algun presupuesto
+        $scope.copiarPresupuesto = true; //bandera que indica que despuÉs de obtener los catálogos se deberan de copiar los datos de algún presupuesto
         $scope.personaSeleccionada = false;
         $scope.pasoPresupuesto = 1;
 
@@ -840,23 +840,43 @@ app.controller("ProyectoControlador", function($scope, $rootScope, $location, PR
         {
             if(data.length > 0)
             {
-                for(var k=0; k<data.length; k++)
+                if(($scope.opt == "Clonar" || $scope.opt == "UnirPresupuesto") && $scope.personaSeleccionada)
                 {
-                    if(data[k].UnidadNegocioId == $scope.usuario.UnidadNegocioId)
-                    {
-                        data[k].show = false;
-                        if($scope.presupuesto.Persona.UnidadNegocio.length === 0)
-                        {
-                            $scope.presupuesto.Persona.UnidadNegocio[0] = data[k];
-                        }
-                    }
-                    else
+                    for(var k=0; k<data.length; k++)
                     {
                         data[k].show = true;
+                        
+                        for(un of $scope.presupuesto.Persona.UnidadNegocio)
+                        {
+                            if(data[k].UnidadNegocioId == un.UnidadNegocioId)
+                            {
+                                data[k].show = false;
+                                break;
+                            }
+                        }
                     }
+                }
+                else
+                {
+                     for(var k=0; k<data.length; k++)
+                    {
+                        if(data[k].UnidadNegocioId == $scope.usuario.UnidadNegocioId)
+                        {
+                            data[k].show = false;
+                            if($scope.presupuesto.Persona.UnidadNegocio.length === 0)
+                            {
+                                $scope.presupuesto.Persona.UnidadNegocio[0] = data[k];
+                            }
+                        }
+                        else
+                        {
+                            data[k].show = true;
+                        }
+                    }   
                 }
                 
                 $scope.unidadNegocio = data;
+                
                 
                 /*if($scope.operacion == "Editar" || $scope.opt== "Agregar")
                 {

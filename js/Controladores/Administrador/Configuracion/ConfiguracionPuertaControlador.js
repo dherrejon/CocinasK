@@ -137,6 +137,7 @@ app.controller("ConfiguracionPuertaControlador", function($scope, $http, $q, CON
     
     $scope.GetComponentePorPuerta = function(puertaId)      
     {
+        $scope.componentePorPuertaOriginal = [];
         GetComponentePorPuerta($http, $q, CONFIG, puertaId).then(function(data)
         {
             $scope.componentePorPuerta = data;
