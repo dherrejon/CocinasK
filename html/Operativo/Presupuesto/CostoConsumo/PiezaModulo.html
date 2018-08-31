@@ -1,0 +1,237 @@
+<div ng-controller="PiezaModuloController">
+    
+ <!-- Modal para mensajes -->
+    <div class="modal fade" id="piezaModuloModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="true" data-backdrop="static">
+        <br>    <br>   <br>
+        <div class="modal-dialog modalPrincipal modal-lg">
+           
+            <div class="row">
+                <div class="col-xs-12">
+                    <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarCitaModal()"><span aria-hidden="true">&times;</span></button>
+                    <span class="tituloModal">
+                        Piezas
+                    </span>
+                </div>
+            </div>
+            <br>
+            
+            <form name="piezaModuloFrom">
+            
+                <div class="row">
+                    <div class="col-xs-12">
+                        <b>
+                            {{modulo.NombreTipoModulo}} - {{modulo.Nombre}} 
+                            <span style="margin-left: 12px"> 
+                                {{modulo.Ancho}}" {{modulo.Alto}}" {{modulo.Profundo}}"
+                            </span>
+                        </b>
+                    </div>
+                </div>
+
+                <!-- Componentes del módulo -->
+                <div class="row ">
+                    <div class="col-xs-12">
+                       <br>
+                       <div class="table-responsive" style="overflow: scroll; max-height: 500px;">
+                           <table class="table table-hover">
+                                <thead class="TituloTabla"  style="background:  rgb(250, 97, 21); border-color:  rgb(250, 97, 21); color:white">
+                                  <tr>
+                                    <th><span class=""><b>Pieza</b></span></th>
+                                    <th class="text-center"><span><b>Cantidad</b></span></th>
+                                    <th class="text-center"><span><b>Ancho</b></span></th>
+                                    <th class="text-center"><span><b>Largo</b></span></th>
+                                    <th class="text-center"><span><b>Consumo</b></span></th>
+                                  </tr>
+                               </thead>
+
+                              <!-- Componente -->
+                               <tbody ng-repeat="componente in modulo.Componente | orderBy:['Nombre']">
+
+                                  <tr>
+                                      <td class="text-center"   rowspan="componente.Pieza.length "  colspan="5" style="background: lightgray; color: black">
+                                          <b>{{componente.Nombre}}</b>
+                                      </td>
+                                   </tr>
+
+                                   <tr ng-repeat="pieza in componente.Pieza | orderBy:['Nombre'] track by $index">
+
+                                        <td>{{pieza.Nombre}}</td>
+                                        <td class="text-center">{{pieza.Cantidad}}</td>
+                                        <td class="text-center">{{pieza.nAncho | decimal}}"</td>
+                                        <td class="text-center" >{{pieza.nLargo | decimal}}"</td>
+
+                                        <td class="text-center" >
+                                            {{CalcularConsumo(pieza.nAncho, pieza.nLargo, pieza.Cantidad) | decimal}}pie<sup>2</sup>
+                                        </td>
+
+                                   </tr>
+
+
+                               </tbody>
+
+                               <tbody ng-repeat="componente in modulo.ComponenteEspecial ">
+
+                                  <tr>
+                                      <td class="text-center"   rowspan="componente.Pieza.length "  colspan="5" style="background: lightgray; color: black">
+                                          <b>{{componente.Nombre}}</b>
+                                      </td>
+                                   </tr>
+
+                                   <tr ng-repeat="pieza in modulo.Parte | orderBy:['Nombre'] track by $index" ng-if="componente.ComponenteId == 1">
+
+                                        <td>{{pieza.Nombre}}</td>
+                                        <td class="text-center">1</td>
+                                        <td class="text-center">{{pieza.Ancho | decimal}}"</td>
+                                        <td class="text-center" >{{pieza.Largo | decimal}}"</td>
+
+                                        <td class="text-center" >
+                                            {{CalcularConsumo(pieza.Ancho, pieza.Largo, 1) | decimal}}pie<sup>2</sup>
+                                        </td>
+
+                                   </tr>
+
+                                   <tr ng-if="componente.ComponenteId == 9">
+
+                                        <td>Entrepaño</td>
+                                        <td class="text-center">{{componente.NumeroEntrepano}}</td>
+                                        <td class="text-center">{{componente.Ancho | decimal}}"</td>
+                                        <td class="text-center" >{{componente.Largo | decimal}}"</td>
+
+                                        <td class="text-center" >
+                                            {{CalcularConsumo(componente.Ancho, componente.Largo, componente.NumeroEntrepano) | decimal}}pie<sup>2</sup>
+                                        </td>
+
+                                   </tr>
+
+
+                               </tbody>
+
+
+
+                           </table>
+
+                       </div>
+
+                    </div>
+                </div>
+                
+                <!-- secciones -->
+                <br>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <b>
+                           Secciones del módulo
+                        </b>
+                    </div>
+                </div>
+
+                <!-- Componentes del módulo -->
+                <div class="row ">
+                    <div class="col-xs-12">
+                       <br>
+                       <div class="table-responsive" style="overflow: scroll; max-height: 500px;">
+                           <table class="table table-hover">
+                                <thead class="TituloTabla"  style="background:  rgb(250, 97, 21); border-color:  rgb(250, 97, 21); color:white">
+                                  <tr>
+                                    <th><span class=""><b>Sección</b></span></th>
+                                    <th class="text-center"><span ><b>Número de piezas</b></span></th>
+                                    <th class="text-center"><span><b>Ancho</b></span></th>
+                                    <th class="text-center"><span><b>Alto</b></span></th>
+                                  </tr>
+                               </thead>
+
+                              <!-- Componente -->
+                               <tbody>
+
+                                   <tr ng-repeat="seccion in modulo.Seccion | orderBy:['Nombre'] track by $index">
+
+                                        <td>{{seccion.Nombre}}</td>
+                                        <td class="text-center">{{seccion.NumeroPiezas}}</td>
+                                        <td class="text-center">{{seccion.Ancho | decimal}}"</td>
+                                        <td class="text-center" >{{seccion.Alto | decimal}}"</td>
+                                   </tr>
+
+
+                               </tbody>
+
+                           </table>
+
+                       </div>
+
+                    </div>
+                </div>
+                
+                
+                <!-- Puerta -->
+                <div ng-if="modulo.Puerta">
+                   
+                   <div class="row">
+                        <div class="col-xs-12">
+                            <br>
+                       </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <b>
+                                Puerta: {{modulo.Puerta.Puerta}}
+                            </b>
+                        </div>
+                    </div>
+
+                    <!-- Componentes del módulo -->
+                    <div class="row ">
+                        <div class="col-xs-12">
+                           <br>
+                           <div class="table-responsive" style="overflow: scroll; max-height: 500px;">
+                               <table class="table table-hover">
+                                    <thead class="TituloTabla"  style="background:  rgb(250, 97, 21); border-color:  rgb(250, 97, 21); color:white">
+                                      <tr>
+                                        <th><span class=""><b>Pieza</b></span></th>
+                                        <th class="text-center"><span><b>Cantidad</b></span></th>
+                                        <th class="text-center"><span><b>Ancho</b></span></th>
+                                        <th class="text-center"><span><b>Largo</b></span></th>
+                                        <th class="text-center"><span><b>Consumo</b></span></th>
+                                      </tr>
+                                   </thead>
+
+                                  <!-- Componente -->
+                                   <tbody ng-repeat="componente in modulo.Puerta.Componente | orderBy:['Nombre']">
+
+                                      <tr>
+                                          <td class="text-center"   rowspan="componente.Pieza.length "  colspan="5" style="background: lightgray; color: black">
+                                              <b>{{componente.Nombre}}</b>
+                                          </td>
+                                       </tr>
+
+                                       <tr ng-repeat="pieza in componente.Pieza | orderBy:['Nombre'] track by $index">
+
+                                            <td>{{pieza.Nombre}}</td>
+                                            <td class="text-center">{{pieza.Cantidad}}</td>
+                                            <td class="text-center">{{pieza.nAncho | decimal}}"</td>
+                                            <td class="text-center" >{{pieza.nLargo | decimal}}"</td>
+
+                                            <td class="text-center" >
+                                                {{CalcularConsumo(pieza.nAncho, pieza.nLargo, pieza.Cantidad) | decimal}}pie<sup>2</sup>
+                                            </td>
+
+                                       </tr>
+
+
+                                   </tbody>
+
+                               </table>
+
+                           </div>
+
+                        </div>
+                    </div>
+                </div>
+            
+            
+            </form>
+        </div>
+    </div>
+</div>
+
+     

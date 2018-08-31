@@ -81,6 +81,13 @@
                             <span class="pull-right"><span class=" caret"></span></span>
                         </button>
                         <ul class="dropdown-menu elemetosDropdownListModal" style="min-width: 100%">
+                           
+                           <li>
+                                <a  href="" class="dropdownOpcionModal" ng-click="CambiarPuerta(null)">
+                                    <span>Ninguna</span>
+                                </a>
+                            </li>
+                           
                             <li ng-repeat="puerta in puerta | orderBy:'Nombre'" ng-show="puerta.Activo">
                                 <a  href="" class="dropdownOpcionModal" ng-click="CambiarPuerta(puerta)">
                                     <span>{{puerta.Nombre}}</span>
@@ -184,31 +191,41 @@
                         <thead class="TituloTabla">
                           <tr>
                             <th><button class="btn botonOrdenar" style="padding: 0px"><b>Combinación</b></button></th>
-                            <th><button class="btn botonOrdenar" style="padding: 0px"><b>Costo Módulo</b></button></th>
-                            <th ng-if="puertaSeleccionada != null"><button class="btn botonOrdenar" style="padding: 0px"><b>Costo {{puertaSeleccionada.Nombre}}</b></button></th>
-                            <th ng-if="puertaSeleccionada != null" ><button class="btn botonOrdenar" style="padding: 0px"><b>Total</b></button></th>
-                            <th ng-if="puertaSeleccionada != null" ><button class="btn botonOrdenar" style="padding: 0px"><b>Precio Venta</b></button></th>
+                            <th class="text-center"><button class="btn botonOrdenar btn-block" style="padding: 0px; text-align: center !important"><b>Costo Módulo</b></button></th>
+                            <th class="text-center" ng-if="puertaSeleccionada != null"><button class="btn botonOrdenar" style="padding: 0px; text-align: center !important"><b>Costo Puerta</b></button></th>
+                            <th class="text-center" ng-if="puertaSeleccionada != null" ><button class="btn botonOrdenar btn-block" style="padding: 0px; text-align: center !important"><b>Total</b></button></th>
+                            <th class="text-center"  ><button class="btn botonOrdenar btn-block" style="padding: 0px; text-align: center !important"><b>Precio Venta</b></button></th>
+                            <th class="text-center" ng-repeat="unidad in unidadNegocio" >
+                                <button class="btn botonOrdenar btn-block" style="padding: 0px; text-align: center !important"><b>{{unidad.Nombre}}</b></button>
+                            </th>
                           </tr>
                         </thead>
 
                         <tbody ng-repeat="combinacion in medida.Combinacion | orderBy:'CostoTotal'" ng-if="combinacion.Activo">
                           <tr>
                             <td>{{combinacion.Nombre}}</td>
-                            <td>{{combinacion.CostoTotal | currency}} </td>
+                            <td class="text-center">{{combinacion.CostoTotal | currency}} </td>
 
-                            <td ng-repeat="puerta in medida.Puerta" ng-if="puerta.PuertaId == puertaSeleccionada.PuertaId && puertaSeleccionada != null">
+                            <td class="text-center" ng-repeat="puerta in medida.Puerta" ng-if="puerta.PuertaId == puertaSeleccionada.PuertaId && puertaSeleccionada != null">
                                 <span ng-repeat="combinacionPuerta in puerta.Combinacion" ng-if="combinacionPuerta.CombinacionMaterialId == combinacion.CombinacionMaterialId">
                                 {{combinacionPuerta.CostoTotal | currency}}</span>
                             </td>
 
-                            <td ng-repeat="puerta in medida.Puerta" ng-if="puerta.PuertaId == puertaSeleccionada.PuertaId && puertaSeleccionada != null">
+                            <td class="text-center" ng-repeat="puerta in medida.Puerta" ng-if="puerta.PuertaId == puertaSeleccionada.PuertaId && puertaSeleccionada != null">
                                 <span ng-repeat="combinacionPuerta in puerta.Combinacion" ng-if="combinacionPuerta.CombinacionMaterialId == combinacion.CombinacionMaterialId">
                                 {{combinacion.CostoTotal + combinacionPuerta.CostoTotal | currency}}</span>
                             </td>
                             
-                            <td ng-repeat="puerta in medida.Puerta" ng-if="puerta.PuertaId == puertaSeleccionada.PuertaId && puertaSeleccionada != null">
-                                <span ng-repeat="combinacionPuerta in puerta.Combinacion" ng-if="combinacionPuerta.CombinacionMaterialId == combinacion.CombinacionMaterialId">
-                                {{(combinacion.PrecioVentaModulo + combinacionPuerta.PrecioVentaPuerta) | currency}}</span>
+                            <td class="text-center">
+                                <span>
+                                    {{(CalcularPrecioVentaGeneralView(medida, combinacion.PrecioVentaModulo, combinacion.CombinacionMaterialId)) | currency}}
+                                </span>
+                            </td>
+                            
+                            <td class="text-center" ng-repeat="unidad in combinacion.UnidadNegocio">
+                                <span >
+                                    {{(CalcularPrecioVentaUnidadView(medida, unidad.PrecioVentaModulo, unidad.UnidadNegocioId, combinacion.CombinacionMaterialId)) | currency}}
+                                </span>
                             </td>
                             
                           </tr>
@@ -234,11 +251,14 @@
             <table class="table table-hover" id="precios">
                 <thead class="TituloTabla">
                   <tr>
-                    <th><button class="btn botonOrdenar" style="padding: 0px"><b>Combinacion</b></button></th>
-                    <th><button class="btn botonOrdenar" style="padding: 0px"><b>Costo Modulo</b></button></th>
-                    <th ng-if="puertaSeleccionada != null"><button class="btn botonOrdenar" style="padding: 0px"><b>Costo {{puertaSeleccionada.Nombre}}</b></button></th>
+                    <th><button class="btn botonOrdenar" style="padding: 0px"><b>Combinación</b></button></th>
+                    <th><button class="btn botonOrdenar" style="padding: 0px"><b>Costo Módulo</b></button></th>
+                    <th ng-if="puertaSeleccionada != null"><button class="btn botonOrdenar" style="padding: 0px"><b>Costo Puerta</b></button></th>
                     <th ng-if="puertaSeleccionada != null" ><button class="btn botonOrdenar" style="padding: 0px"><b>Total</b></button></th>
-                    <th ng-if="puertaSeleccionada != null" ><button class="btn botonOrdenar" style="padding: 0px"><b>PrecioVenta</b></button></th>
+                    <th class="text-center"  ><button class="btn botonOrdenar btn-block" style="padding: 0px; text-align: center !important"><b>Precio Venta</b></button></th>
+                    <th class="text-center" ng-repeat="unidad in unidadNegocio" >
+                        <button class="btn botonOrdenar btn-block" style="padding: 0px; text-align: center !important"><b>{{unidad.Nombre}}</b></button>
+                    </th>
                   </tr>
                 </thead>
 
@@ -257,9 +277,16 @@
                         {{combinacion.CostoTotal + combinacionPuerta.CostoTotal | currency}}</span>
                     </td>
 
-                    <td ng-repeat="puerta in precioMedida.Puerta" ng-if="puerta.PuertaId == puertaSeleccionada.PuertaId && puertaSeleccionada != null">
-                        <span ng-repeat="combinacionPuerta in puerta.Combinacion" ng-if="combinacionPuerta.CombinacionMaterialId == combinacion.CombinacionMaterialId">
-                        {{(combinacion.PrecioVentaModulo + combinacionPuerta.PrecioVentaPuerta) | currency}}</span>
+                    <td class="text-center">
+                        <span>
+                            {{(CalcularPrecioVentaGeneralView(precioMedida, combinacion.PrecioVentaModulo, combinacion.CombinacionMaterialId)) | currency}}
+                        </span>
+                    </td>
+
+                    <td class="text-center" ng-repeat="unidad in combinacion.UnidadNegocio">
+                        <span >
+                            {{(CalcularPrecioVentaUnidadView(precioMedida, unidad.PrecioVentaModulo, unidad.UnidadNegocioId, combinacion.CombinacionMaterialId)) | currency}}
+                        </span>
                     </td>
                   </tr>
                 </tbody>

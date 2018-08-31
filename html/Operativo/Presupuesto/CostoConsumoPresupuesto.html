@@ -1,5 +1,5 @@
 <div ng-controller="CostoConsumoPresupuesto" class="container">
-    
+       
     <!-- configuración -->
     <div class="btnVertical">
        
@@ -248,8 +248,8 @@
                             <th><span class=""><b>Combinación</b></span></th>
                             <th><span class=""><b>Material</b></span></th>
                             <th class="text-center"><span><b>Grueso</b></span></th>
-                            <th class="text-center"><span><b>Consumo (pie<sub>2</sub>)</b></span></th>
-                            <th class="text-center"><span><b>+Desperdicio (pie<sub>2</sub>)</b></span></th>
+                            <th class="text-center"><span><b>Consumo (pie<sup>2</sup>)</b></span></th>
+                            <th class="text-center"><span><b>+Desperdicio (pie<sup>2</sup>)</b></span></th>
                           </tr>
                        </thead>
 
@@ -260,7 +260,7 @@
                                   <b>({{modulo.Cantidad}}) {{modulo.NombreTipoModulo}} - {{modulo.Nombre}} <span style="margin-left: 10px">{{modulo.Ancho}}" {{modulo.Alto}}" {{modulo.Profundo}}"</span></b> 
                                   
                                   <button class="btn BotonOperacion tabla pull-right" style="margin-top: -8px">
-                                      <span class="fa fa-puzzle-piece" ng-click=""></span>
+                                      <span class="fa fa-puzzle-piece" ng-click="VerPiezasModulo(modulo)"></span>
                                   </button>
                               </td>
                               
@@ -268,7 +268,7 @@
 
                            <tr ng-repeat="combinacion in modulo.Combinacion | orderBy:['CombinacionMaterialId']">
 
-                               <td style="background: #F2F2F2; color: black">
+                              <td style="background: #F2F2F2; color: black">
                                   <b>{{combinacion.Nombre}} </b> 
                               </td>
 
@@ -440,7 +440,135 @@
 
             </div>
         </div>
+                
+    </form>
+    
+   
+    <!--  Separador -->
+    <div class="row">
+        <div class="col-xs-12">
+            <div style="width: 100%; height: 2px; background: lightgray"></div>
+        </div>
+    </div>
+    <br>
+    
+     <!-- Accesorio -->
+     <div class="row" style="margin-bottom: 16px">
+        <div class="col-xs-12">
+            <div class="btnStatusProyecto form-control"  style="overflow:hidden !important;  font-weight: normal; height: 34px;" ng-click="acordion.accesorio = !acordion.accesorio" ng-class="{Seleccionado: acordion.accesorio}"> 
+                <span class="fa fa-chevron-right" style="width:20px;" ng-if="!acordion.accesorio"></span>
+                <span class="fa fa-chevron-up" style="width:20px;" ng-if="acordion.accesorio"></span>
+                Accesorio
+            </div>
+        </div>
+    </div>
+    
+    <form class="contenedorAcordio" style="margin-top: -20px"  ng-show="acordion.accesorio">
+       
+    
+       <!-- Tabla Accesorios -->
+       <div class="row" >
+            <div class="col-xs-12">
+               <br>
+               <div class="table-responsive" style="overflow: scroll; max-height: 500px;">
+                   <table class="table table-hover">
+                        <thead class="TituloTabla"  style="background:  rgb(250, 97, 21); border-color:  rgb(250, 97, 21); color:white">
+                          <tr>
+                            <th><span class=""><b>Accesorio</b></span></th>
+                            <th class="text-center" style="min-width: 250px"><span><b>Combinación</b></span></th>
+                            <th class="text-center"><span><b>Material</b></span></th>
+                            <th class="text-center"><span><b>Grueso</b></span></th>
+                            <th class="text-center"><span><b>Consumo (pie<sup>2</sup>)</b></span></th>
+                            <th class="text-center"><span><b>Costo</b></span></th>
+                            <th class="text-center"><span><b>+Margen</b></span></th>
+                            <th class="text-center"><span><b>PrecioVenta</b></span></th>
+                          </tr>
+                       </thead>
+
+                       <tbody>
         
+                           <tr  ng-repeat="accesorio in accesorio | orderBy:['CombinacionMaterialId']">
+
+                              <td style="background: #F2F2F2; color: black">
+                                  <b>{{accesorio.TipoAccesorio}} - {{accesorio.Nombre}}</b><br>
+                                  <span>Consumo/Unidad: {{accesorio.ConsumoUnidad}}</span><br>
+                                  <span>Cantidad: {{accesorio.Cantidad}}</span><br>
+                              </td>
+
+                              <!-- Combinacion -->
+                              <td style="padding: 0px">
+                                  <table style=" width: 100%; margin-bottom: 0px !important" class="table">
+                                    <tr ng-repeat="combinacion in accesorio.Combinacion | orderBy:['CombinacionMaterialId'] track by $index">
+                                        <td>{{combinacion.Nombre}}</td>
+                                     </tr>
+                                 </table>
+                              </td>
+                              
+                              <!-- Material -->
+                              <td style="padding: 0px">
+                                  <table style=" width: 100%; margin-bottom: 0px !important" class="table">
+                                    <tr ng-repeat="combinacion in accesorio.Combinacion | orderBy:['CombinacionMaterialId'] track by $index">
+                                        <td class="text-center">{{combinacion.Material}}</td>
+                                     </tr>
+                                 </table>
+                              </td>
+                              
+                              <!-- Grueso -->
+                              <td style="padding: 0px">
+                                  <table style=" width: 100%; margin-bottom: 0px !important" class="table">
+                                    <tr ng-repeat="combinacion in accesorio.Combinacion | orderBy:['CombinacionMaterialId'] track by $index">
+                                        <td class="text-center">{{combinacion.Grueso}}</td>
+                                     </tr>
+                                 </table>
+                              </td>
+                              
+                              <!-- Consumo -->
+                              <td style="padding: 0px">
+                                  <table style=" width: 100%; margin-bottom: 0px !important" class="table">
+                                    <tr ng-repeat="combinacion in accesorio.Combinacion | orderBy:['CombinacionMaterialId'] track by $index">
+                                        <td class="text-center">{{accesorio.ConsumoTotal}}</td>
+                                     </tr>
+                                 </table>
+                              </td>
+                              
+                              <!-- Costo -->
+                              <td style="padding: 0px">
+                                  <table style=" width: 100%; margin-bottom: 0px !important" class="table">
+                                    <tr ng-repeat="combinacion in accesorio.Combinacion | orderBy:['CombinacionMaterialId'] track by $index">
+                                        <td class="text-center">{{(accesorio.ConsumoTotal * combinacion.Costo) | currency}}</td>
+                                     </tr>
+                                 </table>
+                              </td>
+                              
+                               <!-- Margen -->
+                              <td style="padding: 0px">
+                                  <table style=" width: 100%; margin-bottom: 0px !important" class="table">
+                                    <tr ng-repeat="combinacion in accesorio.Combinacion | orderBy:['CombinacionMaterialId'] track by $index">
+                                        <td class="text-center">{{(accesorio.ConsumoTotal * combinacion.Costo * (accesorio.Margen+1)) | currency}}</td>
+                                     </tr>
+                                 </table>
+                              </td>
+                              
+                              <!-- Precio Venta -->
+                              <td style="padding: 0px">
+                                  <table style=" width: 100%; margin-bottom: 0px !important" class="table">
+                                    <tr ng-repeat="combinacion in accesorio.Combinacion | orderBy:['CombinacionMaterialId'] track by $index">
+                                        <td class="text-center">{{combinacion.PrecioVenta | currency}}</td>
+                                     </tr>
+                                 </table>
+                              </td>
+                              
+                           </tr>
+
+                       </tbody>
+
+                   </table>
+
+               </div>
+
+            </div>
+        </div>
+                
     </form>
 
         
@@ -582,5 +710,7 @@
     </div> 
 
 </div>
+     
+
 
      

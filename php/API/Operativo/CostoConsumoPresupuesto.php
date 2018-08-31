@@ -93,7 +93,7 @@ function GetModuloPresupuestoCostoConsumo()
     $in = "";
     for($k=0; $k<$count; $k++)
     {
-        $in .= "'".$presupuesto[$k]."',";
+        $in .= "".$presupuesto[$k].",";
     }
     
     $in = trim($in, ",");
@@ -104,6 +104,7 @@ function GetModuloPresupuestoCostoConsumo()
             INNER JOIN ModuloVista m ON m.ModuloId = mp.ModuloId
             WHERE PresupuestoId IN (".$in.")
             GROUP BY mp.ModuloId, mp.Ancho, mp.Alto, mp.Profundo";
+    
     
     try 
     {
@@ -248,10 +249,11 @@ function GetModuloPresupuestoCostoConsumo()
         }
         
         //Seccion 
-        $sql = "SELECT sm.SeccionModuloId, sm.NumeroPiezas, sm.PeinazoVertical,
+        $sql = "SELECT sm.SeccionModuloId, sm.NumeroPiezas, sm.PeinazoVertical,  s.Nombre,
                        l.Luz, l.NumeroEntrepano
                 FROM SeccionPorModulo sm
                 INNER JOIN LuzPorSeccion l ON l.SeccionPorModuloId = sm.SeccionPorModuloId
+                INNER JOIN SeccionModulo s ON s.SeccionModuloId = sm.SeccionModuloId
                 WHERE sm.ModuloId = ".$modulo[$k]->ModuloId." AND l.AltoModulo = '".$modulo[$k]->Alto."'";
         
         try 
@@ -268,8 +270,9 @@ function GetModuloPresupuestoCostoConsumo()
         }
         
         //Parte 
-        $sql = "SELECT pm.TipoParteId as ParteId, pm.Ancho
+        $sql = "SELECT pm.TipoParteId as ParteId, pm.Ancho, tp.Nombre
                 FROM PartePorModulo pm
+                INNER JOIN TipoParte tp ON tp.TipoParteId = pm.TipoParteId
                 WHERE pm.ModuloId = ".$modulo[$k]->ModuloId;
         
         try 
@@ -380,9 +383,70 @@ function GetModuloPresupuestoCostoConsumo()
         }
     }
     
+    
+    //--Accesorios-- 
+    $sql = "SELECT   SUM(ap.Cantidad) AS Cantidad, mp.MuestrarioAccesorioPresupuestoId,
+		 a.Nombre, a.AccesorioId,  a.ConsumoUnidad, 
+		 ta.TipoAccesorioId, ta.Nombre AS TipoAccesorio,
+		 m.MuestrarioId, m.Nombre AS Muestrario, m.Margen
+         FROM AccesorioPresupuesto ap
+         INNER JOIN TipoAccesorio ta ON ta.TipoAccesorioId = ap.TipoAccesorioid
+         INNER JOIN ClaseAccesorio ca ON ca.ClaseAccesorioId = ta.ClaseAccesorioId
+         INNER JOIN MuestrarioAccesorioPresupuesto mp ON mp.AccesorioPresupuestoId = ap.AccesorioPresupuestoId
+         INNER JOIN Muestrario m ON m.MuestrarioId = mp.MuestrarioId
+         INNER JOIN Accesorio a  ON a.MuestrarioId = m.MuestrarioId
+         WHERE ap.PresupuestoId IN (".$in.") AND ca.ClaseAccesorioId = 2
+         GROUP BY a.AccesorioId";
+
+    try 
+    {
+        $db = getConnection();
+        $stmt = $db->query($sql);
+        $accesorio = $stmt->fetchAll(PDO::FETCH_OBJ);
+    } 
+    catch(PDOException $e) 
+    {
+        echo $e;
+        echo '[ { "Estatus": "Fallo" } ]';
+        $app->status(409);
+        $app->stop();
+    }
+    
+    
+    foreach($accesorio as $acc)
+    {
+        //Combinacion Accesorio
+        $sql = "SELECT SUM(cma.PrecioVenta) AS PrecioVenta,
+		ca.Grueso,
+		cm.CombinacionMaterialId, cm.Nombre,
+		m.MaterialId, m.Nombre AS Material
+        FROM AccesorioPresupuesto ap
+        INNER JOIN MuestrarioAccesorioPresupuesto mp ON mp.AccesorioPresupuestoId = ap.AccesorioPresupuestoId
+        INNER JOIN CombinacionMuestrarioAccesorioPresupuesto cma ON cma.MuestrarioAccesorioPresupuestoId = mp.MuestrarioAccesorioPresupuestoId
+        INNER JOIN CombinacionPorMaterialAccesorio ca ON ca.CombinacionMaterialId = cma.CombinacionMaterialId
+        INNER JOIN CombinacionMaterial cm ON cm.CombinacionMaterialId = ca.CombinacionMaterialId
+        INNER JOIN Material m ON m.MaterialId = ca.MaterialId
+        WHERE ca.AccesorioId = ".$acc->AccesorioId." AND  ap.PresupuestoId IN (".$in.")
+        GROUP BY cma.CombinacionMaterialId";
+        
+        try 
+        {
+            $stmt = $db->query($sql);
+            $combinacion = $stmt->fetchAll(PDO::FETCH_OBJ);
+            $acc->Combinacion = $combinacion;
+        } 
+        catch(PDOException $e) 
+        {
+            echo $e;
+            echo '[ { "Estatus": "Fallo" } ]';
+            $app->status(409);
+            $app->stop();
+        }
+    }
+    
     $app->status(200);
     $db = null;
-    echo '{"modulo":'.json_encode($modulo).', "puerta":'.json_encode($puerta).'}'; 
+    echo '{"modulo":'.json_encode($modulo).', "puerta":'.json_encode($puerta).', "accesorio":'.json_encode($accesorio).'}'; 
 }
 
     

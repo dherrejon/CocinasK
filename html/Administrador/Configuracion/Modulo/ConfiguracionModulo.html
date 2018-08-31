@@ -211,6 +211,7 @@
                                         <thead class="TituloTabla">
                                           <tr>
                                             <th><button class="btn botonOrdenar"><b>Tipo</b></button></th>
+                                            <th ><button class="btn botonFalso"><b>Tipo Combinación</b></button></th>
                                             <th><button class="btn botonFalso"><b>Editar</b></button></th>
                                             <th><button class="btn botonFalso"><b>Activo</b></button></th>
                                           </tr>
@@ -218,6 +219,7 @@
                                         <tbody >
                                           <tr ng-repeat="tipo in tipoModulo | orderBy:'Nombre'">
                                             <td>{{tipo.Nombre}}</td>
+                                            <td class="text-center">{{tipo.NombreTipoCombinacion}}</td>
 
                                             <td class="text-center">
                                                 <a ng-if="permisoUsuario.tipoModulo.editar" class="BotonOperacion" href="" data-toggle="modal" data-target="#" ng-click="AbrirTipoModuloForma('Editar', tipo)">
@@ -1082,8 +1084,31 @@
                         </div>
                     </div> 
                     <br>
+                    <br>
                     
                     <div class="row"> 
+                       <!-- Tipo combinación -->
+                       <div class="col-sm-6 etiquetaDropdownList">
+                             <label>Tipo de Combinación</label>
+                             <div class="dropdown">
+
+                                <button class="dropdown-toggle  {{claseTipoModulo.tipoCombinacion}}" data-toggle="dropdown">
+                                    <span>{{nuevoTipoModulo.NombreTipoCombinacion}}</span>
+                                    <span class="caret"></span>
+                                </button>
+
+                                <ul class="dropdown-menu elemetosDropdownListModal"><!-- -->
+                                    <li ng-repeat="tipo in tipoCombinacion   | orderBy:'Nombre'" ng-show="tipo.Activo">
+                                        <a  href="" class="dropdownOpcionModal" ng-click="CambiarTipoCombinacion(tipo)">
+                                            <span>{{tipo.Nombre}} </span>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                            </div>
+                        </div>
+                       
+                       
                         <!-- Activo -->
                         <div class="col-sm-6">
                              <label class="btn checkBoxActivo">Tipo Módulo Activo <input type="checkbox" class="badgebox" ng-model="nuevoTipoModulo.Activo"><span class="badge">&check;</span></label>

@@ -9,6 +9,9 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
     $scope.modulofiltro = [];
     $scope.tipomodulo = [];
     $scope.puerta = [];
+    $scope.accesorio = [];
+    $scope.muestrarioAccesorio = [];
+    
     $scope.configuracion = false;
     $scope.animacionCon = "";
     $scope.conCombinacion = true;
@@ -18,7 +21,7 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
     $scope.costoRadio = "total";
     $scope.consumoRadio = "total";
     
-    $scope.acordion = {costo: true, consumo: true};
+    $scope.acordion = {costo: false, consumo: false, accesorio: true};
     $scope.filtroModulo = {TipoModulo: {TipoModuloId:"", Nombre:""}, Modulo: {TipoModuloId:"", Nombre:""}};
     
     //------------ Cargar Catalogos --------------------
@@ -26,7 +29,7 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
     {
         //$scope.presupuesto = COSCONPRESUPUESTO.GetPresupuesto();
         //$scope.presupuesto = ["101", "336", "337"];
-        $scope.presupuesto = ["417"]; //417
+        $scope.presupuesto = ["491"]; //417
         $scope.GetCatalogosCostoConsumo();
         
        // console.log($scope.presupuesto);
@@ -91,8 +94,11 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
             {
                 $scope.modulo = dataResponse.data.modulo;
                 $scope.puerta = dataResponse.data.puerta;
+                $scope.accesorio = dataResponse.data.accesorio;
+                
                 $scope.tipomodulo = alasql('SELECT DISTINCT TipoModuloId, NombreTipoModulo as Nombre FROM ?', [$scope.modulo]);
                 $scope.modulofiltro = alasql('SELECT DISTINCT TipoModuloId, Nombre FROM ?', [$scope.modulo]);
+                $scope.muestrarioAccesorio = alasql('SELECT DISTINCT MuestrarioId, Muestrario FROM ?', [$scope.accesorio]);
                 
                 for(var k=0; k<$scope.modulo.length; k++)
                 {
@@ -105,8 +111,18 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
                     $scope.modulo[k].Desperdicio = parseFloat($scope.modulo[k].Desperdicio);
                 }
                 
+                for(accesorio of $scope.accesorio)
+                {
+                    accesorio.Cantidad = parseInt(accesorio.Cantidad);
+                    accesorio.ConsumoUnidad = parseFloat(accesorio.ConsumoUnidad);
+                    accesorio.Margen = parseFloat(accesorio.Margen)/100;
+                    
+                    accesorio.ConsumoTotal = accesorio.Cantidad *  accesorio.ConsumoUnidad;
+                }
+                
                 $scope.SetPrecioMaterial();
                 console.log($scope.tipomodulo);
+                console.log($scope.muestrarioAccesorio);
             } 
             else 
             {
@@ -159,6 +175,15 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
                     var combinacion = $scope.puerta[i].Componente[j].Combinacion[k];
                     combinacion.Costo = $scope.GetCostoMaterial(combinacion.MaterialId, combinacion.Grueso);
                 }
+            }
+        }
+        
+        //accesorio
+        for(var accesorio of $scope.accesorio)
+        {
+            for(var combinacion of accesorio.Combinacion)
+            {
+                combinacion.Costo = $scope.GetCostoMaterial(combinacion.MaterialId, combinacion.Grueso);
             }
         }
         
@@ -408,6 +433,7 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
             aux.ComponentePorPuertaId = comp.ComponentePorPuertaId;
             aux.ComponenteId = comp.ComponenteId;
             aux.Combinacion = [];
+            aux.Pieza = [];
             
             for(var comb of comp.Combinacion)
             {
@@ -425,10 +451,20 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
                 aux.Combinacion.push(aux2);
             }
             
-            puerta.Componente.push(aux);
-        }
-        
-        
+            for(var pie of comp.Pieza)
+            {
+                var aux2 = new Object();
+                
+                aux2.Nombre = pie.Nombre;
+                aux2.Cantidad = pie.Cantidad;
+                aux2.nAncho = pie.nAncho;
+                aux2.nLargo = pie.nLargo;
+                
+                aux.Pieza.push(aux2);
+            }
+            
+            puerta.Componente.push(aux);           
+        }    
         
         return puerta;
     };
@@ -927,6 +963,13 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
             }        
         }
     };
+    
+    //------ Piezas ------
+    $scope.VerPiezasModulo = function(modulo)
+    {
+        $rootScope.$broadcast('PiezaModulo', modulo);
+    };
+    
     
     /*------------------  Valida el inicio de sesion y los permisos -------------------*/
     $scope.Inicializar = function()

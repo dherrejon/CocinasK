@@ -8,7 +8,9 @@ function GetTipoModulo()
 
     $request = \Slim\Slim::getInstance()->request();
 
-    $sql = "SELECT * FROM TipoModulo";
+    $sql = "SELECT tm.*, tc.Nombre as NombreTipoCombinacion 
+            FROM TipoModulo tm
+            INNER JOIN TipoCombinacion tc ON tc.TipoCombinacionId = tm.TipoCombinacionId";
 
     try 
     {
@@ -34,7 +36,7 @@ function AgregarTipoModulo()
     $request = \Slim\Slim::getInstance()->request();
     $tipoModulo = json_decode($request->getBody());
     global $app;
-    $sql = "INSERT INTO TipoModulo (Nombre, Activo) VALUES(:Nombre, :Activo)";
+    $sql = "INSERT INTO TipoModulo (Nombre, Activo, TipoCombinacionId) VALUES(:Nombre, :Activo, :TipoCombinacionId)";
 
     try 
     {
@@ -43,6 +45,7 @@ function AgregarTipoModulo()
 
         $stmt->bindParam("Nombre", $tipoModulo->Nombre);
         $stmt->bindParam("Activo", $tipoModulo->Activo);
+        $stmt->bindParam("TipoCombinacionId", $tipoModulo->TipoCombinacionId);
 
         $stmt->execute();
 
@@ -61,7 +64,7 @@ function EditarTipoModulo()
     $request = \Slim\Slim::getInstance()->request();
     $tipoModulo = json_decode($request->getBody());
    
-    $sql = "UPDATE TipoModulo SET Nombre='".$tipoModulo->Nombre."', Activo = '".$tipoModulo->Activo."'  WHERE TipoModuloId=".$tipoModulo->TipoModuloId."";
+    $sql = "UPDATE TipoModulo SET Nombre='".$tipoModulo->Nombre."', Activo = '".$tipoModulo->Activo."', TipoCombinacionId = '".$tipoModulo->TipoCombinacionId."'  WHERE TipoModuloId=".$tipoModulo->TipoModuloId."";
     
     try 
     {

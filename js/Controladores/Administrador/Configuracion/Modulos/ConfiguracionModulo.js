@@ -119,6 +119,8 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
     $scope.medidasFormula = "";
     $scope.formulaId = [];
     
+    $scope.tipoCombinacion = [];
+    
     //Cambia el contenido de la pestaña
     $scope.SeleccionarTab = function(tab, index)    
     {
@@ -1311,7 +1313,7 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
     };
     
     /*-------------------------------TIPO MÓDULO----------------------------------------------------*/
-    $scope.claseTipoModulo = {nombre:"entrada"};
+    $scope.claseTipoModulo = {nombre:"entrada", tipoCombinacion: "dropdownListModal"};
     
     //Obtiene los tipos de unidad de negocio dados de alta 
     $scope.GetTipoModulo = function()      
@@ -1341,6 +1343,12 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
         $('#tipoModuloForma').modal('toggle');
     };
     
+    $scope.CambiarTipoCombinacion = function(tipo)
+    {
+        $scope.nuevoTipoModulo.TipoCombinacionId = tipo.TipoCombinacionId;
+        $scope.nuevoTipoModulo.NombreTipoCombinacion = tipo.Nombre;
+    };
+    
     //Agregar o editar tipo de módulo
     //Valida que los datos indicados sean valido
     $scope.TerminarTipoModulo = function(nombreInvalido)
@@ -1355,6 +1363,16 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
         else
         {
             $scope.claseTipoModulo.nombre = "entrada";
+        }
+        
+        if(!$scope.nuevoTipoModulo.TipoCombinacionId)
+        {
+            $scope.claseTipoModulo.tipoCombinacion = "dropdownListModalError";
+            $scope.mensajeError[$scope.mensajeError.length] = "*Selecciona un tipo de combinación.";
+        }
+        else
+        {
+            $scope.claseTipoModulo.tipoCombinacion = "dropdownListModal";
         }
         
         if($scope.mensajeError.length > 0)
@@ -1708,7 +1726,7 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
     
     $scope.CerrarTipoModuloForma = function()
     {
-        $scope.claseTipoModulo = {nombre:"entrada"};
+        $scope.claseTipoModulo = {nombre:"entrada", tipoCombinacion: "dropdownListModal"};
         $scope.mensajeError = [];
     };
     
@@ -1852,6 +1870,17 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
         $scope.tipoParte = GetTipoParte();
     };
     
+    $scope.GetTipoCombinacion = function()      
+    {
+        GetTipoCombinacionMaterial($http, $q, CONFIG).then(function(data)
+        {
+            $scope.tipoCombinacion = data;
+        }).catch(function(error)
+        {
+            alert(error);
+        });
+    };
+    
     //-------------Inicializar-----------------------
     $scope.InicializarModuloModulo = function()
     {
@@ -1865,6 +1894,8 @@ app.controller("ConfiguaracionModulo", function($scope, $http, $q, CONFIG, $root
         $scope.GetTipoMaterial();
         $scope.GetMaterial();
         $scope.GetGruesoMaterial();
+        
+        $scope.GetTipoCombinacion();
     };
 
     /*------------------Indentifica cuando los datos del usuario han cambiado-------------------*/

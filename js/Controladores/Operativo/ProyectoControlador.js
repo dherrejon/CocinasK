@@ -4737,7 +4737,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, $location, PR
                             {
                                 for(var k=0; k<$scope.tipoAccesorio[i].Muestrario[j].Combinacion.length; k++)
                                 {
-                                    if($scope.tipoAccesorio[i].Muestrario[j].Combinacion[k].CombinacionMaterialId == $scope.combinacionSeleccionada)
+                                    if($scope.tipoAccesorio[i].Muestrario[j].Combinacion[k].CombinacionId == $scope.combinacionSeleccionada)
                                     {
                                         if(precio > $scope.tipoAccesorio[i].Muestrario[j].Combinacion[k].Subtotal)
                                         {

@@ -220,3 +220,22 @@
     height: 100%;
     width: 100%;
 }
+
+.formcontrolspan
+{
+    padding: 6px 12px 6px 0px;
+    background: transparent;
+    border-width: 0px;
+    
+    text-overflow: ellipsis;
+    overflow: hidden;
+    
+    box-shadow: none;
+}
+
+.formcontrolspanDato
+{
+    padding: 6px 0px 6px 12px;
+    background: transparent;
+    border-width: 0px;
+}

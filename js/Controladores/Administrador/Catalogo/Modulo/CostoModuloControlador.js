@@ -1,4 +1,4 @@
-app.controller("CostoModuloControlador", function($scope, $http, $q, CONFIG, datosUsuarioPerfil, md5, $rootScope, datosUsuario, $window, $location)
+app.controller("CostoModuloControlador", function($scope, $http, $q, CONFIG, datosUsuarioPerfil, md5, $rootScope, datosUsuario, $window, $location, CocinasKService)
 {
     $rootScope.clasePrincipal = "";  //si esta en el login muestra una cocina de fondo
     
@@ -20,6 +20,7 @@ app.controller("CostoModuloControlador", function($scope, $http, $q, CONFIG, dat
     $scope.tipoModulo = [];
     $scope.combinacion = [];
     $scope.puerta = [];
+    $scope.unidadNegocio = [];
     $scope.costoMaterial;
     
     $scope.costosMedidas = null;
@@ -98,6 +99,32 @@ app.controller("CostoModuloControlador", function($scope, $http, $q, CONFIG, dat
         }).catch(function(error)
         {
             alert(error);
+        });
+    };
+    
+    $scope.GetUnidadNegocio = function()
+    {   
+        (self.servicioObj = CocinasKService.Get('GetUnidadNegocioSencillaPresupuesto')).then(function (dataResponse) 
+        {
+            if (dataResponse.status == 200) 
+            {
+                $scope.unidadNegocio = alasql("SELECT * FROM ? WHERE Activo = '1'", [dataResponse.data]);
+                
+                for(unidad of $scope.unidadNegocio)
+                {
+                    unidad.Margen = parseFloat(unidad.Margen );
+                }
+            } 
+            else 
+            {
+                $rootScope.$broadcast('Alerta', "Por el momento no se puede cargar la información.", 'error');
+                $scope.encuesta = [];
+            }
+            self.servicioObj.detenerTiempo();
+        }, 
+        function (error) 
+        {
+            $rootScope.$broadcast('Alerta', error, 'error');
         });
     };
                                           
@@ -578,14 +605,17 @@ app.controller("CostoModuloControlador", function($scope, $http, $q, CONFIG, dat
         $scope.precioMedida = medida;
         $scope.$apply();
         
-        var data_type = 'data:application/vnd.ms-excel';
-        var table_div = document.getElementById('precios');
-        var table_html = table_div.outerHTML.replace(/ /g, '%20');
+        setTimeout(function()
+        {
+            var data_type = 'data:application/vnd.ms-excel';
+            var table_div = document.getElementById('precios');
+            var table_html = table_div.outerHTML.replace(/ /g, '%20');
 
-        var a = document.createElement('a');
-        a.href = data_type + ', ' + table_html;
-        a.download = $scope.moduloSeleccionado.Nombre  + '.xls';
-        a.click();
+            var a = document.createElement('a');
+            a.href = data_type + ', ' + table_html;
+            a.download = $scope.moduloSeleccionado.Nombre  + '.xls';
+            a.click();
+        }, 500);
     };
     
     /*----------------------------- Calcular Costos ----------------------------------------*/
@@ -743,12 +773,21 @@ app.controller("CostoModuloControlador", function($scope, $http, $q, CONFIG, dat
                 //entrepano
                 medida.Combinacion[k].CostoTotal += entrepano.ConsumoTotal*$scope.moduloSeleccionado.Entrepano[indexEntepano].CostoUnidad;
                 
+                medida.Combinacion[k].CostoTotal = medida.Combinacion[k].CostoTotal.toFixed(2);
+                medida.Combinacion[k].CostoTotal = parseFloat(medida.Combinacion[k].CostoTotal);
+                
+                //Precio de venta por unidad de negocio
                 medida.Combinacion[k].PrecioVentaModulo = medida.Combinacion[k].CostoTotal + (medida.Combinacion[k].CostoTotal * modulo.Desperdicio/100);
                 medida.Combinacion[k].PrecioVentaModulo += modulo.CostoConsumible;
                 medida.Combinacion[k].PrecioVentaModulo += (medida.Combinacion[k].PrecioVentaModulo*modulo.Margen/100);
                 
-                medida.Combinacion[k].CostoTotal = medida.Combinacion[k].CostoTotal.toFixed(2);
-                medida.Combinacion[k].CostoTotal = parseFloat(medida.Combinacion[k].CostoTotal);
+                medida.Combinacion[k].UnidadNegocio = [];
+                
+                for(var w=0; w < $scope.unidadNegocio.length; w++)
+                {
+                    medida.Combinacion[k].UnidadNegocio[w] = jQuery.extend({},$scope.unidadNegocio[w] );
+                    medida.Combinacion[k].UnidadNegocio[w].PrecioVentaModulo = medida.Combinacion[k].PrecioVentaModulo + (medida.Combinacion[k].PrecioVentaModulo*$scope.unidadNegocio[w].Margen/100);
+                }
             }
         }
         //console.log(componente);
@@ -833,11 +872,20 @@ app.controller("CostoModuloControlador", function($scope, $http, $q, CONFIG, dat
                     }
                 }
                 
+                medida.Puerta[i].Combinacion[k].CostoTotal = medida.Puerta[i].Combinacion[k].CostoTotal.toFixed(2);
+                medida.Puerta[i].Combinacion[k].CostoTotal = parseFloat(medida.Puerta[i].Combinacion[k].CostoTotal);
+                
+                //Precio de venta
                 medida.Puerta[i].Combinacion[k].PrecioVentaPuerta = medida.Puerta[i].Combinacion[k].CostoTotal + (medida.Puerta[i].Combinacion[k].CostoTotal * modulo.Desperdicio/100);
                 medida.Puerta[i].Combinacion[k].PrecioVentaPuerta += (medida.Puerta[i].Combinacion[k].PrecioVentaPuerta*modulo.Margen/100);
                 
-                medida.Puerta[i].Combinacion[k].CostoTotal = medida.Puerta[i].Combinacion[k].CostoTotal.toFixed(2);
-                medida.Puerta[i].Combinacion[k].CostoTotal = parseFloat(medida.Puerta[i].Combinacion[k].CostoTotal);
+                medida.Puerta[i].Combinacion[k].UnidadNegocio = [];
+                
+                for(var w=0; w < $scope.unidadNegocio.length; w++)
+                {
+                    medida.Puerta[i].Combinacion[k].UnidadNegocio[w] = jQuery.extend({},$scope.unidadNegocio[w] );
+                    medida.Puerta[i].Combinacion[k].UnidadNegocio[w].PrecioVentaPuerta = medida.Puerta[i].Combinacion[k].PrecioVentaPuerta + (medida.Puerta[i].Combinacion[k].PrecioVentaPuerta*$scope.unidadNegocio[w].Margen/100);
+                }
             }
         }
             
@@ -1710,6 +1758,68 @@ app.controller("CostoModuloControlador", function($scope, $http, $q, CONFIG, dat
     };
     
     
+    $scope.CalcularPrecioVentaUnidadView = function(medida, precioModulo, unidad, combinacion)
+    {
+        
+        if($scope.puertaSeleccionada)
+        {
+            for(var puerta of medida.Puerta)
+            {
+                if($scope.puertaSeleccionada.PuertaId == puerta.PuertaId)
+                {
+                    for(var combinacionPuerta of puerta.Combinacion)
+                    {
+                        if(combinacionPuerta.CombinacionMaterialId == combinacion)
+                        {
+                           for(var unidadPuerta of combinacionPuerta.UnidadNegocio)
+                           {
+                               if(unidadPuerta.UnidadNegocioId == unidad)
+                               {
+                                   return precioModulo + unidadPuerta.PrecioVentaPuerta;
+                               }
+                           }
+
+                            break;
+                        }
+                    }
+
+                    break;
+                }
+            }
+        }
+        else
+        {
+            return precioModulo;
+        }
+    };
+    
+    $scope.CalcularPrecioVentaGeneralView = function(medida, precioModulo, combinacion)
+    {
+        if($scope.puertaSeleccionada)
+        {
+            for(var puerta of medida.Puerta)
+            {
+                if($scope.puertaSeleccionada.PuertaId == puerta.PuertaId)
+                {
+                    for(var combinacionPuerta of puerta.Combinacion)
+                    {
+                        if(combinacionPuerta.CombinacionMaterialId == combinacion)
+                        {
+                            return precioModulo + combinacionPuerta.PrecioVentaPuerta;
+                        }
+                    }
+
+                    break;
+                }
+            }
+        }
+        else
+        {
+            return precioModulo;
+        }
+    };
+    
+    
     /*-------Inicializar-------*/
     $scope.InicializarModuloModulos = function()
     {
@@ -1719,6 +1829,7 @@ app.controller("CostoModuloControlador", function($scope, $http, $q, CONFIG, dat
         $scope.GetPuerta();
         $scope.GetCostoMaterialTodos();
         $scope.GetMaqueo();
+        $scope.GetUnidadNegocio();
     };
 
     /*------------------Indentifica cuando los datos del usuario han cambiado-------------------*/

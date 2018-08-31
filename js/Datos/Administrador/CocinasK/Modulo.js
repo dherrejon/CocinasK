@@ -6,6 +6,8 @@ class TipoModulo
         this.TipoModuloId = "";
         this.Nombre = ""; 
         this.Activo = true; 
+        this.TipoCombinacionId = ""; 
+        this.NombreTipoCombinacion = ""; 
     }
 }
 
@@ -42,6 +44,8 @@ function SetTipoModulo(data)
     
     tipoModulo.TipoModuloId = data.TipoModuloId;
     tipoModulo.Nombre = data.Nombre;
+    tipoModulo.TipoCombinacionId = data.TipoCombinacionId;
+    tipoModulo.NombreTipoCombinacion = data.NombreTipoCombinacion;
     
     if(data.Activo == "1")
     {

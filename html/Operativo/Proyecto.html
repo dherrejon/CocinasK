@@ -1911,9 +1911,20 @@
                                 <div class="panelItemPresupuesto itemPuerta" >
 
                                     <div ng-repeat="combinacion in muestrario.Combinacion | orderBy:'PrecioVenta'" > <!-- ng-class="{opcionSeleccionadaPresupuestoEst: (combinacion.CombinacionMaterialId == combinacionSeleccionada)}" -->
-                                        <div class="itemPresupuestoEstatico" style="margin-left: 0px; " ng-class="{itemPresupuestoPrimero: $first}">
-                                            <span style="margin-left: 8px;" >{{combinacion.Nombre}}</span>
-                                            <span class="pull-right" style="margin-right: 8px; ">{{combinacion.PrecioVenta | currency}}</span>
+                                        <div class="itemPresupuestoEstatico" style="margin-left: 0px; padding-top: 0px" ng-class="{itemPresupuestoPrimero: $first}">
+                                            <!--<span style="margin-left: 8px;" >{{combinacion.Nombre}}</span>
+                                            <span class="pull-right" style="margin-right: 8px; ">{{combinacion.PrecioVenta | currency}}</span>-->
+                                            
+                                            <div class="input-group">
+                                                <div class="form-control formcontrolspan">
+                                                    {{combinacion.Nombre}}
+                                                </div>
+                                                
+                                                <span class="input-group-addon formcontrolspanDato">
+                                                    {{combinacion.PrecioVenta | currency}}
+                                                </span>
+                                            </div>
+                                            
                                         </div>
                                     </div>
 
