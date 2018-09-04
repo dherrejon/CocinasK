@@ -1,4 +1,4 @@
-<div ng-controller="CostoConsumoPresupuesto" class="container">
+<div ng-controller="CostoConsumoPresupuesto" class="container" style="margin-left: 45px; margin-right: 45px !important; padding: 0px">
        
     <!-- configuración -->
     <div class="btnVertical">
@@ -78,8 +78,6 @@
         </div>
     </div>
     <br>
-    
-   
     
     <!-- Ver por combinación -->
     
@@ -464,8 +462,7 @@
     </div>
     
     <form class="contenedorAcordio" style="margin-top: -20px"  ng-show="acordion.accesorio">
-       
-    
+
        <!-- Tabla Accesorios -->
        <div class="row" >
             <div class="col-xs-12">
@@ -570,6 +567,205 @@
         </div>
                 
     </form>
+            
+    <!--  Separador -->
+    <div class="row">
+        <div class="col-xs-12">
+            <div style="width: 100%; height: 2px; background: lightgray"></div>
+        </div>
+    </div>
+    
+    <!-- Título -->
+   <div class="row">
+       <div class="col-xs-12">
+           <h3>Totales</h3>
+       </div>
+   </div>
+   
+    <!-- accesorio -->
+   <div class="row">
+       <div class="col-xs-12">
+           <br>
+           <div class="" style="overflow: visible; max-height: 500px;">
+               <table class="table table-hover">
+                    <thead class="TituloTabla"  style="background:  rgb(250, 97, 21); border-color:  rgb(250, 97, 21); color:white">
+                      <tr>
+                        <th><span class=""><b>Tipo Accesorio </b></span></th>
+                        <th class="text-center"><span><b>Muestrario</b></span></th>
+                        <th class="text-center"><span><b>Accesorio</b></span></th>
+                      </tr>
+                   </thead>
+
+                   <tbody>
+                       <tr ng-repeat="tipo in tipoAccesorio">
+                           <td>{{tipo.Nombre}}</td>
+
+                           <td>
+                             <div class="dropdown">
+
+                                <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown" >
+                                    <span style="font-size: 11pt !important">
+                                        <span>{{tipo.Muestrario.Muestrario}}</span>
+                                         <span class="pull-right">
+                                            <span class="caret"></span>
+                                        </span>
+                                    </span>
+                                </button>
+
+                                <ul class="dropdown-menu listaOpcionesDropdownList" style="width: 100%; overflow: visible !important">                               
+                                    <li ng-repeat="muestrario in muestrarioAccesorio  | filter:{TipoAccesorioId: tipo.TipoAccesorioId}" >
+                                        <button  href="" class=" dropdownOpcionModalbtn " ng-click="tipo.Muestrario = muestrario; tipo.Muestrario.Accesorio = null">
+                                           <span style="margin: 0px 15px 0px 10px;">
+                                                <span class="text-left">{{muestrario.Muestrario}} </span>
+                                            </span>
+                                        </button>
+                                    </li>
+                                </ul>
+
+                            </div>
+                         </td>
+
+                          <td>
+                             <div class="dropdown">
+
+                                <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown" >
+                                    <span style="font-size: 11pt !important">
+                                        <span>{{tipo.Muestrario.Accesorio.Nombre}}</span>
+
+                                        <span class="pull-right">
+                                            <span class="caret"></span>
+                                        </span>
+                                    </span>
+                                </button>
+
+                                <ul class="dropdown-menu listaOpcionesDropdownList" style="width: 100%"> 
+
+                                    <li ng-repeat="accesorio in accesorio | filter:{MuestrarioId: tipo.Muestrario.MuestrarioId}">
+                                        <a  href="" class="dropdownOpcionModal" ng-click="tipo.Muestrario.Accesorio = accesorio">
+                                            <span>{{accesorio.Nombre}}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                            </div>
+
+                         </td>
+                       </tr>
+
+                   </tbody>
+               </table>
+           </div>
+       </div>
+   </div>
+   <br>
+   
+   <!-- Total consumo -->
+   <div class="row" style="margin-bottom: 16px">
+        <div class="col-xs-12">
+            <div class="btnStatusProyecto form-control"  style="overflow:hidden !important;  font-weight: normal; height: 34px;" ng-click="acordion.totalconsumo = !acordion.totalconsumo" ng-class="{Seleccionado: acordion.totalconsumo}"> 
+                <span class="fa fa-chevron-right" style="width:20px;" ng-if="!acordion.totalconsumo"></span>
+                <span class="fa fa-chevron-up" style="width:20px;" ng-if="acordion.totalconsumo"></span>
+                Total Consumo
+            </div>
+        </div>
+    </div>
+    
+    <form class="contenedorAcordio" style="margin-top: -20px"  ng-show="acordion.totalconsumo">
+       
+       <!-- total consumo -->
+       
+       <div class="row" >
+            <div class="col-xs-12">
+               <br>
+               <div class="table-responsive" style="overflow: scroll; max-height: 500px;">
+                   <table class="table table-hover">
+                        <thead class="TituloTabla"  style="background:  rgb(250, 97, 21); border-color:  rgb(250, 97, 21); color:white">
+                          <tr>
+                            <!--<th><span class=""><b>Combinación</b></span></th>-->
+                            <th><span class=""><b>Material</b></span></th>
+                            <th class="text-center"><span><b>Grueso</b></span></th>
+                            <th class="text-center"><span><b>Consumo (pie<sup>2</sup>)</b></span></th>
+                            <th class="text-center"><span><b>+Desperdico (pie<sup>2</sup>)</b></span></th>
+                          </tr>
+                       </thead>
+
+                       <tbody ng-repeat="combinacion in combinacion | orderBy:['CombinacionMaterialId']" ng-show="combinacion.Ver">
+
+                          <tr>
+                              <td class="text-center"   rowspan="combinacion.Material.length "  colspan="4" style="background: lightgray; color: black"><b>{{combinacion.Nombre}}</b></td>
+                           </tr>
+
+                           <tr ng-repeat="material in GetTotalAccesorioConsumo(combinacion.Material, combinacion.CombinacionMaterialId) | orderBy:['TipoMaterialId', 'Material', 'GruesoN'] track by $index" ng-show="material.ConsumoAccesorio > 0">
+
+                                <td>{{material.Material}}</td>
+                                <td class="text-center">{{material.Grueso}}</td>
+                                <td class="text-center">{{material.ConsumoAccesorio | decimal}}</td>
+                                <td class="text-center" >{{material.ConsumoDesperdicio | decimal}}</td>
+
+                           </tr>
+
+
+                       </tbody>
+
+                   </table>
+
+               </div>
+
+            </div>
+        </div>
+                
+    </form>
+    
+    <!-- Total Costo -->
+   <div class="row" style="margin-bottom: 16px">
+        <div class="col-xs-12">
+            <div class="btnStatusProyecto form-control"  style="overflow:hidden !important;  font-weight: normal; height: 34px;" ng-click="acordion.totalcosto = !acordion.totalcosto" ng-class="{Seleccionado: acordion.totalcosto}"> 
+                <span class="fa fa-chevron-right" style="width:20px;" ng-if="!acordion.totalcosto"></span>
+                <span class="fa fa-chevron-up" style="width:20px;" ng-if="acordion.totalcosto"></span>
+                Total Costo
+            </div>
+        </div>
+    </div>
+    
+    <form class="contenedorAcordio" style="margin-top: -20px"  ng-show="acordion.totalcosto">
+       
+       <!-- total costo -->
+       
+       <div class="row" >
+            <div class="col-xs-12">
+               <br>
+               <table class="table table-hover">
+                    <thead class="TituloTabla"  style="background:  rgb(250, 97, 21); border-color:  rgb(250, 97, 21); color:white">
+                      <tr>
+                        <th><span class=""><b>Combinación</b></span></th>
+                        <th class="text-center"><span><b>Costo</b></span></th>
+                        <th class="text-center"><span><b>+Desperdicio</b></span></th>
+                        <th class="text-center"><span><b>+Consumible</b></span></th>
+                        <th class="text-center"><span><b>+Margen</b></span></th>
+                      </tr>
+                   </thead>
+
+                   <tbody>
+
+                       <tr  ng-repeat="combinacion in combinacion | orderBy:['CombinacionMaterialId']" ng-show="combinacion.Ver">
+
+                            <td>{{combinacion.Nombre}}</td>
+                            <td class="text-center">{{GetCostoAccesorio(combinacion) | currency}}</td>
+                            <td class="text-center">{{combinacion.CostoDesperdicio | currency}}</td>
+                            <td class="text-center">{{combinacion.CostoConsumible | currency}}</td>
+                           <td class="text-center">{{GetCostoMargenAccesorio(combinacion) | currency}}</td>
+                       </tr>
+
+                   </tbody>
+
+               </table>
+
+            </div>
+        </div>
+                
+    </form>
+    
+    <br><br>
 
         
     <!-- --------- configuración de materiales y combinaciones ---------- -->

@@ -11,6 +11,7 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
     $scope.puerta = [];
     $scope.accesorio = [];
     $scope.muestrarioAccesorio = [];
+    $scope.tipoAccesorio = [];
     
     $scope.configuracion = false;
     $scope.animacionCon = "";
@@ -21,7 +22,7 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
     $scope.costoRadio = "total";
     $scope.consumoRadio = "total";
     
-    $scope.acordion = {costo: false, consumo: false, accesorio: true};
+    $scope.acordion = {costo: false, consumo: false, accesorio: false, totalconsumo: false, totalcosto: false, totales:false};
     $scope.filtroModulo = {TipoModulo: {TipoModuloId:"", Nombre:""}, Modulo: {TipoModuloId:"", Nombre:""}};
     
     //------------ Cargar Catalogos --------------------
@@ -32,7 +33,7 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
         $scope.presupuesto = ["491"]; //417
         $scope.GetCatalogosCostoConsumo();
         
-       // console.log($scope.presupuesto);
+        //console.log($scope.presupuesto);
     };
     
     $scope.GetCatalogosCostoConsumo = function()
@@ -68,8 +69,8 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
                 }
                 
             
-                console.log($scope.combinacion);
-                console.log($scope.material);
+                //console.log($scope.combinacion);
+                //console.log($scope.material);
                 
                 $scope.GetModuloPresupuesto();
             } 
@@ -98,7 +99,8 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
                 
                 $scope.tipomodulo = alasql('SELECT DISTINCT TipoModuloId, NombreTipoModulo as Nombre FROM ?', [$scope.modulo]);
                 $scope.modulofiltro = alasql('SELECT DISTINCT TipoModuloId, Nombre FROM ?', [$scope.modulo]);
-                $scope.muestrarioAccesorio = alasql('SELECT DISTINCT MuestrarioId, Muestrario FROM ?', [$scope.accesorio]);
+                $scope.muestrarioAccesorio = alasql('SELECT DISTINCT MuestrarioId, Muestrario, TipoAccesorioId FROM ?', [$scope.accesorio]);
+                $scope.tipoAccesorio = alasql('SELECT DISTINCT TipoAccesorioId, TipoAccesorio AS Nombre FROM ?', [$scope.accesorio]);
                 
                 for(var k=0; k<$scope.modulo.length; k++)
                 {
@@ -120,9 +122,32 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
                     accesorio.ConsumoTotal = accesorio.Cantidad *  accesorio.ConsumoUnidad;
                 }
                 
+                for(tipo of $scope.tipoAccesorio)
+                {
+                    for(muestrario of $scope.muestrarioAccesorio)
+                    {
+                        if(tipo.TipoAccesorio == muestrario.TipoAccesorio)
+                        {
+                            tipo.Muestrario = muestrario;
+                            
+                            for(accesorio of $scope.accesorio)
+                            {
+                                if(accesorio.MuestrarioId == muestrario.MuestrarioId)
+                                {
+                                    tipo.Muestrario.Accesorio = accesorio;
+                                    break;
+                                }
+                            }
+
+                            break;
+                        }
+                    }
+                }
+                
                 $scope.SetPrecioMaterial();
-                console.log($scope.tipomodulo);
-                console.log($scope.muestrarioAccesorio);
+                //console.log($scope.tipomodulo);
+                //console.log($scope.muestrarioAccesorio);
+                //console.log($scope.tipoAccesorio);
             } 
             else 
             {
@@ -189,8 +214,8 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
         
         $scope.CalcularCostoConsumo();
         
-         console.log($scope.modulo);
-         console.log($scope.puerta);
+         //console.log($scope.modulo);
+         //console.log($scope.puerta);
     };
     
     $scope.GetCostoMaterial = function(id, grueso)
@@ -246,7 +271,7 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
             }
         }
         
-        console.log($scope.materialConf );
+        //console.log($scope.materialConf );
     };
     
     $scope.ReestablecerCombinacion = function()
@@ -258,7 +283,7 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
             $scope.combinacionConf[k].Ver = true;
         }  
         
-        console.log($scope.materialInicial);
+        //console.log($scope.materialInicial);
         for(var material of $scope.materialInicial)
         {
             $scope.materialConf.push(jQuery.extend({}, material));
@@ -408,7 +433,7 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
             $scope.CalcularValoresCombinacion();
             $scope.CalcularValoresModulo();
             
-            console.log($scope.puertaSel);
+            //console.log($scope.puertaSel);
         }
     };
     
@@ -548,7 +573,7 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
             }
         }
         
-        console.log($scope.modulo);
+        //console.log($scope.modulo);
         
         //Costo - Consumo Total
         $scope.CalcularValoresCombinacion();
@@ -568,6 +593,33 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
         
             if(combinacion.Ver)
             {
+                //-- consumos --
+                    
+                //material
+                for(var material of $scope.material)
+                {
+                    var mataux = {TipoMaterialId:material.TipoMaterialId, MaterialId:material.MaterialId, Material:material.NombreMaterial, Grueso:"1", Consumo:0, ConsumoDesperdicio: 0, GruesoN:1};
+                    if(material.Grueso.length > 0)
+                    {
+                        for(var grueso of material.Grueso)
+                        {
+                            var gruesoaux;
+
+                            gruesoaux =  jQuery.extend({}, mataux);
+                            gruesoaux.Grueso = grueso.Grueso;
+                            gruesoaux.GruesoN = FraccionADecimal(grueso.Grueso);
+                            combinacion.Material.push(gruesoaux);
+
+                            //var gruesoAux = {Grueso: grueso.Grueso, Consumo:0, ConsumoDesperdicio:0};
+                            //mataux.Grueso.push(gruesoAux);
+                        }
+                    }
+                    else
+                    {
+                        combinacion.Material.push(mataux);
+                    }                    
+                }
+                
                 for(var modulo of $scope.modulo) 
                 {
                     //-- costos --
@@ -593,7 +645,7 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
                             {
                                 if(puertaCombinacion.CombinacionMaterialId == combinacion.CombinacionMaterialId)
                                 {
-                                     combinacion.Costo += (componente.Consumo * parseFloat(puertaCombinacion.Costo) * modulo.Cantidad);
+                                    combinacion.Costo += (componente.Consumo * parseFloat(puertaCombinacion.Costo) * modulo.Cantidad);
                                     break;
                                 }
                             }
@@ -605,32 +657,7 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
                     combinacion.CostoConsumible = combinacion.CostoDesperdicio   + (modulo.CostoConsumible * modulo.Cantidad);
                     combinacion.CostoMargen = combinacion.CostoConsumible + (combinacion.CostoConsumible * (modulo.Margen/100));
                     
-                    //-- consumos --
                     
-                    //material
-                    for(var material of $scope.material)
-                    {
-                        var mataux = {TipoMaterialId:material.TipoMaterialId, MaterialId:material.MaterialId, Material:material.NombreMaterial, Grueso:"1", Consumo:0, ConsumoDesperdicio: 0, GruesoN:1};
-                        if(material.Grueso.length > 0)
-                        {
-                            for(var grueso of material.Grueso)
-                            {
-                                var gruesoaux;
-                                
-                                gruesoaux =  jQuery.extend({}, mataux);
-                                gruesoaux.Grueso = grueso.Grueso;
-                                gruesoaux.GruesoN = FraccionADecimal(grueso.Grueso);
-                                combinacion.Material.push(gruesoaux);
-        
-                                //var gruesoAux = {Grueso: grueso.Grueso, Consumo:0, ConsumoDesperdicio:0};
-                                //mataux.Grueso.push(gruesoAux);
-                            }
-                        }
-                        else
-                        {
-                            combinacion.Material.push(mataux);
-                        }                    
-                    }
                     
                     
                     //componente módulo
@@ -755,8 +782,8 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
         }
        
         
-        console.log($scope.modulo);
-        console.log($scope.combinacion);
+        //console.log($scope.modulo);
+        //console.log($scope.combinacion);
        
     };
     
@@ -970,6 +997,99 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
         $rootScope.$broadcast('PiezaModulo', modulo);
     };
     
+    //------ Totales ------
+    $scope.GetCostoAccesorio = function(combinacion)
+    {
+        if( $scope.tipoAccesorio && combinacion)
+        {
+             var total = combinacion.Costo;
+            for(tipo of $scope.tipoAccesorio)
+            {
+                if(tipo.Muestrario.Accesorio)
+                {
+                    for(combinacionAcceserio of tipo.Muestrario.Accesorio.Combinacion)
+                    {
+                        if(combinacion.CombinacionMaterialId == combinacionAcceserio.CombinacionMaterialId)
+                        {
+                            total += (tipo.Muestrario.Accesorio.ConsumoTotal * combinacionAcceserio.Costo);
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            return total;
+        }
+        else
+        {
+            return 0;
+        }
+
+    }
+    
+    $scope.GetCostoMargenAccesorio = function(combinacion)
+    {
+        
+        if( $scope.tipoAccesorio && combinacion)
+        {
+            var total = combinacion.CostoMargen;
+            
+            for(tipo of $scope.tipoAccesorio)
+            {
+                if(tipo.Muestrario.Accesorio)
+                {
+                    for(combinacionAcceserio of tipo.Muestrario.Accesorio.Combinacion)
+                    {
+                        if(combinacion.CombinacionMaterialId == combinacionAcceserio.CombinacionMaterialId)
+                        {
+                            total += (tipo.Muestrario.Accesorio.ConsumoTotal * combinacionAcceserio.Costo * (tipo.Muestrario.Accesorio.Margen+1));
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            return total;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    
+    $scope.GetTotalAccesorioConsumo = function(material, combinacionid)
+    {
+        if( $scope.tipoAccesorio && material)
+        {
+            for(mat of material)
+            {
+                mat.ConsumoAccesorio = mat.Consumo;
+                
+                for(tipo of $scope.tipoAccesorio)
+                {
+                    if(tipo.Muestrario.Accesorio)
+                    {
+                        for(combinacionAcceserio of tipo.Muestrario.Accesorio.Combinacion)
+                        {
+                            if(combinacionid == combinacionAcceserio.CombinacionMaterialId && mat.MaterialId == combinacionAcceserio.MaterialId && mat.Grueso ==  combinacionAcceserio.Grueso)
+                            {
+                                
+                                mat.ConsumoAccesorio += tipo.Muestrario.Accesorio.ConsumoTotal;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            
+            return material;
+        }
+        else
+        {
+            return material;
+        }
+                
+    }
     
     /*------------------  Valida el inicio de sesion y los permisos -------------------*/
     $scope.Inicializar = function()
