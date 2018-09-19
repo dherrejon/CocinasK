@@ -149,7 +149,10 @@ function GetModuloPresupuesto()
 
     $request = \Slim\Slim::getInstance()->request();
 
-    $sql = "SELECT ModuloId, TipoModuloId, Nombre, Activo, NombreTipoModulo, Desperdicio, Margen, NumeroSeccion FROM ModuloVista WHERE Activo = 1";
+    $sql = "SELECT m.ModuloId, m.TipoModuloId, m.Nombre, m.Activo, m.NombreTipoModulo, m.Desperdicio, m.Margen, m.NumeroSeccion, tm.TipoCombinacionId 
+            FROM ModuloVista m
+            INNER JOIN TipoModulo tm ON tm.TipoModuloId = m.TipoModuloId
+            WHERE m.Activo = 1";
 
     try 
     {

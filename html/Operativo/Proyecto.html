@@ -634,10 +634,37 @@
                                </div>
                            </div>
                             <br>
+                            
+                            
+                          <!-- tipo de combinacion -->
+                          <div class="row">
+                              <div class="col-xs-12">
+                               
+                                   <div class="dropdown itemPresupuestoPrimero">
+                                       
+                                       <button class="dropdown-toggle  dropdownlistModal" data-toggle="dropdown" style="border-bottom: none; height: 33px; text-align: center">
+                                           <b > {{presupuesto.NombreTipoCombinacion}}</b>
+                                           <span class="pull-right"><span class="fa fa-caret-down"></span></span>
+                                       </button>
+                                       
+                                       <ul class="dropdown-menu listaOpcionesDropdownList" style="width: 100%">
+                                           <li ng-repeat="tipo in tipoCombinacionDropDown">
+                                               <a href="" class="dropdownOpcionModal" ng-click="presupuesto.NombreTipoCombinacion = tipo.Nombre; presupuesto.TipoCombinacionId = tipo.TipoCombinacionId; CambiarTipoCombinacion(tipo)">
+                                                   {{tipo.Nombre}}
+                                               </a>
+                                           </li>
+                                       </ul>
+                                       
+                                   </div>
+                    
+                               </div>
+                           </div>
+                        
+                            <!-- Combinaciones -->
                             <div class="row">
                                <div class="col-xs-12">
                                                            
-                                    <div ng-repeat="combinacion in combinacion | orderBy:'Nombre'" ng-show="combinacion.Activo">
+                                    <div ng-repeat="combinacion in combinacion | orderBy:'Nombre' | filter:{TipoCombinacion:{TipoCombinacionId: presupuesto.TipoCombinacionId}}" ng-show="combinacion.Activo ">
                                         <div class="checkbox checkboxOperativo itemPresupuesto" style="margin-left: 0px" ng-class="{itemPresupuestoPrimero: $first}">
                                             <label style="width:100%">
                                                 <input  ng-model="combinacion.PorDefecto" type="checkbox" ng-disabled=" !presupuesto.Proyecto.TipoProyecto.Mueble">
@@ -790,7 +817,7 @@
                                     </button>
 
                                     <ul class="dropdown-menu listaOpcionesDropdownList" >                                
-                                        <li ng-repeat="tipo in tipoModulo | orderBy:'Nombre'" ng-show="tipo.Activo">
+                                        <li ng-repeat="tipo in tipoModulo | orderBy:'Nombre' | filter:{TipoCombinacionId : presupuesto.TipoCombinacionId}" ng-show="tipo.Activo">
                                             <a  href="" class="dropdownOpcionModal" ng-click="CambiarTipoModulo(tipo)">
                                                 <span>{{tipo.Nombre}}</span>
                                             </a>
@@ -1516,13 +1543,20 @@
                                           
                                             <span class="checkbox checkboxOperativo">
                                                 <label style="min-width:100%;">
-                                                    <input  ng-model="grupo.PorDefecto" type="checkbox" >
-                                                    <span class="cr"> <i class="cr-icon fa fa-check"></i> </span>
-                                                    <span>{{grupo.Grupo.Nombre}}</span>
-                                                    
-                                                    <a class="btn botonIconoFa pull-right" href="" ng-click="AbrirModalVerImagenes(grupo.Color, 0, grupo.Grupo.Nombre)">
-                                                        <span class="fa fa-eye"></span>
-                                                    </a>
+                                                   
+                                                   <div class="input-group">
+                                                        <div class="formcontrolspan" style="padding: 0px; white-space: nowrap">
+                                                            <input  ng-model="grupo.PorDefecto" type="checkbox" >
+                                                            <span class="cr"> <i class="cr-icon fa fa-check"></i> </span>
+                                                            <span>{{grupo.Grupo.Nombre}}</span>
+                                                        </div>
+
+                                                        <div class="input-group-addon formcontrolspanDato" style="padding: 0px 8px">
+                                                            <a class=" botonIconoFa " href="" ng-click="AbrirModalVerImagenes(grupo.Color, 0, grupo.Grupo.Nombre)">
+                                                                <span class="fa fa-eye"></span>
+                                                            </a>
+                                                        </div>
+                                                   </div>
                                                                                             
                                                 </label>
                                             </span> 
@@ -1719,13 +1753,20 @@
                                                
                                             <span class="checkbox checkboxOperativo">
                                                 <label style="width:100%">
-                                                    <input  ng-model="grupo.PorDefecto" type="checkbox" >
-                                                    <span class="cr"> <i class="cr-icon fa fa-check"></i> </span>
-                                                    <span>{{grupo.Grupo.Nombre}}</span>
-                                                    
-                                                    <a class="btn botonIconoFa pull-right" href="" ng-click="AbrirModalVerImagenes(grupo.Color, 0, grupo.Grupo.Nombre)">
-                                                        <span class="fa fa-eye"></span>
-                                                    </a>
+
+                                                   <div class="input-group">
+                                                       <div class="formcontrolspan" style="padding: 0px; white-space: nowrap">
+                                                            <input  ng-model="grupo.PorDefecto" type="checkbox" >
+                                                            <span class="cr"> <i class="cr-icon fa fa-check"></i> </span>
+                                                            <span>{{grupo.Grupo.Nombre}}</span>
+                                                       </div>
+
+                                                        <div class="input-group-addon formcontrolspanDato" style="padding: 0px 8px">
+                                                            <a class=" botonIconoFa" href="" ng-click="AbrirModalVerImagenes(grupo.Color, 0, grupo.Grupo.Nombre)">
+                                                                <span class="fa fa-eye"></span>
+                                                            </a>
+                                                        </div>
+                                                    </div>
                                                                                             
                                                 </label>
                                             </span>
@@ -1914,14 +1955,13 @@
                                         <div class="itemPresupuestoEstatico" style="margin-left: 0px; padding-top: 0px" ng-class="{itemPresupuestoPrimero: $first}">
                                             <!--<span style="margin-left: 8px;" >{{combinacion.Nombre}}</span>
                                             <span class="pull-right" style="margin-right: 8px; ">{{combinacion.PrecioVenta | currency}}</span>-->
-                                            
                                             <div class="input-group">
                                                 <div class="form-control formcontrolspan">
-                                                    {{combinacion.Nombre}}
+                                                    <div class="">{{combinacion.Nombre}}</div>
                                                 </div>
-                                                
+
                                                 <span class="input-group-addon formcontrolspanDato">
-                                                    {{combinacion.PrecioVenta | currency}}
+                                                    <span>{{combinacion.PrecioVenta | currency}}</span>
                                                 </span>
                                             </div>
                                             
@@ -2035,9 +2075,18 @@
                                         <div class="panelItemPresupuesto itemPuerta" style="height: auto">
 
                                             <div ng-repeat="combinacion in muestrario.Combinacion | orderBy:'Subtotal'" > <!-- ng-class="{opcionSeleccionadaPresupuestoEst: (combinacion.CombinacionId == combinacionSeleccionada)}" -->
-                                                <div class="itemPresupuestoEstatico" style="margin-left: 0px !important" ng-class="{itemPresupuestoPrimero: $first}">
-                                                    <span style="margin-left:8px; font-style: normal;">{{combinacion.Nombre}}</span>
-                                                    <span class="pull-right" style="margin-right:8px; font-style: normal; !important">{{combinacion.Subtotal | currency}}</span>
+                                                <div class="itemPresupuestoEstatico" style="margin-left: 0px !important; padding-top: 0px !important" ng-class="{itemPresupuestoPrimero: $first}">
+                                                   
+                                                   <div class="input-group">
+                                                       <div class="form-control formcontrolspan">
+                                                            <span style="margin-left:0px; font-style: normal;">{{combinacion.Nombre}}</span>
+                                                       </div>
+                                                       
+                                                       <div class="input-group-addon formcontrolspanDato">
+                                                           <span class="pull-right" style="margin-right:0px; font-style: normal; !important">{{combinacion.Subtotal | currency}}</span>
+                                                       </div>
+                                                   </div>
+                                                    
                                                 </div>
                                             </div>
 

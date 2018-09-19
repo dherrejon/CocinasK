@@ -232,6 +232,7 @@ function SetModulo(data)
     
     modulo.TipoModulo.TipoModuloId = data.TipoModuloId;
     modulo.TipoModulo.Nombre = data.NombreTipoModulo;
+    modulo.TipoModulo.TipoCombinacionId = data.TipoCombinacionId;
     
     modulo.ModuloId = data.ModuloId;
     modulo.TipoModuloId = data.TipoModuloId;

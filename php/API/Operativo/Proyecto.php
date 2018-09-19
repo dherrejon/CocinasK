@@ -1221,9 +1221,10 @@ function GetDatosPresupuesto()
     }
     
     //Modulos
-    $sql = "SELECT mp.ModuloId, mp.Cantidad, mp.Ancho, mp.Alto, mp.Profundo, m.Nombre, m.TipoModuloId, m.NombreTipoModulo, m.Desperdicio, m.Margen
+    $sql = "SELECT mp.ModuloId, mp.Cantidad, mp.Ancho, mp.Alto, mp.Profundo, m.Nombre, m.TipoModuloId, m.NombreTipoModulo, m.Desperdicio, m.Margen, tm.TipoCombinacionId
             FROM ModuloPresupuesto mp
             INNER JOIN ModuloVista m ON m.ModuloId = mp.ModuloId
+            INNER JOIN TipoModulo tm ON tm.TipoModuloId = m.TipoModuloId
             WHERE mp.PresupuestoId = ".$presupuesto->PresupuestoId;
     
     try 

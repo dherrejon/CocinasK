@@ -1097,7 +1097,7 @@ app.controller("ContratoControlador", function($scope, $rootScope, $http, $q, CO
             {
                 if($scope.presupuesto.Accesorio[k].Contrato)
                 {
-                    $scope.contrato.Subtotal += parseFloat($scope.presupuesto.Accesorio[k].MuestrarioSel.PrecioVenta);
+                    $scope.contrato.Subtotal += $scope.presupuesto.Accesorio[k].MuestrarioSel.PrecioVenta ? parseFloat($scope.presupuesto.Accesorio[k].MuestrarioSel.PrecioVenta) : 0;
                 }
                 
                 $scope.contrato.Accesorio.push($scope.presupuesto.Accesorio[k]);

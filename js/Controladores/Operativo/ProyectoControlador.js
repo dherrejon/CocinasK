@@ -1,10 +1,11 @@
-app.controller("ProyectoControlador", function($scope, $rootScope, $location, PRESUPUESTO, $http, $q, CONFIG, $filter, MEDIOCONTACTO, DOMICILIO, datosUsuario)
+app.controller("ProyectoControlador", function($scope, $rootScope, $location, PRESUPUESTO, $http, $q, CONFIG, $filter, MEDIOCONTACTO, DOMICILIO, datosUsuario, CocinasKService)
 {   
     $scope.medioCaptacion = [];
     $scope.persona = [];
     $scope.tipoProyecto = [];
     $scope.unidadNegocio = [];
     $scope.combinacion = [];
+    $scope.combinacionBase = [];
     $scope.tipoCubierta = [];
     $scope.tipoModulo = [];
     $scope.muestrario = [];
@@ -17,6 +18,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, $location, PR
     $scope.cubierta = [];
     $scope.ubicacion = [];
     $scope.tipoCombinacion = [];
+    $scope.tipoCombinacionDropDown = [];
     $scope.promocion = [];
     
     $scope.componente = [];
@@ -26,6 +28,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, $location, PR
     $scope.componenteEspecial = [];
     $scope.consumible = [];
     $scope.presupuesto = new Presupuesto();
+    $scope.tipoCombinacionSel;
     
     $scope.iva = new IVA();
     
@@ -73,7 +76,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, $location, PR
     $scope.$on('EditarPresupuesto',function()
     {
         $scope.operacion = "Editar";
-        $scope.opt = "";
+        $scope.opt = "EditarPresupuesto";
         
         $scope.presupuesto = new Presupuesto();
         
@@ -404,7 +407,6 @@ app.controller("ProyectoControlador", function($scope, $rootScope, $location, PR
                         if($scope.tipoCubierta[k].Ubicacion[i].UbicacionCubiertaId == $scope.ubicacion[j].UbicacionCubiertaId)
                         {
                             ubicado = true;
-                            console.log($scope.ubicacion[j].UbicacionCubiertaId);
                             break;
                         }
                     }
@@ -445,8 +447,6 @@ app.controller("ProyectoControlador", function($scope, $rootScope, $location, PR
             }
         }
         
-        console.log($scope.ubicacion);
-        
         if($scope.presupuesto.Proyecto.TipoProyecto.Mueble)
         {
             $scope.CrearPresupuestoBasico();
@@ -478,10 +478,12 @@ app.controller("ProyectoControlador", function($scope, $rootScope, $location, PR
         $scope.verPromoCubierta = false;
         $scope.nuevasPromociones = false;
         
-         $scope.idPromocion = -1;
+        $scope.idPromocion = -1;
         $scope.promoActualizar = false;
         $scope.GetDatosUnidadNegocio();
         $scope.margenDireccion = true;
+        
+        $scope.tipoCombinacionSel = null; 
     };
     
     $scope.CargarCatalogoPresupuesto = function()
@@ -505,7 +507,6 @@ app.controller("ProyectoControlador", function($scope, $rootScope, $location, PR
             //paso 3
             $scope.GetCombinacionMaterial();
             $scope.GetTipoCubierta();
-            $scope.GetTipoCombinacionMaterial();  
             $scope.GetColorGrupo();
                   
             
@@ -1041,6 +1042,9 @@ app.controller("ProyectoControlador", function($scope, $rootScope, $location, PR
             if(data.length > 0)
             {
                 $scope.combinacion = data;
+                $scope.combinacionBase = JSON.parse(JSON.stringify( data ));
+                
+                $scope.GetTipoCombinacionMaterial();  
                 
                 if($scope.copiarPresupuesto)
                 {
@@ -1057,7 +1061,6 @@ app.controller("ProyectoControlador", function($scope, $rootScope, $location, PR
                         }
                     }
                 }
-                //console.log(data);
             }
         }).catch(function(error)
         {
@@ -1070,6 +1073,35 @@ app.controller("ProyectoControlador", function($scope, $rootScope, $location, PR
         GetTipoCombinacionMaterial($http, $q, CONFIG).then(function(data)
         {
             $scope.tipoCombinacion = data;
+            $scope.tipoCombinacionDropDown = alasql("SELECT * FROM ? WHERE Activo = true", [data]);
+            
+            if($scope.presupuesto.Proyecto.TipoProyecto.Mueble)
+            {
+                if(($scope.opt == "AgregarProyectoCero" || $scope.opt == "AgregarProyecto" || $scope.opt == "AgregarPresupuesto")  && $scope.tipoCombinacion.length > 0)
+                {
+                    $scope.presupuesto.TipoCombinacionId = $scope.tipoCombinacion[0].TipoCombinacionId;
+                    $scope.presupuesto.NombreTipoCombinacion = $scope.tipoCombinacion[0].Nombre;
+
+                    $scope.CambiarTipoCombinacion($scope.tipoCombinacion[0]);
+                }
+                else if(($scope.opt == "EditarPresupuesto" || $scope.opt == "UnirPresupuesto" || $scope.opt == "Clonar" || $scope.opt == "ClonarPre" || $scope.opt == "UnirPresupuestoPre") && $scope.tipoCombinacion.length > 0 )
+                {
+                    for(var tipo of $scope.tipoCombinacion)
+                    {
+                        if(tipo.TipoCombinacionId == $scope.presupuestoBase.Modulo[0].TipoCombinacionId)
+                        {
+                            $scope.presupuesto.TipoCombinacionId = tipo.TipoCombinacionId;
+                            $scope.presupuesto.NombreTipoCombinacion = tipo.Nombre;
+
+                            $scope.tipoCombinacionSel = tipo.TipoCombinacionId;
+
+                            break;
+                        }
+                    }
+                }
+            }
+        
+        
         }).catch(function(error)
         {
             alert(error);
@@ -1148,8 +1180,12 @@ app.controller("ProyectoControlador", function($scope, $rootScope, $location, PR
         {
             for(var k=0; k<$scope.presupuestoBase.Modulo.length; k++)
             {
-                $scope.moduloAgregar = $scope.SetModuloPresupuesto($scope.presupuestoBase.Modulo[k]);
-                $scope.AgregarModulo($scope.moduloAgregar.Cantidad);
+                if($scope.presupuestoBase.Modulo[k].TipoCombinacionId == $scope.presupuesto.TipoCombinacionId)
+                {
+                   $scope.moduloAgregar = $scope.SetModuloPresupuesto($scope.presupuestoBase.Modulo[k]);
+                    $scope.AgregarModulo($scope.moduloAgregar.Cantidad);     
+                }
+                
                 //console.log($scope.moduloAgregar);
             }
             
@@ -1178,6 +1214,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, $location, PR
         
         modulo.TipoModulo.TipoModuloId = data.TipoModuloId;
         modulo.TipoModulo.Nombre = data.NombreTipoModulo;
+        modulo.TipoModulo.TipoCombinacionId = data.TipoCombinacionId;
         
         return modulo;
     };
@@ -2920,6 +2957,37 @@ app.controller("ProyectoControlador", function($scope, $rootScope, $location, PR
         }
     };
     
+    $scope.CambiarTipoCombinacion = function(tipo)
+    {
+        if($scope.tipoCombinacionSel !=  tipo.TipoCombinacionId)
+        {
+            $scope.tipoCombinacionSel =  tipo.TipoCombinacionId;
+            
+            for(var combinacion of $scope.combinacionBase)
+            {
+                var seleccionado;
+                
+                if(combinacion.TipoCombinacion.TipoCombinacionId == tipo.TipoCombinacionId && combinacion.PorDefecto)
+                {
+                    seleccionado = true;
+                }
+                else
+                {
+                   seleccionado = false;
+                }
+                
+                for(var commat of $scope.combinacion)
+                {
+                    if(commat.CombinacionMaterialId == combinacion.CombinacionMaterialId )
+                    {
+                        commat.PorDefecto = seleccionado;
+                        break;
+                    }
+                }
+            }
+        }
+    };
+    
     $scope.TerminarPaso3 = function()
     {
         //console.log($scope.presupuesto.Margen);
@@ -2945,6 +3013,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, $location, PR
             if($scope.presupuesto.Proyecto.TipoProyecto.Mueble)
             {
                 $scope.GetModuloInicio();
+                $scope.ValidarModuloPresupuesto();
                 $scope.pasoPresupuesto++;
             }
             else
@@ -2975,6 +3044,21 @@ app.controller("ProyectoControlador", function($scope, $rootScope, $location, PR
             }
         }
     };
+    
+    $scope.ValidarModuloPresupuesto = function()
+    {
+        for(var k=0; k< $scope.presupuesto.Modulo.length; k++)
+        {
+            if($scope.presupuesto.Modulo[k].TipoModulo.TipoCombinacionId != $scope.presupuesto.TipoCombinacionId)
+            {
+                $scope.presupuesto.Modulo.splice(k, 1);
+                k--;
+            }
+        }
+        
+        $scope.GetTipoModuloCantidad();
+        $scope.moduloAgregar = new ModuloPresupuesto();
+    }
     
     $scope.ValidarPaso3 = function()
     {
@@ -3199,6 +3283,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, $location, PR
         
         m.TipoModulo.Nombre = modulo.TipoModulo.Nombre;
         m.TipoModulo.TipoModuloId = modulo.TipoModulo.TipoModuloId;
+        m.TipoModulo.TipoCombinacionId = modulo.TipoModulo.TipoCombinacionId;
         
         return m;
     };

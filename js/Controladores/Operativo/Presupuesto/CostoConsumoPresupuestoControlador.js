@@ -28,9 +28,9 @@ app.controller("CostoConsumoPresupuesto", function($scope, $rootScope, datosUsua
     //------------ Cargar Catalogos --------------------
     $scope.CargarCatalagosInicio = function()
     {
-        //$scope.presupuesto = COSCONPRESUPUESTO.GetPresupuesto();
+        $scope.presupuesto = COSCONPRESUPUESTO.GetPresupuesto();
         //$scope.presupuesto = ["101", "336", "337"];
-        $scope.presupuesto = ["491"]; //417
+        //$scope.presupuesto = ["491"]; //417
         $scope.GetCatalogosCostoConsumo();
         
         //console.log($scope.presupuesto);
