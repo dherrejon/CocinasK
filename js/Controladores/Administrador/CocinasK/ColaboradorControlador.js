@@ -1,4 +1,4 @@
-app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, datosUsuarioPerfil, md5, $rootScope, datosUsuario, $window, $location)
+app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, datosUsuarioPerfil, md5, $rootScope, datosUsuario, $window, $location, CocinasKService)
 {   
     $rootScope.clasePrincipal = "";  //si esta en el login muestra una cocina de fondo
     
@@ -52,6 +52,8 @@ app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, dat
     $scope.perfil = GetPerfil();   //guarda los perfiles que puede tener un usuario
     
     $scope.terminarConcluido = true;
+
+    $scope.correo = new Object();
     
     //Obtine los colaboradores dados de alta
     $scope.GetColaboradores = function()              
@@ -1723,7 +1725,54 @@ app.controller("ColaboradorControlador", function($scope, $http, $q, CONFIG, dat
         }
     };
     
-    /*------------------Indentifica cuando los datos del usuario han cambiado-------------------*/
+    /*------------------ Correo ----------------------*/
+    $scope.AbrirEnviarCorreo = function()
+    {
+        $scope.correo = new Object();
+        $('#correoModal').modal('toggle');
+    };
+    
+    $scope.EnviarCorreo = function(forminvalid)
+    {
+        $scope.mensajeError = [];
+        if(forminvalid)
+        {
+            $scope.mensajeError[0] = "*Completa todos los datos.";
+        }
+        
+        else
+        {
+            (self.servicioObj = CocinasKService.Post('EnviarCorreo', $scope.correo)).then(function (dataResponse) 
+            {
+                if (dataResponse.status == 200) 
+                {
+                    $scope.mensaje = "El correo se ha mandado a los colaboradores.";
+                    $('#mensajeColaborador').modal('toggle');
+                    
+                    $('#correoModal').modal('toggle');
+                } 
+                else 
+                {
+                    $scope.mensaje = "No se pudo realizar la operación. Intente más tarde.";
+                    $('#mensajeColaborador').modal('toggle');
+                }
+                
+                self.servicioObj.detenerTiempo();
+            }, 
+            function (error) 
+            {
+                $scope.mensaje = "Error: No se puedo conecta con el servidor. Intente más tarde."
+                $('#mensajeColaborador').modal('toggle');
+            });    
+        }
+    };
+    
+    $scope.CerrarModalCorreo = function()
+    {
+        $scope.mensajeError = [];
+    };
+    
+    /*------------------ Indentifica cuando los datos del usuario han cambiado -------------------*/
     $scope.usuarioLogeado =  datosUsuario.getUsuario(); 
     
     //verifica queexista un usuario logeado para acceder al catálogo

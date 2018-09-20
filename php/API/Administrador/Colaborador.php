@@ -315,6 +315,25 @@ function EditarContactoColabordor()
     }
 }
 
+function EnviarCorreo()
+{
+    try 
+    {
+        global $app;
+        $request = \Slim\Slim::getInstance()->request();
+
+        $app->status(200);
+        echo '[{"Estatus":"Correo enviado"}]';
+    }
+    catch(PDOException $e) 
+    {
+        echo '[{"Estatus":"Fallo"}]';
+        $app->status(409);
+        $app->stop();
+    }
+    
+}
+
 
 
 ?>

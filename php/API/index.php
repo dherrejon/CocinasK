@@ -265,6 +265,8 @@
     $app->post('/GetContactoColaborador', $seguridad, $ChecarSesion, 'GetContactoColaborador');
     $app->put('/EditarContactoColabordor', $seguridad, $ChecarSesion, 'EditarContactoColabordor');
     $app->delete('/DeleteContactoColaborador', $seguridad, $ChecarSesion, 'DeleteContactoColaborador');
+    
+    $app->post('/EnviarCorreo', $seguridad, $ChecarSesion, 'EnviarCorreo');
 
     /*-------------Usuario-------------------------------*/
     

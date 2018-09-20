@@ -207,6 +207,10 @@
                 </ul>
                 
             </div>
+            <br>
+            
+            <!-- botón para mandar correo -->
+            <button  class="btn btn-block botonOperacion fa fa-envelope text-center" data-toggle="tooltip" data-placement="bottom" title="Enviar Correo" ng-click="AbrirEnviarCorreo()"></button>
             
         </div>
     </div>
@@ -1142,8 +1146,73 @@
         </div>
     </div>
     
+    <!-- Modal para enviar correo -->
+    <div class="modal fade" id="correoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="true" data-backdrop="static">
+        <br>    <br>   <br>
+        <div class="modal-dialog modalPrincipal">
+           
+            <div class="row">
+                <div class="col-xs-12">
+                    <button class="btn close cerrarModal" data-dismiss="modal" aria-label="Close" ng-click="CerrarModalCorreo()"><span aria-hidden="true">&times;</span></button>
+                    <span class="tituloModal">Enviar Correo</span>
+                </div>
+            </div>
+            <br><br><br>
+            
+            <form name="correoForm">
+            
+                <!-- Asunto -->
+                <div class="row"> 
+                    <div class="col-xs-12">
+                       <div class="entrada2">
+                            <input autocomplete="off" type="text" required class="entrada form-control" name="nombre" ng-model="correo.Asunto" ng-maxlength="255"/>
+                            <label>Asunto</label>
+                        </div>
+                   </div>             
+                </div>
+                
+                <br>
+                
+                <div class="row">
+                    <div class="col-xs-12" style="margin-bottom: 8px">
+                        <span style="color: rgb(89, 89, 89);  font-size: 14px; font-weight: bold !important; font-weight: 400;">Mensaje</span>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-xs-12">
+                        <textarea  required placeholder="Escribe tu mensaje" type="text"  class="form-control descripcionArea" ng-model="correo.Mensaje" style="min-height: 100px; min-width: 100%"></textarea>
+                    </div>
+                </div>
+                 <br>
+            
+                <!-------- mensaje de error ---->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div ng-repeat="error in mensajeError">
+                            <span class="textoError">{{error}}</span>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <!---- botones de operacion -->
+                <div class="row">
+                   <div class="col-xs-6" >
+                        <button class="btn botonOperacionModal btn-block" data-dismiss="modal" aria-label="Close" ng-click="CerrarModalCorreo()">CANCELAR</button>
+                    </div>
+
+                    <div class="col-xs-6">
+                        <button focus class="btn botonOperacionModal btn-block" ng-click="EnviarCorreo(correoForm.$invalid)">Enviar</button>
+                    </div>
+                </div>
+                
+            </form>
+        </div>
+    </div>
+   
+    
     <!-- Modal para mensajes -->
-    <div class="modal fade" id="mensajeColaborador">
+    <div class="modal fade sombraDivModal" id="mensajeColaborador">
         <br>    <br>   <br>
         <div class="modal-dialog modal-sm">
             <div class="modal-content">

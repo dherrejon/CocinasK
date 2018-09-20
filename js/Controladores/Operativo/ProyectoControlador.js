@@ -1043,9 +1043,7 @@ app.controller("ProyectoControlador", function($scope, $rootScope, $location, PR
             {
                 $scope.combinacion = data;
                 $scope.combinacionBase = JSON.parse(JSON.stringify( data ));
-                
-                $scope.GetTipoCombinacionMaterial();  
-                
+            
                 if($scope.copiarPresupuesto)
                 {
                     for(var k=0; k<$scope.combinacion.length; k++)
@@ -1061,6 +1059,8 @@ app.controller("ProyectoControlador", function($scope, $rootScope, $location, PR
                         }
                     }
                 }
+                
+                $scope.GetTipoCombinacionMaterial();  
             }
         }).catch(function(error)
         {
@@ -1094,6 +1094,14 @@ app.controller("ProyectoControlador", function($scope, $rootScope, $location, PR
                             $scope.presupuesto.NombreTipoCombinacion = tipo.Nombre;
 
                             $scope.tipoCombinacionSel = tipo.TipoCombinacionId;
+                            
+                            for(var combinacion of $scope.combinacion)
+                            {
+                                if(combinacion.TipoCombinacionId != tipo.TipoCombinacionId)
+                                {
+                                    combinacion.PorDefecto = false;
+                                }
+                            }
 
                             break;
                         }
